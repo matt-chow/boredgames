@@ -1,0 +1,221 @@
+@font-face {
+  font-family: 'Stencil';
+  src: url('/fonts/big-shoulders-stencil-latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+:root {
+  /* Charred timber: the stall at night. */
+  --ground-0: #0f0b08;
+  --ground-1: #16110d;
+  --ground-2: #1f1813;
+  --ground-3: #2a211a;
+  --rim: #3d3026;
+  --rim-hi: #5a4636;
+  --ink: #efe6da;
+  --ink-2: #c3b5a4;
+  --ink-3: #8f8070;
+  /* The single signal: legal, your move. */
+  --sprout: #c9e04a;
+  --sprout-ink: #1a1f05;
+  --sprout-dim: rgb(201 224 74 / 0.18);
+  --warn: #f08a5d;
+  --coin: #e8b84a;
+  --coin-ink: #3a2706;
+
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-label: 'Stencil', var(--font-ui);
+
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.5), 0 4px 10px -2px rgb(0 0 0 / 0.45);
+  --shadow-2: 0 2px 4px rgb(0 0 0 / 0.5), 0 14px 28px -8px rgb(0 0 0 / 0.65);
+  --shadow-lift: 0 6px 10px rgb(0 0 0 / 0.35), 0 26px 40px -12px rgb(0 0 0 / 0.7);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 140ms;
+  --dur-2: 240ms;
+  --dur-3: 420ms;
+
+  --card-w: 76px;
+  --card-h: 106px;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  background: var(--ground-1);
+  color: var(--ink);
+  font: 15px/1.45 var(--font-ui);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow: hidden;
+}
+
+#app {
+  height: 100%;
+}
+
+::selection {
+  background: var(--sprout);
+  color: var(--sprout-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--sprout);
+  outline-offset: 2px;
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+input {
+  caret-color: var(--sprout);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rim-hi) transparent;
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--rim-hi);
+  background: var(--ground-3);
+  color: var(--ink);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition:
+    background-color var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+  user-select: none;
+}
+.btn:hover:not(:disabled) {
+  background: #352a21;
+  border-color: #6e5743;
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.45;
+}
+.btn.primary {
+  background: var(--sprout);
+  border-color: var(--sprout);
+  color: var(--sprout-ink);
+}
+.btn.primary:hover:not(:disabled) {
+  background: #d6eb5e;
+  border-color: #d6eb5e;
+}
+.btn.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--ink-2);
+}
+.btn.ghost:hover:not(:disabled) {
+  background: var(--ground-3);
+  color: var(--ink);
+}
+.btn.small {
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  border-radius: var(--r-sm);
+}
+.btn.icon {
+  width: 40px;
+  padding: 0;
+}
+.btn.small.icon {
+  width: 32px;
+}
+
+.field-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--rim-hi);
+  background: var(--ground-0);
+  color: var(--ink);
+  font-size: 17px;
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+.field-input::placeholder {
+  color: var(--ink-3);
+}
+.field-input:focus {
+  outline: none;
+  border-color: var(--sprout);
+}
+
+.label {
+  font-family: var(--font-label);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0ms;
+    --dur-2: 0ms;
+    --dur-3: 0ms;
+  }
+}
+:root[data-motion='reduced'] {
+  --dur-1: 0ms;
+  --dur-2: 0ms;
+  --dur-3: 0ms;
+}
