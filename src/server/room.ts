@@ -1,0 +1,297 @@
+import { DurableObject } from 'cloudflare:workers';
+import type { ServerMsg } from '../shared/protocol';
+import {
+  RoomCore,
+  RoomError,
+  type ActionRecord,
+  type HistoryRow,
+  type RoomMeta,
+  type RoomStore,
+  type SeatRow,
+  type UndoRow,
+} from './core';
+
+export interface Env {
+  ROOMS: DurableObjectNamespace<RoomDO>;
+  ASSETS: Fetcher;
+}
+
+interface Attachment {
+  th: string;
+}
+
+const MAX_MESSAGE_BYTES = 16 * 1024;
+/** Token bucket per socket: burst 20, refill 10/s. In-memory; resets on hibernation, which is fine. */
+const BUCKET_MAX = 20;
+const BUCKET_RATE = 10;
+
+/** SQLite-backed implementation of the room store. All calls are synchronous. */
+class SqlStore implements RoomStore {
+  constructor(private ctx: DurableObjectState) {}
+  private get sql() {
+    return this.ctx.storage.sql;
+  }
+
+  initialized(): boolean {
+    return this.sql.exec(`SELECT 1 FROM sqlite_master WHERE type='table' AND name='meta'`).toArray().length > 0;
+  }
+
+  init() {
+    this.sql.exec(`
+      CREATE TABLE IF NOT EXISTS meta (k TEXT PRIMARY KEY, v TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS seats (seat INTEGER PRIMARY KEY, th TEXT NOT NULL, name TEXT NOT NULL, joined_at INTEGER NOT NULL);
+      CREATE TABLE IF NOT EXISTS blobs (k TEXT PRIMARY KEY, v TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS actions (n INTEGER PRIMARY KEY AUTOINCREMENT, k TEXT UNIQUE NOT NULL, ok INTEGER, code TEXT, error TEXT, v INTEGER);
+      CREATE TABLE IF NOT EXISTS history (version INTEGER PRIMARY KEY, seat INTEGER, kind TEXT, data TEXT, at INTEGER);
+    `);
+  }
+
+  private blob<T>(k: string): T | null {
+    const row = this.sql.exec<{ v: string }>(`SELECT v FROM blobs WHERE k = ?`, k).toArray()[0];
+    return row ? (JSON.parse(row.v) as T) : null;
+  }
+  private setBlob(k: string, v: unknown) {
+    if (v === null || v === undefined) this.sql.exec(`DELETE FROM blobs WHERE k = ?`, k);
+    else this.sql.exec(`INSERT OR REPLACE INTO blobs (k, v) VALUES (?, ?)`, k, JSON.stringify(v));
+  }
+
+  getMeta(): RoomMeta | null {
+    if (!this.initialized()) return null;
+    const row = this.sql.exec<{ v: string }>(`SELECT v FROM meta WHERE k = 'room'`).toArray()[0];
+    return row ? JSON.parse(row.v) : null;
+  }
+  putMeta(m: RoomMeta) {
+    this.sql.exec(`INSERT OR REPLACE INTO meta (k, v) VALUES ('room', ?)`, JSON.stringify(m));
+  }
+  getSeats(): SeatRow[] {
+    return this.sql
+      .exec<{ th: string; name: string; joined_at: number }>(`SELECT th, name, joined_at FROM seats ORDER BY seat`)
+      .toArray()
+      .map((r) => ({ th: r.th, name: r.name, joinedAt: r.joined_at }));
+  }
+  putSeats(rows: SeatRow[]) {
+    this.sql.exec(`DELETE FROM seats`);
+    rows.forEach((r, i) => this.sql.exec(`INSERT INTO seats (seat, th, name, joined_at) VALUES (?, ?, ?, ?)`, i, r.th, r.name, r.joinedAt));
+  }
+  getState() {
+    return this.blob<unknown>('state');
+  }
+  putState(s: unknown) {
+    this.setBlob('state', s);
+  }
+  getUndo() {
+    return this.blob<UndoRow>('undo');
+  }
+  putUndo(u: UndoRow | null) {
+    this.setBlob('undo', u);
+  }
+  getAction(key: string): ActionRecord | null {
+    const r = this.sql
+      .exec<{ ok: number; code: string; error: string; v: number }>(`SELECT ok, code, error, v FROM actions WHERE k = ?`, key)
+      .toArray()[0];
+    return r ? { key, ok: !!r.ok, code: r.code, error: r.error, v: r.v } : null;
+  }
+  putAction(r: ActionRecord, keep: number) {
+    this.sql.exec(`INSERT OR REPLACE INTO actions (k, ok, code, error, v) VALUES (?, ?, ?, ?, ?)`, r.key, r.ok ? 1 : 0, r.code, r.error, r.v);
+    this.sql.exec(`DELETE FROM actions WHERE n <= (SELECT MAX(n) FROM actions) - ?`, keep);
+  }
+  appendHistory(h: HistoryRow) {
+    this.sql.exec(`INSERT OR REPLACE INTO history (version, seat, kind, data, at) VALUES (?, ?, ?, ?, ?)`, h.version, h.seat, h.kind, h.data, h.at);
+  }
+  transaction<T>(fn: () => T): T {
+    return this.ctx.storage.transactionSync(fn);
+  }
+}
+
+function randomSeed(): string {
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  return [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
+}
+
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
+
+/**
+ * One instance per room code. Authoritative for everything in the room:
+ * seats, configuration, game state, randomness and validation.
+ */
+export class RoomDO extends DurableObject<Env> {
+  private store: SqlStore;
+  private core: RoomCore | null = null;
+  private buckets = new WeakMap<WebSocket, { tokens: number; at: number }>();
+
+  constructor(ctx: DurableObjectState, env: Env) {
+    super(ctx, env);
+    this.store = new SqlStore(ctx);
+    // Answer keep-alive pings without waking the object from hibernation.
+    ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair('{"t":"ping"}', '{"t":"pong"}'));
+  }
+
+  private opts = { now: () => Date.now(), seed: randomSeed };
+
+  private room(): RoomCore {
+    if (!this.core) this.core = new RoomCore(this.store, this.opts);
+    return this.core;
+  }
+
+  async fetch(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+    const th = req.headers.get('x-th');
+    try {
+      switch (url.pathname) {
+        case '/create': {
+          const body = (await req.json()) as { code: string; gameId: string; name: string; th: string };
+          if (this.store.initialized() && this.store.getMeta()) throw new RoomError('exists', 'Room code in use.', 409);
+          this.store.init();
+          this.core = RoomCore.create(this.store, this.opts, body);
+          await this.scheduleCleanup();
+          return json({ code: body.code, seat: 0 });
+        }
+        case '/join': {
+          const body = (await req.json()) as { name: string; th: string };
+          const seat = this.room().join(body.name, body.th);
+          await this.scheduleCleanup();
+          this.broadcast();
+          return json({ code: this.room().code, seat });
+        }
+        case '/summary':
+          return json(this.room().summary(th));
+        case '/ws': {
+          if (req.headers.get('Upgrade') !== 'websocket') return json({ error: 'Expected WebSocket', code: 'bad-request' }, 426);
+          const room = this.room();
+          const seat = room.seatOf(th);
+          if (!th || seat < 0) return json({ error: 'You are not a member of this room.', code: 'unauthorized' }, 403);
+          const pair = new WebSocketPair();
+          const [client, server] = Object.values(pair);
+          this.ctx.acceptWebSocket(server);
+          server.serializeAttachment({ th } satisfies Attachment);
+          this.send(server, { t: 'room', room: room.view(seat, this.connected()) });
+          this.broadcast(server);
+          return new Response(null, { status: 101, webSocket: client });
+        }
+      }
+      return json({ error: 'Not found', code: 'not-found' }, 404);
+    } catch (e) {
+      if (e instanceof RoomError) return json({ error: e.message, code: e.code }, e.status);
+      console.error('room error', (e as Error).message);
+      return json({ error: 'Internal error', code: 'internal' }, 500);
+    }
+  }
+
+  async webSocketMessage(ws: WebSocket, message: string | ArrayBuffer) {
+    if (typeof message !== 'string' || message.length > MAX_MESSAGE_BYTES) return ws.close(1009, 'Message too large');
+    if (!this.allow(ws)) {
+      this.send(ws, { t: 'ack', id: '', ok: false, code: 'rate', error: 'Slow down.', v: this.room().version });
+      return;
+    }
+    let msg: unknown;
+    try {
+      msg = JSON.parse(message);
+    } catch {
+      return;
+    }
+    const room = this.room();
+    const att = ws.deserializeAttachment() as Attachment | null;
+    const seat = room.seatOf(att?.th ?? null);
+    if (seat < 0) return ws.close(4003, 'Not a member');
+    const res = room.handle(seat, msg, this.connected());
+    if (res.ack) this.send(ws, { t: 'ack', ...res.ack });
+    if (res.evict.length) {
+      for (const s of this.ctx.getWebSockets()) {
+        const a = s.deserializeAttachment() as Attachment | null;
+        if (a && res.evict.includes(a.th)) {
+          this.send(s, { t: 'bye', reason: a.th === att?.th ? 'left' : 'removed' });
+          s.close(4001, 'Removed from room');
+        }
+      }
+    }
+    if (res.changed) {
+      await this.scheduleCleanup();
+      this.broadcast();
+    }
+  }
+
+  async webSocketClose(ws: WebSocket) {
+    this.broadcast(ws);
+  }
+
+  async webSocketError(ws: WebSocket) {
+    this.broadcast(ws);
+  }
+
+  /** Delete rooms that have been idle past their retention window. */
+  async alarm() {
+    if (!this.store.initialized() || !this.store.getMeta()) return;
+    const room = this.room();
+    if (Date.now() >= room.expiresAt) {
+      for (const s of this.ctx.getWebSockets()) s.close(4004, 'Room expired');
+      this.core = null;
+      await this.ctx.storage.deleteAlarm();
+      await this.ctx.storage.deleteAll();
+    } else await this.ctx.storage.setAlarm(room.expiresAt);
+  }
+
+  private async scheduleCleanup() {
+    await this.ctx.storage.setAlarm(this.room().expiresAt);
+  }
+
+  private allow(ws: WebSocket): boolean {
+    const now = Date.now();
+    const b = this.buckets.get(ws) ?? { tokens: BUCKET_MAX, at: now };
+    b.tokens = Math.min(BUCKET_MAX, b.tokens + ((now - b.at) / 1000) * BUCKET_RATE);
+    b.at = now;
+    if (b.tokens < 1) {
+      this.buckets.set(ws, b);
+      return false;
+    }
+    b.tokens -= 1;
+    this.buckets.set(ws, b);
+    return true;
+  }
+
+  /** Seats with at least one open socket (optionally ignoring a closing one). */
+  private connected(except?: WebSocket): Set<number> {
+    const room = this.room();
+    const out = new Set<number>();
+    for (const s of this.ctx.getWebSockets()) {
+      if (s === except || s.readyState !== WebSocket.OPEN) continue;
+      const a = s.deserializeAttachment() as Attachment | null;
+      const seat = room.seatOf(a?.th ?? null);
+      if (seat >= 0) out.add(seat);
+    }
+    return out;
+  }
+
+  /** Send every member their own projection of the room. */
+  private broadcast(except?: WebSocket) {
+    if (!this.store.getMeta()) return;
+    const room = this.room();
+    const connected = this.connected(except);
+    const cache = new Map<number, string>();
+    for (const s of this.ctx.getWebSockets()) {
+      if (s === except) continue;
+      const a = s.deserializeAttachment() as Attachment | null;
+      const seat = room.seatOf(a?.th ?? null);
+      if (seat < 0) continue;
+      let payload = cache.get(seat);
+      if (!payload) {
+        payload = JSON.stringify({ t: 'room', room: room.view(seat, connected) } satisfies ServerMsg);
+        cache.set(seat, payload);
+      }
+      try {
+        s.send(payload);
+      } catch {
+        /* socket already closing */
+      }
+    }
+  }
+
+  private send(ws: WebSocket, msg: ServerMsg) {
+    try {
+      ws.send(JSON.stringify(msg));
+    } catch {
+      /* closing */
+    }
+  }
+}
