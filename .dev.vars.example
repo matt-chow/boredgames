@@ -1,0 +1,10 @@
+# Bored Games needs no secrets or environment variables to run.
+# Session tokens are generated per seat at runtime and only their hashes are stored.
+#
+# If a future feature needs a secret, put it in .dev.vars (git-ignored) for local
+# development and set it in production with:  npx wrangler secret put NAME
+# Never commit real values.
+
+# --- Test-runner settings (read by Playwright, not by the Worker) ---
+# E2E_BASE_URL=https://<your-worker>.<your-subdomain>.workers.dev   # test a deployed build
+# E2E_CHANNEL=                                                   # empty = Playwright's Chromium (default: msedge)

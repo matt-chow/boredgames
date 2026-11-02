@@ -1,0 +1,37 @@
+{
+  "name": "boredgames",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Private board game hub. First game: Bohnanza.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "npm run build && vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.worker.json --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "deploy": "npm run build && wrangler deploy",
+    "cf-typegen": "wrangler types src/server/worker-configuration.d.ts"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.67.0",
+    "@cloudflare/workers-types": "^5.20261102.1",
+    "@playwright/test": "^1.64.1",
+    "@sveltejs/vite-plugin-svelte": "^7.3.1",
+    "@tsconfig/svelte": "^5.0.8",
+    "@types/node": "^24.19.2",
+    "svelte": "^5.57.3",
+    "svelte-check": "^4.7.8",
+    "typescript": "^6.0.3",
+    "vite": "^8.3.5",
+    "vitest": "^4.1.12",
+    "wrangler": "^4.156.2"
+  },
+  "allowScripts": {
+    "workerd@1.20261101.1": true,
+    "workerd@1.20261102.1": true,
+    "esbuild@0.28.2": true
+  }
+}

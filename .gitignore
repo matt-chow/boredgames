@@ -1,0 +1,13 @@
+# Playwright CLI output (may contain credentials)
+.playwright-cli/
+node_modules/
+dist/
+.wrangler/
+.dev.vars
+.env
+test-results/
+playwright-report/
+*.log
+
+# Impeccable per-session hook cache (local paths)
+.impeccable/hook.cache.json
