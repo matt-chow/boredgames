@@ -71,14 +71,14 @@ that the room core is game-agnostic; it is not listed in the hub.
 
 - Game actions: `{ t: 'act', id, v, a }`.
 - Room commands, each with its own `id` and `v`: `undo`, `config`, `start`, `kick`, `leave`, `rematch`. In the lobby
-  `leave` frees the seat; during a game it ends the game for everyone and the room is deleted (D19).
+  `leave` frees the seat; during a game a bot takes the seat if other people remain, otherwise the game ends and the room is deleted (D19).
 - Keep-alive: `{ t: 'ping' }`.
 
 **Server → client:**
 
 - `room`: the full `RoomView` for that seat, sent on connect and after every committed change.
 - `ack`: `{ id, ok, v, code?, error? }`.
-- `bye`: the seat was removed, or someone quit and the game ended (`by` names them).
+- `bye`: the seat was removed or given up, or someone quit and the game ended (`by` names them).
 - `pong`.
 
 Every mutating message carries a client-generated action ID and the room version the client last saw. The server then:

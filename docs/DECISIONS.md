@@ -110,12 +110,17 @@ other action. This keeps the hidden-information guarantee intact by construction
 partner could answer an offer. The Bohnanza bot is deliberately simple: it is there to let one person try the game
 and to exercise the server, not to play well.
 
-### D19. Quitting ends the game for everyone
+### D19. Quitting: a bot takes over if people remain, otherwise the game ends
 
-A player may quit a game in progress from Settings, after a confirmation. The game ends for the whole table: everyone
-else is told who quit and sent back to the hub, every socket closes, and the Durable Object deletes the room at once
-instead of waiting out its retention window (D17). Nothing is left running or stored, which suits the free tier.
-Bohnanza cannot lose a player midway, and an earlier version that handed the seat to a bot kept a room alive (and
-writing) for a game nobody was guaranteed to finish. Quitting does not depend on the table, so it is never rejected
-as stale. A lobby leave still only frees the seat, and leaving a finished game is still refused; the results screen
-has its own way back to the hub.
+A player may quit a game in progress from Settings, after a confirmation. What happens depends on who is left:
+
+- **Other people are still seated** (and the game has computer players): a bot takes the seat as it stands (hand,
+  fields, coins), named after the player with "(bot)", so everyone else can finish. Seat numbers are part of the game
+  state, so the seat is kept, not removed. The others get a toast; the host role passes to the next person; undo is
+  cleared. The quitter's token loses the seat, so a refresh or another tab cannot reclaim it.
+- **Only bots would be left**, such as a practice game (or the game has no computer players): the game ends. Everyone
+  still connected is told who quit, every socket closes, and the Durable Object deletes the room at once instead of
+  waiting out its retention window (D17), so no bot plays on for nobody and nothing stays stored.
+
+Either way quitting does not depend on the table, so it is never rejected as stale. A lobby leave still only frees the
+seat, and leaving a finished game is still refused; the results screen has its own way back to the hub.

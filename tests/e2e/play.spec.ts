@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { PHONE, activePlayer, newPlayer, rawSend, roomViews, startTable } from './helpers';
+import { PHONE, activePlayer, botStep, newPlayer, rawSend, roomViews, startTable } from './helpers';
 
 test('a turn with planting, trading (offer, counter, accept), and resolving on desktop and phone', async ({ browser }) => {
   const players = [await newPlayer(browser, 'Ana'), await newPlayer(browser, 'Bo', PHONE), await newPlayer(browser, 'Cy')];
@@ -139,16 +139,16 @@ test('dragging a bean onto a field it does not fit is explained and changes noth
   await expect(N.locator('.mine .crate').nth(1).locator('[data-card]')).toHaveCount(1);
 });
 
-test('quitting mid-game ends the game for everyone and closes the table', async ({ browser }) => {
+test('quitting mid-game hands the seat to a bot; the others are told and play on', async ({ browser }) => {
   const players = [await newPlayer(browser, 'Ana'), await newPlayer(browser, 'Bo', PHONE), await newPlayer(browser, 'Cy')];
   const code = await startTable(players);
-  const [ana, bo, cy] = players;
+  const [ana, bo] = players;
 
   // Changing your mind keeps you at the table.
   await bo.page.getByRole('button', { name: 'Settings' }).click();
   await bo.page.getByRole('button', { name: /Quit game/ }).click();
   const dialog = bo.page.getByRole('dialog', { name: 'Quit this game?' });
-  await expect(dialog).toContainText('This ends the game for everyone at the table.');
+  await expect(dialog).toContainText('A bot takes over your seat');
   await dialog.getByRole('button', { name: 'Keep playing' }).click();
   await expect(dialog).toBeHidden();
   await expect(bo.page.locator('.table')).toBeVisible();
@@ -158,16 +158,47 @@ test('quitting mid-game ends the game for everyone and closes the table', async 
   await dialog.getByRole('button', { name: 'Quit game' }).click();
   await bo.page.waitForURL((u) => u.pathname === '/');
 
-  // Everyone else is told who quit and offered the way home.
-  for (const p of [ana, cy]) {
-    await expect(p.page.getByRole('heading', { name: 'Bo quit, so the game has ended.' })).toBeVisible();
-    await expect(p.page.locator('.table')).toHaveCount(0);
-  }
+  await expect(ana.page.getByText('Bo left the game. A bot plays their seat now.')).toBeVisible();
+  await expect(ana.page.locator('.table').getByText('Bo (bot)').first()).toBeVisible();
 
-  // The room is deleted: the link finds nothing, for the quitter and the others.
-  for (const p of [bo, ana]) {
-    await p.page.goto(`/r/${code}`);
-    await expect(p.page.getByRole('heading', { name: `No table with code ${code}.` })).toBeVisible();
+  // The seat is gone for good: the link no longer opens the game.
+  await bo.page.goto(`/r/${code}`);
+  await expect(bo.page.getByText('This game has already started.')).toBeVisible();
+
+  // The game goes on: the bot takes Bo's turns, so the turn comes round past seat 1.
+  const turns = new Set<string>();
+  const deadline = Date.now() + 90_000;
+  while (turns.size < 3 && Date.now() < deadline) {
+    for (const p of [ana, players[2]]) {
+      if (await p.page.locator('.turn.you').count()) await botStep(p);
+    }
+    turns.add((await ana.page.locator('.table .turn').innerText()).trim());
+    await ana.page.waitForTimeout(150);
   }
+  expect([...turns]).toContain('Bo (bot)’s turn');
   for (const p of players) expect(p.errors).toEqual([]);
+});
+
+test('quitting a practice game against bots ends it and deletes the table', async ({ browser }) => {
+  const ana = await newPlayer(browser, 'Ana', PHONE);
+  const { page } = ana;
+  await page.goto('/');
+  await page.fill('#name', 'Ana');
+  await page.getByRole('button', { name: /Practise with bots/ }).click();
+  await page.waitForURL(/\/r\/[A-Z0-9]{6}$/);
+  const code = page.url().split('/').pop()!;
+  await page.getByRole('button', { name: 'Start the game' }).click();
+  await expect(page.locator('.table .turn')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('button', { name: /Quit game/ }).click();
+  const dialog = page.getByRole('dialog', { name: 'Quit this game?' });
+  await expect(dialog).toContainText('Only bots are left at this table, so the game ends');
+  await dialog.getByRole('button', { name: 'Quit game' }).click();
+  await page.waitForURL((u) => u.pathname === '/');
+
+  // Nothing is left running: the room is gone.
+  await page.goto(`/r/${code}`);
+  await expect(page.getByRole('heading', { name: `No table with code ${code}.` })).toBeVisible();
+  expect(ana.errors).toEqual([]);
 });

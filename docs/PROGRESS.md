@@ -27,9 +27,9 @@ Last updated 2026-11-02.
   to the hand. Tapping a card to start an offer no longer picks the next player silently; the slip asks who it is
   for when there is more than one choice. Panning the table clears and blocks text selection, which in Firefox stopped
   the table from moving until you clicked away.
-- **Quit game (2026-11-02):** Settings → "Quit game…" during a game, with a confirm dialog. Quitting ends the game
-  for everyone: the others see who quit and a way back to the hub, and the room is deleted immediately so nothing
-  keeps running (D19). (A first version handed the seat to a bot; replaced at the owner's request.)
+- **Quit game (2026-11-02):** Settings → "Quit game…" during a game, with a confirm dialog. With other people at the
+  table a bot takes over the seat and they play on; when only bots would be left (practice games) the game ends and
+  the room is deleted immediately, so nothing keeps running (D19).
 
 ## Known limitations
 

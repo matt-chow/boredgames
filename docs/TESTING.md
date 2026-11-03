@@ -26,7 +26,7 @@ that ID, so `npx vitest -t "R4.3"` runs one rule.
 | `tests/bohnanza/simulate.test.ts` | S | 10 configurations × 5 seeds = 50 complete bot games |
 | `tests/bohnanza/bot-player.test.ts` | B1, B2 | All-bot games across 7 configurations × 3 seeds, played by the server's bot; how the bot answers offers |
 | `tests/hub/catalog.test.ts` | | The hub catalog matches the server's listed games |
-| `tests/server/core.test.ts` | H1–H7 | Lobby, seats, host hand-over, versioning, stale and duplicate rejection, malformed input, undo limits, privacy of room views, restart/resume, retention, history, the Tally second game, bot seats (H7), quitting a game in progress (H8) |
+| `tests/server/core.test.ts` | H1–H7 | Lobby, seats, host hand-over, versioning, stale and duplicate rejection, malformed input, undo limits, privacy of room views, restart/resume, retention, history, the Tally second game, bot seats (H7), quitting a game in progress: bot hand-over or ending the room (H8) |
 
 **Simulations.** The configurations are base 3/4/5, Magpie 4, Bean Coin 3 and 5, Three New Bean Types 3, Three New +
 Magpie 5, Field Bean 4, and Field Bean + Magpie 5. Each runs with the seeds `alpha`…`echo`. After every action it
@@ -41,7 +41,7 @@ checks:
 Each run writes its seed and full action sequence to `test-results/sim/<config>-<seed>.json`. `replay(seed, n, config,
 steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
-**Latest result:** 7 files, **174 / 174 passed** (2026-11-02). `npm run check`: 0 errors, 0 warnings.
+**Latest result:** 7 files, **175 / 175 passed** (2026-11-02). `npm run check`: 0 errors, 0 warnings.
 
 ## Browser tests (Playwright)
 
@@ -52,7 +52,8 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 | `play.spec.ts` | a turn with planting, trading (offer, counter, accept), and resolving on desktop and phone | Drag and click planting, turning over, an offer, a counteroffer, a donation, accepting with a card choice, planting pending cards; one player on a phone viewport |
 | | the server rejects out-of-turn, stale, duplicate and malformed actions | Raw WebSocket messages; the error codes and that state is unchanged |
 | | dragging a bean onto a field it does not fit is explained and changes nothing | Illegal-move feedback in the UI |
-| | quitting mid-game ends the game for everyone and closes the table | Settings → Quit game, "Keep playing" cancels, quitting returns to the hub, the others see who quit, and the room is deleted (the link finds no table) |
+| | quitting mid-game hands the seat to a bot; the others are told and play on | Settings → Quit game, "Keep playing" cancels, quitting returns to the hub, the others see a toast and "(bot)", the old link no longer seats the quitter, and the bot takes its turn |
+| | quitting a practice game against bots ends it and deletes the table | Practise with bots, start, quit: back at the hub and the link finds no table |
 | `resilience.spec.ts` | a refresh restores the same seat and hand; dropping offline shows a reconnect state | Reload and `setOffline` |
 | | conflicting actions: accept and withdraw race, exactly one wins | Simultaneous raw sends; all views agree |
 | | two tabs of the same player cannot double-spend | One commit, the other `stale` |
@@ -63,6 +64,7 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
 **Latest results.**
 
+- **Local, quit hands over to a bot or ends the game** (2026-11-02): all 17 tests passed in 5.3 min.
 - **Local, Quit game ends the game** (2026-11-02): all 16 tests passed in 5.9 min. **Live** after redeploying: all 16
   passed in 3.3 min.
 - **Local, with Quit game (bot takeover, since replaced)** (2026-11-02): all 16 tests passed in 3.4 min. **Live** after redeploying: 15 passed and
