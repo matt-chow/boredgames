@@ -62,7 +62,8 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
 **Latest results.**
 
-- **Local, after the animation and trading polish** (2026-11-02): all 15 tests passed in 4.2 min. The new pan test
+- **Local, after the animation and trading polish** (2026-11-02): all 15 tests passed in 4.2 min; after redeploying,
+  all 15 passed against the live site in 3.5 min. The new pan test
   passes on the old camera code in Edge, because Edge never keeps a selection during a pan. The bug it guards against
   was reproduced only in Firefox (Playwright's build, run by hand rather than in the suite).
 - **Local, with bots and the new home page** (2026-11-02): all 14 tests passed in 3.3 min. **Live** after redeploying:
