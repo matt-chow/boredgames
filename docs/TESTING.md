@@ -57,10 +57,14 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 | | two tabs of the same player cannot double-spend | One commit, the other `stale` |
 | `complete.spec.ts` | four full games to the results screen | Base 3 players; Three New Bean Types + Magpie, 4 players; Field Bean, 5 players; Bean Coin, 4 players. One player uses a phone viewport. A random bot plays every seat through the real UI, then checks the summary and "Play again" |
 | `bots.spec.ts` | one player practises against bots | From the home page's "Practise with bots", adds a bot in the lobby, starts, and plays until the turn has come back twice, so the bots took their turns through the server alarm |
+| | panning the table selects no text, and an offer started from a card asks who it is for | A leftover selection on the table does not block the next pan; tapping a hand card opens a slip with no recipient and Send disabled until one is picked |
 | `perf.spec.ts` | action round-trip, idle CPU, frame pacing, transfer size | See Performance below |
 
 **Latest results.**
 
+- **Local, after the animation and trading polish** (2026-11-02): all 15 tests passed in 4.2 min. The new pan test
+  passes on the old camera code in Edge, because Edge never keeps a selection during a pan. The bug it guards against
+  was reproduced only in Firefox (Playwright's build, run by hand rather than in the suite).
 - **Local, with bots and the new home page** (2026-11-02): all 14 tests passed in 3.3 min. **Live** after redeploying:
   13 passed and 1 skipped by design (the drag test skips when the random deal makes its setup impossible); that test
   was then rerun twice against the live site and passed.

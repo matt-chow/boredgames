@@ -22,6 +22,11 @@ Last updated 2026-11-02.
 - **Computer players**: a `bot(view)` hook in the game interface, bot seats in the room (create time and the lobby's
   "Add a bot"), and server-paced moves through the Durable Object alarm. Bohnanza's bot is deliberately weak.
 - Deployed and verified live on 2026-11-02 (TESTING.md).
+- **Polish (2026-11-02):** smoother planting: cards keep their hand-fan rotation and the table's tilt while they fly,
+  small layout shifts slide instead of hopping, and a dragged card waits where it was dropped instead of jumping back
+  to the hand. Tapping a card to start an offer no longer picks the next player silently; the slip asks who it is
+  for when there is more than one choice. Panning the table clears and blocks text selection, which in Firefox stopped
+  the table from moving until you clicked away.
 
 ## Known limitations
 
