@@ -110,12 +110,12 @@ other action. This keeps the hidden-information guarantee intact by construction
 partner could answer an offer. The Bohnanza bot is deliberately simple: it is there to let one person try the game
 and to exercise the server, not to play well.
 
-### D19. Quitting hands the seat to a bot
+### D19. Quitting ends the game for everyone
 
-A player may quit a game in progress from Settings. Their seat is not removed: seat numbers are part of the game
-state, and a game cannot lose a player midway. Instead a bot takes the seat as it stands (hand, fields, coins), named
-after the player with "(bot)", so everyone else can finish. The quitter's token loses its seat, so a refresh or a
-second tab cannot reclaim it, and the host role passes to the next person still seated. Undo is cleared. Only games
-with a bot can be quit this way; others refuse, as before. When the last person quits, the game simply stops: bots
-never play on alone, so an abandoned room makes no writes until it expires (D17). Leaving a finished game is still
-refused; the results screen has its own way back to the hub.
+A player may quit a game in progress from Settings, after a confirmation. The game ends for the whole table: everyone
+else is told who quit and sent back to the hub, every socket closes, and the Durable Object deletes the room at once
+instead of waiting out its retention window (D17). Nothing is left running or stored, which suits the free tier.
+Bohnanza cannot lose a player midway, and an earlier version that handed the seat to a bot kept a room alive (and
+writing) for a game nobody was guaranteed to finish. Quitting does not depend on the table, so it is never rejected
+as stale. A lobby leave still only frees the seat, and leaving a finished game is still refused; the results screen
+has its own way back to the hub.

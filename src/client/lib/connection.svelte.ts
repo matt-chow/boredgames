@@ -30,6 +30,8 @@ export class RoomConnection {
   status = $state<ConnStatus>('connecting');
   /** Why the connection ended for good (removed, left, not a member, expired). */
   ended = $state<string | null>(null);
+  /** Who quit, when the game ended because someone did. */
+  endedBy = $state('');
   /** An action is awaiting its acknowledgement. */
   busy = $state(false);
 
@@ -128,6 +130,7 @@ export class RoomConnection {
       }
       case 'bye':
         this.ended = msg.reason;
+        this.endedBy = msg.by ?? '';
         break;
     }
   }

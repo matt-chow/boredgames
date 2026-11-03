@@ -52,7 +52,7 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 | `play.spec.ts` | a turn with planting, trading (offer, counter, accept), and resolving on desktop and phone | Drag and click planting, turning over, an offer, a counteroffer, a donation, accepting with a card choice, planting pending cards; one player on a phone viewport |
 | | the server rejects out-of-turn, stale, duplicate and malformed actions | Raw WebSocket messages; the error codes and that state is unchanged |
 | | dragging a bean onto a field it does not fit is explained and changes nothing | Illegal-move feedback in the UI |
-| | quitting mid-game hands the seat to a bot; the others are told and play on | Settings → Quit game, "Keep playing" cancels, quitting returns to the hub, the others see a toast and "(bot)", the old link no longer seats the quitter, and the bot takes its turn |
+| | quitting mid-game ends the game for everyone and closes the table | Settings → Quit game, "Keep playing" cancels, quitting returns to the hub, the others see who quit, and the room is deleted (the link finds no table) |
 | `resilience.spec.ts` | a refresh restores the same seat and hand; dropping offline shows a reconnect state | Reload and `setOffline` |
 | | conflicting actions: accept and withdraw race, exactly one wins | Simultaneous raw sends; all views agree |
 | | two tabs of the same player cannot double-spend | One commit, the other `stale` |
@@ -63,7 +63,8 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
 **Latest results.**
 
-- **Local, with Quit game** (2026-11-02): all 16 tests passed in 3.4 min. **Live** after redeploying: 15 passed and
+- **Local, Quit game ends the game** (2026-11-02): all 16 tests passed in 5.9 min.
+- **Local, with Quit game (bot takeover, since replaced)** (2026-11-02): all 16 tests passed in 3.4 min. **Live** after redeploying: 15 passed and
   1 skipped by design (the drag test's random deal); that test was then rerun three times against the live site and passed.
 - **Local, after the animation and trading polish** (2026-11-02): all 15 tests passed in 4.2 min; after redeploying,
   all 15 passed against the live site in 3.5 min. The new pan test

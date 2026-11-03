@@ -8,7 +8,7 @@
 
   let { conn, room, open = $bindable(false) }: { conn: RoomConnection; room: RoomView; open: boolean } = $props();
 
-  // The server keeps the seat and hands it to a bot; with nobody else seated in person, the game simply stops.
+  // Quitting ends the game for the whole table, and the server deletes it.
   const othersHere = $derived(room.seats.some((s) => s.seat !== room.you && !s.bot));
   let busy = $state(false);
 
@@ -26,11 +26,11 @@
 <Dialog bind:open title="Quit this game?">
   <p>
     {#if othersHere}
-      A bot takes over your seat, with your hand and fields, so everyone else can finish the game.
+      This ends the game for everyone at the table.
     {:else}
-      Nobody else is playing in person, so the game stops here.
+      This ends the game.
     {/if}
-    You can’t come back to this game.
+    The table closes and can’t be resumed.
   </p>
   <div class="actions">
     <button class="btn" disabled={busy} onclick={quit}>Quit game</button>
