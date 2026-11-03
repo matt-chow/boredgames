@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { MemoryStore, RoomCore, RoomError, RETENTION_MS } from '../../src/server/core';
 import { normalizeCode, normalizeName } from '../../src/shared/protocol';
 import type { BView } from '../../src/games/bohnanza/rules/view';
+import { botMove } from '../../src/games/bohnanza/rules/bot';
 
 let clock = 1_000_000;
 const opts = { now: () => clock, seed: () => 'fixed-seed' };
@@ -23,7 +24,7 @@ describe('H1 lobby', () => {
     const { core } = room('bohnanza', ['Ann']);
     const v = core.view(0, all(1));
     expect(v.status).toBe('lobby');
-    expect(v.seats).toEqual([{ seat: 0, name: 'Ann', connected: true, host: true }]);
+    expect(v.seats).toEqual([{ seat: 0, name: 'Ann', connected: true, host: true, bot: false }]);
     expect(v.canStart).toBe(false);
     expect(v.configError).toMatch(/at least 3/);
   });
@@ -229,6 +230,81 @@ describe('H5 second game module (architecture check)', () => {
     expect(core.view(0, all(2)).results!.find((r) => r.winner)).toBeTruthy();
     expect(send(core, 1, { t: 'rematch' }).ack!.ok).toBe(true);
     expect(core.status).toBe('lobby');
+  });
+});
+
+describe('H7 computer players', () => {
+  const solo = (bots: number) => {
+    const store = new MemoryStore();
+    const core = RoomCore.create(store, opts, { code: 'ABCDEF', gameId: 'bohnanza', name: 'Ann', th: 'th0', bots });
+    return { store, core };
+  };
+  const me = new Set([0]);
+
+  it('H7.1 bots can be seated at creation and from the lobby, and removed', () => {
+    const { core } = solo(2);
+    let v = core.view(0, me);
+    expect(v.seats.map((s) => [s.name, s.bot, s.connected])).toEqual([
+      ['Ann', false, true],
+      ['Bot Ada', true, true],
+      ['Bot Bix', true, true],
+    ]);
+    expect(v.canStart).toBe(true);
+    expect(v.canAddBot).toBe(true);
+    expect(send(core, 0, { t: 'addBot' }, me).ack!.ok).toBe(true);
+    expect(send(core, 0, { t: 'addBot' }, me).ack!.ok).toBe(true);
+    v = core.view(0, me);
+    expect(v.seats).toHaveLength(5);
+    expect(v.canAddBot).toBe(false);
+    expect(send(core, 0, { t: 'addBot' }, me).ack).toMatchObject({ ok: false, code: 'full' });
+    expect(send(core, 0, { t: 'kick', seat: 2 }, me).ack!.ok).toBe(true);
+    expect(core.view(0, me).seats.map((s) => s.name)).toEqual(['Ann', 'Bot Ada', 'Bot Cog', 'Bot Dot']);
+  });
+
+  it('H7.2 only a manager may add bots, only in the lobby, and creation caps them', () => {
+    const { core } = room();
+    expect(send(core, 1, { t: 'addBot' }).ack).toMatchObject({ ok: false, code: 'not-host' });
+    expect(solo(9).core.seatCount).toBe(5);
+    const { core: c2 } = solo(2);
+    send(c2, 0, { t: 'start' }, me);
+    expect(send(c2, 0, { t: 'addBot' }, me).ack).toMatchObject({ ok: false, code: 'started' });
+    expect(() => RoomCore.create(new MemoryStore(), opts, { code: 'ABCDEF', gameId: 'tally', name: 'A', th: 'th0', bots: 1 })).toThrow(/no computer players/);
+  });
+
+  it('H7.3 a bot seat cannot be claimed by a session and never becomes host', () => {
+    const { core } = solo(2);
+    expect(core.seatOf('bot:0')).toBe(1); // internal id, never derivable from a cookie (hashes are hex)
+    expect(core.join('Bo', 'th1')).toBe(3);
+    expect(send(core, 0, { t: 'leave' }, me).ack!.ok).toBe(true);
+    expect(core.view(2, new Set([2])).seats.find((s) => s.host)?.name).toBe('Bo');
+  });
+
+  it('H7.4 one person and two bots play a whole game; bots act only when they are actors', () => {
+    const { core, store } = solo(2);
+    send(core, 0, { t: 'start' }, me);
+    let guard = 0;
+    while (core.status === 'playing') {
+      if (++guard > 4000) throw new Error('no termination');
+      const bot = core.nextBot();
+      if (bot) {
+        expect(core.isBotSeat(bot.seat)).toBe(true);
+        expect(core.view(0, me).actors).toContain(bot.seat);
+        expect(core.playBot()).toBe(true);
+        continue;
+      }
+      // The person plays with the same simple policy, through the normal message path.
+      const v = core.view(0, me);
+      expect(v.actors).toContain(0);
+      const move = botMove(v.game as BView)!;
+      const ok = move.actions.some((a) => send(core, 0, { t: 'act', a }, me).ack!.ok);
+      expect(ok).toBe(true);
+    }
+    expect(core.status).toBe('over');
+    expect(core.view(0, me).results).toHaveLength(3);
+    expect(core.nextBot()).toBeNull();
+    // Bot moves are committed like any other: in history, never undoable.
+    expect(store.history.some((h) => h.seat === 1 && h.kind === 'act')).toBe(true);
+    expect(store.undo === null || !core.isBotSeat(store.undo.seat)).toBe(true);
   });
 });
 

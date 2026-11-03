@@ -21,6 +21,10 @@ export const RETENTION_MS: Record<RoomStatus, number> = {
   over: 7 * 24 * 3600_000,
 };
 const KEEP_ACTION_IDS = 256;
+/** Bot seats carry this prefix instead of a token hash. Real hashes are hex, so they can never collide. */
+const BOT_PREFIX = 'bot:';
+const BOT_NAMES = ['Bot Ada', 'Bot Bix', 'Bot Cog', 'Bot Dot', 'Bot Elo', 'Bot Fig'];
+export const isBot = (th: string) => th.startsWith(BOT_PREFIX);
 const MAX_ACTION_ID = 64;
 
 export interface RoomMeta {
@@ -39,7 +43,7 @@ export interface RoomMeta {
 }
 
 export interface SeatRow {
-  /** SHA-256 of the session token (hex). The token itself is never stored. */
+  /** SHA-256 of the session token (hex), or a bot id. The token itself is never stored. */
   th: string;
   name: string;
   joinedAt: number;
@@ -134,7 +138,7 @@ export class RoomCore {
   static create(
     store: RoomStore,
     opts: CoreOptions,
-    init: { code: string; gameId: string; name: string; th: string },
+    init: { code: string; gameId: string; name: string; th: string; bots?: number },
   ): RoomCore {
     if (store.getMeta()) throw new RoomError('exists', 'Room code already in use.', 409);
     const game = GAMES[init.gameId];
@@ -159,7 +163,10 @@ export class RoomCore {
       store.putSeats([{ th: init.th, name, joinedAt: now }]);
       store.appendHistory({ version: 1, seat: 0, kind: 'create', data: '{}', at: now });
     });
-    return new RoomCore(store, opts);
+    const core = new RoomCore(store, opts);
+    const bots = Math.min(Number.isInteger(init.bots) ? init.bots! : 0, game.meta.maxPlayers - 1);
+    for (let i = 0; i < bots; i++) core.seatBot(0);
+    return core;
   }
 
   get game(): AnyGameModule {
@@ -174,6 +181,9 @@ export class RoomCore {
   get code() {
     return this.meta.code;
   }
+  get updatedAt() {
+    return this.meta.updatedAt;
+  }
   get seatCount() {
     return this.seats.length;
   }
@@ -186,6 +196,11 @@ export class RoomCore {
   seatOf(th: string | null): number {
     if (!th) return -1;
     return this.seats.findIndex((s) => s.th === th);
+  }
+
+  isBotSeat(seat: number) {
+    const s = this.seats[seat];
+    return !!s && isBot(s.th);
   }
 
   get hostSeat() {
@@ -252,7 +267,13 @@ export class RoomCore {
       status: this.meta.status,
       version: this.meta.version,
       you: seat,
-      seats: this.seats.map((s, i) => ({ seat: i, name: s.name, connected: connected.has(i), host: i === this.hostSeat })),
+      seats: this.seats.map((s, i) => ({
+        seat: i,
+        name: s.name,
+        connected: isBot(s.th) || connected.has(i),
+        host: i === this.hostSeat,
+        bot: isBot(s.th),
+      })),
       minPlayers: g.meta.minPlayers,
       maxPlayers: g.meta.maxPlayers,
       config: { ...this.meta.config },
@@ -260,6 +281,7 @@ export class RoomCore {
       configError,
       canStart: this.meta.status === 'lobby' && !configError && this.mayManage(seat, connected),
       canConfigure: this.meta.status === 'lobby' && this.mayManage(seat, connected),
+      canAddBot: this.meta.status === 'lobby' && !!g.bot && n < g.meta.maxPlayers && this.mayManage(seat, connected),
       canUndo:
         this.meta.status === 'playing' && !!undo && undo.seat === seat && undo.version === this.meta.version,
       actors: state ? g.actors(state) : [],
@@ -318,18 +340,13 @@ export class RoomCore {
 
   private dispatch(seat: number, msg: ClientMsg, connected: Set<number>): string[] {
     switch (msg.t) {
-      case 'act': {
-        if (this.meta.status !== 'playing') throw new RoomError('not-playing', 'The game is not in progress.');
-        const r = this.game.apply(this.getState(), seat, msg.a);
-        if (!r.ok) throw new RoomError(r.code, r.error);
-        const prev = this.state;
-        this.state = r.state;
-        const over = this.game.isOver(r.state);
-        if (over) this.meta.status = 'over';
-        this.commit('act', seat, msg.a, {
-          state: true,
-          undo: r.undoable && !over ? { seat, version: this.meta.version + 1, state: prev } : null,
-        });
+      case 'act':
+        this.act(seat, msg.a);
+        return [];
+      case 'addBot': {
+        if (this.meta.status !== 'lobby') throw new RoomError('started', 'Bots can only join before the game starts.');
+        this.requireManage(seat, connected);
+        this.seatBot(seat);
         return [];
       }
       case 'undo': {
@@ -389,13 +406,68 @@ export class RoomCore {
         if (this.meta.status !== 'lobby')
           throw new RoomError('started', 'You can’t leave a game in progress — your seat stays reserved for you.');
         const [gone] = this.seats.splice(seat, 1);
-        if (gone.th === this.meta.hostTh && this.seats.length) this.meta.hostTh = this.seats[0].th;
+        if (gone.th === this.meta.hostTh) this.meta.hostTh = this.seats.find((s) => !isBot(s.th))?.th ?? '';
         this.commit('leave', seat, {}, { seats: true });
         return [gone.th];
       }
       default:
         throw new RoomError('bad-request', 'Unknown message.');
     }
+  }
+
+  private act(seat: number, a: unknown) {
+    if (this.meta.status !== 'playing') throw new RoomError('not-playing', 'The game is not in progress.');
+    const r = this.game.apply(this.getState(), seat, a);
+    if (!r.ok) throw new RoomError(r.code, r.error);
+    const prev = this.state;
+    this.state = r.state;
+    const over = this.game.isOver(r.state);
+    if (over) this.meta.status = 'over';
+    const undoable = r.undoable && !over && !this.isBotSeat(seat);
+    this.commit('act', seat, a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev } : null });
+  }
+
+  private seatBot(by: number) {
+    if (!this.game.bot) throw new RoomError('no-bots', 'This game has no computer players.');
+    if (this.seats.length >= this.game.meta.maxPlayers) throw new RoomError('full', 'This room is full.', 409);
+    const taken = new Set(this.seats.map((s) => s.name));
+    const name = BOT_NAMES.find((x) => !taken.has(x)) ?? 'Bot ' + (this.seats.length + 1);
+    let id = 0;
+    while (this.seats.some((s) => s.th === BOT_PREFIX + id)) id++;
+    this.seats.push({ th: BOT_PREFIX + id, name, joinedAt: this.opts.now() });
+    this.commit('addBot', by, {}, { seats: true });
+  }
+
+  /**
+   * The soonest computer-player move, if a bot seat has something to do. Each
+   * bot decides from its own projection only. Null when no bot needs to act.
+   */
+  nextBot(): { seat: number; actions: unknown[]; delayMs: number } | null {
+    const bot = this.game.bot;
+    if (this.meta.status !== 'playing' || !bot) return null;
+    const state = this.getState();
+    let next: { seat: number; actions: unknown[]; delayMs: number } | null = null;
+    for (const seat of this.game.actors(state)) {
+      if (!this.isBotSeat(seat)) continue;
+      const move = bot(this.game.project(state, seat));
+      if (move?.actions.length && (!next || move.delayMs < next.delayMs)) next = { seat, ...move };
+    }
+    return next;
+  }
+
+  /** Apply the first legal candidate of the next bot move. False if none was legal. */
+  playBot(): boolean {
+    const move = this.nextBot();
+    if (!move) return false;
+    for (const a of move.actions) {
+      try {
+        this.act(move.seat, a);
+        return true;
+      } catch (e) {
+        if (!(e instanceof RoomError)) throw e;
+      }
+    }
+    return false;
   }
 
   private requireManage(seat: number, connected: Set<number>) {

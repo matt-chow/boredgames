@@ -43,6 +43,12 @@ export interface PlayerResult {
   detail?: string;
 }
 
+/** What a computer player wants to do: candidate actions, best first, and how long to wait before acting. */
+export interface BotMove<Action> {
+  actions: Action[];
+  delayMs: number;
+}
+
 export interface GameModule<Config = unknown, State = unknown, Action = unknown, View = unknown> {
   meta: GameMeta;
   options: OptionDescriptor[];
@@ -62,6 +68,12 @@ export interface GameModule<Config = unknown, State = unknown, Action = unknown,
   project(state: State, viewer: number | null): View;
   isOver(state: State): boolean;
   results(state: State): PlayerResult[] | null;
+  /**
+   * Optional simple computer player for a seat. It receives only that seat's
+   * projection, so a bot never sees more than a person would. Returns null
+   * when the seat has nothing to do.
+   */
+  bot?(view: View): BotMove<Action> | null;
   /** Upgrade persisted state from an older `stateVersion`. */
   migrate?(state: unknown, fromVersion: number): State;
 }

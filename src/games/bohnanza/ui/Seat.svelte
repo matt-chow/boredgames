@@ -10,6 +10,7 @@
     seat,
     name,
     connected,
+    bot = false,
     active,
     coinHolder = false,
     acting = false,
@@ -20,6 +21,8 @@
     seat: number;
     name: string;
     connected: boolean;
+    /** A computer player run by the server. */
+    bot?: boolean;
     active: boolean;
     coinHolder?: boolean;
     /** The server is waiting on this player. */
@@ -33,7 +36,11 @@
 
 <section class="seat" class:active aria-label="{name}{active ? ', active player' : ''}">
   <header>
-    <span class="dot" class:on={connected} title={connected ? 'Online' : 'Offline'}></span>
+    {#if bot}
+      <span class="bot" title="Computer player"><Icon name="bot" size={14} /></span>
+    {:else}
+      <span class="dot" class:on={connected} title={connected ? 'Online' : 'Offline'}></span>
+    {/if}
     <span class="name">{name}</span>
     {#if coinHolder}<span class="beancoin" title="Holds the Bean Coin">Bean Coin</span>{/if}
     {#if acting && !active}<span class="acting">deciding…</span>{/if}
@@ -95,6 +102,10 @@
   }
   .active header {
     color: var(--ink);
+  }
+  .bot {
+    display: inline-flex;
+    color: var(--ink-3);
   }
   .name {
     font-weight: 700;

@@ -80,7 +80,11 @@
       <ol>
         {#each room.seats as s (s.seat)}
           <li class:you={s.seat === room.you}>
-            <span class="dot" class:on={s.connected} title={s.connected ? 'Online' : 'Offline'}></span>
+            {#if s.bot}
+              <span class="boticon" title="Computer player"><Icon name="bot" size={14} /></span>
+            {:else}
+              <span class="dot" class:on={s.connected} title={s.connected ? 'Online' : 'Offline'}></span>
+            {/if}
             <span class="sname">{s.name}{s.seat === room.you ? ' (you)' : ''}</span>
             {#if s.host}<span class="host"><Icon name="crown" size={14} /> Host</span>{/if}
             {#if room.canConfigure && s.seat !== room.you}
@@ -92,6 +96,11 @@
           <li class="empty"><span class="dot"></span><span class="sname">Waiting for a player…</span></li>
         {/each}
       </ol>
+      {#if room.canAddBot}
+        <button class="btn small addbot" disabled={conn.busy} onclick={() => send({ t: 'addBot' })}>
+          <Icon name="bot" size={16} /> Add a bot
+        </button>
+      {/if}
       <button class="btn ghost small leave" onclick={leave}><Icon name="leave" size={16} /> Leave table</button>
     </section>
 
@@ -247,6 +256,15 @@
   }
   .leave {
     margin-top: 16px;
+  }
+  .addbot {
+    margin-top: 12px;
+  }
+  .boticon {
+    display: inline-flex;
+    width: 8px;
+    justify-content: center;
+    color: var(--ink-3);
   }
   .opts li {
     border-bottom: 1px solid var(--rim);

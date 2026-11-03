@@ -67,6 +67,9 @@ function sameOrigin(req: Request): boolean {
   return origin === new URL(req.url).origin;
 }
 
+/** Computer players requested at creation; the room clamps this to the game's seat limit. */
+const bots = (n: unknown) => (Number.isInteger(n) ? Math.max(0, Math.min(Number(n), 8)) : 0);
+
 async function readBody(req: Request): Promise<Record<string, unknown> | null> {
   const text = await req.text();
   if (text.length > MAX_BODY) return null;
@@ -110,7 +113,7 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
       const code = randomCode();
       const res = await roomStub(env, code).fetch('https://room/create', {
         method: 'POST',
-        body: JSON.stringify({ code, gameId, name: body.name, th }),
+        body: JSON.stringify({ code, gameId, name: body.name, th, bots: bots(body.bots) }),
       });
       if (res.status === 409) continue;
       const out = await res.text();

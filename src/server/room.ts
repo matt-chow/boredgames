@@ -120,6 +120,8 @@ export class RoomDO extends DurableObject<Env> {
   private store: SqlStore;
   private core: RoomCore | null = null;
   private buckets = new WeakMap<WebSocket, { tokens: number; at: number }>();
+  /** Room version at which a bot found no legal move; bots wait for the next change. In-memory only. */
+  private botStuckAt = -1;
 
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
@@ -141,17 +143,17 @@ export class RoomDO extends DurableObject<Env> {
     try {
       switch (url.pathname) {
         case '/create': {
-          const body = (await req.json()) as { code: string; gameId: string; name: string; th: string };
+          const body = (await req.json()) as { code: string; gameId: string; name: string; th: string; bots?: number };
           if (this.store.initialized() && this.store.getMeta()) throw new RoomError('exists', 'Room code in use.', 409);
           this.store.init();
           this.core = RoomCore.create(this.store, this.opts, body);
-          await this.scheduleCleanup();
+          await this.schedule();
           return json({ code: body.code, seat: 0 });
         }
         case '/join': {
           const body = (await req.json()) as { name: string; th: string };
           const seat = this.room().join(body.name, body.th);
-          await this.scheduleCleanup();
+          await this.schedule();
           this.broadcast();
           return json({ code: this.room().code, seat });
         }
@@ -207,7 +209,7 @@ export class RoomDO extends DurableObject<Env> {
       }
     }
     if (res.changed) {
-      await this.scheduleCleanup();
+      await this.schedule();
       this.broadcast();
     }
   }
@@ -220,20 +222,43 @@ export class RoomDO extends DurableObject<Env> {
     this.broadcast(ws);
   }
 
-  /** Delete rooms that have been idle past their retention window. */
+  /**
+   * One alarm serves two jobs: playing the next computer-player move once its
+   * delay since the last change has passed, and deleting rooms that have been
+   * idle past their retention window.
+   */
   async alarm() {
     if (!this.store.initialized() || !this.store.getMeta()) return;
     const room = this.room();
-    if (Date.now() >= room.expiresAt) {
+    const now = Date.now();
+    if (now >= room.expiresAt) {
       for (const s of this.ctx.getWebSockets()) s.close(4004, 'Room expired');
       this.core = null;
       await this.ctx.storage.deleteAlarm();
       await this.ctx.storage.deleteAll();
-    } else await this.ctx.storage.setAlarm(room.expiresAt);
+      return;
+    }
+    const bot = this.botDue();
+    if (bot && now >= room.updatedAt + bot.delayMs) {
+      if (room.playBot()) this.broadcast();
+      else {
+        this.botStuckAt = room.version;
+        console.error('bot found no legal move', room.code, room.version);
+      }
+    }
+    await this.schedule();
   }
 
-  private async scheduleCleanup() {
-    await this.ctx.storage.setAlarm(this.room().expiresAt);
+  private botDue() {
+    const room = this.room();
+    return room.version === this.botStuckAt ? null : room.nextBot();
+  }
+
+  /** Wake for the next bot move if one is due, otherwise at the retention deadline. */
+  private async schedule() {
+    const room = this.room();
+    const bot = this.botDue();
+    await this.ctx.storage.setAlarm(bot ? Math.max(Date.now(), room.updatedAt + bot.delayMs) : room.expiresAt);
   }
 
   private allow(ws: WebSocket): boolean {

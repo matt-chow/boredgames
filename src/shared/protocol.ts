@@ -43,6 +43,8 @@ export interface SeatInfo {
   name: string;
   connected: boolean;
   host: boolean;
+  /** A computer player run by the server. */
+  bot: boolean;
 }
 
 /** Everything a member needs to render the room. `game` is the module's projection for that member. */
@@ -63,6 +65,8 @@ export interface RoomView {
   configError: string | null;
   canStart: boolean;
   canConfigure: boolean;
+  /** The caller may seat a computer player now. */
+  canAddBot: boolean;
   canUndo: boolean;
   actors: number[];
   game: unknown;
@@ -75,6 +79,7 @@ export type ClientMsg =
   | { t: 'config'; id: string; v: number; config: Record<string, unknown> }
   | { t: 'start'; id: string; v: number }
   | { t: 'kick'; id: string; v: number; seat: number }
+  | { t: 'addBot'; id: string; v: number }
   | { t: 'leave'; id: string; v: number }
   | { t: 'rematch'; id: string; v: number }
   | { t: 'ping' };

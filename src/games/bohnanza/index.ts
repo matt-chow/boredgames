@@ -1,4 +1,5 @@
 import type { GameModule } from '../../engine/types';
+import { botMove } from './rules/bot';
 import { BEANS } from './rules/cards';
 import { DEFAULT_CONFIG, OPTIONS, normalizeConfig, validateConfig, type BohnanzaConfig } from './rules/config';
 import { actors, apply, setup } from './rules/engine';
@@ -16,6 +17,7 @@ export const bohnanza: GameModule<BohnanzaConfig, BState, BAction, BView> = {
   project,
   isOver: (s) => s.phase === 'over',
   results: (s) => s.result,
+  bot: botMove,
   migrate(state, from) {
     if (from === STATE_VERSION) return state as BState;
     throw new Error(`No migration from Bohnanza state v${from}`);

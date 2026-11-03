@@ -30,8 +30,8 @@ async function call<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  create: (name: string, gameId = 'bohnanza') =>
-    call<CreateRoomResponse>('/api/rooms', { method: 'POST', body: JSON.stringify({ name, gameId }) }),
+  create: (name: string, gameId = 'bohnanza', bots = 0) =>
+    call<CreateRoomResponse>('/api/rooms', { method: 'POST', body: JSON.stringify({ name, gameId, bots }) }),
   summary: (code: string) => call<RoomSummary>(`/api/rooms/${code}`),
   join: (code: string, name: string) =>
     call<CreateRoomResponse>(`/api/rooms/${code}/join`, { method: 'POST', body: JSON.stringify({ name }) }),
