@@ -109,3 +109,13 @@ other action. This keeps the hidden-information guarantee intact by construction
 (during trading), the one with the soonest move goes first. Otherwise the active bot would end trading before its
 partner could answer an offer. The Bohnanza bot is deliberately simple: it is there to let one person try the game
 and to exercise the server, not to play well.
+
+### D19. Quitting hands the seat to a bot
+
+A player may quit a game in progress from Settings. Their seat is not removed: seat numbers are part of the game
+state, and a game cannot lose a player midway. Instead a bot takes the seat as it stands (hand, fields, coins), named
+after the player with "(bot)", so everyone else can finish. The quitter's token loses its seat, so a refresh or a
+second tab cannot reclaim it, and the host role passes to the next person still seated. Undo is cleared. Only games
+with a bot can be quit this way; others refuse, as before. When the last person quits, the game simply stops: bots
+never play on alone, so an abandoned room makes no writes until it expires (D17). Leaving a finished game is still
+refused; the results screen has its own way back to the hub.

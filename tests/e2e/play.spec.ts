@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { PHONE, activePlayer, newPlayer, rawSend, roomViews, startTable } from './helpers';
+import { PHONE, activePlayer, botStep, newPlayer, rawSend, roomViews, startTable } from './helpers';
 
 test('a turn with planting, trading (offer, counter, accept), and resolving on desktop and phone', async ({ browser }) => {
   const players = [await newPlayer(browser, 'Ana'), await newPlayer(browser, 'Bo', PHONE), await newPlayer(browser, 'Cy')];
@@ -137,4 +137,44 @@ test('dragging a bean onto a field it does not fit is explained and changes noth
   await N.mouse.move(eb.x + eb.width / 2, eb.y + eb.height / 2, { steps: 8 });
   await N.mouse.up();
   await expect(N.locator('.mine .crate').nth(1).locator('[data-card]')).toHaveCount(1);
+});
+
+test('quitting mid-game hands the seat to a bot; the others are told and play on', async ({ browser }) => {
+  const players = [await newPlayer(browser, 'Ana'), await newPlayer(browser, 'Bo', PHONE), await newPlayer(browser, 'Cy')];
+  const code = await startTable(players);
+  const [ana, bo] = players;
+
+  // Changing your mind keeps you at the table.
+  await bo.page.getByRole('button', { name: 'Settings' }).click();
+  await bo.page.getByRole('button', { name: /Quit game/ }).click();
+  const dialog = bo.page.getByRole('dialog', { name: 'Quit this game?' });
+  await expect(dialog).toContainText('A bot takes over your seat');
+  await dialog.getByRole('button', { name: 'Keep playing' }).click();
+  await expect(dialog).toBeHidden();
+  await expect(bo.page.locator('.table')).toBeVisible();
+
+  await bo.page.getByRole('button', { name: 'Settings' }).click();
+  await bo.page.getByRole('button', { name: /Quit game/ }).click();
+  await dialog.getByRole('button', { name: 'Quit game' }).click();
+  await bo.page.waitForURL((u) => u.pathname === '/');
+
+  await expect(ana.page.getByText('Bo left the game. A bot plays their seat now.')).toBeVisible();
+  await expect(ana.page.locator('.table').getByText('Bo (bot)').first()).toBeVisible();
+
+  // The seat is gone for good: the link no longer opens the game.
+  await bo.page.goto(`/r/${code}`);
+  await expect(bo.page.getByText('This game has already started.')).toBeVisible();
+
+  // The game goes on: the bot takes Bo's turns, so the turn comes round past seat 1.
+  const turns = new Set<string>();
+  const deadline = Date.now() + 90_000;
+  while (turns.size < 3 && Date.now() < deadline) {
+    for (const p of [ana, players[2]]) {
+      if (await p.page.locator('.turn.you').count()) await botStep(p);
+    }
+    turns.add((await ana.page.locator('.table .turn').innerText()).trim());
+    await ana.page.waitForTimeout(150);
+  }
+  expect([...turns]).toContain('Bo (bot)’s turn');
+  for (const p of players) expect(p.errors).toEqual([]);
 });

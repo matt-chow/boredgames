@@ -70,7 +70,8 @@ that the room core is game-agnostic; it is not listed in the hub.
 **Client → server:**
 
 - Game actions: `{ t: 'act', id, v, a }`.
-- Room commands, each with its own `id` and `v`: `undo`, `config`, `start`, `kick`, `leave`, `rematch`.
+- Room commands, each with its own `id` and `v`: `undo`, `config`, `start`, `kick`, `leave`, `rematch`. In the lobby
+  `leave` frees the seat; during a game it hands the seat to a bot (games with a `bot` hook only, D19).
 - Keep-alive: `{ t: 'ping' }`.
 
 **Server → client:**
