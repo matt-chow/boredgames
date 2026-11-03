@@ -19,6 +19,11 @@ export default defineConfig({
     reducedMotion: 'reduce',
     trace: 'retain-on-failure',
   },
+  projects: [
+    { name: 'functional', testIgnore: /perf.spec/ },
+    // Measurements are only meaningful on a quiet machine, so they wait for everything else to finish.
+    { name: 'perf', testMatch: /perf.spec/, dependencies: ['functional'] },
+  ],
   webServer: external
     ? undefined
     : {

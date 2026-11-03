@@ -58,7 +58,7 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
 **Latest results.**
 
-- **Local** (dev server, Edge): <!--LOCAL-->
+- **Local** (dev server, Edge): all 13 tests passed in 3 min 26 s (2026-11-02): complete games 99 s, 104 s, 99 s and 71 s; reconnect 217 ms; ack p50 10 ms / p95 31 ms; idle CPU 0.11 %. The `perf` project runs after the `functional` one so its measurements are taken on a quiet machine; run it alone with `npx playwright test --project=perf --no-deps`.
 - **Live deployment** (https://boredgames.mchowcl.workers.dev, Edge, from a home connection, 2026-11-02): all
   13 tests passed, including the four complete games (61 s, 74 s, 85 s and 91 s). The live run found one bug that
   local runs had not: fast variant toggles over real latency sent a stale change. It was fixed (DECISIONS.md D15),

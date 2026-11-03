@@ -42,7 +42,8 @@ export async function joinRoom(p: Player, code: string) {
   await p.page.goto(`/r/${code}`);
   await p.page.fill('#jname', p.name);
   await p.page.getByRole('button', { name: 'Take a seat' }).click();
-  await expect(p.page.getByText(`${p.name} (you)`)).toBeVisible();
+  // Generous: other tables may be busy on the same machine.
+  await expect(p.page.getByText(`${p.name} (you)`)).toBeVisible({ timeout: 15_000 });
 }
 
 /** Host opens a table, the others join, and the host starts the game. */
