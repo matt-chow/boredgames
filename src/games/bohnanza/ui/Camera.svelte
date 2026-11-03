@@ -69,6 +69,9 @@
     if (!enabled || e.button > 0) return;
     const t = e.target as HTMLElement;
     if (t.closest('button, a, input, [data-card], [data-drop] .hit')) return;
+    // A pan is not a text selection: stop one from starting, and drop any left over so it cannot be dragged instead.
+    e.preventDefault();
+    window.getSelection()?.removeAllRanges();
     pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
     vp.setPointerCapture(e.pointerId);
     gesturing = true;
@@ -149,6 +152,8 @@
     perspective-origin: 50% 30%;
     touch-action: none;
     cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
   }
   .viewport.gesturing {
     cursor: grabbing;
