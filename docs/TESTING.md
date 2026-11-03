@@ -65,6 +65,7 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 **Latest results.**
 
 - **Local, quit hands over to a bot or ends the game** (2026-11-02): all 17 tests passed in 5.3 min.
+  **Live** after redeploying: all 17 passed in 3.7 min.
 - **Local, Quit game ends the game** (2026-11-02): all 16 tests passed in 5.9 min. **Live** after redeploying: all 16
   passed in 3.3 min.
 - **Local, with Quit game (bot takeover, since replaced)** (2026-11-02): all 16 tests passed in 3.4 min. **Live** after redeploying: 15 passed and
