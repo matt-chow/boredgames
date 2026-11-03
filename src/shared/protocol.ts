@@ -88,7 +88,7 @@ export type ServerMsg =
   | { t: 'room'; room: RoomView }
   | { t: 'ack'; id: string; ok: true; v: number }
   | { t: 'ack'; id: string; ok: false; code: string; error: string; v: number }
-  /** The connection is over: 'left', 'removed', or 'ended' when `by` quit a game in progress. */
+  /** The connection is over: 'left', 'removed', or 'ended' when `by` quit and the room was deleted. */
   | { t: 'bye'; reason: string; by?: string }
   | { t: 'pong' };
 

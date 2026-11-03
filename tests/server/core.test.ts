@@ -315,49 +315,91 @@ describe('H8 quitting a game in progress', () => {
     return r;
   };
 
-  it('H8.1 a leave during play ends the game for everyone and names who quit; nothing else changes', () => {
+  it('H8.1 with other people seated, a bot takes over the seat; the game state is untouched and the person is evicted for good', () => {
     const { core, store } = started();
     const before = JSON.stringify(store.state);
     const r = send(core, 1, { t: 'leave' });
-    expect(r.ack).toMatchObject({ ok: true });
-    expect(r.end).toBe('Bo');
-    expect(r.evict).toEqual([]);
-    expect(r.changed).toBe(false);
-    // The room is deleted by the Durable Object; the core itself leaves state and seats alone.
-    expect(JSON.stringify(store.state)).toBe(before);
+    expect(r.ack!.ok).toBe(true);
+    expect(r.end).toBeUndefined();
+    expect(r.evict).toEqual(['th1']);
+    expect(core.status).toBe('playing');
     expect(core.seatCount).toBe(3);
+    expect(core.seatOf('th1')).toBe(-1);
+    expect(core.isBotSeat(1)).toBe(true);
+    expect(core.view(0, all(3)).seats[1]).toMatchObject({ name: 'Bo (bot)', bot: true, connected: true });
+    expect(JSON.stringify(store.state)).toBe(before);
+    expect(store.history.at(-1)).toMatchObject({ kind: 'quit', seat: 1, data: '{}' });
+    expect(() => core.join('Bo', 'th1')).toThrow(/already started/);
   });
 
-  it('H8.2 quitting is never stale: it works whatever version the client last saw', () => {
-    const { core } = started();
-    const r = core.handle(2, { t: 'leave', id: 'q1', v: 999 }, all(3));
+  it('H8.2 a hand-over passes host to a person and clears undo; the last person to quit ends the game instead', () => {
+    // An undoable plant by whoever starts, then they quit: their undo must not survive.
+    const first = started();
+    const a = first.core.view(0, all(3)).actors[0];
+    expect(send(first.core, a, { t: 'act', a: { type: 'plant', field: 0 } }).ack!.ok).toBe(true);
+    expect(first.store.undo?.seat).toBe(a);
+    send(first.core, a, { t: 'leave' });
+    expect(first.store.undo).toBeNull();
+
+    const { core } = started('bohnanza', ['Ann', 'Bo', 'Abcdefghijklmnopqrst']);
+    send(core, 0, { t: 'leave' });
+    expect(core.view(1, all(3)).seats.find((s) => s.host)?.name).toBe('Bo');
+    send(core, 1, { t: 'leave' });
+    expect(core.view(2, all(3)).seats.find((s) => s.host)?.name).toBe('Abcdefghijklmnopqrst');
+    expect(core.view(2, all(3)).seats.map((s) => s.name)).toEqual(['Ann (bot)', 'Bo (bot)', 'Abcdefghijklmnopqrst']);
+    // Only bots would be left: the room ends and the Durable Object deletes it.
+    const last = send(core, 2, { t: 'leave' });
+    expect(last.ack).toMatchObject({ ok: true });
+    expect(last.end).toBe('Abcdefghijklmnopqrst');
+    expect(last.changed).toBe(false);
+  });
+
+  it('H8.3 quitting a practice game against bots ends it; quitting is never stale', () => {
+    const { core, store } = room('bohnanza', ['Ann']);
+    send(core, 0, { t: 'addBot' }, all(1));
+    send(core, 0, { t: 'addBot' }, all(1));
+    send(core, 0, { t: 'start' }, all(1));
+    const before = JSON.stringify(store.state);
+    const r = core.handle(0, { t: 'leave', id: 'q1', v: 999 }, all(1));
     expect(r.ack).toMatchObject({ ok: true });
-    expect(r.end).toBe('Cy');
-  });
-
-  it('H8.3 any game can be quit, including one without bots; a finished game still refuses', () => {
-    const { core } = started('tally', ['Ann', 'Bo']);
-    expect(send(core, 1, { t: 'leave' }).end).toBe('Bo');
+    expect(r.end).toBe('Ann');
+    expect(JSON.stringify(store.state)).toBe(before);
 
     const g = started();
+    expect(g.core.handle(2, { t: 'leave', id: 'q2', v: 999 }, all(3)).ack).toMatchObject({ ok: true });
+    expect(g.core.isBotSeat(2)).toBe(true);
+  });
+
+  it('H8.4 the remaining player finishes against the bot; a finished game refuses to be left', () => {
+    const { core } = started();
+    send(core, 2, { t: 'leave' });
+    const two = new Set([0, 1]);
     let guard = 0;
-    while (g.core.status === 'playing') {
+    while (core.status === 'playing') {
       if (++guard > 4000) throw new Error('no termination');
-      const seat = g.core.view(0, all(3)).actors[0];
-      const move = botMove(g.core.view(seat, all(3)).game as BView)!;
-      expect(move.actions.some((a) => send(g.core, seat, { t: 'act', a }).ack!.ok)).toBe(true);
+      if (core.nextBot()) {
+        expect(core.playBot()).toBe(true);
+        continue;
+      }
+      const seat = core.view(0, two).actors.find((s) => s < 2)!;
+      const move = botMove(core.view(seat, two).game as BView)!;
+      expect(move.actions.some((a) => send(core, seat, { t: 'act', a }, two).ack!.ok)).toBe(true);
     }
-    const r = send(g.core, 0, { t: 'leave' });
+    expect(core.view(0, two).results).toHaveLength(3);
+    const r = send(core, 0, { t: 'leave' }, two);
     expect(r.ack).toMatchObject({ ok: false, code: 'started' });
     expect(r.end).toBeUndefined();
   });
 
-  it('H8.4 a lobby leave still just frees the seat', () => {
-    const { core } = room('bohnanza', ['Ann', 'Bo', 'Cy']);
-    const r = send(core, 2, { t: 'leave' });
+  it('H8.5 a game without computer players cannot hand over, so quitting ends it; a lobby leave just frees the seat', () => {
+    const { core } = started('tally', ['Ann', 'Bo']);
+    expect(send(core, 1, { t: 'leave' }).end).toBe('Bo');
+
+    const lobby = room('bohnanza', ['Ann', 'Bo', 'Cy']);
+    const r = send(lobby.core, 2, { t: 'leave' });
     expect(r.end).toBeUndefined();
     expect(r.evict).toEqual(['th2']);
-    expect(core.seatCount).toBe(2);
+    expect(lobby.core.seatCount).toBe(2);
   });
 });
 

@@ -107,7 +107,7 @@ export interface HandleResult {
   changed: boolean;
   /** Token hashes whose sockets must be closed (kicked or left). */
   evict: string[];
-  /** Someone quit a game in progress: the room ends for everyone and is deleted. Holds the quitter's name. */
+  /** The last person quit a game in progress: the room ends for everyone and is deleted. Holds the quitter's name. */
   end?: string;
 }
 
@@ -322,14 +322,16 @@ export class RoomCore {
         : { id, ok: false as const, code: prior.code, error: prior.error, v: this.meta.version };
       return { ack, changed: false, evict: [] };
     }
-    // Quitting a game in progress ends it for everyone; it does not depend on the table, so it is never stale.
-    if (msg.t === 'leave' && this.meta.status === 'playing')
+    // Quitting a game in progress does not depend on the table, so it is never stale. With other people still
+    // seated a bot takes over the seat; otherwise (only bots left, or a game without bots) the game ends.
+    const quitting = msg.t === 'leave' && this.meta.status === 'playing';
+    if (quitting && !this.handsOver(seat))
       return { ack: { id, v: this.meta.version, ok: true }, changed: false, evict: [], end: this.seats[seat].name };
     let evict: string[] = [];
     let result: Ack;
     try {
       const v = (msg as { v?: unknown }).v;
-      if (typeof v !== 'number' || v !== this.meta.version)
+      if (!quitting && (typeof v !== 'number' || v !== this.meta.version))
         throw new RoomError('stale', 'The table changed before your move arrived. Check the table and try again.');
       evict = this.dispatch(seat, msg, connected);
       result = { ok: true };
@@ -408,6 +410,7 @@ export class RoomCore {
         return [gone.th];
       }
       case 'leave': {
+        if (this.meta.status === 'playing') return [this.quit(seat)];
         if (this.meta.status !== 'lobby')
           throw new RoomError('started', 'The game is over. Go back to the hub, or stay for a rematch.');
         const [gone] = this.seats.splice(seat, 1);
@@ -430,6 +433,26 @@ export class RoomCore {
     if (over) this.meta.status = 'over';
     const undoable = r.undoable && !over && !this.isBotSeat(seat);
     this.commit('act', seat, a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev } : null });
+  }
+
+  /** A quitter's seat goes to a bot only when the game has bots and someone else is seated in person. */
+  private handsOver(seat: number) {
+    return !!this.game.bot && this.seats.some((s, i) => i !== seat && !isBot(s.th));
+  }
+
+  /**
+   * Quit a game in progress that others play on. Seat numbers are part of the
+   * game state, so the seat stays and a bot takes it over; the person's session
+   * loses it for good.
+   */
+  private quit(seat: number): string {
+    const gone = this.seats[seat];
+    let id = 0;
+    while (this.seats.some((s) => s.th === BOT_PREFIX + id)) id++;
+    this.seats[seat] = { th: BOT_PREFIX + id, name: `${[...gone.name].slice(0, 14).join('').trim()} (bot)`, joinedAt: this.opts.now() };
+    if (gone.th === this.meta.hostTh) this.meta.hostTh = this.seats.find((s) => !isBot(s.th))?.th ?? '';
+    this.commit('quit', seat, {}, { seats: true, undo: null });
+    return gone.th;
   }
 
   private seatBot(by: number) {
