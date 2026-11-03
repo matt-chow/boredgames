@@ -12,8 +12,17 @@ import { settings } from './settings.svelte';
  * interrupted animation can always be finished instantly.
  */
 
+/** Where a card was drawn: its bounding box, its visual size and its 2D rotation (the hand fan tilts cards). */
+export interface Spot {
+  rect: DOMRect;
+  el: HTMLElement;
+  w: number;
+  h: number;
+  rot: number;
+}
+
 export interface Snapshot {
-  rects: Map<string, { rect: DOMRect; el: HTMLElement }>;
+  rects: Map<string, Spot>;
   anchors: Map<string, DOMRect>;
 }
 
@@ -39,12 +48,56 @@ function layer(): HTMLElement {
 
 const visible = (r: DOMRect) => r.width > 2 && r.height > 2;
 
+/** Rotation of a flat 2D transform on the element or its parent, in degrees; 0 for none or for 3D. */
+function rotationOf(el: HTMLElement): number {
+  for (const e of [el, el.parentElement]) {
+    const m = e && /^matrix\(([^,]+),\s*([^,]+)/.exec(getComputedStyle(e).transform);
+    if (m) return (Math.atan2(Number(m[2]), Number(m[1])) * 180) / Math.PI;
+  }
+  return 0;
+}
+
+function spot(el: HTMLElement, rect: DOMRect): Spot {
+  const rot = rotationOf(el);
+  // A rotated card's bounds are larger than the card; use its layout size instead (the fan does not scale).
+  return Math.abs(rot) > 0.1
+    ? { rect, el, w: el.offsetWidth, h: el.offsetHeight, rot }
+    : { rect, el, w: rect.width, h: rect.height, rot: 0 };
+}
+
+const box = (rect: DOMRect) => ({ rect, w: rect.width, h: rect.height, rot: 0 });
+
+/**
+ * A card dropped by drag waits where it was dropped (as its drag ghost) until
+ * the server answers, so it never snaps back to the hand first. The next
+ * animation takes off from the ghost.
+ */
+let held: { id: string; ghost: HTMLElement; source: HTMLElement; rot: number; scale: number; timer: number } | null = null;
+
+export function hold(id: string, ghost: HTMLElement, source: HTMLElement, rot: number, scale: number) {
+  release();
+  held = { id, ghost, source, rot, scale, timer: window.setTimeout(release, 1500) };
+}
+
+/** Remove the held ghost: the move was refused, or its animation has taken over. */
+export function release() {
+  if (!held) return;
+  clearTimeout(held.timer);
+  held.ghost.remove();
+  held.source.style.opacity = '';
+  held = null;
+}
+
 export function snapshot(root: ParentNode = document): Snapshot {
-  const rects = new Map<string, { rect: DOMRect; el: HTMLElement }>();
+  const rects = new Map<string, Spot>();
   root.querySelectorAll<HTMLElement>('[data-card]').forEach((el) => {
     const rect = el.getBoundingClientRect();
-    if (visible(rect)) rects.set(el.dataset.card!, { rect, el });
+    if (visible(rect)) rects.set(el.dataset.card!, spot(el, rect));
   });
+  if (held && rects.has(held.id)) {
+    const g = held.ghost;
+    rects.set(held.id, { rect: g.getBoundingClientRect(), el: g, w: g.offsetWidth * held.scale, h: g.offsetHeight * held.scale, rot: held.rot });
+  }
   const anchors = new Map<string, DOMRect>();
   root.querySelectorAll<HTMLElement>('[data-anchor]').forEach((el) => anchors.set(el.dataset.anchor!, el.getBoundingClientRect()));
   return { rects, anchors };
@@ -56,17 +109,22 @@ export function finishAll() {
 }
 
 const center = (r: DOMRect) => ({ x: r.left + r.width / 2, y: r.top + r.height / 2 });
+const at = (x: number, y: number, sx: number, sy: number, r: number) =>
+  `translate(${x}px, ${y}px) rotate(${r}deg) scale(${sx}, ${sy})`;
 
-function fly(source: HTMLElement, from: DOMRect, to: DOMRect, real: HTMLElement | null, delay: number, fade: 'in' | 'out' | 'none') {
+type Box = Pick<Spot, 'rect' | 'w' | 'h' | 'rot'>;
+
+function fly(source: HTMLElement, src: Box, dst: Box, real: HTMLElement | null, delay: number, fade: 'in' | 'out' | 'none') {
   const clone = source.cloneNode(true) as HTMLElement;
   clone.removeAttribute('data-card');
-  clone.classList.add('in-flight');
-  const w = source.offsetWidth || to.width;
-  const h = source.offsetHeight || to.height;
+  const w = source.offsetWidth || dst.w;
+  const h = source.offsetHeight || dst.h;
+  const a = center(src.rect);
+  const b = center(dst.rect);
   Object.assign(clone.style, {
     position: 'fixed',
-    left: `${center(to).x - w / 2}px`,
-    top: `${center(to).y - h / 2}px`,
+    left: `${b.x - w / 2}px`,
+    top: `${b.y - h / 2}px`,
     width: `${w}px`,
     height: `${h}px`,
     margin: '0',
@@ -74,25 +132,33 @@ function fly(source: HTMLElement, from: DOMRect, to: DOMRect, real: HTMLElement 
     pointerEvents: 'none',
   });
   layer().appendChild(clone);
-  const a = center(from);
-  const b = center(to);
-  const s0 = from.width / w;
-  const s1 = to.width / w;
+  // Scale each axis on its own: on the tilted table a card's box is shorter than the card.
+  const [sx0, sy0, sx1, sy1] = [src.w / w, src.h / h, dst.w / w, dst.h / h];
   const dx = a.x - b.x;
   const dy = a.y - b.y;
   const dist = Math.hypot(dx, dy);
-  const lift = Math.min(36, dist * 0.12);
-  const fast = settings.lowPerf;
-  const duration = fast ? 260 : Math.min(620, 320 + dist * 0.35);
-  const frames: Keyframe[] = [
-    { transform: `translate(${dx}px, ${dy}px) scale(${s0})`, opacity: fade === 'in' ? 0 : 1 },
-    {
-      transform: `translate(${dx * 0.45}px, ${dy * 0.45 - lift}px) scale(${Math.max(s0, s1) * 1.06})`,
-      opacity: 1,
-      offset: 0.5,
-    },
-    { transform: `translate(0, 0) scale(${s1})`, opacity: fade === 'out' ? 0 : 1 },
-  ];
+  let frames: Keyframe[];
+  let duration: number;
+  if (dist < 48 && fade === 'none') {
+    // A layout nudge: slide quietly, with no lift, pop or stagger.
+    clone.style.zIndex = '79';
+    duration = settings.lowPerf ? 160 : 220;
+    delay = 0;
+    frames = [{ transform: at(dx, dy, sx0, sy0, src.rot) }, { transform: at(0, 0, sx1, sy1, dst.rot) }];
+  } else {
+    clone.classList.add('in-flight');
+    const lift = Math.min(36, dist * 0.12);
+    duration = settings.lowPerf ? 260 : Math.min(620, 320 + dist * 0.35);
+    frames = [
+      { transform: at(dx, dy, sx0, sy0, src.rot), opacity: fade === 'in' ? 0 : 1 },
+      {
+        transform: at(dx * 0.45, dy * 0.45 - lift, Math.max(sx0, sx1) * 1.06, Math.max(sy0, sy1) * 1.06, (src.rot + dst.rot) / 2),
+        opacity: 1,
+        offset: 0.5,
+      },
+      { transform: at(0, 0, sx1, sy1, dst.rot), opacity: fade === 'out' ? 0 : 1 },
+    ];
+  }
   if (real) real.style.visibility = 'hidden';
   const anim = clone.animate(frames, { duration, delay, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'backwards' });
   const f = { clone, real, anim };
@@ -108,33 +174,35 @@ function fly(source: HTMLElement, from: DOMRect, to: DOMRect, real: HTMLElement 
 
 /** Animate from `before` to the current DOM. Call after the new view has rendered. */
 export function play(before: Snapshot, hints: Hints = {}, root: ParentNode = document) {
+  // The held ghost was measured into `before`; from here the flight (or the plain render) takes over.
+  release();
   if (settings.instant) return;
   const after = snapshot(root);
   let n = 0;
   const stagger = settings.lowPerf ? 0 : 45;
   const delay = () => Math.min(n++, 8) * stagger;
-  for (const [id, { rect, el }] of after.rects) {
+  for (const [id, cur] of after.rects) {
     const prev = before.rects.get(id);
     if (prev) {
-      const moved = Math.abs(prev.rect.left - rect.left) + Math.abs(prev.rect.top - rect.top) > 3;
-      const resized = Math.abs(prev.rect.width - rect.width) > 3;
-      if (moved || resized) fly(el, prev.rect, rect, el, delay(), 'none');
+      const moved = Math.abs(prev.rect.left - cur.rect.left) + Math.abs(prev.rect.top - cur.rect.top) > 3;
+      const changed = Math.abs(prev.w - cur.w) > 3 || Math.abs(prev.h - cur.h) > 3 || Math.abs(prev.rot - cur.rot) > 1;
+      if (moved || changed) fly(cur.el, prev, cur, cur.el, delay(), 'none');
       continue;
     }
-    const anchor = hints.originOf?.(id, el);
+    const anchor = hints.originOf?.(id, cur.el);
     const from = anchor ? (after.anchors.get(anchor) ?? before.anchors.get(anchor)) : null;
-    if (from && visible(from)) fly(el, from, rect, el, delay(), 'in');
+    if (from && visible(from)) fly(cur.el, box(from), cur, cur.el, delay(), 'in');
     else
-      el.animate([{ opacity: 0, transform: 'scale(0.92)' }, { opacity: 1, transform: 'none' }], {
+      cur.el.animate([{ opacity: 0, transform: 'scale(0.92)' }, { opacity: 1, transform: 'none' }], {
         duration: 220,
         easing: 'ease-out',
       });
   }
-  for (const [id, { rect, el }] of before.rects) {
+  for (const [id, prev] of before.rects) {
     if (after.rects.has(id)) continue;
     const anchor = hints.exitOf?.(id);
     const to = anchor ? after.anchors.get(anchor) : null;
-    if (to && visible(to)) fly(el, rect, to, null, delay(), 'out');
+    if (to && visible(to)) fly(prev.el, prev, box(to), null, delay(), 'out');
   }
 }
 

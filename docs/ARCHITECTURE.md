@@ -151,6 +151,12 @@ reveal showed.
   1. Before applying a new view, `motion.ts` snapshots card rects.
   2. After Svelte updates, cards fly from old rects to new ones (deck → hand, hand → field, field → discard, and so on).
   3. Only `transform` and `opacity` are animated, via the Web Animations API.
+  4. Snapshots record each card's 2D rotation and per-axis size, so a card leaving the fanned hand or landing on the
+     tilted table turns and squashes smoothly instead of snapping. Moves under 48 px (a hand closing up) slide quietly
+     with no lift or pop.
+- **Drag drops:** while a dropped card's move is in flight to the server, its drag ghost stays where it was dropped
+  (`hold`). Nothing is planted early: the next confirmed view flies the card from the ghost to wherever the server put
+  it, and a refusal (or 1.5 s without an answer) returns it to the hand (`release`).
 - **Interruptions:** a newer state calls `finishAll()` first, so a stale animation never lingers.
 - **Settings:** reduced motion, low-performance mode and sound live in `settings.svelte.ts`.
 - **Camera:** a fixed isometric tilt (`rotateX(20deg)`) with zoom, pan and reset, but no rotation. Nothing runs

@@ -1,4 +1,4 @@
-import { finishAll } from './motion';
+import { finishAll, hold } from './motion';
 
 /**
  * Pointer drag for cards. A clone follows the pointer in the flat flight layer;
@@ -12,10 +12,16 @@ export interface DragOptions {
   /** Called when the press becomes a drag. */
   onStart?(): void;
   onOver?(target: HTMLElement | null): void;
-  onDrop(target: HTMLElement | null): void;
+  /**
+   * Return true when a move was sent: the ghost then stays where it was dropped until the confirmed view animates
+   * it onward (or the move is refused and `release()` is called).
+   */
+  onDrop(target: HTMLElement | null): boolean | void;
 }
 
 const THRESHOLD = 6;
+const GHOST_ROT = -3;
+const GHOST_SCALE = 1.06;
 let suppressClick = false;
 
 /** True right after a drag ended, so the trailing click can be ignored. */
@@ -67,7 +73,7 @@ export function beginDrag(e: PointerEvent, source: HTMLElement, opts: DragOption
       opts.onStart?.();
     }
     ev.preventDefault();
-    ghost.style.transform = `translate(${ev.clientX - dx}px, ${ev.clientY - dy}px) rotate(-3deg) scale(1.06)`;
+    ghost.style.transform = `translate(${ev.clientX - dx}px, ${ev.clientY - dy}px) rotate(${GHOST_ROT}deg) scale(${GHOST_SCALE})`;
     const t = dropAt(ev.clientX, ev.clientY);
     if (t !== over) {
       over?.classList.remove('drop-over');
@@ -84,12 +90,15 @@ export function beginDrag(e: PointerEvent, source: HTMLElement, opts: DragOption
     removeEventListener('pointercancel', end);
     if (!ghost) return;
     over?.classList.remove('drop-over');
-    ghost.remove();
-    source.style.opacity = '';
     document.body.classList.remove('dragging');
     suppressClick = true;
     setTimeout(() => (suppressClick = false), 0);
-    opts.onDrop(ev.type === 'pointerup' ? dropAt(ev.clientX, ev.clientY) : null);
+    const sent = opts.onDrop(ev.type === 'pointerup' ? dropAt(ev.clientX, ev.clientY) : null);
+    if (sent && source.dataset.card) hold(source.dataset.card, ghost, source, GHOST_ROT, GHOST_SCALE);
+    else {
+      ghost.remove();
+      source.style.opacity = '';
+    }
   };
 
   addEventListener('pointermove', move, { passive: false });
