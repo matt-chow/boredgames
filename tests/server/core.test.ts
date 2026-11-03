@@ -308,6 +308,78 @@ describe('H7 computer players', () => {
   });
 });
 
+describe('H8 quitting a game in progress', () => {
+  const started = (names = ['Ann', 'Bo', 'Cy']) => {
+    const r = room('bohnanza', names);
+    send(r.core, 0, { t: 'start' });
+    return r;
+  };
+
+  it('H8.1 a bot takes over the seat; the game state is untouched and the person is evicted for good', () => {
+    const { core, store } = started();
+    const before = JSON.stringify(store.state);
+    const r = send(core, 1, { t: 'leave' });
+    expect(r.ack!.ok).toBe(true);
+    expect(r.evict).toEqual(['th1']);
+    expect(core.status).toBe('playing');
+    expect(core.seatCount).toBe(3);
+    expect(core.seatOf('th1')).toBe(-1);
+    expect(core.isBotSeat(1)).toBe(true);
+    expect(core.view(0, all(3)).seats[1]).toMatchObject({ name: 'Bo (bot)', bot: true, connected: true });
+    expect(JSON.stringify(store.state)).toBe(before);
+    expect(store.history.at(-1)).toMatchObject({ kind: 'quit', seat: 1, data: '{}' });
+    expect(() => core.join('Bo', 'th1')).toThrow(/already started/);
+  });
+
+  it('H8.2 quitting passes host to a person, clears undo, and long names still fit', () => {
+    // An undoable plant by whoever starts, then they quit: their undo must not survive.
+    const first = started();
+    const a = first.core.view(0, all(3)).actors[0];
+    expect(send(first.core, a, { t: 'act', a: { type: 'plant', field: 0 } }).ack!.ok).toBe(true);
+    expect(first.store.undo?.seat).toBe(a);
+    send(first.core, a, { t: 'leave' });
+    expect(first.store.undo).toBeNull();
+
+    const { core } = started(['Ann', 'Bo', 'Abcdefghijklmnopqrst']);
+    send(core, 0, { t: 'leave' });
+    expect(core.view(1, all(3)).seats.find((s) => s.host)?.name).toBe('Bo');
+    send(core, 1, { t: 'leave' });
+    expect(core.view(2, all(3)).seats.find((s) => s.host)?.name).toBe('Abcdefghijklmnopqrst');
+    send(core, 2, { t: 'leave' });
+    expect(core.view(-1, new Set()).seats.map((s) => s.name)).toEqual(['Ann (bot)', 'Bo (bot)', 'Abcdefghijklmn (bot)']);
+  });
+
+  it('H8.3 the remaining player finishes the game against the bot; with no people left, bots stop', () => {
+    const { core } = started();
+    send(core, 2, { t: 'leave' });
+    const two = new Set([0, 1]);
+    let guard = 0;
+    while (core.status === 'playing') {
+      if (++guard > 4000) throw new Error('no termination');
+      if (core.nextBot()) {
+        expect(core.playBot()).toBe(true);
+        continue;
+      }
+      const seat = core.view(0, two).actors.find((s) => s < 2)!;
+      const move = botMove(core.view(seat, two).game as BView)!;
+      expect(move.actions.some((a) => send(core, seat, { t: 'act', a }, two).ack!.ok)).toBe(true);
+    }
+    expect(core.view(0, two).results).toHaveLength(3);
+    expect(send(core, 0, { t: 'leave' }, two).ack).toMatchObject({ ok: false, code: 'started' });
+
+    const { core: c2 } = started();
+    for (const s of [0, 1, 2]) send(c2, s, { t: 'leave' });
+    expect(c2.status).toBe('playing');
+    expect(c2.nextBot()).toBeNull();
+  });
+
+  it('H8.4 a game without computer players still refuses to let you quit mid-game', () => {
+    const { core } = room('tally', ['Ann', 'Bo']);
+    send(core, 0, { t: 'start' });
+    expect(send(core, 1, { t: 'leave' }).ack).toMatchObject({ ok: false, code: 'started' });
+  });
+});
+
 describe('H6 input normalisation', () => {
   it('room codes', () => {
     expect(normalizeCode('abc-def')).toBe('ABCDEF');
