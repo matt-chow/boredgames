@@ -124,3 +124,10 @@ A player may quit a game in progress from Settings, after a confirmation. What h
 
 Either way quitting does not depend on the table, so it is never rejected as stale. A lobby leave still only frees the
 seat, and leaving a finished game is still refused; the results screen has its own way back to the hub.
+
+### D20. A generic deck-building engine, not yet a game
+`src/engine/deckbuilder` is a card-agnostic engine: card behaviour is typed JSON data run by an interpreter, and all
+pending work is a JSON stack, so a game can stop at any decision and resume after a reload. It uses the existing
+`GameModule` contract, so the server doesn't change. It is not registered in the hub and contains no game content;
+only a test fixture exercises it. Code from `paulbatum/Dominion` (MIT) was not reused, because its object graph doesn't
+persist. Scope and licensing questions are in DECKBUILDER_LICENSING.md, and the design is in DECKBUILDER.md.
