@@ -53,6 +53,12 @@
     draft = { to, give: [], wantCards: [], wantTypes: {}, replyTo };
   }
 
+  function pickRecipient(to: number) {
+    if (!draft) return;
+    // Only the active player owns the turned-over cards, so asking for them makes sense only towards them.
+    draft = { ...draft, to, wantCards: to === g.active ? draft.wantCards : [] };
+  }
+
   function counter(o: OfferV) {
     // Start from the mirror image of their offer: you give what they asked for.
     choosing = null;
@@ -77,9 +83,9 @@
   );
 
   async function send() {
-    if (!draft) return;
+    if (!draft || draft.to === null) return;
     const d = draft;
-    if (await run({ type: 'offer', to: d.to, give: d.give, wantCards: d.wantCards, wantTypes: d.wantTypes, replyTo: d.replyTo }))
+    if (await run({ type: 'offer', to: draft.to, give: d.give, wantCards: d.wantCards, wantTypes: d.wantTypes, replyTo: d.replyTo }))
       draft = null;
   }
 
@@ -137,9 +143,21 @@
   {#if draft}
     <div class="slip draft" aria-label="New offer">
       <div class="slip-top">
-        <span class="kind">{draft.replyTo ? 'Counteroffer' : draftKind || 'New offer'} to <b>{name(draft.to)}</b></span>
+        <span class="kind">
+          {draft.replyTo ? 'Counteroffer' : draftKind || 'New offer'}{#if draft.to !== null}&nbsp;to <b>{name(draft.to)}</b>{/if}
+        </span>
         <button class="btn icon ghost" aria-label="Discard draft" onclick={() => (draft = null)}><Icon name="close" size={16} /></button>
       </div>
+      {#if !draft.replyTo && targets.length > 1}
+        <div class="side">
+          <span class="sl" id="recipient-l">To</span>
+          <div class="recipients" role="group" aria-labelledby="recipient-l">
+            {#each targets as t (t)}
+              <button class="recipient" aria-pressed={draft.to === t} onclick={() => pickRecipient(t)}>{name(t)}</button>
+            {/each}
+          </div>
+        </div>
+      {/if}
       <div class="side">
         <span class="sl">You give</span>
         <div class="cards">
@@ -165,7 +183,7 @@
         {#if draft.to === g.active && g.faceUp.length}
           <span class="note">Tap a turned-over card on the table to ask for it.</span>
         {/if}
-        <div class="types" role="group" aria-label="Ask for beans from {name(draft.to)}’s hand">
+        <div class="types" role="group" aria-label="Ask for beans from {draft.to === null ? 'their' : `${name(draft.to)}’s`} hand">
           {#each beans as b (b)}
             {@const n = draft.wantTypes[b] ?? 0}
             <div class="type" class:on={n > 0}>
@@ -179,7 +197,8 @@
         </div>
       </div>
       <div class="slip-actions">
-        <button class="btn primary" disabled={!draftSize || busy} onclick={send}>
+        {#if draft.to === null}<span class="wait">Choose who gets this offer.</span>{/if}
+        <button class="btn primary" disabled={!draftSize || draft.to === null || busy} onclick={send}>
           {draft.replyTo ? 'Send counteroffer' : `Send ${draftKind.toLowerCase() || 'offer'}`}
         </button>
       </div>
@@ -442,6 +461,39 @@
     display: grid;
     place-items: center;
     cursor: pointer;
+  }
+  .recipients {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .recipient {
+    min-height: 36px;
+    padding: 0 14px;
+    border-radius: 18px;
+    border: 1px solid var(--rim-hi);
+    background: var(--ground-1);
+    color: var(--ink-2);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform var(--dur-1) var(--ease-out);
+  }
+  .recipient:hover {
+    color: var(--ink);
+  }
+  .recipient:active {
+    transform: scale(0.96);
+  }
+  .recipient[aria-pressed='true'] {
+    background: var(--sprout-dim);
+    border-color: var(--sprout);
+    color: var(--ink);
+  }
+  .recipient:focus-visible {
+    outline: 2px solid var(--sprout);
+    outline-offset: 2px;
   }
   .slip-actions {
     display: flex;

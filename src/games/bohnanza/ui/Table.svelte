@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onDestroy, onMount, tick, untrack } from 'svelte';
   import { beginDrag, consumeDragClick } from '../../../client/lib/drag';
-  import { finishAll, play, pulse, snapshot, type Snapshot } from '../../../client/lib/motion';
+  import { finishAll, play, pulse, release, snapshot, type Snapshot } from '../../../client/lib/motion';
   import { settings } from '../../../client/lib/settings.svelte';
   import { sfx } from '../../../client/lib/sound';
   import { toasts } from '../../../client/lib/toast.svelte';
@@ -21,7 +21,7 @@
   import Seat from './Seat.svelte';
   import Summary from './Summary.svelte';
   import TradePanel from './TradePanel.svelte';
-  import { offerTargets, type Choosing, type Draft } from './trade';
+  import { newDraft, offerTargets, type Choosing, type Draft } from './trade';
 
   let { conn, room }: GameUiProps = $props();
 
@@ -127,13 +127,17 @@
       onStart: prepare,
       onDrop(t) {
         const key = t?.dataset.drop;
-        if (!key?.startsWith('mine-')) return;
+        if (!key?.startsWith('mine-')) return false;
         const i = Number(key.slice(5));
-        if (targets.includes(i)) plantAt(i);
-        else {
+        if (targets.includes(i)) {
+          // The ghost waits on the field until the server answers; a refusal sends it home.
+          plantAt(i)?.then((ok) => ok || release());
+          return true;
+        } else {
           sfx.error();
           pulse(t, 'nudge');
           toasts.push(fieldReason(), 'error');
+          return false;
         }
       },
     });
@@ -155,7 +159,7 @@
       return;
     }
     if (g.phase === 'trade' && tradeTargets.length) {
-      if (!draft) draft = { to: tradeTargets[0], give: [], wantCards: [], wantTypes: {}, replyTo: null };
+      if (!draft) draft = newDraft(tradeTargets);
       const has = draft.give.includes(id);
       draft = { ...draft, give: has ? draft.give.filter((x) => x !== id) : [...draft.give, id] };
       return;
@@ -170,7 +174,7 @@
   function pickFaceUp(id: string) {
     if (g.phase !== 'trade' || !tradeTargets.length) return;
     if (isActive) {
-      if (!draft) draft = { to: tradeTargets[0], give: [], wantCards: [], wantTypes: {}, replyTo: null };
+      if (!draft) draft = newDraft(tradeTargets);
       const has = draft.give.includes(id);
       draft = { ...draft, give: has ? draft.give.filter((x) => x !== id) : [...draft.give, id] };
     } else {

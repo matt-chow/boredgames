@@ -4,7 +4,8 @@ import type { BView, CardV, OfferV } from '../rules/view';
 
 /** An offer being composed locally. Nothing is sent until the player presses Send. */
 export interface Draft {
-  to: number;
+  /** Recipient; null until the player picks one (a draft started by tapping a card when several could receive it). */
+  to: number | null;
   /** Card ids from your hand (or the turned-over cards when you are active). */
   give: string[];
   /** Turned-over cards requested from the active player. */
@@ -53,5 +54,14 @@ export function offerTargets(g: BView): number[] {
   if (g.you === g.active) return Array.from({ length: g.n }, (_, i) => i).filter((i) => i !== g.you);
   return [g.active];
 }
+
+/** A fresh draft: the recipient is filled in only when there is exactly one possible choice. */
+export const newDraft = (targets: number[]): Draft => ({
+  to: targets.length === 1 ? targets[0] : null,
+  give: [],
+  wantCards: [],
+  wantTypes: {},
+  replyTo: null,
+});
 
 export const isLive = (o: OfferV) => o.status === 'open';
