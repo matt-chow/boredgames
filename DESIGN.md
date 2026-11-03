@@ -144,6 +144,11 @@ for panels and dialogs. Cards are portrait 5:7 (76 × 106 px at rest).
 - **Trading dock:** each proposed offer is a dashed "slip" (an offer addressed to you is edged in sprout). Once
   accepted, the cards fly to the receivers' pending area, so proposed and committed are never confused. Accept /
   Reject / Withdraw / Counter sit on the slip.
+- **Hub shelf:** the home page is a shelf of timber crates, one per listed game. A crate holds the game's cards fanned
+  as if dealt into it (the deal plays once on load, and the fan opens on hover or focus) and a paper label with the
+  stencilled name, a one-line pitch, players and length, and two actions: the sprout primary "Open a table" and the
+  plain "Practise with bots". An empty crate with dashed card outlines holds the place for the next game. The single
+  name field sits in the header and serves every action.
 - **Switches** (lobby variants): sprout when on; options that cannot be used at this player count stay visible with
   the reason.
 

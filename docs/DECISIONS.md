@@ -101,3 +101,11 @@ configuring. In the lobby, leaving passes the host role to the next seat.
 
 Lobbies are deleted after 24 h idle, games in progress after 30 days, and finished games after 7 days, by Durable
 Object alarm. Long enough to pause a game over a holiday; short enough that the free storage quota never fills.
+
+### D18. Bots decide from their own projection
+
+A bot gets exactly what a human in its seat would see and nothing else, and the server applies its moves like any
+other action. This keeps the hidden-information guarantee intact by construction. When several bots could act
+(during trading), the one with the soonest move goes first. Otherwise the active bot would end trading before its
+partner could answer an offer. The Bohnanza bot is deliberately simple: it is there to let one person try the game
+and to exercise the server, not to play well.

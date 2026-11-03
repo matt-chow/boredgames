@@ -57,7 +57,10 @@ are unit-tested without a Workers runtime.
 - **projection:** `project(state, viewer)` builds the only data a seat ever receives.
 - **terminal state and scoring:** `isOver`, `results`.
 - **persistence upgrades:** optional `migrate(state, fromVersion)`.
-- **UI registration:** one lazy entry in `GAME_UI`. Each table receives `{ conn, room }`.
+- **computer players:** optional `bot(view)`. It returns candidate actions, best first, and a delay; it
+  receives only the bot seat's projection, so it cannot see hidden cards.
+- **UI registration:** one lazy entry in `GAME_UI`. Each table receives `{ conn, room }`. The hub lists games from
+  `src/hub/catalog.ts`, which a unit test keeps in step with `LISTED_GAMES`.
 
 The interface was shaped around one real game plus a deliberately tiny second one (`tally`). Tally exists to prove
 that the room core is game-agnostic; it is not listed in the hub.
@@ -125,6 +128,12 @@ The client (`RoomConnection`) keeps a single socket per room:
   the same store resumes exactly" covers this.
 - **Retention:** a Durable Object alarm deletes the room's storage after a period with no change. Lobby rooms go
   after 24 hours, games in progress after 30 days, and finished games after 7 days.
+- **Bots:** a bot seat has the token hash `bot:<n>`, which cannot collide with a SHA-256 hex hash, so no cookie can
+  claim it. The host seats bots at create time ("Practise with bots" seats `minPlayers - 1`) or with "Add a bot" in
+  the lobby. One Durable Object alarm serves both bots and retention. When a bot may act, it fires at
+  `updatedAt + delay`, plays the soonest due bot's first legal candidate and broadcasts the result. Otherwise it fires
+  at the retention deadline. Bot moves are never undoable. A bot that returns no legal move is logged and left
+  alone until the state changes, so a broken bot cannot spin the alarm.
 - **Host leaving:** this does not end the game. Seats belong to players, not to the host. When the host is offline,
   any seated player may use host controls.
 

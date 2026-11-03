@@ -11,7 +11,8 @@ players. It also includes the official AMIGO anniversary variants that work at t
 ## Play
 
 1. Open the site and enter a display name.
-2. Choose **Open a new table**.
+2. On the game's crate, choose **Open a table**, or **Practise with bots** to play alone against simple computer
+   players. You can add bots from the lobby too.
 3. Share the six-letter code or the invite link. Friends join from their own devices.
 4. The host picks variants in the lobby and starts the game when 3–5 players are seated.
 

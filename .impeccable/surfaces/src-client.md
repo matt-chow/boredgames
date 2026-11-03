@@ -34,5 +34,8 @@ FIRST VIEWPORT:
 - Your hand is fanned at the bottom edge. A slim top bar holds the phase strip, coins and settings.
 - The primary action button sits bottom-right above the hand.
 FORM: candidate 4 of 7; seed: a18344c4001c820966ec9cdd04d6ef2e
+HUB: the home page is the stall's shelf. One crate per game; cards are dealt into the crate once on load, and the hand
+opens wider when you lean toward it (hover/focus). Interview skipped on the owner's instruction to proceed without
+interruption; built code-led inside the established world.
 SIGNATURE: Planting a card drops it into the crate with a short settle. Harvesting flips the stack into coins that roll
 to the owner's coin purse.

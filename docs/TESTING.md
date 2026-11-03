@@ -24,7 +24,9 @@ that ID, so `npx vitest -t "R4.3"` runs one rule.
 | `tests/bohnanza/variants.test.ts` | V0, V1.x, V2.x, V4.x, V5.x | Every variant rule, refused combinations, base game unchanged with options off |
 | `tests/bohnanza/projection.test.ts` | P1–P6 | What each seat may see: no opponent hand IDs, no deck contents, masked offer cards |
 | `tests/bohnanza/simulate.test.ts` | S | 10 configurations × 5 seeds = 50 complete bot games |
-| `tests/server/core.test.ts` | H1–H6 | Lobby, seats, host hand-over, versioning, stale and duplicate rejection, malformed input, undo limits, privacy of room views, restart/resume, retention, history, the Tally second game |
+| `tests/bohnanza/bot-player.test.ts` | B1, B2 | All-bot games across 7 configurations × 3 seeds, played by the server's bot; how the bot answers offers |
+| `tests/hub/catalog.test.ts` | | The hub catalog matches the server's listed games |
+| `tests/server/core.test.ts` | H1–H7 | Lobby, seats, host hand-over, versioning, stale and duplicate rejection, malformed input, undo limits, privacy of room views, restart/resume, retention, history, the Tally second game, bot seats (H7) |
 
 **Simulations.** The configurations are base 3/4/5, Magpie 4, Bean Coin 3 and 5, Three New Bean Types 3, Three New +
 Magpie 5, Field Bean 4, and Field Bean + Magpie 5. Each runs with the seeds `alpha`…`echo`. After every action it
@@ -39,7 +41,7 @@ checks:
 Each run writes its seed and full action sequence to `test-results/sim/<config>-<seed>.json`. `replay(seed, n, config,
 steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
-**Latest result:** 5 files, **140 / 140 passed**. `npm run check`: 0 errors, 0 warnings.
+**Latest result:** 7 files, **170 / 170 passed** (2026-11-02). `npm run check`: 0 errors, 0 warnings.
 
 ## Browser tests (Playwright)
 
@@ -54,11 +56,15 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 | | conflicting actions: accept and withdraw race, exactly one wins | Simultaneous raw sends; all views agree |
 | | two tabs of the same player cannot double-spend | One commit, the other `stale` |
 | `complete.spec.ts` | four full games to the results screen | Base 3 players; Three New Bean Types + Magpie, 4 players; Field Bean, 5 players; Bean Coin, 4 players. One player uses a phone viewport. A random bot plays every seat through the real UI, then checks the summary and "Play again" |
+| `bots.spec.ts` | one player practises against bots | From the home page's "Practise with bots", adds a bot in the lobby, starts, and plays until the turn has come back twice, so the bots took their turns through the server alarm |
 | `perf.spec.ts` | action round-trip, idle CPU, frame pacing, transfer size | See Performance below |
 
 **Latest results.**
 
-- **Local** (dev server, Edge): all 13 tests passed in 3 min 26 s (2026-11-02): complete games 99 s, 104 s, 99 s and 71 s; reconnect 217 ms; ack p50 10 ms / p95 31 ms; idle CPU 0.11 %. The `perf` project runs after the `functional` one so its measurements are taken on a quiet machine; run it alone with `npx playwright test --project=perf --no-deps`.
+- **Local, with bots and the new home page** (2026-11-02): all 14 tests passed in 3.3 min. **Live** after redeploying:
+  13 passed and 1 skipped by design (the drag test skips when the random deal makes its setup impossible); that test
+  was then rerun twice against the live site and passed.
+- **Local** (earlier run): all 13 tests passed in 3 min 26 s (2026-11-02): complete games 99 s, 104 s, 99 s and 71 s; reconnect 217 ms; ack p50 10 ms / p95 31 ms; idle CPU 0.11 %. The `perf` project runs after the `functional` one so its measurements are taken on a quiet machine; run it alone with `npx playwright test --project=perf --no-deps`.
 - **Live deployment** (https://boredgames.mchowcl.workers.dev, Edge, from a home connection, 2026-11-02): all
   13 tests passed, including the four complete games (61 s, 74 s, 85 s and 91 s). The live run found one bug that
   local runs had not: fast variant toggles over real latency sent a stale change. It was fixed (DECISIONS.md D15),

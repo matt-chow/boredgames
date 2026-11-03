@@ -15,6 +15,14 @@ Last updated 2026-11-02.
 | M7 Simulations, browser tests, security, performance | Done, with gaps | See TESTING.md: Bean Coin dialog not exercised in a browser; 60 FPS not fully met in headless measurement; no 12-user load test |
 | M8 Deployment, smoke test, docs, handoff | Done | Live at https://boredgames.mchowcl.workers.dev, Workers Free plan; full browser suite passed against it |
 
+## Since the handoff
+
+- **Home page** redesigned as a game picker: a shelf of crates, one per game, plus an empty crate for the next game.
+  Each game offers Open a table and Practise with bots. Join by code and recent tables stay.
+- **Computer players**: a `bot(view)` hook in the game interface, bot seats in the room (create time and the lobby's
+  "Add a bot"), and server-paced moves through the Durable Object alarm. Bohnanza's bot is deliberately weak.
+- Deployed and verified live on 2026-11-02 (TESTING.md).
+
 ## Known limitations
 
 - Placeholder card art only. Licensed art can be dropped in via `ASSET_OVERRIDES` (ASSETS.md).
@@ -25,14 +33,15 @@ Last updated 2026-11-02.
 
 ## Owner actions
 
-1. **Commit the repository.** Nothing has been committed yet; all files are untracked on `main`.
-2. **Review `PRODUCT.md`.** It was written from the brief, not from an interview with you. Correct anything that does
+1. **Review `PRODUCT.md`.** It was written from the brief, not from an interview with you. Correct anything that does
    not match your intent.
-3. Play one real game with friends on phones, and listen to the sounds once.
-4. Optional: obtain licensed Bohnanza artwork and add it (ASSETS.md).
+2. Play one real game with friends on phones, and listen to the sounds once.
+3. Optional: obtain licensed Bohnanza artwork and add it (ASSETS.md).
 
 ## Next ideas (not started)
 
 - Spectator mode.
 - A dedicated multi-room load test.
-- A second real game, using `src/games/tally` as the template.
+- A second real game, using `src/games/tally` as the template. Add it to `LISTED_GAMES` and `src/hub/catalog.ts`;
+  the hub gives it a crate automatically.
+- Stronger bots (trade proposals, planning for future draws).
