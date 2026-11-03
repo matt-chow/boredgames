@@ -63,7 +63,8 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
 **Latest results.**
 
-- **Local, with Quit game** (2026-11-02): all 16 tests passed in 3.4 min.
+- **Local, with Quit game** (2026-11-02): all 16 tests passed in 3.4 min. **Live** after redeploying: 15 passed and
+  1 skipped by design (the drag test's random deal); that test was then rerun three times against the live site and passed.
 - **Local, after the animation and trading polish** (2026-11-02): all 15 tests passed in 4.2 min; after redeploying,
   all 15 passed against the live site in 3.5 min. The new pan test
   passes on the old camera code in Edge, because Edge never keeps a selection during a pan. The bug it guards against
