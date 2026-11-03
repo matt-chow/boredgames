@@ -199,6 +199,7 @@ export class RoomDO extends DurableObject<Env> {
     if (seat < 0) return ws.close(4003, 'Not a member');
     const res = room.handle(seat, msg, this.connected());
     if (res.ack) this.send(ws, { t: 'ack', ...res.ack });
+    if (res.end !== undefined) return this.close(att?.th ?? '', res.end);
     if (res.evict.length) {
       for (const s of this.ctx.getWebSockets()) {
         const a = s.deserializeAttachment() as Attachment | null;
@@ -247,6 +248,18 @@ export class RoomDO extends DurableObject<Env> {
       }
     }
     await this.schedule();
+  }
+
+  /** A player quit mid-game: tell everyone, close every socket and delete the room so nothing keeps running. */
+  private async close(quitter: string, name: string) {
+    for (const s of this.ctx.getWebSockets()) {
+      const a = s.deserializeAttachment() as Attachment | null;
+      this.send(s, a?.th === quitter ? { t: 'bye', reason: 'left' } : { t: 'bye', reason: 'ended', by: name });
+      s.close(4001, 'Game ended');
+    }
+    this.core = null;
+    await this.ctx.storage.deleteAlarm();
+    await this.ctx.storage.deleteAll();
   }
 
   private botDue() {

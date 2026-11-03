@@ -107,6 +107,8 @@ export interface HandleResult {
   changed: boolean;
   /** Token hashes whose sockets must be closed (kicked or left). */
   evict: string[];
+  /** Someone quit a game in progress: the room ends for everyone and is deleted. Holds the quitter's name. */
+  end?: string;
 }
 
 export interface CoreOptions {
@@ -320,6 +322,9 @@ export class RoomCore {
         : { id, ok: false as const, code: prior.code, error: prior.error, v: this.meta.version };
       return { ack, changed: false, evict: [] };
     }
+    // Quitting a game in progress ends it for everyone; it does not depend on the table, so it is never stale.
+    if (msg.t === 'leave' && this.meta.status === 'playing')
+      return { ack: { id, v: this.meta.version, ok: true }, changed: false, evict: [], end: this.seats[seat].name };
     let evict: string[] = [];
     let result: Ack;
     try {
@@ -403,7 +408,6 @@ export class RoomCore {
         return [gone.th];
       }
       case 'leave': {
-        if (this.meta.status === 'playing') return [this.quit(seat)];
         if (this.meta.status !== 'lobby')
           throw new RoomError('started', 'The game is over. Go back to the hub, or stay for a rematch.');
         const [gone] = this.seats.splice(seat, 1);
@@ -428,26 +432,6 @@ export class RoomCore {
     this.commit('act', seat, a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev } : null });
   }
 
-  /**
-   * Quit a game in progress. Seat numbers are part of the game state, so the
-   * seat stays and a bot takes it over; the person's session loses it for good.
-   */
-  private quit(seat: number): string {
-    if (!this.game.bot) throw new RoomError('started', 'You can’t leave this game while it is in progress.');
-    const gone = this.seats[seat];
-    let id = 0;
-    while (this.seats.some((s) => s.th === BOT_PREFIX + id)) id++;
-    this.seats[seat] = { th: BOT_PREFIX + id, name: `${[...gone.name].slice(0, 14).join('').trim()} (bot)`, joinedAt: this.opts.now() };
-    if (gone.th === this.meta.hostTh) this.meta.hostTh = this.seats.find((s) => !isBot(s.th))?.th ?? '';
-    this.commit('quit', seat, {}, { seats: true, undo: null });
-    return gone.th;
-  }
-
-  /** Someone is still seated in person. With only bots left, nobody is watching, so they stop. */
-  get hasPeople() {
-    return this.seats.some((s) => !isBot(s.th));
-  }
-
   private seatBot(by: number) {
     if (!this.game.bot) throw new RoomError('no-bots', 'This game has no computer players.');
     if (this.seats.length >= this.game.meta.maxPlayers) throw new RoomError('full', 'This room is full.', 409);
@@ -465,7 +449,7 @@ export class RoomCore {
    */
   nextBot(): { seat: number; actions: unknown[]; delayMs: number } | null {
     const bot = this.game.bot;
-    if (this.meta.status !== 'playing' || !bot || !this.hasPeople) return null;
+    if (this.meta.status !== 'playing' || !bot) return null;
     const state = this.getState();
     let next: { seat: number; actions: unknown[]; delayMs: number } | null = null;
     for (const seat of this.game.actors(state)) {

@@ -88,7 +88,8 @@ export type ServerMsg =
   | { t: 'room'; room: RoomView }
   | { t: 'ack'; id: string; ok: true; v: number }
   | { t: 'ack'; id: string; ok: false; code: string; error: string; v: number }
-  | { t: 'bye'; reason: string }
+  /** The connection is over: 'left', 'removed', or 'ended' when `by` quit a game in progress. */
+  | { t: 'bye'; reason: string; by?: string }
   | { t: 'pong' };
 
 export interface CreateRoomResponse {
