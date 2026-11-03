@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-02.
+Last updated 2026-11-03.
 
 ## Milestones
 
@@ -30,6 +30,9 @@ Last updated 2026-11-02.
 - **Quit game (2026-11-02):** Settings → "Quit game…" during a game, with a confirm dialog. With other people at the
   table a bot takes over the seat and they play on; when only bots would be left (practice games) the game ends and
   the room is deleted immediately, so nothing keeps running (D19).
+- **Deck-building engine (2026-11-03, not listed in the hub):** a generic, data-driven engine in `src/engine/deckbuilder` with tests
+  in `tests/deckbuilder` (DECKBUILDER.md, DECKBUILDER_LICENSING.md, D20). It has no UI and no playable card set. Next
+  steps need approval: an original card set, a config hook for market selection, and the table UI.
 
 ## Known limitations
 
