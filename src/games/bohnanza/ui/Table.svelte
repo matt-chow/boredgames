@@ -6,6 +6,7 @@
   import { sfx } from '../../../client/lib/sound';
   import { toasts } from '../../../client/lib/toast.svelte';
   import Icon from '../../../hub/Icon.svelte';
+  import QuitGame from '../../../hub/QuitGame.svelte';
   import SettingsMenu from '../../../hub/SettingsMenu.svelte';
   import type { GameUiProps } from '../../ui';
   import { BEANS, type Bean } from '../rules/cards';
@@ -42,6 +43,7 @@
   let stealPick = $state<{ victim: number; field: number; bean: Bean } | null>(null);
   let inspect = $state<Bean | null>(null);
   let howto = $state(false);
+  let quitting = $state(false);
   let showSummary = $state(true);
   let logOpen = $state(false);
   let dockOpen = $state(true);
@@ -407,7 +409,7 @@
     <p class="step" class:mine={step.mine} aria-live="polite">{step.text}</p>
     <div class="tools">
       <button class="btn icon ghost" aria-label="Table log" onclick={() => (logOpen = !logOpen)}><Icon name="log" /></button>
-      <SettingsMenu onhelp={() => (howto = true)} />
+      <SettingsMenu onhelp={() => (howto = true)} onquit={room.status === 'playing' ? () => (quitting = true) : undefined} />
     </div>
   </header>
 
@@ -595,6 +597,7 @@
 
 <Inspect bind:bean={inspect} />
 <HowTo bind:open={howto} config={g.config} />
+<QuitGame {conn} {room} bind:open={quitting} />
 {#if over && showSummary && g.result}
   <Summary {g} {room} {conn} {name} onclose={() => (showSummary = false)} />
 {/if}

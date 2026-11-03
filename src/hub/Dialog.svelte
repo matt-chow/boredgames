@@ -4,6 +4,8 @@
 
   let { open = $bindable(false), title, wide = false, children }: { open: boolean; title: string; wide?: boolean; children: Snippet } = $props();
   let el: HTMLDialogElement;
+  const uid = $props.id();
+  const titleId = `${uid}-title`;
 
   $effect(() => {
     if (open && !el.open) el.showModal();
@@ -11,10 +13,10 @@
   });
 </script>
 
-<dialog bind:this={el} class:wide onclose={() => (open = false)} onclick={(e) => e.target === el && (open = false)} aria-labelledby="dlg-title">
+<dialog bind:this={el} class:wide onclose={() => (open = false)} onclick={(e) => e.target === el && (open = false)} aria-labelledby={titleId}>
   <div class="inner">
     <header>
-      <h2 id="dlg-title">{title}</h2>
+      <h2 id={titleId}>{title}</h2>
       <button class="btn icon ghost" aria-label="Close" onclick={() => (open = false)}><Icon name="close" /></button>
     </header>
     <div class="body">{@render children()}</div>

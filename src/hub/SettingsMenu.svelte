@@ -3,7 +3,7 @@
   import { sfx } from '../client/lib/sound';
   import Icon from './Icon.svelte';
 
-  let { onhelp = undefined }: { onhelp?: () => void } = $props();
+  let { onhelp = undefined, onquit = undefined }: { onhelp?: () => void; onquit?: () => void } = $props();
   let open = $state(false);
   let root: HTMLElement;
 
@@ -32,6 +32,9 @@
         <button role="radio" aria-checked={settings.layout === 'spatial'} class:on={settings.layout === 'spatial'} onclick={() => (settings.layout = 'spatial')}>Table</button>
         <button role="radio" aria-checked={settings.layout === 'compact'} class:on={settings.layout === 'compact'} onclick={() => (settings.layout = 'compact')}>Compact</button>
       </div>
+      {#if onquit}
+        <button class="quit" onclick={() => ((open = false), onquit())}><Icon name="leave" size={16} /> Quit game…</button>
+      {/if}
     </div>
   {/if}
 </div>
@@ -96,6 +99,29 @@
     color: var(--ink-2);
     font-size: 13px;
     cursor: pointer;
+  }
+  .quit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    margin-top: 10px;
+    padding: 10px 0 0;
+    border: 0;
+    border-top: 1px solid var(--rim);
+    background: none;
+    color: var(--ink-2);
+    font: inherit;
+    font-size: 14px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .quit:hover {
+    color: var(--ink);
+  }
+  .quit:focus-visible {
+    outline: 2px solid var(--sprout);
+    outline-offset: 2px;
   }
   .seg button.on {
     background: var(--ink);

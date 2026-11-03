@@ -4,6 +4,7 @@
   import { RoomConnection } from '../client/lib/connection.svelte';
   import { forgetRoom, rememberRoom } from '../client/lib/recent';
   import { router } from '../client/lib/router.svelte';
+  import { toasts } from '../client/lib/toast.svelte';
   import { loadString, save } from '../client/lib/storage';
   import { MAX_NAME, normalizeName, type RoomSummary } from '../shared/protocol';
   import { GAME_UI, type GameUiProps } from '../games/ui';
@@ -36,6 +37,13 @@
   function connect() {
     rememberRoom(code);
     conn = new RoomConnection(code);
+    // Someone quit mid-game: their seat is still there, now played by a bot.
+    conn.onRoom((next, prev) => {
+      if (!prev || prev.status !== 'playing') return;
+      for (const s of next.seats)
+        if (s.bot && s.seat !== next.you && prev.seats[s.seat] && !prev.seats[s.seat].bot)
+          toasts.push(`${prev.seats[s.seat].name} left the game. A bot plays their seat now.`);
+    });
     stage = 'live';
   }
 
