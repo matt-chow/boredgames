@@ -7,7 +7,7 @@ test('one player practises against bots: the home page seats them, the lobby add
   const { page } = ana;
   await page.goto('/');
   await page.fill('#name', 'Ana');
-  await page.getByRole('button', { name: /Practise with bots/ }).click();
+  await page.getByRole('article', { name: 'Bohnanza' }).getByRole('button', { name: /Practise with bots/ }).click();
   await page.waitForURL(/\/r\/[A-Z0-9]{6}$/);
 
   // Bohnanza needs three players, so two bots are already seated.
@@ -42,7 +42,7 @@ test('panning the table selects no text, and an offer started from a card asks w
   const { page } = ana;
   await page.goto('/');
   await page.fill('#name', 'Ana');
-  await page.getByRole('button', { name: /Practise with bots/ }).click();
+  await page.getByRole('article', { name: 'Bohnanza' }).getByRole('button', { name: /Practise with bots/ }).click();
   await page.waitForURL(/\/r\/[A-Z0-9]{6}$/);
   await page.getByRole('button', { name: 'Start the game' }).click();
   await expect(page.locator('.table .turn')).toBeVisible();
