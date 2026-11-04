@@ -1,8 +1,8 @@
 /** Turns a `Ruleset` into a `GameModule` the hub can host. Validation and projection live here; effects in runtime.ts. */
 import { seedRng, shuffle } from '../rng';
 import type { ApplyResult, BotMove, GameModule, PlayerResult } from '../types';
-import { randomMarket, validateMarket, validateRuleset } from './market';
-import { costOf, makeLibrary, Runtime, type Library } from './runtime';
+import { activeSets, randomMarket, randomProjects, sanitizeMarketConfig, validateBans, validateMarket, validateProjects, validateRuleset } from './market';
+import { costOf, makeLibrary, matches, projectPrice, Runtime, type Library } from './runtime';
 import type {
   CardId,
   CardRefView,
@@ -20,6 +20,8 @@ export * from './market';
 export type * from './types';
 
 const STATE_VERSION = 1;
+const DEFAULT_WORDS = { actions: 'actions', treasures: 'treasures', buyPhase: 'buy', project: 'project' };
+const title = (x: string) => x[0].toUpperCase() + x.slice(1);
 const fail = (code: string, error: string): ApplyResult<DeckState> => ({ ok: false, code, error });
 
 function ownedCards(p: PlayerZones): CardId[] {
@@ -27,18 +29,30 @@ function ownedCards(p: PlayerZones): CardId[] {
 }
 
 function legalMoves(s: DeckState, lib: Library, seat: number): DeckView['legal'] {
-  const none = { play: [], buy: [], endPhase: false };
+  const none = { play: [], buy: [], endPhase: false, convert: false, claim: [] };
   if (s.over || s.pending || seat !== s.turn.seat) return none;
   const { phase, actions, buys, coins, bought } = s.turn;
   const types = (id: CardId) => lib.defs[s.cards[id]].types;
   const play = s.players[seat].hand.filter((id) =>
-    phase === 'action' ? actions > 0 && types(id).includes('action') : !bought && types(id).includes('treasure'),
+    phase === 'action' ? actions > 0 && types(id).includes('action') : (!bought || !!lib.rules.lateTreasures) && types(id).includes('treasure'),
   );
   const buy =
     phase === 'buy' && buys > 0
       ? Object.keys(s.supply).filter((k) => s.supply[k].length > 0 && !lib.defs[k].noBuy && costOf(s, lib, k) <= coins)
       : [];
-  return { play, buy, endPhase: true };
+  const conv = lib.rules.convert;
+  const convert = !!conv && phase === 'buy' && s.turn.converted < conv.maxPerTurn && (s.players[seat].tokens[conv.token] ?? 0) > 0;
+  const claim =
+    phase === 'buy' && buys > 0
+      ? s.projects
+          .filter((x) => {
+            if (x.by !== null) return false;
+            const price = projectPrice(s, lib, x.key, seat);
+            return price.coins <= coins && Object.entries(price.tokens).every(([t, n]) => (s.players[seat].tokens[t] ?? 0) >= n);
+          })
+          .map((x) => x.key)
+      : [];
+  return { play, buy, endPhase: true, convert, claim };
 }
 
 export function finalScores(s: DeckState, lib: Library): FinalScore[] {
@@ -46,22 +60,31 @@ export function finalScores(s: DeckState, lib: Library): FinalScore[] {
     const ids = ownedCards(p);
     const counts = new Map<string, number>();
     for (const id of ids) counts.set(s.cards[id], (counts.get(s.cards[id]) ?? 0) + 1);
-    const cards = [...counts].map(([key, count]) => {
+    const own = s.projects.filter((x) => x.by === seat);
+    const all = s.projects.filter((x) => x.by !== null);
+    const worth = (key: string): number => {
       const v = lib.defs[key].vp ?? 0;
-      const each = typeof v === 'number' ? v : Math.floor(ids.length / v.per) * v.each;
-      return { key, count, vp: each * count };
-    });
-    return { seat, total: p.vp + cards.reduce((a, c) => a + c.vp, 0), turns: p.turns, tokens: p.vp, cards };
+      if (typeof v === 'number') return v;
+      if ('per' in v) return Math.floor(ids.filter((id) => matches(lib.defs[s.cards[id]], v.of)).length / v.per) * v.each;
+      const held = v.perToken ? Math.floor((p.tokens[v.perToken.token] ?? 0) / v.perToken.per) : 0;
+      return v.base + held + (v.ownProjects ?? 0) * own.length + (v.allProjects ?? 0) * all.length;
+    };
+    const cards = [...counts].map(([key, count]) => ({ key, count, vp: worth(key) * count }));
+    const projects = own.map((x) => ({ key: x.key, vp: lib.rules.projects!.find((d) => d.key === x.key)!.vp }));
+    return { seat, total: p.vp + cards.reduce((a, c) => a + c.vp, 0) + projects.reduce((a, c) => a + c.vp, 0), turns: p.turns, tokens: p.vp, cards, projects };
   });
 }
 
 function setup(lib: Library, playerCount: number, seed: string, config: DeckConfig): DeckState {
   const rules = lib.rules;
   const rng = seedRng(seed);
-  const market = config.market.length ? [...config.market] : randomMarket(rules, rng, config.bans);
+  const sets = activeSets(rules, config);
+  const market = config.market.length ? [...config.market] : randomMarket(rules, rng, config.bans, sets);
+  const projects = config.projects?.length ? [...config.projects] : randomProjects(rules, rng, sets);
   const physical: string[] = [];
   const piles: [string, number][] = [
     ...Object.entries(rules.basicPiles(playerCount)),
+    ...Object.entries(rules.extraPiles?.(market, playerCount) ?? {}),
     ...market.map((k): [string, number] => [k, rules.marketPileSize(k, playerCount)]),
   ];
   for (const [key, count] of piles) for (let i = 0; i < count; i++) physical.push(key);
@@ -96,7 +119,7 @@ function setup(lib: Library, playerCount: number, seed: string, config: DeckConf
     trash: [],
     limbo: [],
     players,
-    turn: { seat: first, number: 0, phase: 'action', actions: 1, buys: 1, coins: 0, bought: false, costMods: [] },
+    turn: { seat: first, number: 0, phase: 'action', actions: 1, buys: 1, coins: 0, bought: false, costMods: [], actionsPlayed: 0, converted: 0, projectDiscount: { coins: 0, tokens: 0 } },
     extraTurns: [],
     delays: [],
     temps: [],
@@ -108,6 +131,7 @@ function setup(lib: Library, playerCount: number, seed: string, config: DeckConf
     log: [],
     nextLog: 1,
     over: false,
+    projects: projects.map((key) => ({ key, by: null, onTurn: null, surcharges: [] })),
   };
   const rt = new Runtime(state, lib);
   rt.beginTurn(first);
@@ -126,6 +150,7 @@ function validAnswer(s: DeckState, a: Extract<DeckAction, { type: 'decide' }>): 
       return q.min === q.max ? `Choose exactly ${q.min}.` : `Choose between ${q.min} and ${q.max}.`;
     return null;
   }
+  if (q.kind === 'player') return Number.isInteger(a.seat) && q.seats?.includes(a.seat!) ? null : 'Choose one of the other players.';
   if (q.kind === 'pile') {
     if (a.pile === undefined) return q.optional ? null : 'Choose a pile.';
     return q.piles.includes(a.pile) ? null : 'That pile is not one of the choices.';
@@ -134,6 +159,7 @@ function validAnswer(s: DeckState, a: Extract<DeckAction, { type: 'decide' }>): 
 }
 
 function apply(lib: Library, prev: DeckState, seat: number, a: DeckAction): ApplyResult<DeckState> {
+  const words = lib.rules.labels ?? DEFAULT_WORDS;
   if (prev.over) return fail('game-over', 'The game is over.');
   if (!a || typeof a !== 'object') return fail('bad-request', 'Unknown action.');
   if (a.type === 'decide') {
@@ -150,18 +176,36 @@ function apply(lib: Library, prev: DeckState, seat: number, a: DeckAction): Appl
       if (!prev.players[seat].hand.includes(a.card)) return fail('not-in-hand', 'That card is not in your hand.');
       if (!legal.play.includes(a.card)) {
         if (prev.turn.phase === 'action')
-          return fail('illegal-play', prev.turn.actions > 0 ? 'Only actions can be played in this phase.' : 'You have no actions left.');
-        return fail('illegal-play', prev.turn.bought ? 'Treasures must be played before buying.' : 'Only treasures can be played in this phase.');
+          return fail('illegal-play', prev.turn.actions > 0 ? `Only ${words.actions} can be played in this phase.` : `You have no ${words.actions} left.`);
+        return fail('illegal-play', prev.turn.bought && !lib.rules.lateTreasures ? `${title(words.treasures)} must be played before buying.` : `Only ${words.treasures} can be played in this phase.`);
       }
     } else if (a.type === 'buy') {
       if (typeof a.pile !== 'string' || !Object.hasOwn(prev.supply, a.pile)) return fail('bad-pile', 'That pile is not in this game.');
-      if (prev.turn.phase !== 'buy') return fail('illegal-buy', 'Move to the buy phase first.');
+      if (prev.turn.phase !== 'buy') return fail('illegal-buy', `Move to the ${words.buyPhase} phase first.`);
       if (!legal.buy.includes(a.pile)) {
         if (prev.turn.buys <= 0) return fail('illegal-buy', 'You have no buys left.');
         if (!prev.supply[a.pile].length) return fail('illegal-buy', 'That pile is empty.');
         if (lib.defs[a.pile].noBuy) return fail('illegal-buy', 'That card cannot be bought.');
         return fail('illegal-buy', 'You do not have enough coins.');
       }
+    } else if (a.type === 'play-treasures') {
+      if (prev.turn.phase !== 'buy') return fail('illegal-play', `Move to the ${words.buyPhase} phase first.`);
+      if (prev.turn.bought && !lib.rules.lateTreasures) return fail('illegal-play', `${title(words.treasures)} must be played before buying.`);
+      if (!legal.play.length) return fail('illegal-play', `You have no ${words.treasures} to play.`);
+    } else if (a.type === 'convert') {
+      const conv = lib.rules.convert;
+      if (!conv) return fail('bad-request', 'Unknown action.');
+      if (prev.turn.phase !== 'buy') return fail('illegal-convert', `Move to the ${words.buyPhase} phase first.`);
+      const token = lib.rules.labels?.tokens[conv.token] ?? conv.token;
+      if (prev.turn.converted >= conv.maxPerTurn) return fail('illegal-convert', `You can only turn ${conv.maxPerTurn} ${token} into coins each turn.`);
+      if (!legal.convert) return fail('illegal-convert', `You have no ${token}.`);
+    } else if (a.type === 'claim') {
+      const here = typeof a.project === 'string' ? prev.projects.find((x) => x.key === a.project) : undefined;
+      if (!here) return fail('bad-project', `That ${words.project} is not in this game.`);
+      if (prev.turn.phase !== 'buy') return fail('illegal-claim', `Move to the ${words.buyPhase} phase first.`);
+      if (here.by !== null) return fail('illegal-claim', `That ${words.project} has already been completed.`);
+      if (prev.turn.buys <= 0) return fail('illegal-claim', 'You have no buys left.');
+      if (!legal.claim.includes(a.project)) return fail('illegal-claim', `You can’t pay for that ${words.project} yet.`);
     } else if (a.type !== 'end-phase') return fail('bad-request', 'Unknown action.');
   }
 
@@ -169,13 +213,16 @@ function apply(lib: Library, prev: DeckState, seat: number, a: DeckAction): Appl
   const rt = new Runtime(state, lib);
   switch (a.type) {
     case 'decide':
-      rt.answer(a.cards ?? [], a.pile, a.option);
+      rt.answer(a.cards ?? [], a.pile, a.option, a.seat);
       break;
     case 'play': {
       if (state.turn.phase === 'action') state.turn.actions--;
       rt.startPlay(seat, a.card);
       break;
     }
+    case 'play-treasures':
+      rt.startPlayTreasures(seat);
+      break;
     case 'buy': {
       state.turn.buys--;
       state.turn.coins -= costOf(state, lib, a.pile);
@@ -183,12 +230,25 @@ function apply(lib: Library, prev: DeckState, seat: number, a: DeckAction): Appl
       rt.startBuy(seat, a.pile);
       break;
     }
+    case 'convert':
+      rt.convert(seat);
+      break;
+    case 'claim':
+      rt.claim(seat, a.project);
+      break;
     case 'end-phase':
       if (state.turn.phase === 'action') state.turn.phase = 'buy';
       else rt.endTurn();
       break;
   }
   return { ok: true, state, undoable: !rt.tainted && !state.over && state.turn.seat === seat };
+}
+
+/** How many of each card a player owns, in every zone. Counts only: the order of a deck never leaves the server. */
+function ownedCounts(s: DeckState, p: DeckState['players'][number]): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const id of [...p.deck, ...p.hand, ...p.discard, ...p.play, ...Object.values(p.mats).flat()]) counts[s.cards[id]] = (counts[s.cards[id]] ?? 0) + 1;
+  return Object.fromEntries(Object.entries(counts).sort(([a], [b]) => a.localeCompare(b)));
 }
 
 function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
@@ -214,9 +274,16 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
       pending.cards = q.cards.map(ref);
       pending.piles = q.piles;
       pending.options = q.options;
+      pending.seats = q.seats;
+      pending.hint = q.hint;
     }
   }
   const { costMods: _, ...turn } = s.turn;
+  const projectViews: DeckView['projects'] = s.projects.map((x) => {
+    const def = lib.rules.projects!.find((d) => d.key === x.key)!;
+    const price = viewer === null ? { coins: def.coins, tokens: def.tokens } : projectPrice(s, lib, x.key, viewer);
+    return { key: x.key, by: x.by, coins: price.coins, tokens: price.tokens, vp: def.vp };
+  });
   return {
     rulesetId: s.rulesetId,
     you: viewer,
@@ -244,9 +311,11 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
     })),
     hand: self ? self.hand.map(ref) : [],
     discard: self ? self.discard.map(ref) : [],
+    owned: self ? ownedCounts(s, self) : {},
     revealed: s.limbo.filter((l) => l.public).map((l) => ref(l.id)),
     pending,
-    legal: viewer === null ? { play: [], buy: [], endPhase: false } : legalMoves(s, lib, viewer),
+    projects: projectViews,
+    legal: viewer === null ? { play: [], buy: [], endPhase: false, convert: false, claim: [] } : legalMoves(s, lib, viewer),
     log: s.log.filter((e) => e.to === undefined || e.to === viewer),
     over: s.over,
     final: s.over ? finalScores(s, lib) : null,
@@ -262,6 +331,7 @@ function bot(v: DeckView): BotMove<DeckAction> | null {
     if (q.seat !== v.you) return null;
     if (q.kind === 'cards' || q.kind === 'react') return { actions: [{ type: 'decide', id: q.id, cards: (q.cards ?? []).slice(0, q.min).map((c) => c.id) }], delayMs };
     if (q.kind === 'pile') return { actions: [{ type: 'decide', id: q.id, pile: q.piles?.[0] }], delayMs };
+    if (q.kind === 'player') return { actions: [{ type: 'decide', id: q.id, seat: q.seats?.[0] }], delayMs };
     return { actions: [{ type: 'decide', id: q.id, option: 0 }], delayMs };
   }
   if (v.turn.seat !== v.you) return null;
@@ -271,18 +341,26 @@ function bot(v: DeckView): BotMove<DeckAction> | null {
   return { actions: [...buy.slice(0, 1).map((pile): DeckAction => ({ type: 'buy', pile })), { type: 'end-phase' }], delayMs };
 }
 
-export function createDeckGame(rules: Ruleset): GameModule<DeckConfig, DeckState, DeckAction, DeckView> {
+/** `rules` is public catalogue data: the table UI reads card names and text from it. */
+export type DeckGame = GameModule<DeckConfig, DeckState, DeckAction, DeckView> & { rules: Ruleset };
+
+export function createDeckGame(rules: Ruleset): DeckGame {
   const problems = validateRuleset(rules);
   if (problems.length) throw new Error(`deckbuilder: invalid ruleset ${rules.id}: ${problems.join('; ')}`);
   const lib = makeLibrary(rules);
   return {
+    rules,
     meta: { id: rules.id, name: rules.name, minPlayers: rules.minPlayers, maxPlayers: rules.maxPlayers, stateVersion: STATE_VERSION },
     options: [],
-    defaultConfig: () => ({ market: [], bans: [] }),
+    defaultConfig: () => ({ market: [], bans: [], ...(rules.projects ? { projects: [] } : {}), ...(rules.sets ? { sets: rules.defaultSets ?? rules.sets.map((x) => x.key) } : {}) }),
     validateConfig(config, n) {
       if (n < rules.minPlayers || n > rules.maxPlayers) return `${rules.name} is for ${rules.minPlayers}–${rules.maxPlayers} players.`;
-      return config.market.length ? validateMarket(rules, config.market, config.bans) : null;
+      const sets = activeSets(rules, config);
+      const problem = config.market.length ? validateMarket(rules, config.market, config.bans) : validateBans(rules, config.bans, sets);
+      if (problem) return problem;
+      return config.projects?.length ? validateProjects(rules, config.projects) : null;
     },
+    sanitizeConfig: (raw) => sanitizeMarketConfig(rules, raw),
     setup: ({ playerCount, seed, config }) => setup(lib, playerCount, seed, config),
     apply: (s, seat, a) => apply(lib, s, seat, a),
     actors: (s) => (s.over ? [] : [s.pending ? s.pending.seat : s.turn.seat]),
@@ -297,7 +375,7 @@ export function createDeckGame(rules: Ruleset): GameModule<DeckConfig, DeckState
         return { seat: me.seat, score: me.total, rank, winner: rank === 1 };
       });
     },
-    bot,
+    bot: rules.bot ?? bot,
     migrate(state, from) {
       if (from === STATE_VERSION) return state as DeckState;
       throw new Error(`deckbuilder: cannot read state version ${from}`);

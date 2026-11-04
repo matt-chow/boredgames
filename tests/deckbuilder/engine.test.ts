@@ -85,6 +85,37 @@ describe('market selection', () => {
     expect(a.market).toEqual(b.market);
     expect(a.rng).not.toEqual(b.rng);
   });
+
+  it('DB-MARKET-5: a market message is cleaned: only known, selectable, different piles are stored', () => {
+    const clean = (raw: Record<string, unknown>) => game.sanitizeConfig!(raw);
+    expect(clean({ market: DEFAULT_MARKET, bans: ['draw2'] })).toEqual({ config: { market: DEFAULT_MARKET, bans: ['draw2'] } });
+    expect(clean({ market: ['draw2'] })).toEqual({ config: { market: ['draw2'] } });
+    expect(clean({ junk: 1 })).toEqual({ config: {} });
+    const bad: unknown[] = ['draw2', 7, null, {}, [1], ['draw2', 'draw2'], ['unfinished'], ['coin1'], ['constructor'], [...SELECTABLE, 'draw2']];
+    for (const v of bad) {
+      expect(clean({ market: v }), JSON.stringify(v)).toHaveProperty('error');
+      expect(clean({ bans: v }), JSON.stringify(v)).toHaveProperty('error');
+    }
+    expect(clean({ market: SELECTABLE.slice(0, 11) })).toHaveProperty('error');
+    expect(clean({ bans: SELECTABLE })).toEqual({ config: { bans: SELECTABLE } });
+  });
+
+  it('DB-MARKET-6: a game cannot start with a partial market, or with bans that leave too few piles', () => {
+    const check = (market: string[], bans: string[]) => game.validateConfig({ market, bans }, 2);
+    expect(check([], [])).toBeNull();
+    expect(check(DEFAULT_MARKET.slice(0, 4), [])).toMatch(/exactly 10/);
+    expect(check([], SELECTABLE.slice(0, SELECTABLE.length - 10))).toBeNull();
+    expect(check([], SELECTABLE.slice(0, SELECTABLE.length - 9))).toMatch(/Too many bans/);
+    expect(check(DEFAULT_MARKET, SELECTABLE.filter((k) => !DEFAULT_MARKET.includes(k)))).toBeNull();
+  });
+
+  it('DB-MARKET-7: bans shape a random market, and a manual market is used exactly as chosen', () => {
+    const bans = SELECTABLE.slice(0, 8);
+    const random = game.setup({ playerCount: 2, seed: 'b', config: { market: [], bans } });
+    expect(random.market).toHaveLength(10);
+    expect(random.market.filter((k) => bans.includes(k))).toEqual([]);
+    expect(start(2, DEFAULT_MARKET).market).toEqual(DEFAULT_MARKET);
+  });
 });
 
 describe('ruleset validation', () => {
@@ -135,6 +166,75 @@ describe('turn structure', () => {
     expect(t.turn.coins).toBe(2);
     t = act(t, me, { type: 'play', card: ids[0] });
     expect(t.turn.coins).toBe(3);
+  });
+
+  it('DB-TURN-12: playing all treasures plays exactly the treasures in hand, in hand order, and keeps the rest', () => {
+    const { s, me, ids } = holding(['coin2', 'point1', 'coin1', 'draw2', 'coin1']);
+    const t = act(act(s, me, { type: 'end-phase' }), me, { type: 'play-treasures' });
+    expect(t.turn.coins).toBe(4);
+    expect(t.players[me].play).toEqual([ids[0], ids[2], ids[4]]);
+    expect(t.players[me].hand).toEqual([ids[1], ids[3]]);
+    expect(t.turn.phase).toBe('buy');
+    expect(t.turn.seat).toBe(me);
+    assertConserved(t);
+  });
+
+  it('DB-TURN-13: play-all is refused in the action phase, after buying, with no treasures, and for other seats', () => {
+    const refused = (s: DeckState, seat: number) => {
+      const r = game.apply(s, seat, { type: 'play-treasures' });
+      return r.ok ? null : r.code;
+    };
+    const { s, me } = holding(['coin1', 'coin1', 'coin1', 'coin1']);
+    expect(refused(s, me)).toBe('illegal-play');
+    const buy = act(s, me, { type: 'end-phase' });
+    expect(refused(buy, (me + 1) % 2)).toBe('not-your-turn');
+    const paid = act(act(buy, me, { type: 'play', card: buy.players[me].hand[0] }), me, { type: 'play', card: buy.players[me].hand[1] });
+    expect(refused(act(paid, me, { type: 'buy', pile: 'point1' }), me)).toBe('illegal-play');
+    const none = holding(['point1']);
+    expect(refused(act(none.s, none.me, { type: 'end-phase' }), none.me)).toBe('illegal-play');
+  });
+
+  it('DB-TURN-14: a treasure that asks a question pauses play-all, which resumes after a reload', () => {
+    const asking = createDeckGame({
+      ...RULES,
+      id: 'asking',
+      cards: [
+        ...CARDS,
+        {
+          key: 'coin-ask',
+          name: 'coin-ask',
+          cost: 1,
+          types: ['treasure'],
+          text: '',
+          status: 'ready',
+          basic: true,
+          coins: 1,
+          effects: [{ op: 'may', prompt: 'One more?', then: [{ op: 'coins', n: 1 }] }],
+        },
+      ],
+    });
+    const { s, me, ids } = holding(['coin1', 'coin-ask', 'coin2']);
+    const step = (from: DeckState, a: Parameters<typeof asking.apply>[2]) => {
+      const r = asking.apply(JSON.parse(JSON.stringify(from)), me, a);
+      if (!r.ok) throw new Error(r.error);
+      return r.state;
+    };
+    const paused = step(step(s, { type: 'end-phase' }), { type: 'play-treasures' });
+    expect(paused.pending).toMatchObject({ seat: me, kind: 'option' });
+    expect(paused.players[me].play).toEqual([ids[0], ids[1]]);
+    expect(paused.players[me].hand).toEqual([ids[2]]);
+    expect(asking.apply(paused, me, { type: 'buy', pile: 'point1' })).toMatchObject({ ok: false, code: 'decision-first' });
+    const done = step(paused, { type: 'decide', id: paused.pending!.id, option: 0 });
+    expect(done.pending).toBeNull();
+    expect(done.players[me].play).toEqual(ids);
+    expect(done.turn.coins).toBe(5);
+    expect(done.stack).toEqual([]);
+  });
+
+  it('DB-TURN-15: plain treasures can be undone after play-all, because nothing new was learned', () => {
+    const { s, me } = holding(['coin1', 'coin1']);
+    const r = game.apply(act(s, me, { type: 'end-phase' }), me, { type: 'play-treasures' });
+    expect(r).toMatchObject({ ok: true, undoable: true });
   });
 
   it('DB-TURN-4: a played action spends an action; with none left, it explains why not', () => {
@@ -785,7 +885,7 @@ describe('hidden information', () => {
     expect(v.hand).toEqual([]);
     expect(v.discard).toEqual([]);
     expect(v.pending!.cards).toBeUndefined();
-    expect(v.legal).toEqual({ play: [], buy: [], endPhase: false });
+    expect(v.legal).toEqual({ play: [], buy: [], endPhase: false, convert: false, claim: [] });
   });
 
   it('DB-PRIV-3: only the owner sees their whole discard pile; others see its top', () => {

@@ -2,8 +2,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 import type { DeckAction, DeckState, DeckView } from '../../src/engine/deckbuilder';
 import { randInt, seedRng, shuffle } from '../../src/engine/rng';
 import { MemoryStore, RoomCore } from '../../src/server/core';
-import { GAMES } from '../../src/games/registry';
-import { assertConserved, CARDS, game, SELECTABLE } from './fixture';
+import { GAMES, HOSTABLE_GAMES, LISTED_GAMES } from '../../src/games/registry';
+import { GAME_SETUP, GAME_UI } from '../../src/games/ui';
+import { assertConserved, CARDS, DEFAULT_MARKET, game, SELECTABLE } from './fixture';
 
 /** Everything a seat must not learn, as ids: others' hands and every deck. */
 function assertNoLeak(s: DeckState) {
@@ -221,11 +222,52 @@ describe('hosted by the room core', () => {
     expect((store.getState() as DeckState).turn.phase).toBe('action');
   });
 
-  it('DB-ROOM-4: the engine is not listed in the hub: no deck game is registered', () => {
-    for (const g of Object.values(GAMES)) {
-      const s = g.setup({ playerCount: g.meta.minPlayers, seed: 'x', config: g.defaultConfig(g.meta.minPlayers) });
-      expect(s).not.toHaveProperty('rulesetId');
-    }
+  it('DB-ROOM-4: the test fixture is never registered outside the bench', () => {
     expect(GAMES).not.toHaveProperty(game.meta.id);
+    expect(HOSTABLE_GAMES).toEqual(LISTED_GAMES);
+    expect(LISTED_GAMES).not.toContain(game.meta.id);
+    expect(__DECK_BENCH__).toBe(false);
+    expect(GAME_UI).not.toHaveProperty(game.meta.id);
+    expect(GAME_SETUP).not.toHaveProperty(game.meta.id);
+  });
+
+  function lobby() {
+    GAMES[game.meta.id] = game;
+    const core = RoomCore.create(new MemoryStore(), opts, { code: 'ABCDEF', gameId: game.meta.id, name: 'One', th: 'a' });
+    core.join('Two', 'b');
+    return core;
+  }
+  let configId = 0;
+  const config = (core: RoomCore, seat: number, c: unknown) => core.handle(seat, { t: 'config', id: `c${++configId}`, v: core.version, config: c } as never, connected);
+
+  it('DB-ROOM-5: the host sets a market in the lobby, a partial one blocks the start, and the game uses it', () => {
+    const core = lobby();
+    expect(config(core, 0, { market: DEFAULT_MARKET.slice(0, 3) }).ack).toMatchObject({ ok: true });
+    const partial = core.view(0, connected);
+    expect(partial.config.market).toEqual(DEFAULT_MARKET.slice(0, 3));
+    expect(partial.configError).toMatch(/exactly 10/);
+    expect(partial.canStart).toBe(false);
+    expect(core.handle(0, { t: 'start', id: 's1', v: core.version }, connected).ack).toMatchObject({ ok: false });
+    config(core, 0, { market: DEFAULT_MARKET });
+    expect(core.handle(0, { t: 'start', id: 's2', v: core.version }, connected).ack).toMatchObject({ ok: true });
+    expect((core.view(0, connected).game as DeckView).market).toEqual(DEFAULT_MARKET);
+  });
+
+  it('DB-ROOM-6: only the host may set the market, and bad values change nothing', () => {
+    const core = lobby();
+    expect(config(core, 1, { market: DEFAULT_MARKET }).ack).toMatchObject({ ok: false });
+    for (const bad of [{ market: 'draw2' }, { market: ['nope'] }, { bans: [1] }, { market: Array(50).fill('draw2') }]) {
+      expect(config(core, 0, bad).ack, JSON.stringify(bad)).toMatchObject({ ok: false, code: 'bad-config' });
+    }
+    expect(core.view(0, connected).config).toEqual({ market: [], bans: [] });
+    expect(config(core, 0, { junk: true, proto: { x: 1 } }).ack).toMatchObject({ ok: true });
+    expect(core.view(0, connected).config).toEqual({ market: [], bans: [] });
+  });
+
+  it('DB-ROOM-7: a game with only boolean options still ignores structured config', () => {
+    const core = RoomCore.create(new MemoryStore(), opts, { code: 'ABCDEF', gameId: 'bohnanza', name: 'One', th: 'a' });
+    const before = core.view(0, new Set([0])).config;
+    core.handle(0, { t: 'config', id: 'c', v: core.version, config: { market: ['x'], bans: ['y'] } } as never, new Set([0]));
+    expect(core.view(0, new Set([0])).config).toEqual(before);
   });
 });

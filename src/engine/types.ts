@@ -55,6 +55,11 @@ export interface GameModule<Config = unknown, State = unknown, Action = unknown,
   defaultConfig(playerCount: number): Config;
   /** Returns a human-readable reason when the combination is unsupported. */
   validateConfig(config: Config, playerCount: number): string | null;
+  /**
+   * Clean the non-boolean settings in an untrusted `config` message. Returns the fields to store, or a reason to
+   * refuse the message. Games with only boolean options leave this out.
+   */
+  sanitizeConfig?(raw: Record<string, unknown>): { config: Partial<Config> } | { error: string };
   setup(ctx: SetupContext<Config>): State;
   /**
    * Validate and apply an action by `seat`. Must not mutate `state`.

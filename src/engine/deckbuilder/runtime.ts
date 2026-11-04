@@ -20,6 +20,7 @@ import type {
   LogEntry,
   Num,
   Pending,
+  PlayerRef,
   PlayerZones,
   Ruleset,
   TriggerRef,
@@ -28,6 +29,19 @@ import type {
 const MAX_STEPS = 50_000;
 const MAX_REPEAT = 100;
 const MAX_LOG = 300;
+const NO_DISCOUNT = { coins: 0, tokens: 0 };
+
+/** What this seat would pay for a project right now. */
+export function projectPrice(state: DeckState, lib: Library, key: string, seat: number): { coins: number; tokens: Record<string, number> } {
+  const def = lib.rules.projects!.find((p) => p.key === key)!;
+  const here = state.projects.find((p) => p.key === key);
+  const mine = seat === state.turn.seat ? state.turn.projectDiscount : NO_DISCOUNT;
+  const extra = (here?.surcharges ?? []).filter((x) => x.by !== seat).reduce((a, x) => a + x.coins, 0);
+  return {
+    coins: Math.max(0, def.coins + extra - mine.coins),
+    tokens: Object.fromEntries(Object.entries(def.tokens).map(([t, n]) => [t, Math.max(0, n - mine.tokens)])),
+  };
+}
 
 export interface Library {
   rules: Ruleset;
@@ -65,6 +79,8 @@ interface Ask {
   cards?: CardId[];
   piles?: string[];
   options?: string[];
+  seats?: number[];
+  hint?: Pending['hint'];
   as?: string;
   branches?: Effect[][];
 }
@@ -129,6 +145,8 @@ export class Runtime {
         return this.effect(f.ctx, f.fx);
       case 'play':
         return this.play(f.seat, f.card, f.holders);
+      case 'play-treasures':
+        return this.playTreasures(f);
       case 'react':
         return this.react(f);
       case 'triggers':
@@ -163,12 +181,43 @@ export class Runtime {
       return costOf(this.state, this.lib, key) + (n.plus ?? 0);
     }
     if ('token' in n) return this.state.players[ctx.player].tokens[n.token] ?? 0;
+    if ('count' in n) {
+      const p = this.state.players[ctx.player];
+      return n.count === 'deck+discard' ? p.deck.length + p.discard.length : p[n.count].length;
+    }
+    if ('countIn' in n) return this.varKeys(c, n.countIn).filter((k) => this.passes(c, k, n.filter)).length;
+    if ('add' in n) return n.add.reduce((a: number, x) => a + this.num(c, x), 0);
+    if ('min' in n) return Math.min(...n.min.map((x) => this.num(c, x)));
+    if ('mul' in n) return this.num(c, n.mul[0]) * n.mul[1];
+    if ('div' in n) return (n.up ? Math.ceil : Math.floor)(this.num(c, n.div[0]) / n.div[1]);
+    if ('actionsPlayed' in n) return this.state.turn.actionsPlayed;
+    if ('projects' in n) return this.state.projects.filter((x) => x.by !== null && (n.projects === 'all' || x.by === ctx.player)).length;
     return Object.values(this.state.supply).filter((p) => p.length === 0).length;
+  }
+
+  /** The card keys held in a variable, whether it holds cards or piles. */
+  private varKeys(c: number, name: string): string[] {
+    const v = this.state.ctxs[c].vars[name];
+    return Array.isArray(v) ? v.map((x) => (typeof x === 'number' ? this.key(x) : x)) : [];
+  }
+
+  /** The seat a reference points at, seen from the player resolving this context. */
+  private seatOf(c: number, who: PlayerRef | undefined): number {
+    const ctx = this.state.ctxs[c];
+    if (who === 'left') return (ctx.player + 1) % this.state.n;
+    if (who === 'parent' && ctx.parent !== null) return this.state.ctxs[ctx.parent].player;
+    if (typeof who === 'object') {
+      const v = ctx.vars[who.var];
+      return typeof v === 'number' ? v : ctx.player;
+    }
+    return ctx.player;
   }
 
   private passes(c: number, key: string, f: CardFilter | undefined): boolean {
     if (!f) return true;
     if (!matches(this.lib.defs[key], f)) return false;
+    if (f.sameAs !== undefined && !this.varKeys(c, f.sameAs).includes(key)) return false;
+    if (f.notSameAs !== undefined && this.varKeys(c, f.notSameAs).includes(key)) return false;
     const cost = costOf(this.state, this.lib, key);
     if (f.maxCost !== undefined && cost > this.num(c, f.maxCost)) return false;
     if (f.minCost !== undefined && cost < this.num(c, f.minCost)) return false;
@@ -189,12 +238,19 @@ export class Runtime {
     if ('gte' in q) return this.num(c, q.gte[0]) >= this.num(c, q.gte[1]);
     if ('inHand' in q) return this.state.players[ctx.player].hand.some((id) => this.passes(c, this.key(id), q.inHand));
     if ('pileEmpty' in q) return (this.state.supply[q.pileEmpty]?.length ?? 0) === 0;
+    if ('claimedLastTurn' in q) {
+      const last = this.state.players[ctx.player].turns - 1;
+      return this.state.projects.some((x) => x.by === ctx.player && x.onTurn === last);
+    }
+    if ('any' in q) return q.any.some((x) => this.cond(c, x));
+    if ('all' in q) return q.all.every((x) => this.cond(c, x));
     return !this.cond(c, q.not);
   }
 
   private cardList(c: number, ref: CardRef): CardId[] {
     const ctx = this.state.ctxs[c];
     if (ref === 'source') return ctx.source === null ? [] : [ctx.source];
+    if (ref === 'hand') return [...this.state.players[ctx.player].hand];
     const v = ctx.vars['rest' in ref ? ref.rest : ref.var];
     const ids = Array.isArray(v) ? v.filter((x): x is number => typeof x === 'number') : [];
     return 'rest' in ref ? ids.filter((id) => this.state.limbo.some((l) => l.id === id)) : ids;
@@ -205,6 +261,7 @@ export class Runtime {
     if (from === 'hand') return p.hand;
     if (from === 'discard') return p.discard;
     if (from === 'play') return p.play;
+    if (from === 'trash') return this.state.trash;
     return this.cardList(c, from);
   }
 
@@ -229,8 +286,7 @@ export class Runtime {
         s.turn.coins += this.num(c, fx.n);
         return;
       case 'token':
-        p.tokens[fx.token] = Math.max(0, (p.tokens[fx.token] ?? 0) + this.num(c, fx.n));
-        return;
+        return this.changeToken(this.seatOf(c, fx.player), fx.token, this.num(c, fx.n));
       case 'vp': {
         const count = this.num(c, fx.n);
         p.vp += count;
@@ -246,7 +302,7 @@ export class Runtime {
           ctx.vars[fx.as] = max === 0 ? [] : [...options];
           return;
         }
-        return this.ask({ kind: 'cards', seat: ctx.player, c, prompt: fx.prompt, after: fx.after, optional: min === 0, min, max, cards: [...options], as: fx.as });
+        return this.ask({ kind: 'cards', seat: this.seatOf(c, fx.by), c, prompt: fx.prompt, after: fx.after, optional: min === 0, min, max, cards: [...options], as: fx.as, hint: fx.hint });
       }
       case 'choose-pile': {
         const piles = Object.keys(s.supply).filter((k) => s.supply[k].length > 0 && this.passes(c, k, fx.filter));
@@ -255,16 +311,112 @@ export class Runtime {
           return;
         }
         const optional = !!fx.optional;
-        return this.ask({ kind: 'pile', seat: ctx.player, c, prompt: fx.prompt, after: fx.after, optional, min: optional ? 0 : 1, max: 1, piles, as: fx.as });
+        return this.ask({ kind: 'pile', seat: this.seatOf(c, fx.by), c, prompt: fx.prompt, after: fx.after, optional, min: optional ? 0 : 1, max: 1, piles, as: fx.as });
       }
-      case 'choose':
-        return this.ask({ kind: 'option', seat: ctx.player, c, prompt: fx.prompt, optional: false, min: 1, max: 1, options: fx.options.map((o) => o.label), branches: fx.options.map((o) => o.then) });
+      case 'choose': {
+        const pick = Math.min(fx.pick ?? 1, fx.options.length);
+        const taken = fx.taken ?? [];
+        // With no real choice left, skip the prompt. Everything chosen runs in the order listed.
+        const chosen = pick > 1 && fx.options.length <= pick ? fx.options.map((_, i) => i) : taken;
+        if (pick > 1 && chosen.length >= pick) {
+          this.pushFx(c, fx.options.filter((_, i) => chosen.includes(i)).flatMap((o) => o.then));
+          return;
+        }
+        const open = fx.options.map((_, i) => i).filter((i) => !taken.includes(i));
+        return this.ask({
+          kind: 'option',
+          seat: this.seatOf(c, fx.by),
+          c,
+          prompt: fx.prompt,
+          optional: false,
+          min: 1,
+          max: 1,
+          options: open.map((i) => fx.options[i].label),
+          branches: open.map((i) => (pick > 1 ? [{ ...fx, taken: [...taken, i] }] : fx.options[i].then)),
+        });
+      }
+      case 'choose-number': {
+        const max = Math.max(0, this.num(c, fx.max));
+        const min = Math.min(max, Math.max(0, this.num(c, fx.min)));
+        if (min === max) {
+          ctx.vars[fx.as] = min;
+          return;
+        }
+        const values = Array.from({ length: max - min + 1 }, (_, i) => min + i);
+        return this.ask({
+          kind: 'option',
+          seat: ctx.player,
+          c,
+          prompt: fx.prompt,
+          after: fx.after,
+          optional: false,
+          min: 1,
+          max: 1,
+          options: values.map(String),
+          branches: values.map((n) => [{ op: 'set', as: fx.as, n }]),
+        });
+      }
+      case 'choose-player': {
+        const seats = this.turnOrder().filter((x) => x !== ctx.player);
+        if (seats.length === 1) {
+          ctx.vars[fx.as] = seats[0];
+          return;
+        }
+        return this.ask({ kind: 'player', seat: ctx.player, c, prompt: fx.prompt, optional: false, min: 1, max: 1, seats, as: fx.as });
+      }
+      case 'choose-project': {
+        const open = s.projects.filter((x) => x.by === null);
+        if (open.length <= 1) {
+          ctx.vars[fx.as] = open.map((x) => x.key);
+          return;
+        }
+        const named = (key: string) => this.lib.rules.projects!.find((x) => x.key === key)!.name;
+        return this.ask({
+          kind: 'option',
+          seat: ctx.player,
+          c,
+          prompt: fx.prompt,
+          optional: false,
+          min: 1,
+          max: 1,
+          options: open.map((x) => named(x.key)),
+          branches: open.map((x) => [{ op: 'set', as: fx.as, keys: [x.key] }]),
+        });
+      }
+      case 'set':
+        ctx.vars[fx.as] = fx.keys ?? this.num(c, fx.n ?? 0);
+        return;
+      case 'on-player': {
+        const seat = this.seatOf(c, fx.player);
+        if (seat !== ctx.player) this.tainted = true;
+        const child = this.newCtx({ player: seat, source: ctx.source, vars: { ...ctx.vars }, parent: c });
+        this.pushFx(child, fx.effects);
+        return;
+      }
+      case 'project-discount':
+        s.turn.projectDiscount = {
+          coins: s.turn.projectDiscount.coins + this.num(c, fx.coins ?? 0),
+          tokens: s.turn.projectDiscount.tokens + this.num(c, fx.tokens ?? 0),
+        };
+        return;
+      case 'project-surcharge': {
+        const v = ctx.vars[fx.project];
+        const key = Array.isArray(v) ? v[0] : undefined;
+        const here = s.projects.find((x) => x.key === key);
+        if (!here || here.by !== null) return;
+        here.surcharges.push({ by: ctx.player, coins: this.num(c, fx.coins) });
+        this.tainted = true;
+        this.log({ seat: ctx.player, kind: 'surcharge', project: here.key });
+        return;
+      }
       case 'may':
-        return this.ask({ kind: 'option', seat: ctx.player, c, prompt: fx.prompt, optional: true, min: 1, max: 1, options: ['Yes', 'No'], branches: [fx.then, fx.else ?? []] });
+        return this.ask({ kind: 'option', seat: this.seatOf(c, fx.by), c, prompt: fx.prompt, optional: true, min: 1, max: 1, options: ['Yes', 'No'], branches: [fx.then, fx.else ?? []] });
       case 'move':
-        return this.moveAll(c, this.cardList(c, fx.cards), fx.to, !!fx.public);
+        return this.moveAll(c, this.cardList(c, fx.cards), fx.to, !!fx.public, this.seatOf(c, fx.player));
       case 'gain':
-        return this.gain(c, fx.pile, fx.to ?? 'discard');
+        return this.gain(c, fx.pile, fx.to ?? 'discard', this.seatOf(c, fx.player));
+      case 'gain-card':
+        return this.gainCards(c, this.cardList(c, fx.cards), fx.to ?? 'discard', this.seatOf(c, fx.player));
       case 'look':
       case 'reveal': {
         const n = this.num(c, fx.n);
@@ -272,7 +424,8 @@ export class Runtime {
         const taken = p.deck.splice(Math.max(0, p.deck.length - n)).reverse();
         const isPublic = fx.op === 'reveal';
         for (const id of taken) s.limbo.push({ id, owner: ctx.player, public: isPublic });
-        ctx.vars[fx.as] = taken;
+        const before = ctx.vars[fx.as];
+        ctx.vars[fx.as] = fx.append && Array.isArray(before) ? [...before, ...taken] : taken;
         this.tainted = true;
         const keys = taken.map(this.key);
         if (isPublic) this.log({ seat: ctx.player, kind: 'reveal', keys });
@@ -286,6 +439,18 @@ export class Runtime {
         this.tainted = true;
         this.log({ seat: ctx.player, kind: 'reveal', keys: this.cardList(c, fx.cards).map(this.key) });
         return;
+      case 'select':
+        ctx.vars[fx.as] = this.sourceList(c, fx.from).filter((id) => this.passes(c, this.key(id), fx.filter));
+        return;
+      case 'pass-up': {
+        const target = ctx.parent === null ? null : s.ctxs[ctx.parent];
+        const v = ctx.vars[fx.var];
+        if (!target || !Array.isArray(v)) return;
+        const name = fx.as ?? fx.var;
+        const had = target.vars[name];
+        target.vars[name] = [...(Array.isArray(had) ? had : []), ...v];
+        return;
+      }
       case 'shuffle':
         if (p.discard.length) this.reshuffle(c, ctx.player, null);
         return;
@@ -306,6 +471,12 @@ export class Runtime {
         const frames: Frame[] = [];
         for (let i = 0; i < n; i++) frames.push(...fx.effects.map((e) => ({ k: 'fx' as const, ctx: c, fx: e })));
         this.push(frames);
+        return;
+      }
+      case 'until': {
+        const left = Math.min(MAX_REPEAT, fx.max ?? MAX_REPEAT);
+        if (left <= 0 || this.cond(c, fx.cond)) return;
+        this.pushFx(c, [...fx.effects, { ...fx, max: left - 1 }]);
         return;
       }
       case 'if':
@@ -334,7 +505,7 @@ export class Runtime {
         });
         return;
       case 'on':
-        s.temps.push({ player: ctx.player, on: fx.on, filter: fx.filter, label: fx.label, source: ctx.source, effects: fx.effects });
+        s.temps.push({ player: ctx.player, on: fx.on, filter: fx.filter, label: fx.label, source: ctx.source, effects: fx.effects, once: fx.once });
         return;
       case 'immune': {
         const target = ctx.parent === null ? null : s.ctxs[ctx.parent];
@@ -379,10 +550,22 @@ export class Runtime {
       cards: q.cards ?? [],
       piles: q.piles ?? [],
       options: q.options ?? [],
+      seats: q.seats,
+      hint: q.hint,
       ctx: q.c,
       as: q.as,
       branches: q.branches,
     };
+  }
+
+  private changeToken(seat: number, token: string, n: number) {
+    const p = this.state.players[seat];
+    const had = p.tokens[token] ?? 0;
+    const cap = this.lib.rules.tokenCaps?.[token] ?? Infinity;
+    const now = Math.min(cap, Math.max(0, had + n));
+    p.tokens[token] = now;
+    if (seat !== this.state.turn.seat) this.tainted = true;
+    if (now !== had) this.log({ seat, kind: 'token', token, count: now - had });
   }
 
   /** Shuffle the discard pile under the deck. Queues `resume` so an interrupted effect continues afterwards. */
@@ -447,9 +630,10 @@ export class Runtime {
     else (p.mats[to.mat] ??= []).push(id);
   }
 
-  private moveAll(c: number, ids: CardId[], to: Dest, makePublic: boolean) {
+  private moveAll(c: number, ids: CardId[], to: Dest, makePublic: boolean, receiver: number) {
     const seat = this.state.ctxs[c].player;
-    const p = this.state.players[seat];
+    const p = this.state.players[receiver];
+    if (receiver !== seat) this.tainted = true;
     const isPublic = makePublic || to === 'trash' || to === 'discard' || to === 'supply' || to === 'play';
     const moved: CardId[] = [];
     for (const id of ids) {
@@ -463,11 +647,12 @@ export class Runtime {
     else {
       this.log({ seat, kind, count: moved.length });
       this.log({ seat, kind, keys: moved.map(this.key), to: seat });
+      if (receiver !== seat) this.log({ seat, kind, keys: moved.map(this.key), to: receiver });
     }
-    if (to === 'trash' || to === 'discard') for (let i = moved.length - 1; i >= 0; i--) this.fire(to, seat, moved[i]);
+    if (to === 'trash' || to === 'discard') for (let i = moved.length - 1; i >= 0; i--) this.fire(to, to === 'trash' ? seat : receiver, moved[i]);
   }
 
-  private gain(c: number, pile: string | { var: string }, to: 'discard' | 'deck' | 'hand') {
+  private gain(c: number, pile: string | { var: string }, to: 'discard' | 'deck' | 'hand', receiver: number) {
     const s = this.state;
     const ctx = s.ctxs[c];
     let key: string | undefined;
@@ -480,9 +665,34 @@ export class Runtime {
     if (!key) return;
     const id = s.supply[key]?.pop();
     if (id === undefined) return;
-    this.place(id, s.players[ctx.player], to);
-    this.log({ seat: ctx.player, kind: 'gain', keys: [key] });
-    this.fire('gain', ctx.player, id);
+    if (receiver !== ctx.player) this.tainted = true;
+    this.place(id, s.players[receiver], to);
+    this.log({ seat: receiver, kind: 'gain', keys: [key] });
+    this.fire('gain', receiver, id);
+  }
+
+  /** Whether every seat can already see this card where it is now. */
+  private inTheOpen(id: CardId): boolean {
+    const s = this.state;
+    return s.trash.includes(id) || s.limbo.some((l) => l.id === id && l.public) || s.players.some((p) => p.play.includes(id));
+  }
+
+  private gainCards(c: number, ids: CardId[], to: 'discard' | 'deck' | 'hand', receiver: number) {
+    const s = this.state;
+    if (receiver !== s.ctxs[c].player) this.tainted = true;
+    const moved: CardId[] = [];
+    for (const id of ids) {
+      const open = this.inTheOpen(id);
+      if (!this.take(id)) continue;
+      this.place(id, s.players[receiver], to);
+      moved.push(id);
+      if (open) this.log({ seat: receiver, kind: 'gain', keys: [this.key(id)] });
+      else {
+        this.log({ seat: receiver, kind: 'gain', count: 1 });
+        this.log({ seat: receiver, kind: 'gain', keys: [this.key(id)], to: receiver });
+      }
+    }
+    for (let i = moved.length - 1; i >= 0; i--) this.fire('gain', receiver, moved[i]);
   }
 
   // Playing cards and reactions
@@ -498,6 +708,7 @@ export class Runtime {
       p.play.push(card);
     }
     this.log({ seat, kind: 'play', keys: [def.key] });
+    if (def.types.includes('action')) s.turn.actionsPlayed++;
     const c = this.newCtx({ player: seat, source: card, holders });
     const frames: Frame[] = [];
     if (def.types.includes('attack')) frames.push({ k: 'react', ctx: c, seats: this.turnOrder().filter((x) => x !== seat) });
@@ -514,9 +725,9 @@ export class Runtime {
     const seats = [...f.seats];
     while (seats.length) {
       const seat = seats[0];
-      const cards = s.players[seat].hand.filter((id) => this.def(id).reaction);
+      const cards = s.players[seat].hand.filter((id) => this.def(id).reaction && !(this.def(id).reaction!.once && f.used?.includes(id)));
       if (cards.length) {
-        s.stack.push({ k: 'react', ctx: f.ctx, seats });
+        s.stack.push({ ...f, seats });
         this.ask({ kind: 'react', seat, c: f.ctx, prompt: 'Reveal a reaction to this attack?', optional: true, min: 0, max: 1, cards });
         return;
       }
@@ -553,11 +764,14 @@ export class Runtime {
     if (card !== null)
       for (const t of eventDef!.triggers ?? [])
         if (t.on === event && t.where === 'self') add(seat, { label: t.label, source: card, optional: t.optional, effects: t.effects });
+    const spent: unknown[] = [];
     for (const t of s.temps) {
       if (t.on !== event || t.player !== seat) continue;
       if (eventDef && !matches(eventDef, t.filter)) continue;
       add(t.player, { label: t.label, source: t.source, effects: t.effects });
+      if (t.once) spent.push(t);
     }
+    if (spent.length) s.temps = s.temps.filter((t) => !spent.includes(t));
     const frames: Frame[] = [];
     for (const holder of this.turnOrder()) {
       const list = bySeat.get(holder);
@@ -599,10 +813,13 @@ export class Runtime {
     const leaving = p.play.filter((id) => !held.has(id));
     p.play = p.play.filter((id) => held.has(id));
     p.discard.push(...hand, ...leaving);
+    // Effects waiting for the new hand outlast the temps cleared here.
+    const afterDeal = s.temps.filter((t) => t.on === 'hand-drawn' && t.player === seat);
     s.temps = [];
     s.turn.costMods = [];
     this.tainted = true;
     const c = this.newCtx({ player: seat });
+    if (afterDeal.length) this.push([{ k: 'triggers', seat, list: afterDeal.map((t) => ({ label: t.label, source: t.source, player: seat, effects: t.effects, vars: {} })) }]);
     this.pushFx(c, [{ op: 'draw', n: this.lib.rules.handSize }]);
     for (let i = leaving.length - 1; i >= 0; i--) this.fire('discard', seat, leaving[i]);
     for (let i = hand.length - 1; i >= 0; i--) this.fire('discard', seat, hand[i]);
@@ -610,9 +827,11 @@ export class Runtime {
 
   private gameEnds(): boolean {
     const s = this.state;
-    const { endPiles, emptyPilesToEnd } = this.lib.rules;
+    const { endPiles, emptyPilesToEnd, emptyMarketPilesOnly, projectsToEnd } = this.lib.rules;
     if (endPiles.some((k) => s.supply[k]?.length === 0)) return true;
-    return Object.values(s.supply).filter((p) => p.length === 0).length >= emptyPilesToEnd(s.n);
+    if (projectsToEnd && s.projects.filter((p) => p.by !== null).length >= projectsToEnd(s.n)) return true;
+    const piles = emptyMarketPilesOnly ? s.market.map((k) => s.supply[k]) : Object.values(s.supply);
+    return piles.filter((p) => p.length === 0).length >= emptyPilesToEnd(s.n);
   }
 
   private nextTurn() {
@@ -629,8 +848,9 @@ export class Runtime {
 
   beginTurn(seat: number) {
     const s = this.state;
-    s.turn = { seat, number: s.turn.number + 1, phase: 'action', actions: 1, buys: 1, coins: 0, bought: false, costMods: [] };
+    s.turn = { seat, number: s.turn.number + 1, phase: 'action', actions: 1, buys: 1, coins: 0, bought: false, costMods: [], actionsPlayed: 0, converted: 0, projectDiscount: { ...NO_DISCOUNT } };
     this.log({ seat, kind: 'turn' });
+    for (const x of s.projects) x.surcharges = x.surcharges.filter((m) => m.by !== seat);
     const due = s.delays.filter((d) => d.player === seat);
     s.delays = s.delays.filter((d) => d.player !== seat);
     this.fire('turn-start', seat, null);
@@ -646,7 +866,7 @@ export class Runtime {
 
   // Actions and answers. module.ts validates all of these first.
 
-  answer(cards: CardId[], pile: string | undefined, option: number | undefined) {
+  answer(cards: CardId[], pile: string | undefined, option: number | undefined, seat?: number) {
     const s = this.state;
     const q = s.pending!;
     s.pending = null;
@@ -659,6 +879,9 @@ export class Runtime {
         break;
       case 'option':
         this.pushFx(q.ctx, q.branches![option!]);
+        break;
+      case 'player':
+        s.ctxs[q.ctx].vars[q.as!] = seat!;
         break;
       case 'order': {
         const f = s.stack.at(-1) as Extract<Frame, { k: 'triggers' }>;
@@ -673,6 +896,7 @@ export class Runtime {
           break;
         }
         const def = this.def(cards[0]);
+        if (def.reaction!.once) f.used = [...(f.used ?? []), cards[0]];
         this.log({ seat: q.seat, kind: 'reveal', keys: [def.key] });
         const c = this.newCtx({ player: q.seat, source: cards[0], parent: q.ctx });
         this.pushFx(c, def.reaction!.effects);
@@ -687,11 +911,49 @@ export class Runtime {
     this.run();
   }
 
+  /** Treasures go down one at a time in hand order, so one that asks a question pauses the rest. */
+  startPlayTreasures(seat: number) {
+    this.push([{ k: 'play-treasures', seat }]);
+    this.run();
+  }
+
+  private playTreasures(f: Extract<Frame, { k: 'play-treasures' }>) {
+    const next = this.state.players[f.seat].hand.find((id) => this.def(id).types.includes('treasure'));
+    if (next === undefined) return;
+    this.push([{ k: 'play', seat: f.seat, card: next, holders: [] }, f]);
+  }
+
   /** Buy triggers name the card about to be gained, which is the top of its pile. */
   startBuy(seat: number, key: string) {
     this.log({ seat, kind: 'buy', keys: [key] });
     this.pushFx(this.newCtx({ player: seat }), [{ op: 'gain', pile: key }]);
     this.fire('buy', seat, this.state.supply[key].at(-1)!);
+    this.run();
+  }
+
+  /** Turn one token into coins. module.ts has checked it is allowed. */
+  convert(seat: number) {
+    const { token, coinsEach } = this.lib.rules.convert!;
+    this.state.turn.converted++;
+    this.state.turn.coins += coinsEach;
+    this.changeToken(seat, token, -1);
+  }
+
+  /** Pay for a project and run its reward, then anything waiting on the claim. module.ts has checked it is allowed. */
+  claim(seat: number, key: string) {
+    const s = this.state;
+    const def = this.lib.rules.projects!.find((p) => p.key === key)!;
+    const price = projectPrice(s, this.lib, key, seat);
+    s.turn.buys--;
+    s.turn.coins -= price.coins;
+    for (const [t, n] of Object.entries(price.tokens)) this.changeToken(seat, t, -n);
+    const here = s.projects.find((p) => p.key === key)!;
+    here.by = seat;
+    here.onTurn = s.players[seat].turns;
+    here.surcharges = [];
+    this.log({ seat, kind: 'claim', project: key });
+    this.fire('claim', seat, null);
+    this.pushFx(this.newCtx({ player: seat }), def.effects);
     this.run();
   }
 
