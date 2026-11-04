@@ -1,0 +1,3800 @@
+{
+ "note": "Written before the Kingdom & Commerce rename. See tests/clockwork/compat.test.ts.",
+ "catalogue": {
+  "rulesetId": "clockwork",
+  "players": [
+   2,
+   6
+  ],
+  "handSize": 5,
+  "marketSize": 10,
+  "startingDeck": [
+   {
+    "key": "scrap",
+    "count": 7
+   },
+   {
+    "key": "notebook",
+    "count": 3
+   }
+  ],
+  "basicPiles": {
+   "2": {
+    "scrap": 60,
+    "cog": 40,
+    "dynamo": 30,
+    "notebook": 8,
+    "blueprint": 8,
+    "monument": 8
+   },
+   "3": {
+    "scrap": 60,
+    "cog": 40,
+    "dynamo": 30,
+    "notebook": 12,
+    "blueprint": 12,
+    "monument": 12
+   },
+   "4": {
+    "scrap": 60,
+    "cog": 40,
+    "dynamo": 30,
+    "notebook": 12,
+    "blueprint": 12,
+    "monument": 12
+   },
+   "5": {
+    "scrap": 60,
+    "cog": 40,
+    "dynamo": 30,
+    "notebook": 15,
+    "blueprint": 15,
+    "monument": 15
+   },
+   "6": {
+    "scrap": 60,
+    "cog": 40,
+    "dynamo": 30,
+    "notebook": 18,
+    "blueprint": 18,
+    "monument": 18
+   }
+  },
+  "marketPile": {
+   "2": 10,
+   "3": 10,
+   "4": 10,
+   "5": 12,
+   "6": 12
+  },
+  "penaltyPile": {
+   "gearwright": {},
+   "shift_bell": {},
+   "tally_clerk": {},
+   "supply_crane": {},
+   "copper_press": {},
+   "foreman": {},
+   "paper_fan": {},
+   "conveyor": {},
+   "sorting_glasses": {},
+   "springboard": {},
+   "clockwork_archive": {},
+   "whistle_stop": {},
+   "hand_crank": {},
+   "charge_meter": {},
+   "capacitor_bank": {},
+   "steam_diverter": {},
+   "glow_mason": {},
+   "overcharge_lab": {},
+   "signal_tower": {},
+   "city_messenger": {},
+   "inspection_team": {},
+   "mutual_aid": {},
+   "permit_office": {},
+   "night_watch": {},
+   "maintenance_cart": {},
+   "lamplighter": {},
+   "clock_garden": {},
+   "gear_lease": {},
+   "city_blueprint": {},
+   "grand_engine": {},
+   "civic_scholar": {},
+   "museum_curator": {},
+   "patron_circle": {},
+   "silver_statue": {},
+   "civic_embassy": {},
+   "inventors_medal": {},
+   "spark_coil": {},
+   "brass_bond": {},
+   "relay_junction": {},
+   "chain_drive": {},
+   "flywheel": {},
+   "timer_switch": {},
+   "belt_sorter": {},
+   "salvage_hook": {},
+   "millrace": {},
+   "slag_furnace": {},
+   "spark_exchange": {},
+   "picket_line": {},
+   "corrosion_crew": {
+    "rust": 30
+   },
+   "noise_complaint": {},
+   "whistleblower": {},
+   "ground_wire": {},
+   "redline_boiler": {
+    "rust": 30
+   },
+   "pressure_test": {
+    "rust": 30
+   },
+   "overload_relay": {
+    "rust": 30
+   },
+   "scrapyard_broker": {},
+   "surveyor": {},
+   "zoning_board": {},
+   "ribbon_cutter": {},
+   "town_crier": {},
+   "civic_bond": {},
+   "city_charter": {},
+   "patent_ledger": {},
+   "plaque_foundry": {}
+  },
+  "endPiles": [
+   "monument"
+  ],
+  "emptyPilesToEnd": {
+   "2": 3,
+   "3": 3,
+   "4": 3,
+   "5": 4,
+   "6": 4
+  },
+  "emptyMarketPilesOnly": true,
+  "projectCount": 5,
+  "projectsToEnd": {
+   "2": 4,
+   "3": 4,
+   "4": 4,
+   "5": 4,
+   "6": 4
+  },
+  "tokenCaps": {
+   "spark": 8
+  },
+  "convert": {
+   "token": "spark",
+   "coinsEach": 1,
+   "maxPerTurn": 2
+  },
+  "lateTreasures": true,
+  "sets": [
+   "core",
+   "foundry",
+   "night",
+   "town"
+  ],
+  "defaultSets": [
+   "core"
+  ],
+  "handlers": [
+   "flywheel-run",
+   "flywheel-keep"
+  ],
+  "cards": [
+   {
+    "key": "scrap",
+    "cost": 0,
+    "types": [
+     "treasure"
+    ],
+    "status": "ready",
+    "coins": 1,
+    "basic": true
+   },
+   {
+    "key": "cog",
+    "cost": 3,
+    "types": [
+     "treasure"
+    ],
+    "status": "ready",
+    "coins": 2,
+    "basic": true
+   },
+   {
+    "key": "dynamo",
+    "cost": 6,
+    "types": [
+     "treasure"
+    ],
+    "status": "ready",
+    "coins": 3,
+    "basic": true
+   },
+   {
+    "key": "notebook",
+    "cost": 2,
+    "types": [
+     "victory"
+    ],
+    "status": "ready",
+    "vp": 1,
+    "basic": true
+   },
+   {
+    "key": "blueprint",
+    "cost": 5,
+    "types": [
+     "victory"
+    ],
+    "status": "ready",
+    "vp": 3,
+    "basic": true
+   },
+   {
+    "key": "monument",
+    "cost": 8,
+    "types": [
+     "victory"
+    ],
+    "status": "ready",
+    "vp": 6,
+    "basic": true
+   },
+   {
+    "key": "rust",
+    "cost": 0,
+    "types": [
+     "action",
+     "penalty"
+    ],
+    "status": "ready",
+    "basic": true,
+    "noBuy": true,
+    "vp": -1,
+    "effects": [
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "token": "spark"
+        },
+        1
+       ]
+      },
+      "then": [
+       {
+        "op": "may",
+        "then": [
+         {
+          "op": "token",
+          "token": "spark",
+          "n": -1
+         },
+         {
+          "op": "move",
+          "cards": "source",
+          "to": "trash"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "gearwright",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 2
+     },
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 1,
+      "max": 1,
+      "as": "under"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "under"
+      },
+      "to": "deck-bottom"
+     }
+    ]
+   },
+   {
+    "key": "shift_bell",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "actions",
+      "n": 2
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "actionsPlayed": true
+        },
+        2
+       ]
+      },
+      "then": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "tally_clerk",
+    "cost": 2,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "if",
+      "cond": {
+       "not": {
+        "gte": [
+         {
+          "token": "spark"
+         },
+         2
+        ]
+       }
+      },
+      "then": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "supply_crane",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 2
+     },
+     {
+      "op": "choose-pile",
+      "filter": {
+       "maxCost": 2,
+       "notType": "penalty"
+      },
+      "as": "got"
+     },
+     {
+      "op": "gain",
+      "pile": {
+       "var": "got"
+      }
+     }
+    ]
+   },
+   {
+    "key": "copper_press",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 1,
+      "max": 1,
+      "as": "pressed"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "pressed"
+      },
+      "to": "trash"
+     },
+     {
+      "op": "coins",
+      "n": {
+       "div": [
+        {
+         "costOf": "pressed"
+        },
+        2
+       ],
+       "up": true
+      }
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "foreman",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "choose",
+      "options": [
+       {
+        "then": [
+         {
+          "op": "draw",
+          "n": 3
+         },
+         {
+          "op": "choose-cards",
+          "from": "hand",
+          "min": 1,
+          "max": 1,
+          "as": "lost"
+         },
+         {
+          "op": "move",
+          "cards": {
+           "var": "lost"
+          },
+          "to": "discard"
+         }
+        ]
+       },
+       {
+        "then": [
+         {
+          "op": "token",
+          "token": "spark",
+          "n": 2
+         },
+         {
+          "op": "buys",
+          "n": 1
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "paper_fan",
+    "cost": 2,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 0,
+      "max": 2,
+      "as": "blown"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "blown"
+      },
+      "to": "discard"
+     },
+     {
+      "op": "draw",
+      "n": {
+       "add": [
+        {
+         "len": "blown"
+        },
+        1
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "key": "conveyor",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "look",
+      "n": 3,
+      "as": "belt"
+     },
+     {
+      "op": "choose-cards",
+      "from": {
+       "var": "belt"
+      },
+      "min": 1,
+      "max": 1,
+      "as": "kept",
+      "hint": "keep"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "kept"
+      },
+      "to": "hand"
+     },
+     {
+      "op": "repeat",
+      "n": 2,
+      "effects": [
+       {
+        "op": "choose-cards",
+        "from": {
+         "rest": "belt"
+        },
+        "min": 1,
+        "max": 1,
+        "as": "next"
+       },
+       {
+        "op": "move",
+        "cards": {
+         "var": "next"
+        },
+        "to": "deck-bottom"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "sorting_glasses",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 2
+     },
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 1,
+      "max": 1,
+      "as": "shown",
+      "hint": "keep"
+     },
+     {
+      "op": "reveal-cards",
+      "cards": {
+       "var": "shown"
+      }
+     },
+     {
+      "op": "if",
+      "cond": {
+       "isType": "shown",
+       "type": "duration"
+      },
+      "then": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ],
+      "else": [
+       {
+        "op": "coins",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "springboard",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 2
+     },
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 0,
+      "max": 1,
+      "as": "launched"
+     },
+     {
+      "op": "if",
+      "cond": {
+       "has": "launched"
+      },
+      "then": [
+       {
+        "op": "move",
+        "cards": {
+         "var": "launched"
+        },
+        "to": "discard"
+       },
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       },
+       {
+        "op": "draw",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "clockwork_archive",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 3
+     },
+     {
+      "op": "repeat",
+      "n": 2,
+      "effects": [
+       {
+        "op": "choose-cards",
+        "from": "hand",
+        "min": 1,
+        "max": 1,
+        "as": "filed"
+       },
+       {
+        "op": "move",
+        "cards": {
+         "var": "filed"
+        },
+        "to": "deck"
+       }
+      ]
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "whistle_stop",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "draw",
+      "n": 2
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "token": "spark"
+        },
+        1
+       ]
+      },
+      "then": [
+       {
+        "op": "may",
+        "then": [
+         {
+          "op": "token",
+          "token": "spark",
+          "n": -1
+         },
+         {
+          "op": "draw",
+          "n": 1
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "hand_crank",
+    "cost": 2,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 2
+     },
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 1,
+      "max": 1,
+      "as": "lost"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "lost"
+      },
+      "to": "discard"
+     }
+    ]
+   },
+   {
+    "key": "charge_meter",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "token": "spark"
+        },
+        4
+       ]
+      },
+      "then": [
+       {
+        "op": "draw",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "capacitor_bank",
+    "cost": 4,
+    "types": [
+     "action",
+     "duration"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "delay",
+      "effects": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 3
+       },
+       {
+        "op": "draw",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "steam_diverter",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "choose-number",
+      "min": 0,
+      "max": {
+       "min": [
+        3,
+        {
+         "token": "spark"
+        }
+       ]
+      },
+      "as": "vented"
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": {
+       "mul": [
+        {
+         "value": "vented"
+        },
+        -1
+       ]
+      }
+     },
+     {
+      "op": "coins",
+      "n": {
+       "mul": [
+        {
+         "value": "vented"
+        },
+        2
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "key": "glow_mason",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "coins",
+      "n": 2
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 2
+     }
+    ]
+   },
+   {
+    "key": "overcharge_lab",
+    "cost": 6,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 3
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 2
+     },
+     {
+      "op": "on",
+      "on": "hand-drawn",
+      "effects": [
+       {
+        "op": "choose-cards",
+        "from": "hand",
+        "min": 1,
+        "max": 1,
+        "as": "lost"
+       },
+       {
+        "op": "move",
+        "cards": {
+         "var": "lost"
+        },
+        "to": "discard"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "signal_tower",
+    "cost": 3,
+    "types": [
+     "action",
+     "attack"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "coins",
+      "n": 1
+     },
+     {
+      "op": "attack",
+      "effects": [
+       {
+        "op": "reveal",
+        "n": 1,
+        "as": "signal"
+       },
+       {
+        "op": "if",
+        "cond": {
+         "has": "signal"
+        },
+        "then": [
+         {
+          "op": "choose",
+          "options": [
+           {
+            "then": [
+             {
+              "op": "move",
+              "cards": {
+               "rest": "signal"
+              },
+              "to": "deck-bottom",
+              "public": true
+             }
+            ]
+           },
+           {
+            "then": [
+             {
+              "op": "move",
+              "cards": {
+               "rest": "signal"
+              },
+              "to": "discard"
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "city_messenger",
+    "cost": 4,
+    "types": [
+     "action",
+     "reaction"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "buys",
+      "n": 1
+     }
+    ],
+    "reaction": {
+     "effects": [
+      {
+       "op": "token",
+       "token": "spark",
+       "n": 1
+      }
+     ],
+     "once": true
+    }
+   },
+   {
+    "key": "inspection_team",
+    "cost": 4,
+    "types": [
+     "action",
+     "attack"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 2
+     },
+     {
+      "op": "attack",
+      "effects": [
+       {
+        "op": "if",
+        "cond": {
+         "gte": [
+          {
+           "count": "hand"
+          },
+          5
+         ]
+        },
+        "then": [
+         {
+          "op": "choose-cards",
+          "from": "hand",
+          "min": 1,
+          "max": 1,
+          "as": "lost"
+         },
+         {
+          "op": "move",
+          "cards": {
+           "var": "lost"
+          },
+          "to": "discard"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "mutual_aid",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 2
+     },
+     {
+      "op": "choose-player",
+      "as": "friend"
+     },
+     {
+      "op": "on-player",
+      "player": {
+       "var": "friend"
+      },
+      "effects": [
+       {
+        "op": "draw",
+        "n": 1
+       }
+      ]
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 2
+     }
+    ]
+   },
+   {
+    "key": "permit_office",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "choose-player",
+      "as": "applicant"
+     },
+     {
+      "op": "on-player",
+      "player": {
+       "var": "applicant"
+      },
+      "effects": [
+       {
+        "op": "choose-cards",
+        "from": "hand",
+        "min": 0,
+        "max": 1,
+        "as": "form"
+       },
+       {
+        "op": "if",
+        "cond": {
+         "has": "form"
+        },
+        "then": [
+         {
+          "op": "move",
+          "cards": {
+           "var": "form"
+          },
+          "to": "discard"
+         },
+         {
+          "op": "token",
+          "token": "spark",
+          "n": 1
+         }
+        ],
+        "else": [
+         {
+          "op": "token",
+          "token": "spark",
+          "n": 1,
+          "player": "parent"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "night_watch",
+    "cost": 5,
+    "types": [
+     "action",
+     "reaction"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 2
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ],
+    "reaction": {
+     "effects": [
+      {
+       "op": "choose-cards",
+       "from": "hand",
+       "min": 1,
+       "max": 1,
+       "as": "lost"
+      },
+      {
+       "op": "move",
+       "cards": {
+        "var": "lost"
+       },
+       "to": "discard"
+      },
+      {
+       "op": "immune"
+      }
+     ],
+     "once": true
+    }
+   },
+   {
+    "key": "maintenance_cart",
+    "cost": 3,
+    "types": [
+     "action",
+     "duration"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "delay",
+      "effects": [
+       {
+        "op": "coins",
+        "n": 1
+       },
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "lamplighter",
+    "cost": 4,
+    "types": [
+     "action",
+     "duration"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "delay",
+      "effects": [
+       {
+        "op": "draw",
+        "n": 2
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "clock_garden",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     },
+     {
+      "op": "if",
+      "cond": {
+       "claimedLastTurn": true
+      },
+      "then": [
+       {
+        "op": "draw",
+        "n": 2
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "gear_lease",
+    "cost": 5,
+    "types": [
+     "action",
+     "duration"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 2
+     },
+     {
+      "op": "delay",
+      "effects": [
+       {
+        "op": "buys",
+        "n": 1
+       },
+       {
+        "op": "coins",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "city_blueprint",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "look",
+      "n": 4,
+      "as": "plans"
+     },
+     {
+      "op": "choose-cards",
+      "from": {
+       "var": "plans"
+      },
+      "min": 0,
+      "max": 2,
+      "as": "kept",
+      "hint": "keep"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "kept"
+      },
+      "to": "hand"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "rest": "plans"
+      },
+      "to": "discard"
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "grand_engine",
+    "cost": 7,
+    "types": [
+     "action",
+     "duration"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 2
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     },
+     {
+      "op": "delay",
+      "effects": [
+       {
+        "op": "coins",
+        "n": 2
+       },
+       {
+        "op": "draw",
+        "n": 2
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "civic_scholar",
+    "cost": 3,
+    "types": [
+     "action",
+     "victory"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ],
+    "vp": 1
+   },
+   {
+    "key": "museum_curator",
+    "cost": 4,
+    "types": [
+     "action",
+     "victory"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 2
+     },
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 1,
+      "max": 1,
+      "as": "lost"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "lost"
+      },
+      "to": "discard"
+     }
+    ],
+    "vp": 2
+   },
+   {
+    "key": "patron_circle",
+    "cost": 5,
+    "types": [
+     "action",
+     "victory"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "coins",
+      "n": 2
+     }
+    ],
+    "vp": 2
+   },
+   {
+    "key": "silver_statue",
+    "cost": 5,
+    "types": [
+     "victory"
+    ],
+    "status": "ready",
+    "set": "core",
+    "vp": {
+     "base": 1,
+     "perToken": {
+      "token": "spark",
+      "per": 3
+     }
+    }
+   },
+   {
+    "key": "civic_embassy",
+    "cost": 6,
+    "types": [
+     "action",
+     "victory"
+    ],
+    "status": "ready",
+    "set": "core",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 2
+     },
+     {
+      "op": "may",
+      "then": [
+       {
+        "op": "choose-player",
+        "as": "envoy"
+       },
+       {
+        "op": "token",
+        "token": "spark",
+        "n": -1
+       },
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1,
+        "player": {
+         "var": "envoy"
+        }
+       },
+       {
+        "op": "draw",
+        "n": 2
+       }
+      ]
+     }
+    ],
+    "vp": 3
+   },
+   {
+    "key": "inventors_medal",
+    "cost": 7,
+    "types": [
+     "victory"
+    ],
+    "status": "ready",
+    "set": "core",
+    "vp": {
+     "base": 6,
+     "ownProjects": 1
+    }
+   },
+   {
+    "key": "spark_coil",
+    "cost": 3,
+    "types": [
+     "treasure"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "coins": 1,
+    "effects": [
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "brass_bond",
+    "cost": 4,
+    "types": [
+     "treasure"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "coins": 2,
+    "effects": [
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "token": "spark"
+        },
+        3
+       ]
+      },
+      "then": [
+       {
+        "op": "coins",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "relay_junction",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "coins",
+      "n": {
+       "min": [
+        {
+         "add": [
+          {
+           "actionsPlayed": true
+          },
+          -1
+         ]
+        },
+        3
+       ]
+      }
+     }
+    ]
+   },
+   {
+    "key": "chain_drive",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "actionsPlayed": true
+        },
+        3
+       ]
+      },
+      "then": [
+       {
+        "op": "buys",
+        "n": 1
+       },
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 2
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "flywheel",
+    "cost": 4,
+    "types": [
+     "action",
+     "duration"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 1
+     },
+     {
+      "op": "delay",
+      "effects": [
+       {
+        "op": "custom",
+        "handler": "flywheel-run"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "timer_switch",
+    "cost": 3,
+    "types": [
+     "action",
+     "duration"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 0,
+      "max": 1,
+      "as": "timed",
+      "hint": "keep"
+     },
+     {
+      "op": "if",
+      "cond": {
+       "has": "timed"
+      },
+      "then": [
+       {
+        "op": "move",
+        "cards": {
+         "var": "timed"
+        },
+        "to": {
+         "mat": "timer"
+        }
+       },
+       {
+        "op": "delay",
+        "effects": [
+         {
+          "op": "move",
+          "cards": {
+           "var": "timed"
+          },
+          "to": "hand"
+         },
+         {
+          "op": "play-card",
+          "cards": {
+           "var": "timed"
+          },
+          "times": 1
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "belt_sorter",
+    "cost": 2,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "look",
+      "n": 2,
+      "as": "sorted"
+     },
+     {
+      "op": "choose-cards",
+      "from": {
+       "var": "sorted"
+      },
+      "min": 0,
+      "max": 2,
+      "as": "dropped"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "dropped"
+      },
+      "to": "discard"
+     },
+     {
+      "op": "repeat",
+      "n": 2,
+      "effects": [
+       {
+        "op": "choose-cards",
+        "from": {
+         "rest": "sorted"
+        },
+        "min": 1,
+        "max": 1,
+        "as": "next"
+       },
+       {
+        "op": "move",
+        "cards": {
+         "var": "next"
+        },
+        "to": "deck"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "salvage_hook",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "token": "spark"
+        },
+        1
+       ]
+      },
+      "then": [
+       {
+        "op": "choose-cards",
+        "from": "discard",
+        "min": 0,
+        "max": 1,
+        "as": "hooked",
+        "hint": "keep"
+       },
+       {
+        "op": "if",
+        "cond": {
+         "has": "hooked"
+        },
+        "then": [
+         {
+          "op": "token",
+          "token": "spark",
+          "n": -1
+         },
+         {
+          "op": "move",
+          "cards": {
+           "var": "hooked"
+          },
+          "to": "hand"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "millrace",
+    "cost": 5,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "select",
+      "from": "hand",
+      "as": "race"
+     },
+     {
+      "op": "move",
+      "cards": "hand",
+      "to": "discard"
+     },
+     {
+      "op": "draw",
+      "n": {
+       "add": [
+        {
+         "len": "race"
+        },
+        1
+       ]
+      }
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "slag_furnace",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "choose-cards",
+      "from": "hand",
+      "min": 0,
+      "max": 2,
+      "as": "slag"
+     },
+     {
+      "op": "move",
+      "cards": {
+       "var": "slag"
+      },
+      "to": "trash"
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "len": "slag"
+        },
+        2
+       ]
+      },
+      "then": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "spark_exchange",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "foundry",
+    "effects": [
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "choose",
+      "options": [
+       {
+        "then": [
+         {
+          "op": "if",
+          "cond": {
+           "gte": [
+            {
+             "token": "spark"
+            },
+            2
+           ]
+          },
+          "then": [
+           {
+            "op": "token",
+            "token": "spark",
+            "n": -2
+           },
+           {
+            "op": "coins",
+            "n": 3
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "then": [
+         {
+          "op": "choose-cards",
+          "from": "hand",
+          "min": 2,
+          "max": 2,
+          "as": "traded"
+         },
+         {
+          "op": "move",
+          "cards": {
+           "var": "traded"
+          },
+          "to": "discard"
+         },
+         {
+          "op": "if",
+          "cond": {
+           "gte": [
+            {
+             "len": "traded"
+            },
+            2
+           ]
+          },
+          "then": [
+           {
+            "op": "token",
+            "token": "spark",
+            "n": 2
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "picket_line",
+    "cost": 3,
+    "types": [
+     "action",
+     "attack"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 1
+     },
+     {
+      "op": "attack",
+      "effects": [
+       {
+        "op": "if",
+        "cond": {
+         "gte": [
+          {
+           "token": "spark"
+          },
+          3
+         ]
+        },
+        "then": [
+         {
+          "op": "token",
+          "token": "spark",
+          "n": -1
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "corrosion_crew",
+    "cost": 5,
+    "types": [
+     "action",
+     "attack"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 2
+     },
+     {
+      "op": "attack",
+      "effects": [
+       {
+        "op": "if",
+        "cond": {
+         "gte": [
+          {
+           "token": "spark"
+          },
+          1
+         ]
+        },
+        "then": [
+         {
+          "op": "may",
+          "then": [
+           {
+            "op": "token",
+            "token": "spark",
+            "n": -1
+           }
+          ],
+          "else": [
+           {
+            "op": "gain",
+            "pile": "rust"
+           }
+          ]
+         }
+        ],
+        "else": [
+         {
+          "op": "gain",
+          "pile": "rust"
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "noise_complaint",
+    "cost": 4,
+    "types": [
+     "action",
+     "attack"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "attack",
+      "effects": [
+       {
+        "op": "select",
+        "from": "play",
+        "filter": {
+         "type": "duration"
+        },
+        "as": "running"
+       },
+       {
+        "op": "if",
+        "cond": {
+         "has": "running"
+        },
+        "then": [
+         {
+          "op": "if",
+          "cond": {
+           "gte": [
+            {
+             "token": "spark"
+            },
+            1
+           ]
+          },
+          "then": [
+           {
+            "op": "choose",
+            "options": [
+             {
+              "then": [
+               {
+                "op": "token",
+                "token": "spark",
+                "n": -1
+               }
+              ]
+             },
+             {
+              "then": [
+               {
+                "op": "choose-cards",
+                "from": "hand",
+                "min": 1,
+                "max": 1,
+                "as": "quiet"
+               },
+               {
+                "op": "move",
+                "cards": {
+                 "var": "quiet"
+                },
+                "to": "discard"
+               }
+              ]
+             }
+            ]
+           }
+          ],
+          "else": [
+           {
+            "op": "choose-cards",
+            "from": "hand",
+            "min": 1,
+            "max": 1,
+            "as": "quiet"
+           },
+           {
+            "op": "move",
+            "cards": {
+             "var": "quiet"
+            },
+            "to": "discard"
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "whistleblower",
+    "cost": 3,
+    "types": [
+     "action",
+     "reaction"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "coins",
+      "n": 1
+     }
+    ],
+    "reaction": {
+     "effects": [
+      {
+       "op": "token",
+       "token": "spark",
+       "n": -1,
+       "player": "parent"
+      }
+     ],
+     "once": true
+    }
+   },
+   {
+    "key": "ground_wire",
+    "cost": 2,
+    "types": [
+     "action",
+     "reaction"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "if",
+      "cond": {
+       "not": {
+        "gte": [
+         {
+          "token": "spark"
+         },
+         1
+        ]
+       }
+      },
+      "then": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ]
+     }
+    ],
+    "reaction": {
+     "effects": [
+      {
+       "op": "if",
+       "cond": {
+        "gte": [
+         {
+          "token": "spark"
+         },
+         1
+        ]
+       },
+       "then": [
+        {
+         "op": "token",
+         "token": "spark",
+         "n": -1
+        },
+        {
+         "op": "immune"
+        }
+       ]
+      }
+     ],
+     "once": true
+    }
+   },
+   {
+    "key": "redline_boiler",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "coins",
+      "n": 3
+     },
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "gain",
+      "pile": "rust"
+     }
+    ]
+   },
+   {
+    "key": "pressure_test",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "reveal",
+      "n": 3,
+      "as": "tested"
+     },
+     {
+      "op": "coins",
+      "n": {
+       "countIn": "tested",
+       "filter": {
+        "type": "treasure"
+       }
+      }
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": {
+       "countIn": "tested",
+       "filter": {
+        "type": "action",
+        "notType": "penalty"
+       }
+      }
+     },
+     {
+      "op": "repeat",
+      "n": {
+       "countIn": "tested",
+       "filter": {
+        "type": "victory"
+       }
+      },
+      "effects": [
+       {
+        "op": "gain",
+        "pile": "rust"
+       }
+      ]
+     },
+     {
+      "op": "move",
+      "cards": {
+       "rest": "tested"
+      },
+      "to": "discard"
+     }
+    ]
+   },
+   {
+    "key": "overload_relay",
+    "cost": 6,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "set",
+      "as": "burned",
+      "n": {
+       "token": "spark"
+      }
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": {
+       "mul": [
+        {
+         "value": "burned"
+        },
+        -1
+       ]
+      }
+     },
+     {
+      "op": "draw",
+      "n": {
+       "min": [
+        {
+         "value": "burned"
+        },
+        5
+       ]
+      }
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "value": "burned"
+        },
+        4
+       ]
+      },
+      "then": [
+       {
+        "op": "gain",
+        "pile": "rust"
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "scrapyard_broker",
+    "cost": 2,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "night",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "select",
+      "from": "hand",
+      "filter": {
+       "key": "rust"
+      },
+      "as": "rusty"
+     },
+     {
+      "op": "choose-cards",
+      "from": {
+       "var": "rusty"
+      },
+      "min": 0,
+      "max": 1,
+      "as": "sold"
+     },
+     {
+      "op": "if",
+      "cond": {
+       "has": "sold"
+      },
+      "then": [
+       {
+        "op": "move",
+        "cards": {
+         "var": "sold"
+        },
+        "to": "trash"
+       },
+       {
+        "op": "coins",
+        "n": 3
+       }
+      ],
+      "else": [
+       {
+        "op": "coins",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "surveyor",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "town",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "project-discount",
+      "coins": 1
+     }
+    ]
+   },
+   {
+    "key": "zoning_board",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "town",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     },
+     {
+      "op": "choose-project",
+      "as": "zoned"
+     },
+     {
+      "op": "project-surcharge",
+      "project": "zoned",
+      "coins": 2
+     }
+    ]
+   },
+   {
+    "key": "ribbon_cutter",
+    "cost": 4,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "town",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "coins",
+      "n": 1
+     },
+     {
+      "op": "on",
+      "on": "claim",
+      "once": true,
+      "effects": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 2
+       },
+       {
+        "op": "buys",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "town_crier",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "town",
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "actions",
+      "n": 1
+     }
+    ],
+    "triggers": [
+     {
+      "on": "claim",
+      "where": "hand",
+      "scope": "others",
+      "optional": true,
+      "effects": [
+       {
+        "op": "reveal-cards",
+        "cards": "source"
+       },
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "key": "civic_bond",
+    "cost": 5,
+    "types": [
+     "victory"
+    ],
+    "status": "ready",
+    "set": "town",
+    "vp": {
+     "base": 0,
+     "allProjects": 1
+    }
+   },
+   {
+    "key": "city_charter",
+    "cost": 6,
+    "types": [
+     "action",
+     "victory"
+    ],
+    "status": "ready",
+    "set": "town",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "if",
+      "cond": {
+       "gte": [
+        {
+         "projects": "mine"
+        },
+        1
+       ]
+      },
+      "then": [
+       {
+        "op": "coins",
+        "n": 3
+       }
+      ],
+      "else": [
+       {
+        "op": "coins",
+        "n": 1
+       }
+      ]
+     }
+    ],
+    "vp": 2
+   },
+   {
+    "key": "patent_ledger",
+    "cost": 4,
+    "types": [
+     "victory"
+    ],
+    "status": "ready",
+    "set": "town",
+    "vp": {
+     "per": 2,
+     "each": 1,
+     "of": {
+      "type": "duration"
+     }
+    }
+   },
+   {
+    "key": "plaque_foundry",
+    "cost": 3,
+    "types": [
+     "action"
+    ],
+    "status": "ready",
+    "set": "town",
+    "effects": [
+     {
+      "op": "actions",
+      "n": 1
+     },
+     {
+      "op": "repeat",
+      "n": 2,
+      "effects": [
+       {
+        "op": "if",
+        "cond": {
+         "gte": [
+          {
+           "token": "spark"
+          },
+          2
+         ]
+        },
+        "then": [
+         {
+          "op": "may",
+          "then": [
+           {
+            "op": "token",
+            "token": "spark",
+            "n": -2
+           },
+           {
+            "op": "vp",
+            "n": 1
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "projects": [
+   {
+    "key": "canal_lights",
+    "coins": 3,
+    "tokens": {
+     "spark": 2
+    },
+    "vp": 4,
+    "effects": [
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "public_clock",
+    "coins": 4,
+    "tokens": {
+     "spark": 2
+    },
+    "vp": 5,
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "makers_fair",
+    "coins": 4,
+    "tokens": {
+     "spark": 3
+    },
+    "vp": 6,
+    "effects": [
+     {
+      "op": "buys",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "tram_extension",
+    "coins": 5,
+    "tokens": {
+     "spark": 3
+    },
+    "vp": 7,
+    "effects": [
+     {
+      "op": "coins",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "skybridge",
+    "coins": 6,
+    "tokens": {
+     "spark": 3
+    },
+    "vp": 8,
+    "effects": [
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ]
+   },
+   {
+    "key": "library_lanterns",
+    "coins": 5,
+    "tokens": {
+     "spark": 4
+    },
+    "vp": 9,
+    "effects": [
+     {
+      "op": "draw",
+      "n": 2
+     }
+    ]
+   },
+   {
+    "key": "waterwheel",
+    "coins": 6,
+    "tokens": {
+     "spark": 4
+    },
+    "vp": 10,
+    "effects": [
+     {
+      "op": "coins",
+      "n": 2
+     }
+    ]
+   },
+   {
+    "key": "city_illumination",
+    "coins": 8,
+    "tokens": {
+     "spark": 5
+    },
+    "vp": 13,
+    "effects": [
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 2
+     }
+    ]
+   },
+   {
+    "key": "harbor_beacon",
+    "coins": 4,
+    "tokens": {
+     "spark": 1
+    },
+    "vp": 3,
+    "effects": [
+     {
+      "op": "draw",
+      "n": 1
+     },
+     {
+      "op": "token",
+      "token": "spark",
+      "n": 1
+     }
+    ],
+    "set": "town"
+   },
+   {
+    "key": "foundry_gate",
+    "coins": 7,
+    "tokens": {
+     "spark": 2
+    },
+    "vp": 8,
+    "effects": [
+     {
+      "op": "buys",
+      "n": 1
+     },
+     {
+      "op": "coins",
+      "n": 1
+     }
+    ],
+    "set": "town"
+   },
+   {
+    "key": "power_exchange",
+    "coins": 2,
+    "tokens": {
+     "spark": 6
+    },
+    "vp": 8,
+    "effects": [
+     {
+      "op": "coins",
+      "n": 3
+     }
+    ],
+    "set": "town"
+   },
+   {
+    "key": "rail_terminus",
+    "coins": 6,
+    "tokens": {
+     "spark": 2
+    },
+    "vp": 7,
+    "effects": [
+     {
+      "op": "choose-pile",
+      "filter": {
+       "maxCost": 4,
+       "notType": "penalty"
+      },
+      "as": "freight"
+     },
+     {
+      "op": "gain",
+      "pile": {
+       "var": "freight"
+      },
+      "to": "hand"
+     }
+    ],
+    "set": "town"
+   },
+   {
+    "key": "aqueduct",
+    "coins": 5,
+    "tokens": {
+     "spark": 5
+    },
+    "vp": 10,
+    "effects": [
+     {
+      "op": "each-other",
+      "effects": [
+       {
+        "op": "token",
+        "token": "spark",
+        "n": 1
+       }
+      ]
+     }
+    ],
+    "set": "town"
+   }
+  ],
+  "labelKeys": [
+   "spark"
+  ]
+ },
+ "games": [
+  {
+   "seed": "golden-2-a",
+   "players": 2,
+   "steps": 210,
+   "market": [
+    "gearwright",
+    "hand_crank",
+    "signal_tower",
+    "brass_bond",
+    "timer_switch",
+    "gear_lease",
+    "overcharge_lab",
+    "slag_furnace",
+    "whistleblower",
+    "flywheel"
+   ],
+   "projects": [
+    {
+     "key": "canal_lights",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "city_illumination",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "aqueduct",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "waterwheel",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "public_clock",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 43,
+     "turns": 24
+    },
+    {
+     "seat": 1,
+     "total": 43,
+     "turns": 24
+    }
+   ],
+   "log": "24c33cde6a448051716e4147c386403dd2c9aad9e9aab5f1a9c716088b6bf59f"
+  },
+  {
+   "seed": "golden-2-b",
+   "players": 2,
+   "steps": 434,
+   "market": [
+    "redline_boiler",
+    "city_messenger",
+    "salvage_hook",
+    "overcharge_lab",
+    "night_watch",
+    "maintenance_cart",
+    "mutual_aid",
+    "inventors_medal",
+    "belt_sorter",
+    "overload_relay"
+   ],
+   "projects": [
+    {
+     "key": "foundry_gate",
+     "by": 1,
+     "onTurn": 7,
+     "surcharges": []
+    },
+    {
+     "key": "rail_terminus",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "aqueduct",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "public_clock",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "waterwheel",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 26,
+     "turns": 43
+    },
+    {
+     "seat": 1,
+     "total": 88,
+     "turns": 43
+    }
+   ],
+   "log": "70a7a2defc8797521005010a08c3b4b1d186e6c680ebb380e5e03db3001b3c3c"
+  },
+  {
+   "seed": "golden-3-a",
+   "players": 3,
+   "steps": 833,
+   "market": [
+    "zoning_board",
+    "millrace",
+    "silver_statue",
+    "steam_diverter",
+    "belt_sorter",
+    "foreman",
+    "sorting_glasses",
+    "mutual_aid",
+    "permit_office",
+    "patent_ledger"
+   ],
+   "projects": [
+    {
+     "key": "skybridge",
+     "by": 1,
+     "onTurn": 38,
+     "surcharges": []
+    },
+    {
+     "key": "rail_terminus",
+     "by": null,
+     "onTurn": null,
+     "surcharges": [
+      {
+       "by": 1,
+       "coins": 2
+      }
+     ]
+    },
+    {
+     "key": "harbor_beacon",
+     "by": 0,
+     "onTurn": 5,
+     "surcharges": []
+    },
+    {
+     "key": "foundry_gate",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "power_exchange",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 33,
+     "turns": 49
+    },
+    {
+     "seat": 1,
+     "total": 58,
+     "turns": 49
+    },
+    {
+     "seat": 2,
+     "total": 59,
+     "turns": 48
+    }
+   ],
+   "log": "46671cf677377ceddccbe3c87df7a905d998430905ec53ef6b572ea6361c9b00"
+  },
+  {
+   "seed": "golden-3-b",
+   "players": 3,
+   "steps": 150,
+   "market": [
+    "civic_embassy",
+    "scrapyard_broker",
+    "conveyor",
+    "silver_statue",
+    "tally_clerk",
+    "overcharge_lab",
+    "foreman",
+    "copper_press",
+    "spark_exchange",
+    "city_blueprint"
+   ],
+   "projects": [
+    {
+     "key": "rail_terminus",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "tram_extension",
+     "by": 0,
+     "onTurn": 6,
+     "surcharges": []
+    },
+    {
+     "key": "library_lanterns",
+     "by": 1,
+     "onTurn": 7,
+     "surcharges": []
+    },
+    {
+     "key": "skybridge",
+     "by": 0,
+     "onTurn": 5,
+     "surcharges": []
+    },
+    {
+     "key": "canal_lights",
+     "by": 1,
+     "onTurn": 5,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 19,
+     "turns": 7
+    },
+    {
+     "seat": 1,
+     "total": 16,
+     "turns": 8
+    },
+    {
+     "seat": 2,
+     "total": 3,
+     "turns": 7
+    }
+   ],
+   "log": "c15cd2cc4bdec971b321c46e9080fa790c4c7d0b0934701ef477514b7042f43f"
+  },
+  {
+   "seed": "golden-4-a",
+   "players": 4,
+   "steps": 611,
+   "market": [
+    "relay_junction",
+    "clockwork_archive",
+    "museum_curator",
+    "chain_drive",
+    "mutual_aid",
+    "permit_office",
+    "city_charter",
+    "glow_mason",
+    "pressure_test",
+    "patron_circle"
+   ],
+   "projects": [
+    {
+     "key": "canal_lights",
+     "by": 0,
+     "onTurn": 17,
+     "surcharges": []
+    },
+    {
+     "key": "library_lanterns",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "aqueduct",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "tram_extension",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "foundry_gate",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 37,
+     "turns": 30
+    },
+    {
+     "seat": 1,
+     "total": 45,
+     "turns": 29
+    },
+    {
+     "seat": 2,
+     "total": 22,
+     "turns": 30
+    },
+    {
+     "seat": 3,
+     "total": 42,
+     "turns": 30
+    }
+   ],
+   "log": "845b568905341c4a87f834caaeb3fd1a6a6f0137775f94ab1199118f268cfbe8"
+  },
+  {
+   "seed": "golden-4-b",
+   "players": 4,
+   "steps": 523,
+   "market": [
+    "charge_meter",
+    "inspection_team",
+    "signal_tower",
+    "tally_clerk",
+    "chain_drive",
+    "overload_relay",
+    "millrace",
+    "steam_diverter",
+    "flywheel",
+    "ground_wire"
+   ],
+   "projects": [
+    {
+     "key": "canal_lights",
+     "by": 2,
+     "onTurn": 6,
+     "surcharges": []
+    },
+    {
+     "key": "library_lanterns",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "rail_terminus",
+     "by": 2,
+     "onTurn": 25,
+     "surcharges": []
+    },
+    {
+     "key": "harbor_beacon",
+     "by": 1,
+     "onTurn": 6,
+     "surcharges": []
+    },
+    {
+     "key": "foundry_gate",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 40,
+     "turns": 26
+    },
+    {
+     "seat": 1,
+     "total": 29,
+     "turns": 26
+    },
+    {
+     "seat": 2,
+     "total": 36,
+     "turns": 26
+    },
+    {
+     "seat": 3,
+     "total": 41,
+     "turns": 26
+    }
+   ],
+   "log": "cc105ecf646b2a5b681c63432c2a0ad865c03eb3410e4dd5118ce9d87e63b1cd"
+  },
+  {
+   "seed": "golden-5-a",
+   "players": 5,
+   "steps": 407,
+   "market": [
+    "conveyor",
+    "city_blueprint",
+    "belt_sorter",
+    "night_watch",
+    "pressure_test",
+    "relay_junction",
+    "museum_curator",
+    "redline_boiler",
+    "grand_engine",
+    "charge_meter"
+   ],
+   "projects": [
+    {
+     "key": "city_illumination",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "library_lanterns",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "skybridge",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "rail_terminus",
+     "by": 1,
+     "onTurn": 6,
+     "surcharges": []
+    },
+    {
+     "key": "harbor_beacon",
+     "by": 3,
+     "onTurn": 3,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 29,
+     "turns": 14
+    },
+    {
+     "seat": 1,
+     "total": 33,
+     "turns": 13
+    },
+    {
+     "seat": 2,
+     "total": 18,
+     "turns": 13
+    },
+    {
+     "seat": 3,
+     "total": 32,
+     "turns": 13
+    },
+    {
+     "seat": 4,
+     "total": 33,
+     "turns": 13
+    }
+   ],
+   "log": "2e7cc57082c5d0f37d2c83258f445108a13bcebb7b0f346abfbf5a78f15144de"
+  },
+  {
+   "seed": "golden-5-b",
+   "players": 5,
+   "steps": 641,
+   "market": [
+    "paper_fan",
+    "gearwright",
+    "noise_complaint",
+    "redline_boiler",
+    "civic_bond",
+    "whistleblower",
+    "belt_sorter",
+    "relay_junction",
+    "night_watch",
+    "picket_line"
+   ],
+   "projects": [
+    {
+     "key": "harbor_beacon",
+     "by": 3,
+     "onTurn": 4,
+     "surcharges": []
+    },
+    {
+     "key": "city_illumination",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "power_exchange",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "makers_fair",
+     "by": 3,
+     "onTurn": 12,
+     "surcharges": []
+    },
+    {
+     "key": "library_lanterns",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 23,
+     "turns": 26
+    },
+    {
+     "seat": 1,
+     "total": 52,
+     "turns": 26
+    },
+    {
+     "seat": 2,
+     "total": 22,
+     "turns": 26
+    },
+    {
+     "seat": 3,
+     "total": 57,
+     "turns": 26
+    },
+    {
+     "seat": 4,
+     "total": 29,
+     "turns": 26
+    }
+   ],
+   "log": "8c24d17db98f457c6178fb06fb84bfe63d8e777bf4a4e099bb9ff993fa15332e"
+  },
+  {
+   "seed": "golden-6-a",
+   "players": 6,
+   "steps": 294,
+   "market": [
+    "clockwork_archive",
+    "pressure_test",
+    "belt_sorter",
+    "civic_embassy",
+    "timer_switch",
+    "whistleblower",
+    "patent_ledger",
+    "mutual_aid",
+    "supply_crane",
+    "city_charter"
+   ],
+   "projects": [
+    {
+     "key": "public_clock",
+     "by": 1,
+     "onTurn": 2,
+     "surcharges": []
+    },
+    {
+     "key": "harbor_beacon",
+     "by": 5,
+     "onTurn": 2,
+     "surcharges": []
+    },
+    {
+     "key": "tram_extension",
+     "by": 1,
+     "onTurn": 8,
+     "surcharges": []
+    },
+    {
+     "key": "power_exchange",
+     "by": null,
+     "onTurn": null,
+     "surcharges": []
+    },
+    {
+     "key": "city_illumination",
+     "by": 5,
+     "onTurn": 9,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 6,
+     "turns": 9
+    },
+    {
+     "seat": 1,
+     "total": 21,
+     "turns": 10
+    },
+    {
+     "seat": 2,
+     "total": 9,
+     "turns": 10
+    },
+    {
+     "seat": 3,
+     "total": 12,
+     "turns": 10
+    },
+    {
+     "seat": 4,
+     "total": 7,
+     "turns": 10
+    },
+    {
+     "seat": 5,
+     "total": 28,
+     "turns": 10
+    }
+   ],
+   "log": "7df2228c2c9b531e254271ab83e6c81c076cbb7a58d6d910e99c458e11b3d96e"
+  },
+  {
+   "seed": "golden-6-b",
+   "players": 6,
+   "steps": 706,
+   "market": [
+    "lamplighter",
+    "city_charter",
+    "paper_fan",
+    "patent_ledger",
+    "silver_statue",
+    "plaque_foundry",
+    "glow_mason",
+    "mutual_aid",
+    "zoning_board",
+    "scrapyard_broker"
+   ],
+   "projects": [
+    {
+     "key": "harbor_beacon",
+     "by": 2,
+     "onTurn": 5,
+     "surcharges": []
+    },
+    {
+     "key": "canal_lights",
+     "by": 0,
+     "onTurn": 3,
+     "surcharges": []
+    },
+    {
+     "key": "city_illumination",
+     "by": null,
+     "onTurn": null,
+     "surcharges": [
+      {
+       "by": 3,
+       "coins": 2
+      }
+     ]
+    },
+    {
+     "key": "foundry_gate",
+     "by": 1,
+     "onTurn": 9,
+     "surcharges": []
+    },
+    {
+     "key": "library_lanterns",
+     "by": 1,
+     "onTurn": 23,
+     "surcharges": []
+    }
+   ],
+   "final": [
+    {
+     "seat": 0,
+     "total": 20,
+     "turns": 24
+    },
+    {
+     "seat": 1,
+     "total": 42,
+     "turns": 24
+    },
+    {
+     "seat": 2,
+     "total": 49,
+     "turns": 23
+    },
+    {
+     "seat": 3,
+     "total": 39,
+     "turns": 23
+    },
+    {
+     "seat": 4,
+     "total": 12,
+     "turns": 23
+    },
+    {
+     "seat": 5,
+     "total": 38,
+     "turns": 23
+    }
+   ],
+   "log": "a1f2a98460ef6ab7fab24eb87eedfca4989d61f91bc62f6e0cf313d6213e22ed"
+  }
+ ]
+}
