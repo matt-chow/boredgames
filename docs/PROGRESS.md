@@ -115,4 +115,4 @@ Not done:
 - The inspect dialog's title stays in capitals, unlike the rest of the theme.
 - Art is original flat SVG, not painted illustration.
 - `docs/CLOCKWORK_BALANCE.md` still uses the old card names.
-- Bohnanza hasn't been compared by screenshot. Its rules and tests are untouched, and shared components fall back to its old values.
+- Bohnanza hasn't been compared by screenshot. Its rules are untouched, its browser tests changed only in how they reach the shelf, and shared components fall back to its old values.
