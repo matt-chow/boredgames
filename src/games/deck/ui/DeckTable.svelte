@@ -984,12 +984,12 @@
   }
   .compact .hud {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      'hand hand'
-      'res actions';
+      'hand'
+      'res'
+      'actions';
     gap: 6px;
-    align-items: end;
     padding: 0 8px max(8px, env(safe-area-inset-bottom));
     background: linear-gradient(to top, var(--ground-1) 60%, transparent);
   }
@@ -998,8 +998,8 @@
   }
   .compact .res {
     grid-area: res;
-    justify-self: start;
     flex-wrap: wrap;
+    justify-content: space-between;
     gap: 2px 10px;
     margin: 0;
     padding: 4px 8px;
@@ -1009,6 +1009,9 @@
   }
   .compact .res dt {
     font-size: 11px;
+  }
+  .compact .res .phase dd {
+    font-size: 14px;
   }
   .compact .actions {
     grid-area: actions;

@@ -212,6 +212,8 @@ test.describe('Kingdom & Commerce', () => {
     await expect(host.page.locator('.work')).toHaveCount(5);
     await shot(host.page, 'cc-phone');
     for (let i = 0; i < 6; i++) await step(host);
+    // The dashboard stays one strip beside any action buttons, so it doesn't cover the market.
+    expect((await host.page.locator('.res').boundingBox())!.height).toBeLessThan(80);
   });
 });
 
