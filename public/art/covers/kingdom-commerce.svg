@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420" role="img" aria-label="Kingdom &amp; Commerce: a market town below a castle">
+  <rect width="300" height="420" fill="#783547"/>
+  <!-- evening sky -->
+  <rect x="14" y="14" width="272" height="392" fill="#f0dfc4"/>
+  <rect x="14" y="14" width="272" height="120" fill="#e7cfaa"/>
+  <circle cx="222" cy="150" r="34" fill="#f5e9d6"/>
+  <!-- far hill and castle -->
+  <path d="M14 232 C70 186 132 176 170 190 S256 196 286 174 V300 H14Z" fill="#b9a083"/>
+  <g fill="#6c5560">
+    <rect x="96" y="138" width="88" height="62"/>
+    <rect x="86" y="118" width="22" height="82"/>
+    <rect x="172" y="118" width="22" height="82"/>
+    <rect x="130" y="98" width="24" height="60"/>
+    <path d="M86 118v-7h5v4h4v-4h4v4h4v-4h5v7zM172 118v-7h5v4h4v-4h4v4h4v-4h5v7zM96 138v-6h6v3h6v-3h6v3h6v-3h6v3h6v6zM154 138v-6h6v3h6v-3h6v3h6v-3h6v6z"/>
+    <path d="M130 98l12-22 12 22z"/>
+  </g>
+  <rect x="134" y="176" width="16" height="24" rx="8" fill="#3d2d36"/>
+  <path d="M142 76V60l14 5-14 5" fill="#783547"/>
+  <!-- town roofs -->
+  <path d="M14 254 L44 226 L72 254 L92 232 L122 254 L148 226 L176 254 L204 230 L232 254 L260 228 L286 250 V320 H14Z" fill="#8d4a5c"/>
+  <path d="M14 254H286V322H14Z" fill="#d8c3a2"/>
+  <g fill="#3d2d36">
+    <rect x="36" y="268" width="12" height="18" rx="6"/><rect x="96" y="268" width="12" height="18" rx="6"/><rect x="164" y="268" width="12" height="18" rx="6"/><rect x="238" y="268" width="12" height="18" rx="6"/>
+  </g>
+  <!-- paved square -->
+  <path d="M14 312H286V406H14Z" fill="#a98f74"/>
+  <path d="M14 334H286M14 358H286M14 382H286M50 312L36 406M110 312L102 406M170 312L176 406M232 312L250 406" stroke="#937a61" stroke-width="1.5" fill="none"/>
+  <!-- market stall -->
+  <rect x="48" y="306" width="6" height="56" fill="#3d2d36"/>
+  <rect x="150" y="306" width="6" height="56" fill="#3d2d36"/>
+  <rect x="44" y="340" width="116" height="24" fill="#5f4438"/>
+  <path d="M38 310 L50 280 H154 L166 310Z" fill="#783547"/>
+  <path d="M66 280 L60 310H82L86 280ZM106 280L104 310H126L126 280ZM146 280L148 310H166Z" fill="#f5e9d6"/>
+  <circle cx="72" cy="336" r="7" fill="#c9a263"/><circle cx="86" cy="337" r="6" fill="#c9a263"/><circle cx="79" cy="329" r="6" fill="#d9b77e"/>
+  <rect x="104" y="328" width="28" height="12" fill="#8d4a5c"/>
+  <!-- merchant and buyer, faceless -->
+  <g>
+    <circle cx="118" cy="306" r="8" fill="#e6c9a5"/>
+    <path d="M106 340 C106 320 110 314 118 314 S130 320 130 340Z" fill="#3d2d36"/>
+    <circle cx="208" cy="316" r="9" fill="#e6c9a5"/>
+    <path d="M200 312 C200 300 216 300 217 312Z" fill="#783547"/>
+    <path d="M192 390 C192 346 198 327 208 327 S224 346 224 390Z" fill="#783547"/>
+    <path d="M198 340 L168 346" stroke="#783547" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="166" cy="346" r="4.5" fill="#c9a263"/>
+    <circle cx="250" cy="334" r="7" fill="#e6c9a5"/>
+    <path d="M238 392 C238 356 242 342 250 342 S262 356 262 392Z" fill="#3d2d36"/>
+    <path d="M258 356 h12 v16 h-12z" fill="#c9a263"/>
+  </g>
+  <!-- title -->
+  <rect x="14" y="14" width="272" height="66" fill="#261d23"/>
+  <text x="150" y="44" text-anchor="middle" font-family="Georgia,'Palatino Linotype',Palatino,'Times New Roman',serif" font-size="24" letter-spacing="3" fill="#f5e9d6">KINGDOM</text>
+  <text x="150" y="68" text-anchor="middle" font-family="Georgia,'Palatino Linotype',Palatino,'Times New Roman',serif" font-size="17" letter-spacing="2.5" fill="#c9a263">&amp; COMMERCE</text>
+  <rect x="14.75" y="14.75" width="270.5" height="390.5" fill="none" stroke="#c9a263" stroke-width="1.5"/>
+</svg>

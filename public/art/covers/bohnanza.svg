@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420" role="img" aria-label="Bohnanza: beans sprouting in a field">
+  <rect width="300" height="420" fill="#c9e04a"/>
+  <!-- furrows -->
+  <path d="M0 262 C70 240 220 240 300 262 V420 H0Z" fill="#5d7a2c"/>
+  <path d="M0 296 C80 276 220 276 300 296M0 332 C80 312 220 312 300 332M0 372 C80 352 220 352 300 372" stroke="#46601f" stroke-width="6" fill="none"/>
+  <!-- tall bean plant -->
+  <path d="M150 262 C146 210 158 170 150 122" stroke="#34491a" stroke-width="7" fill="none" stroke-linecap="round"/>
+  <path d="M150 186 C118 186 102 170 96 148 C124 146 146 158 150 186Z" fill="#46601f"/>
+  <path d="M152 164 C184 164 204 148 208 124 C180 122 156 136 152 164Z" fill="#46601f"/>
+  <path d="M150 122 C136 112 132 96 136 84 C150 90 158 106 150 122Z" fill="#46601f"/>
+  <!-- three beans -->
+  <g stroke="#2a1d10" stroke-width="4">
+    <path d="M36 300 C30 262 66 240 94 254 C114 264 112 286 122 298 C136 316 120 352 86 352 C58 352 40 332 36 300Z" fill="#a8452e"/>
+    <path d="M196 292 C192 258 226 236 254 250 C276 262 268 284 276 298 C288 320 270 354 236 350 C208 346 200 322 196 292Z" fill="#e8d9b2"/>
+    <path d="M112 330 C108 296 144 276 172 288 C192 298 188 318 196 332 C208 354 190 386 156 384 C128 382 116 360 112 330Z" fill="#6b3f7c"/>
+  </g>
+  <g fill="none" stroke="#2a1d10" stroke-width="3" stroke-linecap="round" opacity=".55">
+    <path d="M86 268c-16 4-26 16-28 32"/><path d="M244 264c-14 4-24 16-26 30"/><path d="M162 302c-16 4-26 16-28 30"/>
+  </g>
+  <!-- title -->
+  <text x="150" y="66" text-anchor="middle" font-family="'Arial Black',Impact,'Helvetica Neue',Arial,sans-serif" font-weight="900" font-size="39" textLength="256" lengthAdjust="spacingAndGlyphs" fill="#2a1d10">BOHNANZA</text>
+</svg>
