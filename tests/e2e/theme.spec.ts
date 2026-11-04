@@ -35,7 +35,7 @@ test('KC-THEME-1: Kingdom & Commerce is themed in its rooms, and nothing reaches
     dispatchEvent(new PopStateEvent('popstate'));
   });
   await expect(page.locator('.hub')).toBeVisible();
-  await expect(page.locator('[data-game-theme="clockwork"]')).toHaveCount(0);
+  await expect(page.locator('[data-game-theme="clockwork"]:not([data-fan])')).toHaveCount(0);
   expect(await token(page, '.hub', '--sprout')).toBe('#c9e04a');
   expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(22, 17, 13)');
 

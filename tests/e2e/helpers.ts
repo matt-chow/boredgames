@@ -32,7 +32,7 @@ export async function newPlayer(browser: Browser, name: string, opts: BrowserCon
 
 export async function createRoom(p: Player): Promise<string> {
   await p.page.goto('/');
-  await p.page.getByRole('button', { name: /^Bohnanza,/ }).click();
+  await p.page.getByRole('button', { name: /^Open Table: Bohnanza/ }).click();
   await p.page.fill('#name', p.name);
   await p.page.getByRole('button', { name: 'Create room' }).click();
   await p.page.waitForURL(/\/r\/[A-Z0-9]{6}$/);

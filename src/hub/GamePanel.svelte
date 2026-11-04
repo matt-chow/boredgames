@@ -18,7 +18,6 @@
   let codeError = $state('');
   let broken = $state(false);
   let nameInput = $state<HTMLInputElement>();
-  const soon = $derived(game.status === 'soon');
 
   async function create(withBots: boolean) {
     error = '';
@@ -61,18 +60,13 @@
     </div>
 
     <div class="info">
-      {#if soon}
-        <p class="pill">Coming soon</p>
-      {:else}
-        <ul class="facts">
-          <li><Icon name="users" size={16} /><span class="num">{game.minPlayers}–{game.maxPlayers}</span> players</li>
-          <li><Icon name="clock" size={16} /><span class="num">{game.minutes}</span> min</li>
-        </ul>
-      {/if}
+      <ul class="facts">
+        <li><Icon name="users" size={16} /><span class="num">{game.minPlayers}–{game.maxPlayers}</span> players</li>
+        <li><Icon name="clock" size={16} /><span class="num">{game.minutes}</span> min</li>
+      </ul>
       <p class="pitch">{game.pitch}</p>
 
-      {#if !soon}
-        <label class="lab" for="name">Your name at the table</label>
+      <label class="lab" for="name">Your name at the table</label>
         <input
           id="name"
           class="field-input"
@@ -97,12 +91,10 @@
           </button>
         </div>
         <p class="hint">With bots you play {game.minPlayers - 1} simple computer {game.minPlayers === 2 ? 'player' : 'players'}. You can add friends from the room.</p>
-      {/if}
     </div>
   </div>
 
-  {#if !soon}
-    <form class="join" onsubmit={join}>
+  <form class="join" onsubmit={join}>
       <label class="lab" for="panel-code">Join a room</label>
       <div class="joinbox">
         <input
@@ -142,7 +134,6 @@
         {#each game.settings as line (line)}<li>{line}</li>{/each}
       </ul>
     </details>
-  {/if}
 </Dialog>
 
 <style>
@@ -185,15 +176,6 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-  }
-  .pill {
-    align-self: flex-start;
-    margin: 0;
-    padding: 2px 10px;
-    border-radius: 99px;
-    border: 1px solid var(--rim-hi);
-    font-size: 13px;
-    color: var(--ink-2);
   }
   .pitch {
     margin: 0 0 6px;
@@ -293,7 +275,6 @@
       margin-block: 0;
     }
     .info > .facts,
-    .info > .pill,
     .info > .pitch {
       grid-column: 2;
     }

@@ -70,8 +70,9 @@ Kingdom & Commerce (`src/games/clockwork`, first released as Clockwork Commons) 
 
 **Presentation is per game; everything functional is shared.** Three things vary:
 
-- `src/hub/catalog.ts`: one data entry per game on the shelf (box cover, colours, pitch, player counts, length, settings
-  shown). `GameBox`, `GamePanel` and `RoomList` hold no game-specific code.
+- `src/hub/catalog.ts`: one data entry per game on the home page (box cover, fan, colours, pitch, player counts, length,
+  settings shown). A game's fan is its own `ui/Fan.svelte`, loaded on demand. `GameFeature`, `CardFan`, `GamePanel` and
+  `RoomList` hold no game-specific code.
 - `GAME_THEME` in `src/games/ui.ts`: an optional lazy stylesheet. `RoomPage` puts `data-game-theme` around the room, and
   the stylesheet's rules all start from that attribute, so it restyles through tokens and can't reach anything else.
 - A ruleset's optional `present(text)`: rewords text saved in state as a view is built, so a game can be renamed without

@@ -5,7 +5,7 @@
   import { router } from '../client/lib/router.svelte';
   import { CODE_LENGTH, normalizeCode, type RoomSummary } from '../shared/protocol';
   import { CATALOG, type CatalogEntry } from './catalog';
-  import GameBox from './GameBox.svelte';
+  import GameFeature from './GameFeature.svelte';
   import GamePanel from './GamePanel.svelte';
   import RoomList from './RoomList.svelte';
 
@@ -16,19 +16,18 @@
   let chosen = $state<CatalogEntry | null>(null);
   let panelOpen = $state(false);
 
-  /** Dev server only: the deck bench, and with ?shelf=24 a full shelf, to prove any number of games fits. */
+  /** Dev server only: the deck bench, and with ?games=24 a long list, to prove any number of games fits. */
   const benchGames: CatalogEntry[] = __DECK_BENCH__
     ? [
         { id: 'fixture', name: 'Deck bench', status: 'available', minPlayers: 2, maxPlayers: 6, minutes: '5', pitch: 'Fixture cards for the deck table.', accent: '#39424e', howTo: [], settings: [] },
-        ...Array.from({ length: Number(new URLSearchParams(location.search).get('shelf')) || 0 }, (_, i): CatalogEntry => ({
+        ...Array.from({ length: Number(new URLSearchParams(location.search).get('games')) || 0 }, (_, i): CatalogEntry => ({
           id: `sample-${i}`,
           name: i % 3 ? `Sample ${i}` : `A very long sample game title that keeps on going, number ${i}`,
           status: 'soon',
           minPlayers: 0,
           maxPlayers: 0,
           minutes: '',
-          pitch: 'A sample box.',
-          cover: i % 2 ? undefined : '/art/covers/missing.svg',
+          pitch: 'A sample game.',
           accent: '#4a4038',
           howTo: [],
           settings: [],
@@ -97,9 +96,9 @@
   {/if}
   {#if unreachable}<p class="err" role="status">Can’t reach the server to check your rooms. Reload to try again.</p>{/if}
 
-  <section class="case" aria-label="Games">
+  <section class="games" aria-label="Games">
     {#each games as g (g.id)}
-      <GameBox game={g} onopen={() => show(g)} />
+      <GameFeature game={g} onopen={() => show(g)} />
     {/each}
   </section>
 </main>
@@ -119,14 +118,11 @@
     flex-direction: column;
     gap: clamp(24px, 4vw, 40px);
     padding: max(28px, env(safe-area-inset-top)) clamp(16px, 5vw, 64px) 56px;
-    /* Charcoal wall, lit gently from above. */
-    background:
-      radial-gradient(70% 420px at 50% 0, rgb(226 170 110 / 0.09), transparent 75%),
-      #1b1816;
+    background: #1b1816;
   }
   .hub > * {
     width: 100%;
-    max-width: 1180px;
+    max-width: 1040px;
     margin-inline: auto;
   }
   .top {
@@ -191,19 +187,10 @@
     gap: 8px;
   }
 
-  /* As many boxes per row as fit. No game has a position of its own, so none can end up out of reach. */
-  .case {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(clamp(136px, 15vw, 172px), 1fr));
-    gap: 32px clamp(20px, 3vw, 36px);
-    overflow-x: clip;
-    overflow-clip-margin: 0;
-    padding-top: 10px;
-  }
-  @media (max-width: 480px) {
-    .case {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 28px 20px;
-    }
+  /* One column: no game has a position of its own, so none can end up out of reach. */
+  .games {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(16px, 2.5vw, 24px);
   }
 </style>

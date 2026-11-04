@@ -12,7 +12,7 @@ deck-builder for 2–6.
 ## Play
 
 1. Open the site and enter a display name.
-2. Choose a game's box on the shelf, then **Open a table**, or **Practise with bots** to play alone against simple computer
+2. Choose **Open Table** on a game, then **Create room**, or **Practise with bots** to play alone against simple computer
    players. You can add bots from the lobby too.
 3. Share the six-letter code or the invite link. Friends join from their own devices.
 4. The host picks the settings in the lobby and starts the game once enough players are seated.

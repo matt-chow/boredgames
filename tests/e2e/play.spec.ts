@@ -183,7 +183,7 @@ test('quitting a practice game against bots ends it and deletes the table', asyn
   const ana = await newPlayer(browser, 'Ana', PHONE);
   const { page } = ana;
   await page.goto('/');
-  await page.getByRole('button', { name: /^Bohnanza,/ }).click();
+  await page.getByRole('button', { name: /^Open Table: Bohnanza/ }).click();
   await page.fill('#name', 'Ana');
   await page.getByRole('button', { name: /Practise with bots/ }).click();
   await page.waitForURL(/\/r\/[A-Z0-9]{6}$/);

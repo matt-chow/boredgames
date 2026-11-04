@@ -46,7 +46,7 @@
   --type-duration: #8a6a45;
 }
 
-body:has([data-game-theme='clockwork']) {
+body:has([data-game-theme='clockwork']:not([data-fan])) {
   background: #261d23;
 }
 

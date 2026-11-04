@@ -144,11 +144,13 @@ for panels and dialogs. Cards are portrait 5:7 (76 × 106 px at rest).
 - **Trading dock:** each proposed offer is a dashed "slip" (an offer addressed to you is edged in sprout). Once
   accepted, the cards fly to the receivers' pending area, so proposed and committed are never confused. Accept /
   Reject / Withdraw / Counter sit on the slip.
-- **Hub shelf:** the home page is a walnut bookshelf with one game box per catalog entry. The grid wraps, so a box is
-  never pushed off screen, and any number of games fits. Choosing a box opens its panel with the pitch, players, length,
-  settings and actions. The real settings stay in the lobby, which is their only authority. Active rooms are listed from
-  this browser's own history. Each box carries its game's own cover, so the shelf stays calm and the covers supply the
-  colour.
+- **Home page:** one feature card per catalog entry, in a single column, so any number of games fits and none has a
+  position of its own. Each card has the game's name, pitch, player count, length and one **Open Table** button on one
+  side, and a fan of that game's own cards on the other. Below 640px of card width (a container query, not the viewport)
+  the card stacks and the button goes full width. Below 340px of fan width, a fan keeps its middle three cards. The fan
+  scales from its container's width, and the card clips anything that would escape. The fan opens 10% on hover or focus
+  where hover exists; only `transform` animates. No illustration is shared between games. A coming-soon card is an
+  outline with blank cards, a pill and no button.
 - **Per-game themes:** a game may override tokens inside `[data-game-theme]`. Kingdom & Commerce uses burgundy, antique
   gold, ivory and charcoal, and keeps the same layout, motion and components (docs/CLOCKWORK.md).
 - **Switches** (lobby variants): sprout when on; options that cannot be used at this player count stay visible with

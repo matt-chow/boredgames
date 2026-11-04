@@ -118,3 +118,13 @@ Not done:
 - Art is original flat SVG, not painted illustration.
 - `docs/CLOCKWORK_BALANCE.md` still uses the old card names.
 - Bohnanza hasn't been compared by screenshot. Its rules are untouched, its browser tests changed only in how they reach the shelf, and shared components fall back to its old values.
+
+## v3.0: homepage, Kingdom & Commerce expansion, guides
+
+Work on branch `feat/v3`, reversible point: tag `pre-v3` at `6482560`. Production stays on v2.0 until the owner approves.
+
+**Checkpoint 1, audit.** `npm run check` 0 errors; `npx vitest run` 478/478 in 16 files. Baseline taken before any change.
+
+**Checkpoint 2, homepage.** The bookshelf is gone (`GameBox`, `shelf.spec.ts`). Feature cards and game-owned fans replace
+it; **Open Table** opens the existing `GamePanel`. `tests/e2e/home.spec.ts`: 14/14 on one worker in Edge against the dev
+server, covering six viewports with 24 extra games.
