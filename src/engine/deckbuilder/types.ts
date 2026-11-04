@@ -223,6 +223,8 @@ export interface Labels {
 /** One game's content and table rules. Lives in code, so it never enters persisted state. */
 export interface Ruleset {
   id: string;
+  /** Which edition of the rules this is. A game keeps the edition it started on, whatever is released later. */
+  version?: number;
   name: string;
   minPlayers: number;
   maxPlayers: number;
@@ -396,6 +398,8 @@ export interface TurnState {
 
 export interface DeckState {
   rulesetId: string;
+  /** The edition of the rules this game started on. Absent only in unmigrated saves, which are the oldest edition. */
+  rulesVersion?: number;
   n: number;
   rng: RngState;
   /** Which card each id is. The ids are an independent permutation, so an id reveals nothing. */
@@ -492,7 +496,21 @@ export interface PlayerView {
   play: CardRefView[];
   mats: Record<string, { count: number; cards?: CardRefView[] }>;
   tokens: Record<string, number>;
-  vp: number;
+  /** Points held as tokens. Only your own until the game ends. */
+  vp?: number;
+}
+
+/** Where a player's points come from. The parts always add up to the total. */
+export interface ScoreBreakdown {
+  /** Basic point cards. */
+  estates: number;
+  /** Fixed-value market cards, and points gained directly from effects. */
+  special: number;
+  projects: number;
+  negative: number;
+  /** Cards whose worth depends on what the player holds or did. */
+  conditional: number;
+  total: number;
 }
 
 export interface FinalScore {
@@ -503,10 +521,12 @@ export interface FinalScore {
   cards: { key: string; count: number; vp: number }[];
   /** Points from completed projects. */
   projects: { key: string; vp: number }[];
+  breakdown: ScoreBreakdown;
 }
 
 export interface DeckView {
   rulesetId: string;
+  rulesVersion?: number;
   you: number | null;
   turn: Omit<TurnState, 'costMods'>;
   market: string[];
@@ -518,6 +538,8 @@ export interface DeckView {
   discard: CardRefView[];
   /** Your own cards, counted by name across every zone. A deck list, never a deck order. */
   owned: Record<string, number>;
+  /** Your own points as they stand. Other players' are never sent until the game ends. */
+  score: ScoreBreakdown | null;
   revealed: CardRefView[];
   pending: PendingView | null;
   projects: ProjectView[];

@@ -119,13 +119,13 @@ export const FOUNDRY: CardDef[] = inSet('foundry', [
   ]),
 ]);
 
-/** Pressure on rival houses, ways to resist it, and big payoffs that leave Debt behind. */
+/** Pressure on rival houses, ways to resist it, and big payoffs that leave Royal Debt behind. */
 export const NIGHT: CardDef[] = inSet('night', [
   attack('picket_line', 'Town Gossip', 3, '+1 Coin. Each opponent with 3 or more Influence loses 1 Influence.', [
     coins(1),
     { op: 'attack', effects: [{ op: 'if', cond: hasSpark(3), then: [spark(-1)] }] },
   ]),
-  attack('corrosion_crew', 'Tax Farmer', 5, '+2 Coins. Each opponent spends 1 Influence or gains a Debt.', [
+  attack('corrosion_crew', 'Tax Farmer', 5, '+2 Coins. Each opponent spends 1 Influence or gains a Royal Debt.', [
     coins(2),
     {
       op: 'attack',
@@ -133,7 +133,7 @@ export const NIGHT: CardDef[] = inSet('night', [
         {
           op: 'if',
           cond: hasSpark(1),
-          then: [{ op: 'may', prompt: 'Tax Farmer: spend 1 Influence, or gain a Debt?', then: [spark(-1)], else: [gainRust] }],
+          then: [{ op: 'may', prompt: 'Tax Farmer: spend 1 Influence, or gain a Royal Debt?', then: [spark(-1)], else: [gainRust] }],
           else: [gainRust],
         },
       ],
@@ -186,24 +186,24 @@ export const NIGHT: CardDef[] = inSet('night', [
     [actions(1), { op: 'if', cond: { not: hasSpark(1) }, then: [spark(1)] }],
     { label: 'Spend 1 Influence, cancel the attack on you', effects: [{ op: 'if', cond: hasSpark(1), then: [spark(-1), { op: 'immune' }] }] },
   ),
-  action('redline_boiler', 'Usurer', 3, '+3 Coins. +1 Buy. Gain a Debt.', [coins(3), buys(1), gainRust]),
-  action('pressure_test', 'Royal Audit', 4, 'Reveal the top 3 of your deck: +1 Coin per Currency, 1 Influence per Action, a Debt per Renown card. Discard them.', [
+  action('redline_boiler', 'Usurer', 3, '+3 Coins. +1 Buy. Gain a Royal Debt.', [coins(3), buys(1), gainRust]),
+  action('pressure_test', 'Royal Audit', 4, 'Reveal the top 3 of your deck: +1 Coin per Currency, 1 Influence per Action, a Royal Debt per Renown card. Discard them.', [
     { op: 'reveal', n: 3, as: 'tested' },
     coins({ countIn: 'tested', filter: { type: 'treasure' } }),
     spark({ countIn: 'tested', filter: { type: 'action', notType: 'penalty' } }),
     { op: 'repeat', n: { countIn: 'tested', filter: { type: 'victory' } }, effects: [gainRust] },
     { op: 'move', cards: { rest: 'tested' }, to: 'discard' },
   ]),
-  action('overload_relay', 'Royal Progress', 6, 'Spend all your Influence. Draw 1 per Influence spent, up to 5. If you spent 4 or more, gain a Debt.', [
+  action('overload_relay', 'Royal Progress', 6, 'Spend all your Influence. Draw 1 per Influence spent, up to 5. If you spent 4 or more, gain a Royal Debt.', [
     { op: 'set', as: 'burned', n: { token: SPARK } },
     spark({ mul: [{ value: 'burned' }, -1] }),
     draw({ min: [{ value: 'burned' }, 5] }),
     { op: 'if', cond: { gte: [{ value: 'burned' }, 4] }, then: [gainRust] },
   ]),
-  action('scrapyard_broker', 'Debt Collector', 2, '+1 Action. You may trash a Debt from your hand for +3 Coins. Otherwise +1 Coin.', [
+  action('scrapyard_broker', 'Debt Collector', 2, '+1 Action. You may trash a Royal Debt from your hand for +3 Coins. Otherwise +1 Coin.', [
     actions(1),
     { op: 'select', from: 'hand', filter: { key: 'rust' }, as: 'rusty' },
-    pick('sold', 'You may trash a Debt for +3 Coins. Otherwise +1 Coin.', 0, 1, { var: 'rusty' }),
+    pick('sold', 'You may trash a Royal Debt for +3 Coins. Otherwise +1 Coin.', 0, 1, { var: 'rusty' }),
     {
       op: 'if',
       cond: { has: 'sold' },

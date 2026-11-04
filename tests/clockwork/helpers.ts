@@ -3,7 +3,7 @@ import type { DeckAction, DeckState, DeckView } from '../../src/engine/deckbuild
 import { clockwork } from '../../src/games/clockwork';
 
 export const game = clockwork;
-export const ALL_SETS = ['core', 'foundry', 'night', 'town'];
+export const ALL_SETS = ['core', 'foundry', 'night', 'town', 'crown'];
 export const MARKET = ['supply_crane', 'corrosion_crew', 'gearwright', 'foreman', 'hand_crank', 'glow_mason', 'tally_clerk', 'paper_fan', 'conveyor', 'flywheel'];
 export const WORKS = ['canal_lights', 'public_clock', 'makers_fair', 'tram_extension', 'skybridge'];
 

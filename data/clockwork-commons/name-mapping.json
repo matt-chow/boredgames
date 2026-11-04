@@ -22,31 +22,31 @@
   "cards": {
     "scrap": {
       "old": "Scrap",
-      "new": "Clipped Penny"
+      "new": "Coin Purse"
     },
     "cog": {
       "old": "Cog",
-      "new": "Groat"
+      "new": "Silver Chest"
     },
     "dynamo": {
       "old": "Dynamo",
-      "new": "Florin"
+      "new": "Royal Treasury"
     },
     "notebook": {
       "old": "Notebook",
-      "new": "Land Grant"
+      "new": "Homestead"
     },
     "blueprint": {
       "old": "Blueprint",
-      "new": "Manor Deed"
+      "new": "Noble Estate"
     },
     "monument": {
       "old": "Monument",
-      "new": "Great Abbey"
+      "new": "Grand Duchy"
     },
     "rust": {
       "old": "Rust",
-      "new": "Debt"
+      "new": "Royal Debt"
     },
     "gearwright": {
       "old": "Gearwright",
@@ -355,6 +355,110 @@
     "aqueduct": {
       "old": "Aqueduct",
       "new": "Great Conduit"
+    },
+    "royal_confessor": {
+      "old": "Royal Confessor",
+      "new": "Royal Confessor"
+    },
+    "mintmaster": {
+      "old": "Mintmaster",
+      "new": "Mintmaster"
+    },
+    "estate_surveyor": {
+      "old": "Estate Surveyor",
+      "new": "Estate Surveyor"
+    },
+    "purification_house": {
+      "old": "Purification House",
+      "new": "Purification House"
+    },
+    "salvage_office": {
+      "old": "Salvage Office",
+      "new": "Salvage Office"
+    },
+    "reclamation_guild": {
+      "old": "Reclamation Guild",
+      "new": "Reclamation Guild"
+    },
+    "royal_tax_collector": {
+      "old": "Royal Tax Collector",
+      "new": "Royal Tax Collector"
+    },
+    "royal_scrivener": {
+      "old": "Royal Scrivener",
+      "new": "Royal Scrivener"
+    },
+    "noble_resettlement": {
+      "old": "Noble Resettlement",
+      "new": "Noble Resettlement"
+    },
+    "burden_relief": {
+      "old": "Burden Relief",
+      "new": "Burden Relief"
+    },
+    "treasury_auditor": {
+      "old": "Treasury Auditor",
+      "new": "Treasury Auditor"
+    },
+    "spice_exchange": {
+      "old": "Spice Exchange",
+      "new": "Spice Exchange"
+    },
+    "trade_bonds": {
+      "old": "Trade Bonds",
+      "new": "Trade Bonds"
+    },
+    "royal_mint": {
+      "old": "Royal Mint",
+      "new": "Royal Mint"
+    },
+    "port_tariffs": {
+      "old": "Port Tariffs",
+      "new": "Port Tariffs"
+    },
+    "guild_auction": {
+      "old": "Guild Auction",
+      "new": "Guild Auction"
+    },
+    "kingdom_courier": {
+      "old": "Kingdom Courier",
+      "new": "Kingdom Courier"
+    },
+    "hall_of_archives": {
+      "old": "Hall of Archives",
+      "new": "Hall of Archives"
+    },
+    "great_council": {
+      "old": "Great Council",
+      "new": "Great Council"
+    },
+    "edict_of_inspection": {
+      "old": "Edict of Inspection",
+      "new": "Edict of Inspection"
+    },
+    "tax_arrears": {
+      "old": "Tax Arrears",
+      "new": "Tax Arrears"
+    },
+    "royal_advocate": {
+      "old": "Royal Advocate",
+      "new": "Royal Advocate"
+    },
+    "court_saboteur": {
+      "old": "Court Saboteur",
+      "new": "Court Saboteur"
+    },
+    "noble_council": {
+      "old": "Noble Council",
+      "new": "Noble Council"
+    },
+    "common_fields": {
+      "old": "Common Fields",
+      "new": "Common Fields"
+    },
+    "merchants_guildhall": {
+      "old": "Merchants’ Guildhall",
+      "new": "Merchants’ Guildhall"
     }
   }
 }

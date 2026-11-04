@@ -4,39 +4,39 @@
   "entries": [
     {
       "key": "scrap",
-      "name": "Clipped Penny",
+      "name": "Coin Purse",
       "oldName": "Scrap",
-      "brief": "A money-changer inspecting worn, clipped pennies on a counter.",
+      "brief": "A market-goer counting a few pennies out of a small leather purse.",
       "status": "svg",
       "asset": null
     },
     {
       "key": "cog",
-      "name": "Groat",
+      "name": "Silver Chest",
       "oldName": "Cog",
-      "brief": "A market seller and a buyer exchanging a silver groat at a stall.",
+      "brief": "A merchant opening a strongbox of silver beside a street stall.",
       "status": "svg",
       "asset": null
     },
     {
       "key": "dynamo",
-      "name": "Florin",
+      "name": "Royal Treasury",
       "oldName": "Dynamo",
-      "brief": "A banker weighing gold florins in a panelled counting room.",
+      "brief": "Guards and a steward beside the great iron-bound chests of the royal treasury.",
       "status": "svg",
       "asset": null
     },
     {
       "key": "notebook",
-      "name": "Land Grant",
+      "name": "Homestead",
       "oldName": "Notebook",
-      "brief": "A landholder holding up a sealed grant over a strip of farmland.",
+      "brief": "A family farmstead: a small house, a tilled field and a farmer at work.",
       "status": "svg",
       "asset": null
     },
     {
       "key": "blueprint",
-      "name": "Manor Deed",
+      "name": "Noble Estate",
       "oldName": "Blueprint",
       "brief": "A modest manor house with its owner at the door.",
       "status": "svg",
@@ -44,15 +44,15 @@
     },
     {
       "key": "monument",
-      "name": "Great Abbey",
+      "name": "Grand Duchy",
       "oldName": "Monument",
-      "brief": "A great abbey at evening with monks walking to it.",
+      "brief": "A rider approaching a great hilltop castle ruling over a wide duchy.",
       "status": "svg",
       "asset": null
     },
     {
       "key": "rust",
-      "name": "Debt",
+      "name": "Royal Debt",
       "oldName": "Rust",
       "brief": "A debtor kneeling before a creditor and an open ledger.",
       "status": "svg",
@@ -671,6 +671,214 @@
       "name": "Great Conduit",
       "oldName": "Aqueduct",
       "brief": "A great stone conduit of arches, with workers beneath.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "royal_confessor",
+      "name": "Royal Confessor",
+      "oldName": "Royal Confessor",
+      "brief": "A kneeling penitent handing over a burden to a hooded confessor before a reliquary.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "mintmaster",
+      "name": "Mintmaster",
+      "oldName": "Mintmaster",
+      "brief": "A master of the mint striking coins over a hearth while a worker carries sacks.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "estate_surveyor",
+      "name": "Estate Surveyor",
+      "oldName": "Estate Surveyor",
+      "brief": "A surveyor with plans walking the boundary of a farm below a manor.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "purification_house",
+      "name": "Purification House",
+      "oldName": "Purification House",
+      "brief": "Townsfolk bringing bundles to a whitewashed almshouse to be burned away.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "salvage_office",
+      "name": "Salvage Office",
+      "oldName": "Salvage Office",
+      "brief": "A clerk weighing an old chest and handing a receipt across a counter.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "reclamation_guild",
+      "name": "Reclamation Guild",
+      "oldName": "Reclamation Guild",
+      "brief": "Guild workers carting away broken goods from a yard behind a tall house.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "royal_tax_collector",
+      "name": "Royal Tax Collector",
+      "oldName": "Royal Tax Collector",
+      "brief": "A crowned collector at a roadside table counting a sack of coins.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "royal_scrivener",
+      "name": "Royal Scrivener",
+      "oldName": "Royal Scrivener",
+      "brief": "A scrivener striking lines from a long ledger by candlelight.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "noble_resettlement",
+      "name": "Noble Resettlement",
+      "oldName": "Noble Resettlement",
+      "brief": "A noble family leaving a manor by cart toward a new hall across the river.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "burden_relief",
+      "name": "Burden Relief",
+      "oldName": "Burden Relief",
+      "brief": "A debtor lifting a heavy bundle off a neighbour’s back in a quiet lane.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "treasury_auditor",
+      "name": "Treasury Auditor",
+      "oldName": "Treasury Auditor",
+      "brief": "An auditor checking stacked coin against a ledger in a vaulted room.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "spice_exchange",
+      "name": "Spice Exchange",
+      "oldName": "Spice Exchange",
+      "brief": "Merchants trading sacks of spice beneath a bright awning at the quay.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "trade_bonds",
+      "name": "Trade Bonds",
+      "oldName": "Trade Bonds",
+      "brief": "Two merchants sealing a paper bond across a table, coins between them.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "royal_mint",
+      "name": "Royal Mint",
+      "oldName": "Royal Mint",
+      "brief": "Rows of coiners at benches beneath the royal banner.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "port_tariffs",
+      "name": "Port Tariffs",
+      "oldName": "Port Tariffs",
+      "brief": "A customs officer tallying barrels unloaded from a ship at a harbour.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "guild_auction",
+      "name": "Guild Auction",
+      "oldName": "Guild Auction",
+      "brief": "An auctioneer raising a hand above a crowd of buyers in a guild square.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "kingdom_courier",
+      "name": "Kingdom Courier",
+      "oldName": "Kingdom Courier",
+      "brief": "A courier on horseback galloping along a road between hills with a satchel.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "hall_of_archives",
+      "name": "Hall of Archives",
+      "oldName": "Hall of Archives",
+      "brief": "A keeper pulling one scroll from tall shelves in a lantern-lit archive.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "great_council",
+      "name": "Great Council",
+      "oldName": "Great Council",
+      "brief": "Nobles seated either side of a long table before the throne.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "edict_of_inspection",
+      "name": "Edict of Inspection",
+      "oldName": "Edict of Inspection",
+      "brief": "A herald reading an edict while officers look through a merchant’s stall.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "tax_arrears",
+      "name": "Tax Arrears",
+      "oldName": "Tax Arrears",
+      "brief": "Guards at a cottage door calling in unpaid taxes from a worried farmer.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "royal_advocate",
+      "name": "Royal Advocate",
+      "oldName": "Royal Advocate",
+      "brief": "An advocate holding up a sealed writ, shielding a merchant before the court.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "court_saboteur",
+      "name": "Court Saboteur",
+      "oldName": "Court Saboteur",
+      "brief": "A hooded figure at night slipping a paper out of a noble’s chest.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "noble_council",
+      "name": "Noble Council",
+      "oldName": "Noble Council",
+      "brief": "Landholders from many small farms gathered before a noble in a green field.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "common_fields",
+      "name": "Common Fields",
+      "oldName": "Common Fields",
+      "brief": "Villagers sharing a harvest of sheaves on open common land.",
+      "status": "svg",
+      "asset": null
+    },
+    {
+      "key": "merchants_guildhall",
+      "name": "Merchants’ Guildhall",
+      "oldName": "Merchants’ Guildhall",
+      "brief": "A great timbered guildhall on a busy square with stalls before it.",
       "status": "svg",
       "asset": null
     }

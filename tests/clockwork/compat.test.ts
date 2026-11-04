@@ -2,19 +2,22 @@
  * Kingdom & Commerce is Clockwork Commons with new names and art. These tests hold the game itself still: the baseline and
  * the saved rooms were written by the code as it stood before the rename (see git history), and must never be regenerated
  * for a presentation change. KC_WRITE_BASELINE=1 rewrites them, for a deliberate rules change only.
+ * Edition 2 is now frozen for rooms already in progress, so all of this holds it still, played by the live game module.
  */
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import type { DeckState, DeckView } from '../../src/engine/deckbuilder';
+import { createDeckGame, type DeckState, type DeckView } from '../../src/engine/deckbuilder';
 import { botMove, PROFILES } from '../../src/games/clockwork/rules/bot';
-import { CARDS, RULES, WORKS } from '../../src/games/clockwork/rules/ruleset';
-import { ALL_SETS, assertConserved, game, Table } from './helpers';
+import { CARDS_V2 as CARDS, RULES_V2 as RULES, WORKS_V2 as WORKS } from '../../src/games/clockwork/rules/ruleset';
+import { assertConserved, game, Table } from './helpers';
 
 const BASELINE = 'data/clockwork-commons/mechanics-baseline.json';
 const SAVED = 'tests/clockwork/saved-rooms-v1.json';
 const WRITE = !!process.env.KC_WRITE_BASELINE;
 const PLAYER_COUNTS = [2, 3, 4, 5, 6];
+const ALL_SETS = ['core', 'foundry', 'night', 'town'];
+const legacy = createDeckGame(RULES);
 
 /** Words on the card, which may change. Everything else is the game, which may not. */
 const WORDING = new Set(['name', 'text', 'typeLine', 'prompt', 'label']);
@@ -61,7 +64,7 @@ function catalogue() {
 
 /** A whole seeded bot game, as a fingerprint of everything that happened. */
 function fingerprint(players: number, seed: string) {
-  let s = game.setup({ playerCount: players, seed, config: { market: [], bans: [], sets: ALL_SETS, projects: [] } });
+  let s = legacy.setup({ playerCount: players, seed, config: { market: [], bans: [], sets: ALL_SETS, projects: [] } });
   const profiles = Array.from({ length: players }, (_, i) => PROFILES[(i * 3 + seed.length) % PROFILES.length]);
   let steps = 0;
   for (; steps < 30_000 && !s.over; steps++) {
@@ -127,11 +130,12 @@ describe('Kingdom & Commerce keeps the game it renamed', () => {
     expect(RULES.id).toBe('clockwork');
     expect(CARDS.map((c) => c.key)).toEqual(base.catalogue.cards.map((c: { key: string }) => c.key));
     expect(WORKS.map((w) => w.key)).toEqual(base.catalogue.projects.map((w: { key: string }) => w.key));
-    expect(game.meta.stateVersion).toBe(1);
+    expect(game.meta.stateVersion).toBe(2);
   });
 
   it.each(['rust', 'foreman', 'attack'])('KC-COMPAT-4: a room saved mid-decision (%s) opens and plays to the end', (name) => {
-    let s = saved[name];
+    let s = game.migrate!(saved[name], 1);
+    expect(s.rulesVersion).toBe(2);
     expect(s.pending).toBeTruthy();
     for (let seat = 0; seat < s.n; seat++) expect(() => game.project(s, seat)).not.toThrow();
     const profiles = Array.from({ length: s.n }, () => PROFILES[0]);

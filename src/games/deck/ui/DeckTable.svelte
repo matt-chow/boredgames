@@ -24,7 +24,7 @@
   let { conn, room }: GameUiProps = $props();
 
   const g = $derived(room.game as DeckView);
-  const rules = $derived((GAMES[room.gameId] as unknown as DeckGame).rules);
+  const rules = $derived((GAMES[room.gameId] as unknown as DeckGame).rulesFor(g.rulesVersion));
   const defs = $derived(defsOf(rules));
   const me = $derived(g.you ?? 0);
   const mine = $derived(g.players[me]);
@@ -258,6 +258,24 @@
   const lastLog = $derived(g.log.length ? logLine(g.log[g.log.length - 1], name, cardName, tokenName) : '');
   const marketCode = $derived(encodeMarket(rules, g.market, g.projects.map((p) => p.key)));
   const trashTop = $derived(g.trash.length ? g.trash[g.trash.length - 1] : null);
+
+  // ── what you own: counts only, sorted so nothing hints at where a card is ──
+  let overviewOpen = $state(false);
+  const ownedList = $derived(Object.entries(g.owned).sort(([a], [b]) => defs[b].cost - defs[a].cost || defs[a].name.localeCompare(defs[b].name)));
+  const ownedTotal = $derived(ownedList.reduce((n, [, c]) => n + c, 0));
+  const pointsWord = $derived(words?.points ?? 'Points');
+  const scoreLines = $derived(
+    g.score
+      ? [
+          ['Estates', g.score.estates],
+          ['Special scoring', g.score.special],
+          [words?.projects ?? 'Projects', g.score.projects],
+          ['Negative cards', g.score.negative],
+          ['Conditional cards', g.score.conditional],
+        ] as [string, number][]
+      : [],
+  );
+  const signed = (n: number) => String(n).replace('-', '−');
   const endPileNames = $derived(rules.endPiles.map(cardName).join(', '));
 </script>
 
@@ -312,10 +330,10 @@
       {/if}
 
       <section class="own" aria-label="Your area">
-        <div class="pile" data-anchor="deck-{me}" title="Your deck">
+        <button class="pile tap" data-anchor="deck-{me}" onclick={() => (overviewOpen = true)} aria-label="Your deck: {mine.deckCount} cards. Open your deck overview.">
           {#if mine.deckCount}<DeckCard size="sm" />{:else}<span class="slot-empty"></span>{/if}
           <span class="pl"><b class="num">{mine.deckCount}</b> deck</span>
-        </div>
+        </button>
 
         <div class="inplay" aria-label="Your cards in play">
           {#if revealed.length}
@@ -337,7 +355,6 @@
             <button class="btn small" onclick={() => list(m, info.cards)}>{m} <span class="num">{info.count}</span></button>
           {/each}
           {#each myTokens as [t, n] (t)}<span class="tok num">{n} {tokenName(t)}</span>{/each}
-          {#if mine.vp}<span class="tok num">{mine.vp} {words?.points ?? 'pts'}</span>{/if}
         </div>
 
         <button class="pile tap" data-anchor="discard-{me}" onclick={() => list('Your discard pile', g.discard)} aria-label="Your discard pile: {mine.discardCount} cards. Look through it.">
@@ -388,7 +405,9 @@
       <div><dt>Actions</dt><dd class="num">{g.turn.actions}</dd></div>
       <div><dt>Buys</dt><dd class="num">{g.turn.buys}</dd></div>
       <div class="coins"><dt>Coins</dt><dd class="num">{g.turn.coins}</dd></div>
-      {#each Object.entries(rules.tokenCaps ?? {}) as [t, cap] (t)}<div class="token" title="Holds up to {cap}"><dt>{tokenName(t)}</dt><dd class="num">{mine.tokens[t] ?? 0}</dd></div>{/each}
+      {#each Object.entries(rules.tokenCaps ?? {}) as [t, cap] (t)}<div class="token" title="Yours. Holds up to {cap}.{rules.convert?.token === t ? ` Convert up to ${rules.convert.maxPerTurn} a turn at ${rules.convert.coinsEach} Coin each in the ${buyStep} phase, or spend it on ${words?.projects ?? 'projects'}.` : ''}"><dt>{tokenName(t)}</dt><dd class="num">{mine.tokens[t] ?? 0}<small>/{cap}</small></dd></div>{/each}
+      {#if g.score}<div class="renown"><dt>{pointsWord}</dt><dd><button type="button" class="num" aria-label="Your {pointsWord}: {g.score.total}. Open the breakdown and your deck overview." onclick={() => (overviewOpen = true)}>{signed(g.score.total)}</button></dd></div>{/if}
+      <div class="phase"><dt>Phase</dt><dd>{g.turn.phase === 'action' ? (words?.actionPhase ?? 'Actions') : (words?.buyPhase ?? 'Buying')}</dd></div>
     </dl>
     <div class="hand-wrap">
       <DeckHand cards={g.hand} {defs} seat={me} legal={handLegal} selected={handSelected} onpick={pickHand} />
@@ -403,7 +422,7 @@
         <button class="btn primary go" disabled={conn.busy} onclick={() => act({ type: 'play-treasures' })}>Play all {(words?.treasures ?? 'treasures').toLowerCase()}</button>
       {/if}
       {#if g.legal.convert}
-        <button class="btn go" disabled={conn.busy} onclick={() => act({ type: 'convert' })}>Convert {tokenName(rules.convert?.token ?? '')}</button>
+        <button class="btn go" disabled={conn.busy} onclick={() => act({ type: 'convert' })}>Convert {tokenName(rules.convert?.token ?? '')} <span class="num">({g.turn.converted}/{rules.convert?.maxPerTurn})</span></button>
       {/if}
       {#if g.legal.endPhase}
         <button class="btn go" class:primary={phaseIsPrimary} disabled={conn.busy} onclick={() => act({ type: 'end-phase' })}>
@@ -441,6 +460,23 @@
   {/if}
 </Dialog>
 
+<Dialog bind:open={overviewOpen} title="Your deck overview" wide>
+  {#if g.score}
+    <dl class="tally" aria-label="Your {pointsWord}">
+      {#each scoreLines as [label, n] (label)}<div><dt>{label}</dt><dd class="num">{signed(n)}</dd></div>{/each}
+      <div class="sum"><dt>Your {pointsWord}</dt><dd class="num">{signed(g.score.total)}</dd></div>
+    </dl>
+    <p class="none">Only you can see this until the game ends. Trashed cards don’t count.</p>
+  {/if}
+  <h3 class="own-h">You own <span class="num">{ownedTotal}</span> cards</h3>
+  <p class="none">Deck <b class="num">{mine.deckCount}</b> · Hand <b class="num">{g.hand.length}</b> · In play <b class="num">{mine.play.length}</b> · Discard <b class="num">{mine.discardCount}</b>. Your deck’s order stays hidden, from you too.</p>
+  <ul class="owned">
+    {#each ownedList as [key, n] (key)}
+      <li><DeckCard def={defs[key]} size="xs" onclick={() => showCard(key)} /><span class="num">×{n}</span><span class="own-nm">{defs[key].name}</span></li>
+    {/each}
+  </ul>
+</Dialog>
+
 <Dialog bind:open={inspectOpen} title={inspected?.name ?? 'Card'}>
   {#if inspected}
     <div class="ins">
@@ -473,7 +509,7 @@
 
 <QuitGame {conn} {room} bind:open={quitting} />
 {#if over && showSummary && g.final}
-  <DeckSummary {g} {room} {conn} {defs} code={marketCode} {name} points={words?.points ?? 'points'} projectName={cardName} onclose={() => (showSummary = false)} />
+  <DeckSummary {g} {room} {conn} {defs} code={marketCode} {name} points={words?.points ?? 'points'} projectsWord={words?.projects ?? 'Projects'} projectName={cardName} onclose={() => (showSummary = false)} />
 {/if}
 
 <style>
@@ -685,6 +721,72 @@
   .res .coins dd {
     color: var(--coin);
   }
+  .res small {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-3);
+  }
+  .res .renown button {
+    padding: 0 6px;
+    border: 0;
+    border-radius: var(--r-sm);
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    background: none;
+    box-shadow: inset 0 0 0 1px var(--rim-hi);
+  }
+  .res .phase dd {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 26px;
+    white-space: nowrap;
+  }
+  .tally {
+    margin: 0 0 8px;
+  }
+  .tally div {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+  }
+  .tally dt {
+    color: var(--ink-2);
+  }
+  .tally dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .tally .sum {
+    border-top: 1px solid var(--rim-hi);
+    font-size: 17px;
+  }
+  .tally .sum dt {
+    color: var(--ink);
+  }
+  .own-h {
+    margin: 16px 0 2px;
+    font-size: 15px;
+  }
+  .owned {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 8px;
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .owned li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: 14px;
+  }
+  .own-nm {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
   .hand-wrap {
     flex: 1;
     min-width: 0;
@@ -857,7 +959,8 @@
   .compact .res {
     grid-area: res;
     justify-self: start;
-    gap: 10px;
+    flex-wrap: wrap;
+    gap: 2px 10px;
     margin: 0;
     padding: 4px 8px;
   }

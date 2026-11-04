@@ -76,14 +76,14 @@ export const currency = (key: string, name: string, cost: number, text: string, 
 const basic = { basic: true, set: undefined };
 
 export const BASICS: CardDef[] = [
-  currency('scrap', 'Clipped Penny', 0, '+1 Coin.', 1, basic),
-  currency('cog', 'Groat', 3, '+2 Coins.', 2, basic),
-  currency('dynamo', 'Florin', 6, '+3 Coins.', 3, basic),
-  prestige('notebook', 'Land Grant', 2, '1 Renown.', 1, basic),
-  prestige('blueprint', 'Manor Deed', 5, '3 Renown.', 3, basic),
-  prestige('monument', 'Great Abbey', 8, '6 Renown. The game ends when this pile runs out.', 6, basic),
+  currency('scrap', 'Coin Purse', 0, '+1 Coin.', 1, basic),
+  currency('cog', 'Silver Chest', 3, '+2 Coins.', 2, basic),
+  currency('dynamo', 'Royal Treasury', 6, '+3 Coins.', 3, basic),
+  prestige('notebook', 'Homestead', 2, '1 Renown.', 1, basic),
+  prestige('blueprint', 'Noble Estate', 5, '3 Renown.', 3, basic),
+  prestige('monument', 'Grand Duchy', 8, '6 Renown. The game ends when this pile runs out.', 6, basic),
   // Only in games whose market can hand it out (CC-RUST).
-  base('rust', 'Debt', 0, ['action', 'penalty'], '−1 Renown. When played, you may spend 1 Influence to trash this.', {
+  base('rust', 'Royal Debt', 0, ['action', 'penalty'], '−1 Renown. When played, you may spend 1 Influence to trash this. Trashed, it no longer counts.', {
     ...basic,
     noBuy: true,
     vp: -1,
@@ -92,7 +92,7 @@ export const BASICS: CardDef[] = [
       {
         op: 'if',
         cond: hasSpark(1),
-        then: [{ op: 'may', prompt: 'Spend 1 Influence to trash this Debt?', then: [spark(-1), { op: 'move', cards: 'source', to: 'trash' }] }],
+        then: [{ op: 'may', prompt: 'Spend 1 Influence to trash this Royal Debt?', then: [spark(-1), { op: 'move', cards: 'source', to: 'trash' }] }],
       },
     ],
   }),

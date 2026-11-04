@@ -14,12 +14,14 @@ import type {
   PendingView,
   PlayerZones,
   Ruleset,
+  ScoreBreakdown,
 } from './types';
 
 export * from './market';
 export type * from './types';
 
-const STATE_VERSION = 1;
+/** 2 added `rulesVersion`, so a game stays on the rules it started with. */
+const STATE_VERSION = 2;
 const DEFAULT_WORDS = { actions: 'actions', treasures: 'treasures', buyPhase: 'buy', project: 'project' };
 const title = (x: string) => x[0].toUpperCase() + x.slice(1);
 const fail = (code: string, error: string): ApplyResult<DeckState> => ({ ok: false, code, error });
@@ -55,24 +57,37 @@ function legalMoves(s: DeckState, lib: Library, seat: number): DeckView['legal']
   return { play, buy, endPhase: true, convert, claim };
 }
 
+function scoreOf(s: DeckState, lib: Library, seat: number): FinalScore {
+  const p = s.players[seat];
+  const ids = ownedCards(p);
+  const counts = new Map<string, number>();
+  for (const id of ids) counts.set(s.cards[id], (counts.get(s.cards[id]) ?? 0) + 1);
+  const own = s.projects.filter((x) => x.by === seat);
+  const all = s.projects.filter((x) => x.by !== null);
+  const worth = (key: string): number => {
+    const v = lib.defs[key].vp ?? 0;
+    if (typeof v === 'number') return v;
+    if ('per' in v) return Math.floor(ids.filter((id) => matches(lib.defs[s.cards[id]], v.of)).length / v.per) * v.each;
+    const held = v.perToken ? Math.floor((p.tokens[v.perToken.token] ?? 0) / v.perToken.per) : 0;
+    return v.base + held + (v.ownProjects ?? 0) * own.length + (v.allProjects ?? 0) * all.length;
+  };
+  const cards = [...counts].map(([key, count]) => ({ key, count, vp: worth(key) * count }));
+  const projects = own.map((x) => ({ key: x.key, vp: lib.rules.projects!.find((d) => d.key === x.key)!.vp }));
+  const sum = (keep: (c: (typeof cards)[number]) => boolean) => cards.filter(keep).reduce((a, c) => a + c.vp, 0);
+  const fixed = (c: (typeof cards)[number]) => typeof lib.defs[c.key].vp === 'number';
+  const breakdown: ScoreBreakdown = {
+    estates: sum((c) => fixed(c) && !!lib.defs[c.key].basic && c.vp > 0),
+    special: p.vp + sum((c) => fixed(c) && !lib.defs[c.key].basic && c.vp > 0),
+    projects: projects.reduce((a, c) => a + c.vp, 0),
+    negative: sum((c) => fixed(c) && c.vp < 0),
+    conditional: sum((c) => !fixed(c)),
+    total: p.vp + cards.reduce((a, c) => a + c.vp, 0) + projects.reduce((a, c) => a + c.vp, 0),
+  };
+  return { seat, total: breakdown.total, turns: p.turns, tokens: p.vp, cards, projects, breakdown };
+}
+
 export function finalScores(s: DeckState, lib: Library): FinalScore[] {
-  return s.players.map((p, seat) => {
-    const ids = ownedCards(p);
-    const counts = new Map<string, number>();
-    for (const id of ids) counts.set(s.cards[id], (counts.get(s.cards[id]) ?? 0) + 1);
-    const own = s.projects.filter((x) => x.by === seat);
-    const all = s.projects.filter((x) => x.by !== null);
-    const worth = (key: string): number => {
-      const v = lib.defs[key].vp ?? 0;
-      if (typeof v === 'number') return v;
-      if ('per' in v) return Math.floor(ids.filter((id) => matches(lib.defs[s.cards[id]], v.of)).length / v.per) * v.each;
-      const held = v.perToken ? Math.floor((p.tokens[v.perToken.token] ?? 0) / v.perToken.per) : 0;
-      return v.base + held + (v.ownProjects ?? 0) * own.length + (v.allProjects ?? 0) * all.length;
-    };
-    const cards = [...counts].map(([key, count]) => ({ key, count, vp: worth(key) * count }));
-    const projects = own.map((x) => ({ key: x.key, vp: lib.rules.projects!.find((d) => d.key === x.key)!.vp }));
-    return { seat, total: p.vp + cards.reduce((a, c) => a + c.vp, 0) + projects.reduce((a, c) => a + c.vp, 0), turns: p.turns, tokens: p.vp, cards, projects };
-  });
+  return s.players.map((_, seat) => scoreOf(s, lib, seat));
 }
 
 function setup(lib: Library, playerCount: number, seed: string, config: DeckConfig): DeckState {
@@ -111,6 +126,7 @@ function setup(lib: Library, playerCount: number, seed: string, config: DeckConf
   const first = shuffle(rng, Array.from({ length: playerCount }, (_, i) => i))[0];
   const state: DeckState = {
     rulesetId: rules.id,
+    rulesVersion: rules.version ?? 1,
     n: playerCount,
     rng,
     cards,
@@ -287,6 +303,7 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
   });
   return {
     rulesetId: s.rulesetId,
+    rulesVersion: s.rulesVersion,
     you: viewer,
     turn,
     market: s.market,
@@ -308,16 +325,18 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
         Object.entries(p.mats).map(([m, ids]) => [m, seat === viewer ? { count: ids.length, cards: ids.map(ref) } : { count: ids.length }]),
       ),
       tokens: p.tokens,
-      vp: p.vp,
+      ...(seat === viewer || s.over ? { vp: p.vp } : {}),
     })),
     hand: self ? self.hand.map(ref) : [],
     discard: self ? self.discard.map(ref) : [],
     owned: self ? ownedCounts(s, self) : {},
+    score: viewer === null ? null : scoreOf(s, lib, viewer).breakdown,
     revealed: s.limbo.filter((l) => l.public).map((l) => ref(l.id)),
     pending,
     projects: projectViews,
     legal: viewer === null ? { play: [], buy: [], endPhase: false, convert: false, claim: [] } : legalMoves(s, lib, viewer),
-    log: s.log.filter((e) => e.to === undefined || e.to === viewer),
+    // Points gained directly would otherwise give away part of a rival's score, in saved logs too.
+    log: s.log.filter((e) => (e.to === undefined || e.to === viewer) && (e.kind !== 'vp' || e.seat === viewer || s.over)),
     over: s.over,
     final: s.over ? finalScores(s, lib) : null,
   };
@@ -343,14 +362,32 @@ function bot(v: DeckView): BotMove<DeckAction> | null {
 }
 
 /** `rules` is public catalogue data: the table UI reads card names and text from it. */
-export type DeckGame = GameModule<DeckConfig, DeckState, DeckAction, DeckView> & { rules: Ruleset };
+export type DeckGame = GameModule<DeckConfig, DeckState, DeckAction, DeckView> & {
+  /** The current edition, used for every new game. */
+  rules: Ruleset;
+  /** The edition a game in progress is played under. */
+  rulesFor(version: number | undefined): Ruleset;
+};
 
-export function createDeckGame(rules: Ruleset): DeckGame {
-  const problems = validateRuleset(rules);
-  if (problems.length) throw new Error(`deckbuilder: invalid ruleset ${rules.id}: ${problems.join('; ')}`);
-  const lib = makeLibrary(rules);
+/** `older` are the earlier editions, oldest first. Games already started stay on theirs for good. */
+export function createDeckGame(rules: Ruleset, older: Ruleset[] = []): DeckGame {
+  const libs = new Map<number, Library>();
+  for (const r of [...older, rules]) {
+    const problems = validateRuleset(r);
+    if (problems.length) throw new Error(`deckbuilder: invalid ruleset ${r.id}: ${problems.join('; ')}`);
+    libs.set(r.version ?? 1, makeLibrary(r));
+  }
+  const oldest = (older[0] ?? rules).version ?? 1;
+  const lib = libs.get(rules.version ?? 1)!;
+  const libFor = (version: number | undefined) => {
+    const found = libs.get(version ?? oldest);
+    if (!found) throw new Error(`deckbuilder: no rules for version ${version} of ${rules.id}`);
+    return found;
+  };
+  const libOf = (s: DeckState) => libFor(s.rulesVersion);
   return {
     rules,
+    rulesFor: (version) => libFor(version).rules,
     meta: { id: rules.id, name: rules.name, minPlayers: rules.minPlayers, maxPlayers: rules.maxPlayers, stateVersion: STATE_VERSION },
     options: [],
     defaultConfig: () => ({ market: [], bans: [], ...(rules.projects ? { projects: [] } : {}), ...(rules.sets ? { sets: rules.defaultSets ?? rules.sets.map((x) => x.key) } : {}) }),
@@ -363,13 +400,13 @@ export function createDeckGame(rules: Ruleset): DeckGame {
     },
     sanitizeConfig: (raw) => sanitizeMarketConfig(rules, raw),
     setup: ({ playerCount, seed, config }) => setup(lib, playerCount, seed, config),
-    apply: (s, seat, a) => apply(lib, s, seat, a),
+    apply: (s, seat, a) => apply(libOf(s), s, seat, a),
     actors: (s) => (s.over ? [] : [s.pending ? s.pending.seat : s.turn.seat]),
-    project: (s, viewer) => project(lib, s, viewer),
+    project: (s, viewer) => project(libOf(s), s, viewer),
     isOver: (s) => s.over,
     results(s): PlayerResult[] | null {
       if (!s.over) return null;
-      const scores = finalScores(s, lib);
+      const scores = finalScores(s, libOf(s));
       const beats = (a: FinalScore, b: FinalScore) => a.total > b.total || (a.total === b.total && a.turns < b.turns);
       return scores.map((me) => {
         const rank = 1 + scores.filter((o) => beats(o, me)).length;
@@ -379,6 +416,8 @@ export function createDeckGame(rules: Ruleset): DeckGame {
     bot: rules.bot ?? bot,
     migrate(state, from) {
       if (from === STATE_VERSION) return state as DeckState;
+      // Nothing else in the room changes, so a save stays readable by anything that can read this one field.
+      if (from === 1) return { ...(state as DeckState), rulesVersion: oldest };
       throw new Error(`deckbuilder: cannot read state version ${from}`);
     },
   };

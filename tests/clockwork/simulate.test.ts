@@ -31,7 +31,9 @@ function assertPrivate(s: DeckState) {
         if (seen.has(id) && !(s.pending?.seat === seat && s.pending.cards.includes(id))) throw new Error(`seat ${seat} sees a card in a deck`);
       }
       if (other === seat) continue;
-      for (const id of s.players[other].hand) if (seen.has(id)) throw new Error(`seat ${seat} sees a card in seat ${other}'s hand`);
+      // CC-ATT-1: a card its owner has just revealed from hand, offered to the player who must choose among them, is public.
+      const shown = s.log.at(-1)?.kind === 'reveal' && s.log.at(-1)?.seat === other && s.pending?.seat === seat ? (s.pending.cards ?? []) : [];
+      for (const id of s.players[other].hand) if (seen.has(id) && !shown.includes(id)) throw new Error(`seat ${seat} sees a card in seat ${other}'s hand`);
     }
     expect(v.log.every((e) => e.to === undefined || e.to === seat)).toBe(true);
   }
@@ -192,7 +194,7 @@ describe('in a room', () => {
 
 describe('audit', () => {
   const spec = JSON.parse(readFileSync('data/clockwork-commons/clockwork_commons_original_cardset.json', 'utf8'));
-  const tests = ['tests/clockwork/cards.test.ts', 'tests/clockwork/rules.test.ts'].map((f) => readFileSync(f, 'utf8')).join('\n');
+  const tests = ['tests/clockwork/cards.test.ts', 'tests/clockwork/rules.test.ts', 'tests/clockwork/crown.test.ts'].map((f) => readFileSync(f, 'utf8')).join('\n');
   const names = JSON.parse(readFileSync('data/clockwork-commons/name-mapping.json', 'utf8')) as { cards: Record<string, { old: string; new: string }> };
 
   it('CC-AUDIT-1: all 50 supplied designs exist, with the supplied cost and Prestige', () => {
@@ -226,7 +228,7 @@ describe('audit', () => {
   });
   it('CC-AUDIT-4: the catalogue reaches the design targets without filler', () => {
     expect(CARDS.filter((c) => c.basic).length).toBe(7);
-    expect(CARDS.filter((c) => !c.basic).length).toBe(64);
-    expect(WORKS.length).toBe(13);
+    expect(CARDS.filter((c) => !c.basic).length).toBe(88);
+    expect(WORKS.length).toBe(15);
   });
 });

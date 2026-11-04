@@ -33,7 +33,7 @@ describe('setup', () => {
   it('CC-SETUP-4: 5 random Public Works are drawn; the Town Works only appear with that set on', () => {
     const s = fresh(3);
     expect(s.projects.length).toBe(5);
-    expect(s.projects.every((p) => ALL_WORKS.find((w) => w.key === p.key)!.set === undefined)).toBe(true);
+    expect(s.projects.every((p) => ['crown', undefined].includes(ALL_WORKS.find((w) => w.key === p.key)!.set))).toBe(true);
     expect(fresh(3, { sets: ['foundry'] }).projects.length).toBe(5);
     expect(new Set(s.projects.map((p) => p.key)).size).toBe(5);
     const other = fresh(3, {}, 'another-seed');
@@ -42,7 +42,7 @@ describe('setup', () => {
   it('CC-SETUP-5: random markets come only from the sets switched on', () => {
     const inSet = (k: string) => RULES.cards.find((c) => c.key === k)!.set;
     for (let i = 0; i < 20; i++) {
-      expect(fresh(2, {}, `core-${i}`).market.every((k) => inSet(k) === 'core')).toBe(true);
+      expect(fresh(2, { sets: ['core'] }, `core-${i}`).market.every((k) => inSet(k) === 'core')).toBe(true);
       expect(fresh(2, { sets: ['foundry'] }, `foundry-${i}`).market.every((k) => inSet(k) === 'foundry')).toBe(true);
     }
     // Night Shift alone has too few cards for a market; the room says so rather than failing on start.
@@ -69,7 +69,7 @@ describe('setup', () => {
   it('CC-RUST-1: the Rust pile exists only when a card in the market can hand it out, and scales with the table', () => {
     const quiet = fresh(3, { market: ['gearwright', 'shift_bell', 'tally_clerk', 'supply_crane', 'copper_press', 'foreman', 'paper_fan', 'conveyor', 'sorting_glasses', 'springboard'] });
     expect(quiet.supply.rust).toBeUndefined();
-    expect(new Table([], { players: 4 }).s.supply.rust.length).toBe(30);
+    expect(new Table([], { players: 4 }).s.supply.rust.length).toBe(15);
   });
   it('CC-RUST-2: a Rust pile running out does not count towards the three empty piles', () => {
     const t = new Table([]);
@@ -208,6 +208,8 @@ describe('Public Works', () => {
       },
     },
     aqueduct: { coins: 5, spark: 5, vp: 10, check: (t) => expect(t.spark(1 - t.me)).toBe(1) },
+    common_fields: { coins: 3, spark: 2, vp: 3, check: (t) => expect(t.discard()).toContain('notebook') },
+    merchants_guildhall: { coins: 5, spark: 3, vp: 6, check: (t) => expect(t.trash()).toEqual([]) },
   };
 
   for (const [key, w] of Object.entries(REWARDS)) {

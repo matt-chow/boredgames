@@ -13,6 +13,7 @@
     code,
     name,
     points,
+    projectsWord,
     projectName,
     onclose,
   }: {
@@ -24,6 +25,7 @@
     code: string;
     name: (s: number) => string;
     points: string;
+    projectsWord: string;
     projectName: (key: string) => string;
     onclose: () => void;
   } = $props();
@@ -64,6 +66,7 @@
             {[...scoring(r), ...r.projects.map((p) => `${projectName(p.key)}: ${p.vp}`), ...(r.tokens ? [`Tokens: ${r.tokens}`] : [])].join(' · ') || `No ${points}`} · {r.turns} {r.turns === 1 ? 'turn' : 'turns'}
           </span>
           <span class="sc num">{r.total}</span>
+          <span class="bd">Estates {r.breakdown.estates} · Special {r.breakdown.special} · {projectsWord} {r.breakdown.projects} · Negative {String(r.breakdown.negative).replace('-', '−')} · Conditional {r.breakdown.conditional}</span>
         </li>
       {/each}
     </ol>
@@ -133,6 +136,12 @@
     grid-row: 2;
     font-size: 13px;
     color: var(--ink-3);
+  }
+  .bd {
+    grid-column: 2 / 4;
+    grid-row: 3;
+    font-size: 12px;
+    color: var(--ink-2);
   }
   .sc {
     grid-column: 3;

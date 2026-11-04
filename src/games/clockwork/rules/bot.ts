@@ -5,6 +5,7 @@
 import type { BotMove } from '../../../engine/types';
 import type { CardDef, CardRefView, DeckAction, DeckView, Effect, PendingView } from '../../../engine/deckbuilder';
 import { BASICS, CORE, SPARK } from './cards';
+import { CROWN } from './crown';
 import { FOUNDRY, NIGHT, TOWN } from './expansions';
 
 export type Style = 'economy' | 'cycling' | 'combo' | 'spark' | 'works' | 'devices' | 'interaction' | 'defence' | 'scoring' | 'risk';
@@ -75,6 +76,30 @@ export const STYLES: Record<string, Style[]> = {
   city_charter: ['works', 'scoring'],
   patent_ledger: ['scoring', 'devices'],
   plaque_foundry: ['scoring', 'spark'],
+  royal_confessor: ['cycling', 'spark'],
+  mintmaster: ['economy', 'cycling'],
+  estate_surveyor: ['scoring', 'cycling'],
+  purification_house: ['cycling'],
+  salvage_office: ['cycling', 'economy'],
+  reclamation_guild: ['cycling', 'combo'],
+  royal_tax_collector: ['economy', 'spark'],
+  royal_scrivener: ['cycling', 'combo'],
+  noble_resettlement: ['cycling', 'combo'],
+  burden_relief: ['cycling', 'risk'],
+  treasury_auditor: ['economy', 'combo'],
+  spice_exchange: ['economy', 'spark'],
+  trade_bonds: ['economy'],
+  royal_mint: ['economy', 'spark'],
+  port_tariffs: ['devices', 'economy'],
+  guild_auction: ['economy', 'spark'],
+  kingdom_courier: ['cycling', 'combo'],
+  hall_of_archives: ['cycling', 'combo'],
+  great_council: ['combo', 'economy'],
+  edict_of_inspection: ['interaction'],
+  tax_arrears: ['interaction', 'economy'],
+  royal_advocate: ['defence', 'economy'],
+  court_saboteur: ['interaction', 'economy'],
+  noble_council: ['scoring'],
 };
 
 export interface Profile {
@@ -110,7 +135,7 @@ export const PROFILES: Profile[] = [
 
 export const BALANCED: Profile = PROFILES[1];
 
-const DEFS: Record<string, CardDef> = Object.fromEntries([...BASICS, ...CORE, ...FOUNDRY, ...NIGHT, ...TOWN].map((c) => [c.key, c]));
+const DEFS: Record<string, CardDef> = Object.fromEntries([...BASICS, ...CORE, ...FOUNDRY, ...NIGHT, ...TOWN, ...CROWN].map((c) => [c.key, c]));
 const types = (key: string) => DEFS[key]?.types ?? [];
 
 const grantsActions = (effects: Effect[] | undefined): boolean => (effects ?? []).some((e) => e.op === 'actions' && typeof e.n === 'number' && e.n > 0);

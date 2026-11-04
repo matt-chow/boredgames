@@ -35,7 +35,6 @@
       <span class="dot" class:on={connected} title={connected ? 'Online' : 'Offline'}></span>
     {/if}
     <b class="who">{name}</b>
-    {#if p.vp}<span class="pts num" title="Point tokens">{p.vp} pts</span>{/if}
   </header>
   <div class="zones">
     <span class="zone" data-anchor="hand-{p.seat}" title="Cards in hand"><DeckCard size="xs" /><b class="num">{p.handCount}</b></span>
@@ -91,10 +90,6 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-  .pts {
-    font-size: 12px;
-    color: var(--ink-2);
   }
   .dot {
     flex: none;
