@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CROWN } from '../../src/games/clockwork/rules/crown';
 import { RULES } from '../../src/games/clockwork/rules/ruleset';
-import { STYLES } from '../../src/games/clockwork/rules/bot';
+import { botMove, PROFILES, STYLES } from '../../src/games/clockwork/rules/bot';
 import { assertConserved, MARKET, Table } from './helpers';
 
 const noAsk = (t: Table) => expect(t.s.pending).toBeNull();
@@ -390,6 +390,19 @@ describe('Crown Decrees: scoring and projects', () => {
 });
 
 describe('Crown Decrees: the set', () => {
+  it('KC3-BOT-1: a v3 bot trashes a Coin Purse and keeps its Renown; a v2 room keeps the bot it started with', () => {
+    const renown = RULES.cards.find((c) => c.basic && c.types.includes('victory') && c.cost === 2)!.key;
+    const t = new Table(['slag_furnace', renown, 'scrap']);
+    t.play('slag_furnace');
+    const offered = t.view().pending!.cards!;
+    const keysOf = (rulesVersion: number) => {
+      const move = botMove({ ...t.view(), rulesVersion }, PROFILES[1], 0)!.actions[0] as { cards: number[] };
+      return move.cards.map((id) => offered.find((c) => c.id === id)!.key);
+    };
+    expect(keysOf(3)).toEqual(['scrap']);
+    expect(keysOf(2)).toEqual([renown, 'scrap']);
+  });
+
   it('KC3-CAT-1: the Standard game is 60 market cards, sorted into the planned groups with none left over', () => {
     const { note: _, ...groups } = JSON.parse(readFileSync('data/clockwork-commons/standard-categories.json', 'utf8')) as Record<string, string[]> & { note: string };
     const standard = RULES.cards.filter((c) => !c.basic && (c.set === 'core' || c.set === 'crown')).map((c) => c.key).sort();

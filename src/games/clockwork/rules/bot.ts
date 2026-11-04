@@ -151,13 +151,16 @@ function keepScore(key: string): number {
   return d.cost / 2 + 1;
 }
 
-function chooseCards(q: PendingView): number[] {
+function chooseCards(q: PendingView, v: DeckView): number[] {
   const offered = q.cards ?? [];
   const keep = q.hint === 'keep';
-  const sorted = [...offered].sort((a: CardRefView, b: CardRefView) => (keep ? keepScore(b.key) - keepScore(a.key) : keepScore(a.key) - keepScore(b.key)) || a.id - b.id);
+  // A Renown card is the first thing to discard but the last to trash. Older editions keep the bots they started with.
+  const trashing = !keep && (v.rulesVersion ?? 0) >= 3 && /trash/i.test(q.prompt);
+  const score = (key: string) => (trashing && types(key).includes('victory') ? 9 : keepScore(key));
+  const sorted = [...offered].sort((a: CardRefView, b: CardRefView) => (keep ? score(b.key) - score(a.key) : score(a.key) - score(b.key)) || a.id - b.id);
   let n = q.min;
   if (q.kind !== 'react' && q.max > q.min) {
-    const wanted = sorted.filter((c) => (keep ? keepScore(c.key) > 0 : keepScore(c.key) <= 1)).length;
+    const wanted = sorted.filter((c) => (keep ? score(c.key) > 0 : score(c.key) <= 1)).length;
     n = Math.max(q.min, Math.min(q.max, wanted));
   }
   if (q.kind === 'react') n = 1;
@@ -234,8 +237,8 @@ function moves(v: DeckView, profile: Profile): DeckAction[] {
   const q = v.pending;
   if (q) {
     if (q.seat !== v.you) return [];
-    if (q.kind === 'cards') return [{ type: 'decide', id: q.id, cards: chooseCards(q) }];
-    if (q.kind === 'react') return [{ type: 'decide', id: q.id, cards: chooseCards(q) }, { type: 'decide', id: q.id, cards: [] }];
+    if (q.kind === 'cards') return [{ type: 'decide', id: q.id, cards: chooseCards(q, v) }];
+    if (q.kind === 'react') return [{ type: 'decide', id: q.id, cards: chooseCards(q, v) }, { type: 'decide', id: q.id, cards: [] }];
     if (q.kind === 'pile') {
       const mine = owned(v);
       const best = [...(q.piles ?? [])].sort((a, b) => buyScore(b, v, profile, mine, isLate(v, profile)) - buyScore(a, v, profile, mine, isLate(v, profile)) || a.localeCompare(b))[0];

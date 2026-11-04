@@ -220,7 +220,7 @@ that came from them are recorded in docs/CLOCKWORK.md.
 
 ## Tables
 
-${head(['Players', 'Games', 'Unfinished', 'Mean rounds', 'Longest', 'Winner score', 'Works claimed', 'Spark/turn', 'Coins spent/turn', 'Ended: Monument %', 'piles %', 'Works %', 'First seat win %', 'Fair share %'])}
+${head(['Players', 'Games', 'Unfinished', 'Mean rounds', 'Longest', 'Winner score', 'Projects claimed', 'Influence/turn', 'Coins spent/turn', 'Ended: Grand Duchy %', 'piles %', 'Projects %', 'First seat win %', 'Fair share %'])}
 ${tables.map((t) => row([t.players, t.games, t.unfinished, t.roundsMean, t.turnsMax, t.winnerScoreMean, t.worksClaimedMean, t.sparkPerTurnMean, t.coinsPerTurnMean, t.endedBy.monument, t.endedBy.piles, t.endedBy.works, `${t.firstSeatWinPct} ±${t.firstSeatMargin}`, t.fairShare])).join('\n')}
 
 ## Pacing, attacks and scoring
