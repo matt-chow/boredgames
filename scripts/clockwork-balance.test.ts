@@ -1,5 +1,5 @@
 /**
- * Clockwork Commons balance report. Plays seeded games with the strategy bots and writes
+ * Kingdom & Commerce balance report. Plays seeded games with the strategy bots and writes
  * data/clockwork-commons/balance-report.json and docs/CLOCKWORK_BALANCE.md. Same seeds, same report.
  * BALANCE_GAMES scales the sample (default 100 per comparison).
  */
@@ -11,8 +11,10 @@ import { BALANCED, botMove, PROFILES, STYLES, type Profile } from '../src/games/
 import { CARDS } from '../src/games/clockwork/rules/ruleset';
 
 const N = Number(process.env.BALANCE_GAMES ?? 100);
-const ALL = ['core', 'foundry', 'night', 'town'];
+const ALL = ['core', 'foundry', 'night', 'town', 'crown'];
+const STANDARD = ['core', 'crown'];
 const MARKET = CARDS.filter((c) => !c.basic);
+const ATTACKS = new Set(MARKET.filter((c) => c.types.includes('attack')).map((c) => c.key));
 
 interface Played {
   s: DeckState;
@@ -23,6 +25,11 @@ interface Played {
   coinsSpent: number[];
   turns: number[];
   ended: 'monument' | 'piles' | 'works' | 'cap';
+  /** Turns that bought nothing and completed nothing. */
+  idle: number[];
+  attacks: number;
+  trashed: number;
+  firstTreasury: (number | null)[];
 }
 
 function play(players: number, seed: string, profiles: Profile[], config: Record<string, unknown>): Played {
@@ -31,6 +38,10 @@ function play(players: number, seed: string, profiles: Profile[], config: Record
   const claims: number[] = Array(players).fill(0);
   const sparkGained: number[] = Array(players).fill(0);
   const coinsSpent: number[] = Array(players).fill(0);
+  const idle: number[] = Array(players).fill(0);
+  const firstTreasury: (number | null)[] = Array(players).fill(null);
+  const busy = new Set<number>();
+  let attacks = 0;
   for (let step = 0; step < 20_000 && !s.over; step++) {
     const [seat] = game.actors(s);
     const move = botMove(game.project(s, seat) as DeckView, profiles[seat], 0);
@@ -41,11 +52,18 @@ function play(players: number, seed: string, profiles: Profile[], config: Record
       const coins = s.turn.coins;
       const r = game.apply(s, seat, a);
       if (!r.ok) continue;
+      if (a.type === 'buy' || a.type === 'claim') busy.add(seat);
+      if (a.type === 'buy' && a.pile === 'dynamo') firstTreasury[seat] ??= s.players[seat].turns;
+      if (r.state.players[seat].turns > s.players[seat].turns) {
+        if (!busy.has(seat)) idle[seat]++;
+        busy.delete(seat);
+      }
       if (a.type === 'buy') {
         bought[seat][a.pile] = (bought[seat][a.pile] ?? 0) + 1;
         coinsSpent[seat] += coins - r.state.turn.coins;
       }
       if (a.type === 'claim') claims[seat]++;
+      for (const l of r.state.log) if (l.n >= before && l.kind === 'play' && (l.keys ?? []).some((k) => ATTACKS.has(k))) attacks++;
       for (const l of r.state.log) if (l.n >= before && l.kind === 'token' && l.seat !== undefined && (l.count ?? 0) > 0) sparkGained[l.seat] += l.count!;
       s = r.state;
       applied = true;
@@ -56,7 +74,7 @@ function play(players: number, seed: string, profiles: Profile[], config: Record
   const results = s.over ? game.results!(s)! : [];
   const claimed = s.projects.filter((p) => p.by !== null).length;
   const ended = !s.over ? 'cap' : s.supply.monument.length === 0 ? 'monument' : claimed >= 4 ? 'works' : 'piles';
-  return { s, winners: results.filter((r) => r.winner).map((r) => r.seat), bought, claims, sparkGained, coinsSpent, turns: s.players.map((p) => p.turns), ended };
+  return { s, winners: results.filter((r) => r.winner).map((r) => r.seat), bought, claims, sparkGained, coinsSpent, turns: s.players.map((p) => p.turns), ended, idle, attacks, trashed: s.trash.length, firstTreasury };
 }
 
 const pct = (a: number, b: number) => (b ? Math.round((1000 * a) / b) / 10 : 0);
@@ -84,10 +102,14 @@ it('writes the balance report', () => {
   const tables = [2, 3, 4, 5, 6].map((players) => {
     const games = Array.from({ length: N }, (_, i) => {
       const profiles = Array.from({ length: players }, (_, k) => PROFILES[1 + ((i * 7 + k * 5) % (PROFILES.length - 1))]);
-      return play(players, `table-${players}-${i}`, profiles, {});
+      return play(players, `table-${players}-${i}`, profiles, { sets: STANDARD });
     });
     const firstWins = games.reduce((a, g) => a + share(g, 0), 0);
     const turnsAll = (g: Played) => Math.max(1, g.turns.reduce((a, b) => a + b, 0));
+    const finals = games.flatMap((g) => (game.project(g.s, 0) as DeckView).final!.map((r) => r.breakdown));
+    const debts = games.flatMap((g) => g.s.players.map((p) => [...p.deck, ...p.hand, ...p.discard, ...p.play].filter((id) => g.s.cards[id] === 'rust').length));
+    const firsts = games.flatMap((g) => g.firstTreasury.filter((t) => t !== null));
+    const winnerShare = (key: 'estates' | 'special' | 'projects' | 'negative' | 'conditional') => mean(finals.map((b) => b[key]));
     return {
       players,
       games: games.length,
@@ -103,6 +125,13 @@ it('writes the balance report', () => {
         piles: pct(games.filter((g) => g.ended === 'piles').length, games.length),
         works: pct(games.filter((g) => g.ended === 'works').length, games.length),
       },
+      idleTurnPct: pct(games.reduce((a, g) => a + g.idle.reduce((x, y) => x + y, 0), 0), games.reduce((a, g) => a + turnsAll(g), 0)),
+      attacksPerGame: mean(games.map((g) => g.attacks)),
+      trashedPerGame: mean(games.map((g) => g.trashed)),
+      debtPerPlayer: mean(debts),
+      debtMax: Math.max(0, ...debts),
+      firstTreasuryTurn: mean(firsts),
+      scoring: { estates: winnerShare('estates'), special: winnerShare('special'), projects: winnerShare('projects'), negative: winnerShare('negative'), conditional: winnerShare('conditional') },
       firstSeatWinPct: pct(firstWins, games.length),
       fairShare: pct(1, players),
       firstSeatMargin: margin(pct(firstWins, games.length), games.length),
@@ -183,7 +212,7 @@ it('writes the balance report', () => {
   const head = (xs: string[]) => `${row(xs)}\n${row(xs.map(() => '---'))}`;
   const rrAverages = field.map((p) => ({ name: p.name, avg: mean(Object.values(roundRobin[p.name])), beats: Object.values(roundRobin[p.name]).filter((x) => x > 50).length }));
   const byFav = [...cards].sort((a, b) => b.favourWinPct - a.favourWinPct);
-  const md = `# Clockwork Commons balance report
+  const md = `# Kingdom & Commerce balance report
 
 Generated by \`npm run balance\` from seeded bot games, ${N} games per comparison (seats swapped, so seat order cancels out).
 Bots are heuristics, not strong players. Treat these as a screen for outliers, not as a verdict on a card. Design decisions
@@ -193,6 +222,14 @@ that came from them are recorded in docs/CLOCKWORK.md.
 
 ${head(['Players', 'Games', 'Unfinished', 'Mean rounds', 'Longest', 'Winner score', 'Works claimed', 'Spark/turn', 'Coins spent/turn', 'Ended: Monument %', 'piles %', 'Works %', 'First seat win %', 'Fair share %'])}
 ${tables.map((t) => row([t.players, t.games, t.unfinished, t.roundsMean, t.turnsMax, t.winnerScoreMean, t.worksClaimedMean, t.sparkPerTurnMean, t.coinsPerTurnMean, t.endedBy.monument, t.endedBy.piles, t.endedBy.works, `${t.firstSeatWinPct} ±${t.firstSeatMargin}`, t.fairShare])).join('\n')}
+
+## Pacing, attacks and scoring
+
+The Standard game (Core and Crown Decrees), mixed playstyles. Debt is copies held at the end. The scoring columns are the mean
+Renown per player from each source. Idle means a turn with nothing bought and nothing completed.
+
+${head(['Players', 'Idle turns %', 'First Royal Treasury (turn)', 'Attacks/game', 'Trashed/game', 'Debt per player', 'Most Debt', 'Estates', 'Special', 'Projects', 'Negative', 'Conditional'])}
+${tables.map((t) => row([t.players, t.idleTurnPct, t.firstTreasuryTurn, t.attacksPerGame, t.trashedPerGame, t.debtPerPlayer, t.debtMax, t.scoring.estates, t.scoring.special, t.scoring.projects, t.scoring.negative, t.scoring.conditional])).join('\n')}
 
 ## Playstyles
 

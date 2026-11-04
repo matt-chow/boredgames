@@ -95,7 +95,8 @@ describe('Kingdom & Commerce wording', () => {
 
 describe('Kingdom & Commerce theme', () => {
   it('KC-THEME-2: every rule in theme.css is scoped to the game, so it cannot reach the hub or another game', () => {
-    const css = readFileSync('src/games/clockwork/ui/theme.css', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+    // Keyframes aren't selectors. Their names are global, so they carry the game's prefix.
+    const css = readFileSync('src/games/clockwork/ui/theme.css', 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/@keyframes kc-[\w-]+\s*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, '');
     const selectors = [...css.matchAll(/([^{}]+)\{/g)].flatMap((m) => m[1].split(',').map((s) => s.trim()));
     expect(selectors.length).toBeGreaterThan(10);
     for (const s of selectors) expect(s).toMatch(/^(body:has\()?\[data-game-theme='clockwork'\]/);

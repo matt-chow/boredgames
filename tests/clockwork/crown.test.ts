@@ -1,6 +1,8 @@
 /** Every card and Crown Project in the Crown Decrees set. Rules are in docs/CLOCKWORK.md under the same IDs. */
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CROWN } from '../../src/games/clockwork/rules/crown';
+import { RULES } from '../../src/games/clockwork/rules/ruleset';
 import { STYLES } from '../../src/games/clockwork/rules/bot';
 import { assertConserved, MARKET, Table } from './helpers';
 
@@ -388,6 +390,13 @@ describe('Crown Decrees: scoring and projects', () => {
 });
 
 describe('Crown Decrees: the set', () => {
+  it('KC3-CAT-1: the Standard game is 60 market cards, sorted into the planned groups with none left over', () => {
+    const { note: _, ...groups } = JSON.parse(readFileSync('data/clockwork-commons/standard-categories.json', 'utf8')) as Record<string, string[]> & { note: string };
+    const standard = RULES.cards.filter((c) => !c.basic && (c.set === 'core' || c.set === 'crown')).map((c) => c.key).sort();
+    expect(Object.values(groups).flat().sort()).toEqual(standard);
+    expect(Object.fromEntries(Object.entries(groups).map(([k, v]) => [k, v.length]))).toEqual({ draw: 16, economy: 12, trashing: 10, attack: 8, duration: 6, scoring: 8 });
+  });
+
   it('KC3-SET-1: 24 distinct cards, each with a playstyle, rules text and a real effect', () => {
     expect(CROWN.length).toBe(24);
     expect(new Set(CROWN.map((c) => c.key)).size).toBe(24);

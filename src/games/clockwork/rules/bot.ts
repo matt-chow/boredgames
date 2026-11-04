@@ -8,7 +8,7 @@ import { BASICS, CORE, SPARK } from './cards';
 import { CROWN } from './crown';
 import { FOUNDRY, NIGHT, TOWN } from './expansions';
 
-export type Style = 'economy' | 'cycling' | 'combo' | 'spark' | 'works' | 'devices' | 'interaction' | 'defence' | 'scoring' | 'risk';
+export type Style = 'economy' | 'cycling' | 'combo' | 'spark' | 'works' | 'devices' | 'interaction' | 'defence' | 'scoring' | 'risk' | 'thinning';
 
 /** The playstyles each market card leans towards. Part of the catalogue, and used by bots and the balance report. */
 export const STYLES: Record<string, Style[]> = {
@@ -106,7 +106,7 @@ export interface Profile {
   name: string;
   /** Added to a market card's appeal for each of its styles that matches. */
   likes: Partial<Record<Style, number>>;
-  /** How much a Crown Project's Renown counts against a Great Abbey's. */
+  /** How much a Crown Project's Renown counts against a Grand Duchy's. */
   works: number;
   /** Most market cards to own before it only buys Currency and Renown. */
   engine: number;
@@ -131,6 +131,7 @@ export const PROFILES: Profile[] = [
   { name: 'Defence', likes: { defence: 3, economy: 1 }, works: 0.8, engine: 5, hoard: false, greening: 10 },
   { name: 'Scoring', likes: { scoring: 3, economy: 1 }, works: 1, engine: 6, hoard: false, greening: 9 },
   { name: 'Risk', likes: { risk: 3 }, works: 0.8, engine: 6, hoard: false, greening: 9 },
+  { name: 'Thinning', likes: { thinning: 4, cycling: 1 }, works: 0.8, engine: 6, hoard: false, greening: 10 },
 ];
 
 export const BALANCED: Profile = PROFILES[1];
@@ -212,7 +213,8 @@ function buyScore(key: string, v: DeckView, profile: Profile, mine: string[], la
   const isScoring = d.types.includes('victory');
   if (isScoring && !d.types.includes('action')) return late ? cost * 2 : (profile.likes.scoring ?? 0) > 0 ? cost : -1;
   if (marketOwned >= profile.engine) return -1;
-  const likes = (STYLES[key] ?? []).reduce((a, s) => a + (profile.likes[s] ?? 0), 0);
+  const trashes = JSON.stringify(d.effects).includes('"to":"trash"');
+  const likes = (STYLES[key] ?? []).reduce((a, s) => a + (profile.likes[s] ?? 0), 0) + (trashes ? (profile.likes.thinning ?? 0) : 0);
   const copies = mine.filter((k) => k === key).length;
   // Terminal cards stop being useful quickly; cards that give Actions don't.
   const terminal = d.types.includes('action') && !grantsActions(d.effects);

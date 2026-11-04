@@ -74,6 +74,23 @@ body:has([data-game-theme='clockwork']:not([data-fan])) {
   overflow-wrap: normal;
 }
 
+/* Dialog titles too, on the same printed-title footing. */
+[data-game-theme='clockwork'] dialog h2 {
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/* Your turn arrives like a herald's line: a short drop, once, when it becomes yours. Durations are 0 under reduced motion. */
+[data-game-theme='clockwork'] .step.mine {
+  animation: kc-herald var(--dur-3) var(--ease-out);
+}
+@keyframes kc-herald {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
 /* Burgundy leads the actions. The gold edge keeps it clear on a dark table. */
 [data-game-theme='clockwork'] .btn.primary {
   background: #783547;

@@ -1,0 +1,75 @@
+{
+  "note": "The Standard game's 60 market cards, each under its main job. Many cards do more than one thing. Checked by KC3-CAT-1.",
+  "draw": [
+    "gearwright",
+    "shift_bell",
+    "paper_fan",
+    "conveyor",
+    "sorting_glasses",
+    "springboard",
+    "clockwork_archive",
+    "whistle_stop",
+    "charge_meter",
+    "overcharge_lab",
+    "mutual_aid",
+    "city_blueprint",
+    "kingdom_courier",
+    "hall_of_archives",
+    "great_council",
+    "foreman"
+  ],
+  "economy": [
+    "treasury_auditor",
+    "spice_exchange",
+    "trade_bonds",
+    "royal_mint",
+    "guild_auction",
+    "supply_crane",
+    "steam_diverter",
+    "glow_mason",
+    "hand_crank",
+    "tally_clerk",
+    "clock_garden",
+    "permit_office"
+  ],
+  "trashing": [
+    "copper_press",
+    "royal_confessor",
+    "mintmaster",
+    "estate_surveyor",
+    "purification_house",
+    "salvage_office",
+    "reclamation_guild",
+    "royal_tax_collector",
+    "royal_scrivener",
+    "noble_resettlement"
+  ],
+  "attack": [
+    "signal_tower",
+    "city_messenger",
+    "inspection_team",
+    "night_watch",
+    "edict_of_inspection",
+    "tax_arrears",
+    "royal_advocate",
+    "court_saboteur"
+  ],
+  "duration": [
+    "capacitor_bank",
+    "maintenance_cart",
+    "lamplighter",
+    "gear_lease",
+    "grand_engine",
+    "port_tariffs"
+  ],
+  "scoring": [
+    "civic_scholar",
+    "museum_curator",
+    "patron_circle",
+    "silver_statue",
+    "civic_embassy",
+    "inventors_medal",
+    "noble_council",
+    "burden_relief"
+  ]
+}

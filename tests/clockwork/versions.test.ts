@@ -175,7 +175,7 @@ describe('a room saved before this edition', () => {
   }
   const stateOf = (store: MemoryStore) => store.getState() as DeckState;
 
-  it('KC3-VER-5: it loads on its original rules, and undo cannot bring back the older shape', () => {
+  it('KC3-VER-6: it loads on its original rules, and undo cannot bring back the older shape', () => {
     const store = savedRoom();
     const core = new RoomCore(store, opts);
     expect((core.view(0, connected).game as DeckView).rulesVersion).toBe(RULES_V2.version);
@@ -185,7 +185,7 @@ describe('a room saved before this edition', () => {
     expect(new RoomCore(store, opts).view(0, connected).game).toMatchObject({ rulesVersion: RULES_V2.version });
   });
 
-  it('KC3-VER-6: it plays to the end through reloads, never gaining a card of the newer edition', () => {
+  it('KC3-VER-7: it plays to the end through reloads, never gaining a card of the newer edition', () => {
     const store = savedRoom();
     const older = new Set(RULES_V2.cards.map((c) => c.key));
     for (let n = 0; n < 20_000; n++) {
@@ -203,7 +203,7 @@ describe('a room saved before this edition', () => {
     for (const key of Object.values(end.cards)) expect(older.has(key)).toBe(true);
   }, 60_000);
 
-  it('KC3-RENOWN-7: what the room sends a player before the end holds no rival total, and the history holds no total at all', () => {
+  it('KC3-RENOWN-6: what the room sends a player before the end holds no rival total, and the history holds no total at all', () => {
     const store = new MemoryStore();
     const first = RoomCore.create(store, opts, { code: 'ABCDEF', gameId: 'clockwork', name: 'One', th: 'a', bots: 2 });
     first.handle(0, { t: 'start', id: 's', v: first.version }, connected);

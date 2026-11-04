@@ -186,6 +186,8 @@ vocabulary. No Dominion card name was used, so a card that the brief illustrated
 and balance weren't touched. The owner's brief took precedence everywhere it was specific: the terms in the old-to-new table
 are exactly as requested.
 
+**Updated by D29:** the owner later specified Noble Estate by name for a basic card.
+
 ### D26. Inside Kingdom & Commerce, a bright gold takes the signal role
 Sprout green on burgundy and ivory fought with the palette. So inside `[data-game-theme='clockwork']`, `--sprout` is a brighter
 gold (`#edcb80`) that still means only "legal / your move". Antique gold on frames is duller and thinner, so the two read
@@ -201,3 +203,25 @@ previous build can still read every room. The old words stay in `legacy.ts` for 
 The panel lists each game's settings read-only, and the lobby stays the only place they are chosen. A second editor would
 need its own validation and a way to hand values to the room, and the server would still have to check them. Opening a table
 takes one more step in exchange for one authority.
+
+### D29. The v3.0 basics use the owner's names and numbers
+Coin Purse, Silver Chest, Royal Treasury, Homestead, Noble Estate and Grand Duchy, with their costs and values, are exactly as the
+v3.0 brief gives them, on the old ids. A permanent Currency-and-points supply is the genre's normal shape. The brief also asked not to
+recreate a published catalogue, so what's new in Crown Decrees is built on Influence and Crown Projects, not on another game's cards.
+
+### D30. Rules are versioned by edition, not rewritten in place
+A game stores `rulesVersion` and runs on that edition's frozen definitions. The alternative, rewriting saved rooms to new cards,
+would have changed games in progress and been destructive. The cost is keeping `RULES_V2` forever, or until no v2 room can remain.
+
+### D31. Renown privacy is a projection rule
+Rival totals are left out of the view on the server, not hidden by the UI. Crown Project completions stay public because the
+table needs them to play, so totals can be partly inferred. That was accepted: the brief keeps public rewards visible.
+
+### D32. Migrating a room migrates its undo
+`RoomCore` migrates the outstanding undo row with the state, because it holds a whole older state. Found by reading the code while
+writing KC3-VER-6. This is in the game-agnostic server, so it applies to any game's future migration.
+
+### D33. The guides are data, checked against the engine
+Each game's guide is a typed document in its `ui` folder, drawn by one shared `Guide.svelte`. GUIDE-* tests compare its numbers
+with the rulesets and replay its worked examples on the real engine, so a rules change fails until the guide is corrected. They
+check the scenarios, not every sentence: prose can still drift.

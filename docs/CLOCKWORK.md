@@ -35,16 +35,94 @@ replay against them.
 
 ## What's in it
 
-| Set | Market cards | Crown Projects | Source |
-|---|---|---|---|
-| Core Set | 36 | 8 | Supplied, with the 6 basic cards |
-| Artisans’ Row | 10 | | Added: economy, combinations, deck cycling, lasting Establishments |
-| Rival Houses | 10 | | Added: attacks, defences, payoffs that leave Debt behind |
-| The Chancery | 8 | 5 | Added: Crown Projects rivalry, other ways to score |
+| Set | Market cards | Crown Projects | Source | On by default |
+|---|---|---|---|---|
+| Core Set | 36 | 8 | Supplied, with the 6 basic cards | Yes |
+| Crown Decrees | 24 | 2 | v3.0: trashing, Currency, attacks, conditional scoring | Yes |
+| Artisans’ Row | 10 | | Added: economy, combinations, deck cycling, lasting Establishments | No |
+| Rival Houses | 10 | | Added: attacks, defences, payoffs that leave Debt behind | No |
+| The Chancery | 8 | 5 | Added: Crown Projects rivalry, other ways to score | No |
 
-That's 64 market cards, 7 basics (the supplied 6, plus Debt) and 13 Crown Projects. Hosts choose any sets of at least one.
-The Core Projects are available whichever sets are on. A game has 10 market piles and 5 Crown Projects, random or chosen, and
-both go in the shareable market code.
+That's 88 market cards, 7 basics (Coin Purse, Silver Chest, Royal Treasury, Homestead, Noble Estate, Grand Duchy, Royal Debt)
+and 15 Crown Projects. The default "Standard" game is the first two sets, **60 market cards**. Hosts choose any sets of at
+least one. The Core Projects are available whichever sets are on. A game has 10 market piles and 5 Crown Projects, random or
+chosen, and both go in the shareable market code.
+
+### The Standard 60, by main job
+
+`data/clockwork-commons/standard-categories.json` holds the list, and KC3-CAT-1 keeps it complete.
+
+| Job | Cards | Target in the brief |
+|---|---|---|
+| Drawing and chains | 16 | 16 |
+| Economy and Currency | 12 | 12 |
+| Trashing and exchange | 10 | 10 |
+| Attacks and reactions | 8 | 8 |
+| Establishments (durations) | 6 | 6 |
+| Scoring and utility | 8 | 8 |
+
+Sorting is a judgement: many cards do two jobs, and the numbers are met by choosing a card's main one. Burden Relief, which
+trashes too, sits under utility because its purpose is clearing Royal Debt. Only 7 of the 8 in that row score.
+
+## Editions (KC3-VER)
+
+`RULES` is edition 3. `RULES_V2` is the frozen earlier edition in `rules/ruleset.ts`, and a game runs on the edition stored
+in `state.rulesVersion`, so **rooms never silently change rules**.
+
+- New games, including rematches and rooms still in the lobby, start on the current edition.
+- A saved room from before editions has no `rulesVersion`. It migrates to state version 2 by gaining `rulesVersion: 2` and
+  nothing else (KC3-VER-2), and an outstanding undo comes forward with it (KC3-VER-6). It plays to the end on v2 piles and cards
+  (KC3-VER-3, KC3-VER-7).
+- An edition this build doesn't know is refused, not guessed at (KC3-VER-4).
+- Migration happens on first load and is written back. **After a v3 deployment has opened a room, v2 code refuses that room**,
+  because it can't read state version 2. The data is intact, and the way out is to roll forward: see DEPLOYMENT.md.
+
+## Permanent supply (KC3-BASIC)
+
+Six basics are always on the table, separate from the 10 market piles, and buyable in any game. Their ids are the old ones.
+
+| Card | Id | Cost | Gives |
+|---|---|---|---|
+| Coin Purse | `scrap` | 0 | 1 Coin |
+| Silver Chest | `cog` | 3 | 2 Coins |
+| Royal Treasury | `dynamo` | 6 | 3 Coins |
+| Homestead | `notebook` | 2 | 1 Renown |
+| Noble Estate | `blueprint` | 5 | 3 Renown |
+| Grand Duchy | `monument` | 8 | 6 Renown |
+
+The starting deck is 7 Coin Purses and 3 Homesteads. Currency cards are played one at a time or with Play All Currency.
+
+## Private Renown (KC3-RENOWN)
+
+Renown is hidden by the server. `project(state, seat)` gives a seat its own `score` breakdown (Estates, special, Crown
+Projects, negative, conditional, total) and leaves rivals' totals and `vp` tokens out of the view altogether. Log entries for
+direct Renown gains go only to their owner. All of it arrives in `final` when the game ends.
+
+Completed Crown Projects and their printed Renown stay public, so a careful player can work out part of a rival's score. Only
+the exact total is private. KC3-RENOWN-4, 5 and 6 check serialised views through whole games, through `RoomCore`, and the
+room's history rows. Totals count cards in every zone, a trashed card stops counting at once, and totals can go below zero
+(KC3-RENOWN-1, 2).
+
+## Royal Debt (KC3-DEBT)
+
+The one negative card, kept rare on purpose.
+
+- **Penalty:** −1 Renown each while you own it. It also clogs a hand.
+- **Supply:** 5 per rival, and the pile is on the table only if a card in the market can hand it out (KC3-DEBT-1). In the Standard
+  game only Tax Arrears can. v2 rooms keep their pile of 10 per rival.
+- **Getting it:** only by attack. It can't be bought, and an empty pile means no one gains any more.
+- **Getting rid of it:** play it (it costs an Action) and spend 1 Influence to trash it, or use any trashing card. Burden Relief and
+  Purification House reward it.
+- **Limit on accumulation:** the small pile, one attack that always offers the choice of discarding a Currency instead, and
+  every Debt being worth only −1.
+- Its pile running out doesn't count toward the empty market piles that end the game.
+
+## Moves between zones
+
+The engine moves cards through one path (`runtime.move`), so draw, discard, trash, gain, topdeck, reveal, set aside and return
+stay distinct, and each has its own log entry. The trash pile is public and open to inspection next to the discard pile. Trashed
+cards leave your ownership and your score. Choices can allow zero targets, and a choice with no legal target is skipped, not
+asked (`CC-CARD-*` tests).
 
 `data/clockwork-commons/coverage-report.json` lists each card, the file defining it and its tests.
 `npm run coverage:clockwork` regenerates it, and `CC-COVER-1` fails when any card has no definition or named test.
@@ -53,11 +131,12 @@ both go in the shareable market code.
 
 1. **Royal Court:** play Actions, 1 to start with, and Establishments. An Establishment stays out and works again at the start of your next
    turn.
-2. **Market:** play Currency, turn Influence into Coins, claim Crown Projects, and buy.
+2. **Market:** play Currency, turn Influence into Coins (up to 2 a turn, at 1:1, holding at most 8), complete Crown Projects, and buy. Each
+   purchase and each Crown Project uses a Buy.
 3. **Cleanup:** discard, draw 5.
 
 Influence carries between turns, up to the cap. A Crown Project costs Coins and Influence, and each can be built once, by one
-player. The game ends when the Great Abbey pile is empty, enough Crown Projects are built, or enough market piles are empty.
+player. The game ends when the Grand Duchy pile is empty, 4 Crown Projects are built (5 at 5 or 6 players, per `projectsToEnd`), or enough market piles are empty.
 Most Renown wins.
 
 ## Interpretations
@@ -88,6 +167,8 @@ Smaller readings, tested under their card or rule IDs:
 - Cloister Garden looks at your own previous turn. Silver Reliquary uses your final Influence.
 - Treadwheel Crane's gain is mandatory and can't take Debt.
 - A Favour Broker option can be picked when you can't afford it, and does nothing.
+- **Disconnects (D19):** no meaningful choice is ever made for an absent player. The table waits for them to come back, and a player who quits from Settings hands the seat to a bot
+  where people remain. A decision held by someone who never returns blocks the table. Changing that needs an owner-approved policy.
 - A reaction prompt appears only for a seat holding a reaction, so the table can infer that a player holds one, though not
   which. That's a limit of the engine (DECKBUILDER.md).
 
@@ -138,10 +219,18 @@ attribute (KC-THEME-2), so it can't reach the hub or Bohnanza even once loaded (
 the same tokens with fallbacks equal to their old values. If the file fails to load, the game stays playable in the shared
 look.
 
+## Motion
+
+The shared table's motion is unchanged, and all of it follows confirmed state. The game's own accent is one short "herald" drop on the
+step line when the turn becomes yours (`theme.css`). Sound is shared with the rest of the hub.
+
 ## Originality
 
 The Influence economy, Crown Projects, Establishments and the reaction variants are what set this game apart. The supplied
 basics and setup follow the genre's standard economy shape (a starting deck of cheap Currency and low points), and Paper Fan
 closely resembles a common genre staple. The owner may want to look at those if the game is ever published commercially.
 
-Card names deliberately avoid Dominion's, including the brief's own examples (D25).
+Card names avoid Dominion's where the choice was ours (D25). The v3.0 brief specified the six basics by name, cost and value,
+including Noble Estate, and the owner's words took precedence (D29). The Crown Decrees are new designs built around Influence and
+Crown Projects, but they stand in a well-worn genre: Royal Confessor, Mintmaster and Great Council are in the same family as well-known
+cards. Have them reviewed before any commercial publication.
