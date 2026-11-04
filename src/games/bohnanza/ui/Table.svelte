@@ -17,7 +17,8 @@
   import Coins from './Coins.svelte';
   import Field from './Field.svelte';
   import Hand from './Hand.svelte';
-  import HowTo from './HowTo.svelte';
+  import Guide from '../../../hub/Guide.svelte';
+  import { guide } from './guide';
   import Inspect from './Inspect.svelte';
   import Seat from './Seat.svelte';
   import Summary from './Summary.svelte';
@@ -43,6 +44,11 @@
   let stealPick = $state<{ victim: number; field: number; bean: Bean } | null>(null);
   let inspect = $state<Bean | null>(null);
   let howto = $state(false);
+  let helpAt = $state<string | null>(null);
+  function help(id: string | null) {
+    helpAt = id;
+    howto = true;
+  }
   let quitting = $state(false);
   let showSummary = $state(true);
   let logOpen = $state(false);
@@ -210,6 +216,11 @@
   });
   const handSelected = $derived(new Set(choosing ? choosing.cards : (draft?.give ?? [])));
   const faceSelected = $derived(new Set(draft ? [...draft.give, ...draft.wantCards] : []));
+
+  const helpHere = $derived(g.phase === 'plant' ? 'f-phase1' : g.phase === 'trade' ? 'f-trade' : g.phase === 'resolve' ? 'f-phase3' : 'f-end');
+  const variantNote = $derived(
+    [g.config.threeNewBeans && 'Three New Bean Types', g.config.fieldBean && 'The Field Bean', g.config.beanCoin && 'AMIGO Bean Coin', g.config.magpie && 'Magpie Bean'].filter(Boolean).join(', ').replace(/^(.+)$/, 'Variants at this table: $1.'),
+  );
 
   // ── phase guidance: only the next decision ─────────────────────────
   const step = $derived.by((): { text: string; mine: boolean } => {
@@ -406,10 +417,10 @@
         {#if over}Game over{:else if isActive}Your turn{:else}{name(g.active)}’s turn{/if}
       </span>
     </div>
-    <p class="step" class:mine={step.mine} aria-live="polite">{step.text}</p>
+    <p class="step" class:mine={step.mine} aria-live="polite">{step.text}<button type="button" class="ctx" aria-label="Explain this step" onclick={() => help(helpHere)}>?</button></p>
     <div class="tools">
       <button class="btn icon ghost" aria-label="Table log" onclick={() => (logOpen = !logOpen)}><Icon name="log" /></button>
-      <SettingsMenu onhelp={() => (howto = true)} onquit={room.status === 'playing' ? () => (quitting = true) : undefined} />
+      <SettingsMenu onhelp={() => help(null)} onquit={room.status === 'playing' ? () => (quitting = true) : undefined} />
     </div>
   </header>
 
@@ -596,7 +607,7 @@
 {/if}
 
 <Inspect bind:bean={inspect} />
-<HowTo bind:open={howto} config={g.config} />
+<Guide bind:open={howto} doc={guide} at={helpAt} note={variantNote} />
 <QuitGame {conn} {room} bind:open={quitting} />
 {#if over && showSummary && g.result}
   <Summary {g} {room} {conn} {name} onclose={() => (showSummary = false)} />
@@ -660,6 +671,21 @@
     font-size: 15px;
     color: var(--ink-2);
     text-wrap: balance;
+  }
+  .ctx {
+    margin-left: 8px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    font: inherit;
+    font-size: 12px;
+    color: var(--ink-2);
+    cursor: pointer;
+    background: none;
+    box-shadow: inset 0 0 0 1px var(--rim-hi);
+    pointer-events: auto;
   }
   .step.mine {
     color: var(--ink);

@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { onDestroy, onMount, tick } from 'svelte';
+  import { getContext, onDestroy, onMount, tick } from 'svelte';
   import { finishAll, play, snapshot, type Snapshot } from '../../../client/lib/motion';
   import { settings } from '../../../client/lib/settings.svelte';
   import { sfx } from '../../../client/lib/sound';
   import { toasts } from '../../../client/lib/toast.svelte';
   import { encodeMarket, type CardRefView, type DeckAction, type DeckGame, type DeckView, type LogEntry } from '../../../engine/deckbuilder';
   import Dialog from '../../../hub/Dialog.svelte';
+  import Guide from '../../../hub/Guide.svelte';
+  import type { GuideDoc } from '../../../hub/guide';
   import Icon from '../../../hub/Icon.svelte';
   import QuitGame from '../../../hub/QuitGame.svelte';
   import SettingsMenu from '../../../hub/SettingsMenu.svelte';
@@ -41,6 +43,13 @@
 
   let quitting = $state(false);
   let howto = $state(false);
+  let helpAt = $state<string | null>(null);
+  const guideDoc = getContext<GuideDoc | undefined>('deck-guide');
+  const olderEdition = $derived((g.rulesVersion ?? 0) < ((GAMES[room.gameId] as unknown as DeckGame).rules.version ?? 0));
+  function help(id: string | null) {
+    helpAt = id;
+    howto = true;
+  }
   let logOpen = $state(false);
   let showSummary = $state(true);
   let root: HTMLElement;
@@ -48,6 +57,7 @@
   // ── the decision in front of this player ────────────────────────────
   const q = $derived(g.pending);
   const asked = $derived(q && q.seat === g.you ? q : null);
+  const helpHere = $derived(asked ? (asked.kind === 'react' ? 'f-attacks' : 'f-words') : g.turn.phase === 'action' ? 'f-action' : 'f-market');
   let picked = $state<number[]>([]);
   let pickedFor = -1;
   $effect(() => {
@@ -299,10 +309,10 @@
       <span class="code label" title="Table code">{room.code}</span>
       <span class="turn" class:you={!over && (isActive || !!asked)}>{turnLabel}</span>
     </div>
-    <p class="step" class:mine={step.mine} aria-live="polite">{step.text}</p>
+    <p class="step" class:mine={step.mine} aria-live="polite">{step.text}{#if guideDoc}<button type="button" class="ctx" aria-label="Explain this step" onclick={() => help(helpHere)}>?</button>{/if}</p>
     <div class="tools">
       <button class="btn icon ghost" aria-label="Table log" onclick={() => (logOpen = !logOpen)}><Icon name="log" /></button>
-      <SettingsMenu onhelp={() => (howto = true)} onquit={room.status === 'playing' ? () => (quitting = true) : undefined} />
+      <SettingsMenu onhelp={() => help(null)} onquit={room.status === 'playing' ? () => (quitting = true) : undefined} />
     </div>
   </header>
 
@@ -468,6 +478,7 @@
     </dl>
     <p class="none">Only you can see this until the game ends. Trashed cards don’t count.</p>
   {/if}
+  {#if guideDoc}<button type="button" class="btn small" onclick={() => ((overviewOpen = false), help('f-renown'))}>How {pointsWord} works</button>{/if}
   <h3 class="own-h">You own <span class="num">{ownedTotal}</span> cards</h3>
   <p class="none">Deck <b class="num">{mine.deckCount}</b> · Hand <b class="num">{g.hand.length}</b> · In play <b class="num">{mine.play.length}</b> · Discard <b class="num">{mine.discardCount}</b>. Your deck’s order stays hidden, from you too.</p>
   <ul class="owned">
@@ -491,6 +502,9 @@
   {/if}
 </Dialog>
 
+{#if guideDoc}
+  <Guide bind:open={howto} doc={guideDoc} at={helpAt} note={olderEdition ? 'This table began under an earlier edition and keeps its original rules to the end. See “Sets, variants and older rooms” in Detailed rules.' : ''} />
+{:else}
 <Dialog bind:open={howto} title="How a turn works">
   <ol class="how">
     <li><b>{words?.actionPhase ?? 'Actions'}.</b> Play action cards while you have actions. Each one spends an action and tells you what to do.</li>
@@ -506,6 +520,7 @@
   <p class="how-end">The game ends when {endPileNames} runs out, when {rules.emptyPilesToEnd(g.players.length)} {rules.emptyMarketPilesOnly ? 'market' : 'supply'} piles are empty{#if rules.projectsToEnd}, or when {rules.projectsToEnd(g.players.length)} {words?.projects ?? 'projects'} are complete{/if}. Most {words?.points ?? 'points'} wins.</p>
   <p class="how-end">Right-click or long-press any card to read it, or press <kbd>i</kbd> on a focused card.</p>
 </Dialog>
+{/if}
 
 <QuitGame {conn} {room} bind:open={quitting} />
 {#if over && showSummary && g.final}
@@ -720,6 +735,21 @@
   }
   .res .coins dd {
     color: var(--coin);
+  }
+  .ctx {
+    margin-left: 8px;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    font: inherit;
+    font-size: 12px;
+    color: var(--ink-2);
+    cursor: pointer;
+    background: none;
+    box-shadow: inset 0 0 0 1px var(--rim-hi);
+    pointer-events: auto;
   }
   .res small {
     font-size: 12px;

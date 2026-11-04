@@ -1,4 +1,5 @@
 import type { Component } from 'svelte';
+import type { GuideDoc } from './guide';
 
 /**
  * What the hub shows for each game. Kept client-side so the home page needs no request and no rules code;
@@ -23,6 +24,7 @@ export interface CatalogEntry {
   titleFont?: string;
   /** The rules in a few lines. The full guide for a game is at its table. */
   howTo: string[];
+  guide?: () => Promise<{ guide: GuideDoc }>;
   /** What the host can set in the room before starting. */
   settings: string[];
 }
@@ -38,6 +40,7 @@ export const CATALOG: CatalogEntry[] = [
     pitch: 'Plant beans in the order you drew them, trade hard for the ones you need, and harvest for coins.',
     cover: '/art/covers/bohnanza.svg',
     fan: () => import('../games/bohnanza/ui/Fan.svelte'),
+    guide: () => import('../games/bohnanza/ui/guide'),
     accent: '#5d7a2c',
     howTo: [
       'You must plant from the front of your hand, and your hand never changes order.',
@@ -57,13 +60,14 @@ export const CATALOG: CatalogEntry[] = [
     pitch: 'Build a house of trade and court, spend Influence wisely, and race rival houses to finish the Crown Projects.',
     cover: '/art/covers/kingdom-commerce.svg',
     fan: () => import('../games/clockwork/ui/Fan.svelte'),
+    guide: () => import('../games/clockwork/ui/guide'),
     titleFont: "'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif",
     accent: '#783547',
     howTo: [
       'Royal Court: play Actions and Establishments. An Establishment stays out and works again at the start of your next turn.',
-      'Market: play Currency, turn Influence into Coins, buy a card or complete a Crown Project.',
+      'Market: play Currency, turn Influence into Coins, buy from the permanent supply or the 10 market piles, or complete a Crown Project.',
       'Cleanup: discard everything and draw 5. Your purchases come round as your deck reshuffles.',
-      'Influence carries between turns. Most Renown when the game ends wins.',
+      'Influence carries between turns. Your Renown is private until the end, when most Renown wins.',
     ],
     settings: ['Which card sets are in play', 'A random or hand-picked market of 10', 'Banned cards', 'Crown Project selection', 'Market codes to share a setup'],
   },

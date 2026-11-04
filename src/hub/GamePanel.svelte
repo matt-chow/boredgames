@@ -6,6 +6,8 @@
   import { CODE_LENGTH, MAX_NAME, normalizeCode, normalizeName, type RoomSummary } from '../shared/protocol';
   import type { CatalogEntry } from './catalog';
   import Dialog from './Dialog.svelte';
+  import Guide from './Guide.svelte';
+  import type { GuideDoc } from './guide';
   import Icon from './Icon.svelte';
   import RoomList from './RoomList.svelte';
 
@@ -18,6 +20,13 @@
   let codeError = $state('');
   let broken = $state(false);
   let nameInput = $state<HTMLInputElement>();
+  let guideOpen = $state(false);
+  let guideDoc = $state<GuideDoc | null>(null);
+
+  function openGuide() {
+    guideOpen = true;
+    if (!guideDoc) game.guide?.().then((m) => (guideDoc = m.guide));
+  }
 
   async function create(withBots: boolean) {
     error = '';
@@ -125,6 +134,7 @@
       <ul class="lines">
         {#each game.howTo as line (line)}<li>{line}</li>{/each}
       </ul>
+      {#if game.guide}<button type="button" class="btn small" onclick={openGuide}>Open the full guide</button>{/if}
     </details>
 
     <details class="sect">
@@ -135,6 +145,8 @@
       </ul>
     </details>
 </Dialog>
+
+<Guide bind:open={guideOpen} doc={guideDoc} />
 
 <style>
   .panel {
