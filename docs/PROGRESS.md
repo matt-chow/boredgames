@@ -55,6 +55,7 @@ Last updated 2026-11-03.
 - No accounts: identity is a per-room cookie. Clearing cookies or switching browsers loses the seat.
 - A silently dead connection (no `offline` event) can take up to 28 s to notice.
 - Not tested on physical phones or Safari.
+- A player who disconnects while holding a decision blocks the table until they return. Nothing chooses for them (CLOCKWORK.md).
 - See TESTING.md → Known gaps.
 
 ## Owner actions

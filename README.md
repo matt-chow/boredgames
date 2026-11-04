@@ -9,6 +9,9 @@ deck-builder for 2–6.
   server. The rules engine is pure TypeScript.
 - Free-tier only. No paid Cloudflare products are used.
 
+Both games have a searchable guide with three levels of detail. Open it with **?** at the table or from the game's panel
+on the home page.
+
 ## Play
 
 1. Open the site and enter a display name.

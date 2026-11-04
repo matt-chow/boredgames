@@ -78,6 +78,14 @@ Kingdom & Commerce (`src/games/clockwork`, first released as Clockwork Commons) 
 - A ruleset's optional `present(text)`: rewords text saved in state as a view is built, so a game can be renamed without
   touching saved rooms or changing `stateVersion`.
 
+The hub's guides follow the same split. `src/hub/Guide.svelte` draws levels, contents, search and collapsible sections from
+data that each game supplies in `ui/guide.ts`, loaded through `guide` in the catalog. `tests/guides.test.ts` checks the
+numbers and worked examples against the real rules.
+
+**Rule editions are saved with the game.** A deck-builder game records `rulesVersion` when it's created, and the engine
+reads cards, Crown Projects and scoring for that edition. New Kingdom & Commerce games start on the newest edition, and
+games already in play finish on the one they began with (CLOCKWORK.md, Editions).
+
 Networking, camera, drag and drop, animation, settings and accessibility aren't themed and aren't duplicated.
 
 The interface was shaped around one real game plus a deliberately tiny second one (`tally`). Tally exists to prove
