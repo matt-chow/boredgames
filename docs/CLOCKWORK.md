@@ -174,26 +174,43 @@ Smaller readings, tested under their card or rule IDs:
 
 ## Balance
 
-The committed report predates the rename, so it uses the old card names. `name-mapping.json` translates them. It hasn't been
-regenerated.
-
 `npm run balance` plays seeded bot games and writes `docs/CLOCKWORK_BALANCE.md` and
-`data/clockwork-commons/balance-report.json`. The committed report is 20 games per comparison, run after the last change
-to the cards and bots, so favour-test results carry about ±22 points. Bots are simple heuristics. The report screens for
-outliers and doesn't prove balance.
+`data/clockwork-commons/balance-report.json`. The committed report is the v3 Standard game at 40 games per comparison
+(`BALANCE_GAMES=40`, about 30 minutes), so favour-test results carry about ±15.5 points. The default of 100 hasn't been run
+on v3. Bots are simple heuristics. The report screens for outliers and doesn't prove balance. Playstyle names in the report
+are the bots' internal names ("Spark" is Influence, "Works" is Crown Projects, "Devices" is Establishments).
+
+**No card numbers were changed because of these results.** None of them gives the evidence that would justify it.
 
 What it shows:
 
-- All 100 table games finished, averaging about 25 rounds at 2 players and 15.5 at 6.
-- Seat order showed no clear effect, within the wide margin at this sample.
-- Games end by Great Abbey or Crown Projects. Empty piles ended none of them.
-- The Economy and Scoring bot styles are the weakest. That may reflect the bots rather than the cards.
-- Favour Purse (80%), Guild Banquet (77.5%), Alms House and Town Plans (75%) score highest in the favour test. Their
-  intervals clear 50%, but with this many cards tested, a few would by chance.
+- **Length:** all 200 table games finished, averaging 24 rounds at 2 players and 14.1 at 6. The longest was 54.
+- **Endings:** Crown Projects ended 62.5% of games at 2 players and 90% at 6. Grand Duchies ended the rest. Empty piles ended none.
+- **Scoring:** Estates are the largest source of Renown at every player count, then Crown Projects.
+- **Strongest style:** the Crown Projects bot, at 71.1% across the round-robin, beating 9 of 11 rivals. With Projects also ending
+  most games, this is the first thing to watch in real play.
+- **First seat:** 55% ±15.4 at 2 players, 51.3% ±15.5 at 3 (fair share 33.3%), 13.8% ±10.7 at 4 (fair share 25%). The 3-player
+  and 4-player results fall just outside their margins, in opposite directions, and five comparisons make one or two
+  such results unsurprising. An earlier run with different bot trashing didn't show them. Not treated as a finding yet.
+- **Unproductive turns:** 7.9% to 11.2% of turns bought and completed nothing.
+- **Influence:** about 0.5 gained per turn at every player count.
+- **Favour test, high:** Audience Hall (78.8%), Spice Exchange (77.5%) and Court Scholar (75%). The test forces a bot to buy a
+  card however well it can use it, and the median card scores 30%, so a high score stands out. With 88 cards tested, a few
+  would clear the margin by chance.
 
-**No card numbers were changed because of these results.** At this sample size, none justifies overriding the owner's
-designs. Favour Purse, Guild Banquet and the 6-player round count are the first things to watch in real play, or in a larger
-run. Changes made to the bots, not the cards, are in `src/games/clockwork/rules/bot.ts`.
+What it can't show:
+
+- **Thinning.** The Thinning bot is the weakest style (29.1%), and Lime Kiln, Royal Confessor and Purification House score 0–5%.
+  This looks like the bots, not the cards. Bots used to trash their own Renown first, which was a bug, now fixed for v3 games
+  (`KC3-BOT-1`). The scores stayed low afterwards, idle turns rose from 4–7% to 8–11%, and the likely cause is bots trashing
+  Coin Purses until they run short of money. That cause hasn't been tested. Judge these cards by playing them.
+- **Royal Debt.** Bots ended with 0.1 copies per player at most, and 2 in the worst case. Tax Arrears is about neutral (52.5%). Burden
+  Relief scores 2.5%, unsurprisingly, as there is almost no Debt for it to remove. Nothing here measures how harsh Debt is.
+- **Attack severity.** The report counts attacks (2.3 to 6.6 per game), not the harm they do.
+- **Card pairs.** Almost no pair reaches the 30 games needed to report it.
+
+Bots in rooms already in play keep the trashing they started with, so the golden games in `compat.test.ts` still match their
+baseline. New games get the corrected bot, which is still not a good judge of when to stop thinning.
 
 ## Art
 

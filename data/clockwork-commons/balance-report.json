@@ -1,327 +1,422 @@
 {
   "generated": "npm run balance",
-  "gamesPerComparison": 20,
+  "gamesPerComparison": 40,
   "tables": [
     {
       "players": 2,
-      "games": 20,
+      "games": 40,
       "unfinished": 0,
-      "roundsMean": 25.4,
-      "turnsMax": 51,
+      "roundsMean": 24,
+      "turnsMax": 54,
       "winnerScoreMean": 46.9,
-      "worksClaimedMean": 2.9,
-      "sparkPerTurnMean": 0.5,
-      "coinsPerTurnMean": 3.4,
-      "endedBy": {
-        "monument": 50,
-        "piles": 0,
-        "works": 50
-      },
-      "firstSeatWinPct": 40,
-      "fairShare": 50,
-      "firstSeatMargin": 21.5
-    },
-    {
-      "players": 3,
-      "games": 20,
-      "unfinished": 0,
-      "roundsMean": 23.9,
-      "turnsMax": 61,
-      "winnerScoreMean": 44.4,
-      "worksClaimedMean": 3.4,
+      "worksClaimedMean": 3.1,
       "sparkPerTurnMean": 0.5,
       "coinsPerTurnMean": 3.7,
       "endedBy": {
-        "monument": 30,
+        "monument": 37.5,
         "piles": 0,
-        "works": 70
+        "works": 62.5
       },
-      "firstSeatWinPct": 30,
+      "idleTurnPct": 7.9,
+      "attacksPerGame": 3.6,
+      "trashedPerGame": 3.3,
+      "debtPerPlayer": 0,
+      "debtMax": 0,
+      "firstTreasuryTurn": 8.8,
+      "scoring": {
+        "estates": 26.8,
+        "special": 0.4,
+        "projects": 9.3,
+        "negative": 0,
+        "conditional": 2.3
+      },
+      "firstSeatWinPct": 55,
+      "fairShare": 50,
+      "firstSeatMargin": 15.4
+    },
+    {
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "roundsMean": 19.3,
+      "turnsMax": 47,
+      "winnerScoreMean": 37.6,
+      "worksClaimedMean": 3.5,
+      "sparkPerTurnMean": 0.5,
+      "coinsPerTurnMean": 3.6,
+      "endedBy": {
+        "monument": 22.5,
+        "piles": 0,
+        "works": 77.5
+      },
+      "idleTurnPct": 8.4,
+      "attacksPerGame": 2.3,
+      "trashedPerGame": 4.6,
+      "debtPerPlayer": 0.1,
+      "debtMax": 2,
+      "firstTreasuryTurn": 7.7,
+      "scoring": {
+        "estates": 20.5,
+        "special": 0.4,
+        "projects": 7.2,
+        "negative": -0.1,
+        "conditional": 0.8
+      },
+      "firstSeatWinPct": 51.3,
       "fairShare": 33.3,
-      "firstSeatMargin": 20.1
+      "firstSeatMargin": 15.5
     },
     {
       "players": 4,
-      "games": 20,
+      "games": 40,
       "unfinished": 0,
-      "roundsMean": 20.1,
-      "turnsMax": 39,
-      "winnerScoreMean": 42.9,
+      "roundsMean": 16.3,
+      "turnsMax": 35,
+      "winnerScoreMean": 35.3,
       "worksClaimedMean": 3.5,
-      "sparkPerTurnMean": 0.4,
-      "coinsPerTurnMean": 4,
+      "sparkPerTurnMean": 0.5,
+      "coinsPerTurnMean": 3.7,
       "endedBy": {
-        "monument": 35,
+        "monument": 22.5,
         "piles": 0,
-        "works": 65
+        "works": 77.5
       },
-      "firstSeatWinPct": 20,
+      "idleTurnPct": 9,
+      "attacksPerGame": 3.8,
+      "trashedPerGame": 7.3,
+      "debtPerPlayer": 0,
+      "debtMax": 0,
+      "firstTreasuryTurn": 7.1,
+      "scoring": {
+        "estates": 17.7,
+        "special": 0.2,
+        "projects": 5.5,
+        "negative": 0,
+        "conditional": 0.9
+      },
+      "firstSeatWinPct": 13.8,
       "fairShare": 25,
-      "firstSeatMargin": 17.5
+      "firstSeatMargin": 10.7
     },
     {
       "players": 5,
-      "games": 20,
+      "games": 40,
       "unfinished": 0,
-      "roundsMean": 15.8,
-      "turnsMax": 28,
-      "winnerScoreMean": 34.5,
-      "worksClaimedMean": 3.5,
+      "roundsMean": 15.1,
+      "turnsMax": 49,
+      "winnerScoreMean": 30.2,
+      "worksClaimedMean": 3.6,
       "sparkPerTurnMean": 0.4,
-      "coinsPerTurnMean": 3.8,
+      "coinsPerTurnMean": 3.6,
       "endedBy": {
-        "monument": 25,
+        "monument": 22.5,
         "piles": 0,
-        "works": 75
+        "works": 77.5
       },
-      "firstSeatWinPct": 10,
+      "idleTurnPct": 10.9,
+      "attacksPerGame": 6.6,
+      "trashedPerGame": 6.3,
+      "debtPerPlayer": 0,
+      "debtMax": 1,
+      "firstTreasuryTurn": 6.8,
+      "scoring": {
+        "estates": 15.5,
+        "special": 0.2,
+        "projects": 4.3,
+        "negative": 0,
+        "conditional": 0.7
+      },
+      "firstSeatWinPct": 21.3,
       "fairShare": 20,
-      "firstSeatMargin": 13.1
+      "firstSeatMargin": 12.7
     },
     {
       "players": 6,
-      "games": 20,
+      "games": 40,
       "unfinished": 0,
-      "roundsMean": 15.5,
-      "turnsMax": 41,
-      "winnerScoreMean": 32.6,
+      "roundsMean": 14.1,
+      "turnsMax": 37,
+      "winnerScoreMean": 29.1,
       "worksClaimedMean": 3.8,
       "sparkPerTurnMean": 0.5,
-      "coinsPerTurnMean": 3.8,
+      "coinsPerTurnMean": 3.7,
       "endedBy": {
-        "monument": 15,
+        "monument": 10,
         "piles": 0,
-        "works": 85
+        "works": 90
       },
-      "firstSeatWinPct": 20,
+      "idleTurnPct": 11.2,
+      "attacksPerGame": 4.9,
+      "trashedPerGame": 9.8,
+      "debtPerPlayer": 0,
+      "debtMax": 1,
+      "firstTreasuryTurn": 5.9,
+      "scoring": {
+        "estates": 14.7,
+        "special": 0.3,
+        "projects": 3.9,
+        "negative": 0,
+        "conditional": 0.2
+      },
+      "firstSeatWinPct": 26.3,
       "fairShare": 16.7,
-      "firstSeatMargin": 17.5
+      "firstSeatMargin": 13.6
     }
   ],
   "styles": [
     {
       "profile": "Balanced",
-      "vsMoneyCore": 75,
-      "vsMoneyAll": 42.5,
+      "vsMoneyCore": 61.3,
+      "vsMoneyAll": 60,
       "vsBalancedAll": null
     },
     {
       "profile": "Economy",
-      "vsMoneyCore": 35,
-      "vsMoneyAll": 20,
-      "vsBalancedAll": 25
+      "vsMoneyCore": 28.8,
+      "vsMoneyAll": 42.5,
+      "vsBalancedAll": 52.5
     },
     {
       "profile": "Cycling",
-      "vsMoneyCore": 75,
-      "vsMoneyAll": 75,
-      "vsBalancedAll": 57.5
-    },
-    {
-      "profile": "Combo",
-      "vsMoneyCore": 87.5,
-      "vsMoneyAll": 50,
-      "vsBalancedAll": 40
-    },
-    {
-      "profile": "Spark",
-      "vsMoneyCore": 80,
-      "vsMoneyAll": 55,
-      "vsBalancedAll": 55
-    },
-    {
-      "profile": "Works",
-      "vsMoneyCore": 80,
-      "vsMoneyAll": 85,
-      "vsBalancedAll": 42.5
-    },
-    {
-      "profile": "Devices",
-      "vsMoneyCore": 90,
-      "vsMoneyAll": 70,
-      "vsBalancedAll": 40
-    },
-    {
-      "profile": "Interaction",
-      "vsMoneyCore": 62.5,
-      "vsMoneyAll": 55,
-      "vsBalancedAll": 60
-    },
-    {
-      "profile": "Defence",
-      "vsMoneyCore": 52.5,
-      "vsMoneyAll": 55,
+      "vsMoneyCore": 70,
+      "vsMoneyAll": 45,
       "vsBalancedAll": 32.5
     },
     {
+      "profile": "Combo",
+      "vsMoneyCore": 76.3,
+      "vsMoneyAll": 35,
+      "vsBalancedAll": 22.5
+    },
+    {
+      "profile": "Spark",
+      "vsMoneyCore": 85,
+      "vsMoneyAll": 58.8,
+      "vsBalancedAll": 52.5
+    },
+    {
+      "profile": "Works",
+      "vsMoneyCore": 83.8,
+      "vsMoneyAll": 65,
+      "vsBalancedAll": 58.8
+    },
+    {
+      "profile": "Devices",
+      "vsMoneyCore": 92.5,
+      "vsMoneyAll": 55,
+      "vsBalancedAll": 57.5
+    },
+    {
+      "profile": "Interaction",
+      "vsMoneyCore": 63.8,
+      "vsMoneyAll": 51.3,
+      "vsBalancedAll": 35
+    },
+    {
+      "profile": "Defence",
+      "vsMoneyCore": 33.8,
+      "vsMoneyAll": 46.3,
+      "vsBalancedAll": 50
+    },
+    {
       "profile": "Scoring",
-      "vsMoneyCore": 55,
-      "vsMoneyAll": 45,
-      "vsBalancedAll": 25
+      "vsMoneyCore": 65,
+      "vsMoneyAll": 26.3,
+      "vsBalancedAll": 32.5
     },
     {
       "profile": "Risk",
-      "vsMoneyCore": 95,
-      "vsMoneyAll": 60,
-      "vsBalancedAll": 37.5
+      "vsMoneyCore": 77.5,
+      "vsMoneyAll": 42.5,
+      "vsBalancedAll": 48.8
+    },
+    {
+      "profile": "Thinning",
+      "vsMoneyCore": 62.5,
+      "vsMoneyAll": 22.5,
+      "vsBalancedAll": 25
     }
   ],
   "roundRobin": {
     "Balanced": {
-      "Economy": 62.5,
-      "Cycling": 45,
-      "Combo": 50,
-      "Spark": 60,
-      "Works": 42.5,
-      "Devices": 35,
-      "Interaction": 55,
-      "Defence": 65,
-      "Scoring": 77.5,
-      "Risk": 45
+      "Economy": 50,
+      "Cycling": 65,
+      "Combo": 40,
+      "Spark": 47.5,
+      "Works": 32.5,
+      "Devices": 40,
+      "Interaction": 57.5,
+      "Defence": 35,
+      "Scoring": 70,
+      "Risk": 70,
+      "Thinning": 72.5
     },
     "Economy": {
-      "Balanced": 37.5,
-      "Cycling": 30,
-      "Combo": 25,
-      "Spark": 42.5,
-      "Works": 15,
-      "Devices": 30,
-      "Interaction": 60,
-      "Defence": 55,
+      "Balanced": 50,
+      "Cycling": 55,
+      "Combo": 50,
+      "Spark": 60,
+      "Works": 22.5,
+      "Devices": 40,
+      "Interaction": 25,
+      "Defence": 45,
       "Scoring": 50,
-      "Risk": 45
+      "Risk": 50,
+      "Thinning": 75
     },
     "Cycling": {
-      "Balanced": 55,
-      "Economy": 70,
-      "Combo": 60,
-      "Spark": 40,
-      "Works": 30,
-      "Devices": 45,
-      "Interaction": 40,
-      "Defence": 55,
-      "Scoring": 75,
-      "Risk": 60
-    },
-    "Combo": {
-      "Balanced": 50,
-      "Economy": 75,
-      "Cycling": 40,
-      "Spark": 50,
-      "Works": 40,
-      "Devices": 32.5,
-      "Interaction": 45,
-      "Defence": 55,
-      "Scoring": 45,
-      "Risk": 50
-    },
-    "Spark": {
-      "Balanced": 40,
-      "Economy": 57.5,
-      "Cycling": 60,
-      "Combo": 50,
-      "Works": 25,
-      "Devices": 52.5,
-      "Interaction": 70,
-      "Defence": 75,
-      "Scoring": 75,
-      "Risk": 70
-    },
-    "Works": {
-      "Balanced": 57.5,
-      "Economy": 85,
-      "Cycling": 70,
-      "Combo": 60,
-      "Spark": 75,
-      "Devices": 40,
-      "Interaction": 52.5,
-      "Defence": 65,
-      "Scoring": 65,
-      "Risk": 70
-    },
-    "Devices": {
-      "Balanced": 65,
-      "Economy": 70,
-      "Cycling": 55,
-      "Combo": 67.5,
-      "Spark": 47.5,
-      "Works": 60,
-      "Interaction": 45,
-      "Defence": 65,
-      "Scoring": 75,
-      "Risk": 70
-    },
-    "Interaction": {
-      "Balanced": 45,
-      "Economy": 40,
-      "Cycling": 60,
-      "Combo": 55,
-      "Spark": 30,
-      "Works": 47.5,
-      "Devices": 55,
-      "Defence": 55,
-      "Scoring": 57.5,
-      "Risk": 60
-    },
-    "Defence": {
       "Balanced": 35,
       "Economy": 45,
-      "Cycling": 45,
-      "Combo": 45,
-      "Spark": 25,
+      "Combo": 67.5,
+      "Spark": 35,
       "Works": 35,
-      "Devices": 35,
-      "Interaction": 45,
-      "Scoring": 60,
-      "Risk": 55
+      "Devices": 30,
+      "Interaction": 35,
+      "Defence": 60,
+      "Scoring": 45,
+      "Risk": 50,
+      "Thinning": 45
     },
-    "Scoring": {
-      "Balanced": 22.5,
+    "Combo": {
+      "Balanced": 60,
       "Economy": 50,
-      "Cycling": 25,
-      "Combo": 55,
-      "Spark": 25,
-      "Works": 35,
-      "Devices": 25,
-      "Interaction": 42.5,
+      "Cycling": 32.5,
+      "Spark": 30,
+      "Works": 12.5,
+      "Devices": 20,
+      "Interaction": 20,
       "Defence": 40,
-      "Risk": 27.5
+      "Scoring": 40,
+      "Risk": 40,
+      "Thinning": 55
     },
-    "Risk": {
-      "Balanced": 55,
+    "Spark": {
+      "Balanced": 52.5,
+      "Economy": 40,
+      "Cycling": 65,
+      "Combo": 70,
+      "Works": 45,
+      "Devices": 67.5,
+      "Interaction": 60,
+      "Defence": 55,
+      "Scoring": 65,
+      "Risk": 70,
+      "Thinning": 70
+    },
+    "Works": {
+      "Balanced": 67.5,
+      "Economy": 77.5,
+      "Cycling": 65,
+      "Combo": 87.5,
+      "Spark": 55,
+      "Devices": 50,
+      "Interaction": 50,
+      "Defence": 100,
+      "Scoring": 75,
+      "Risk": 60,
+      "Thinning": 95
+    },
+    "Devices": {
+      "Balanced": 60,
+      "Economy": 60,
+      "Cycling": 70,
+      "Combo": 80,
+      "Spark": 32.5,
+      "Works": 50,
+      "Interaction": 45,
+      "Defence": 45,
+      "Scoring": 65,
+      "Risk": 60,
+      "Thinning": 85
+    },
+    "Interaction": {
+      "Balanced": 42.5,
+      "Economy": 75,
+      "Cycling": 65,
+      "Combo": 80,
+      "Spark": 40,
+      "Works": 50,
+      "Devices": 55,
+      "Defence": 55,
+      "Scoring": 45,
+      "Risk": 70,
+      "Thinning": 70
+    },
+    "Defence": {
+      "Balanced": 65,
       "Economy": 55,
       "Cycling": 40,
-      "Combo": 50,
+      "Combo": 60,
+      "Spark": 45,
+      "Works": 0,
+      "Devices": 55,
+      "Interaction": 45,
+      "Scoring": 65,
+      "Risk": 55,
+      "Thinning": 65
+    },
+    "Scoring": {
+      "Balanced": 30,
+      "Economy": 50,
+      "Cycling": 55,
+      "Combo": 60,
+      "Spark": 35,
+      "Works": 25,
+      "Devices": 35,
+      "Interaction": 55,
+      "Defence": 35,
+      "Risk": 60,
+      "Thinning": 87.5
+    },
+    "Risk": {
+      "Balanced": 30,
+      "Economy": 50,
+      "Cycling": 50,
+      "Combo": 60,
       "Spark": 30,
-      "Works": 30,
-      "Devices": 30,
-      "Interaction": 40,
+      "Works": 40,
+      "Devices": 40,
+      "Interaction": 30,
       "Defence": 45,
-      "Scoring": 72.5
+      "Scoring": 40,
+      "Thinning": 60
+    },
+    "Thinning": {
+      "Balanced": 27.5,
+      "Economy": 25,
+      "Cycling": 55,
+      "Combo": 45,
+      "Spark": 30,
+      "Works": 5,
+      "Devices": 15,
+      "Interaction": 30,
+      "Defence": 35,
+      "Scoring": 12.5,
+      "Risk": 40
     }
   },
   "cards": [
     {
       "key": "gearwright",
-      "name": "Gearwright",
+      "name": "Guild Apprentice",
       "cost": 3,
       "set": "core",
       "styles": [
         "cycling"
       ],
-      "favourWinPct": 20,
-      "margin": 17.5
+      "favourWinPct": 28.8,
+      "margin": 14
     },
     {
       "key": "shift_bell",
-      "name": "Shift Bell",
+      "name": "Morning Bell",
       "cost": 3,
       "set": "core",
       "styles": [
         "combo"
       ],
-      "favourWinPct": 35,
-      "margin": 20.9
+      "favourWinPct": 53.8,
+      "margin": 15.5
     },
     {
       "key": "tally_clerk",
@@ -332,141 +427,141 @@
         "combo",
         "economy"
       ],
-      "favourWinPct": 20,
-      "margin": 17.5
+      "favourWinPct": 35,
+      "margin": 14.8
     },
     {
       "key": "supply_crane",
-      "name": "Supply Crane",
+      "name": "Treadwheel Crane",
       "cost": 4,
       "set": "core",
       "styles": [
         "economy"
       ],
       "favourWinPct": 20,
-      "margin": 17.5
+      "margin": 12.4
     },
     {
       "key": "copper_press",
-      "name": "Copper Press",
+      "name": "Coin Striker",
       "cost": 4,
       "set": "core",
       "styles": [
         "economy",
         "risk"
       ],
-      "favourWinPct": 30,
-      "margin": 20.1
+      "favourWinPct": 7.5,
+      "margin": 8.2
     },
     {
       "key": "foreman",
-      "name": "Foreman",
+      "name": "Royal Architect",
       "cost": 5,
       "set": "core",
       "styles": [
         "cycling",
         "spark"
       ],
-      "favourWinPct": 65,
-      "margin": 20.9
+      "favourWinPct": 60,
+      "margin": 15.2
     },
     {
       "key": "paper_fan",
-      "name": "Paper Fan",
+      "name": "Winnowing Fan",
       "cost": 2,
       "set": "core",
       "styles": [
         "cycling"
       ],
-      "favourWinPct": 15,
-      "margin": 15.6
+      "favourWinPct": 17.5,
+      "margin": 11.8
     },
     {
       "key": "conveyor",
-      "name": "Conveyor",
+      "name": "Customs House",
       "cost": 3,
       "set": "core",
       "styles": [
         "cycling",
         "combo"
       ],
-      "favourWinPct": 15,
-      "margin": 15.6
+      "favourWinPct": 33.8,
+      "margin": 14.7
     },
     {
       "key": "sorting_glasses",
-      "name": "Sorting Glasses",
+      "name": "Assayer",
       "cost": 4,
       "set": "core",
       "styles": [
         "cycling",
         "devices"
       ],
-      "favourWinPct": 30,
-      "margin": 20.1
+      "favourWinPct": 42.5,
+      "margin": 15.3
     },
     {
       "key": "springboard",
-      "name": "Springboard",
+      "name": "Post Rider",
       "cost": 4,
       "set": "core",
       "styles": [
         "combo",
         "spark"
       ],
-      "favourWinPct": 47.5,
-      "margin": 21.9
+      "favourWinPct": 67.5,
+      "margin": 14.5
     },
     {
       "key": "clockwork_archive",
-      "name": "Clockwork Archive",
+      "name": "Keeper of the Rolls",
       "cost": 5,
       "set": "core",
       "styles": [
         "cycling",
         "spark"
       ],
-      "favourWinPct": 27.5,
-      "margin": 19.6
+      "favourWinPct": 45,
+      "margin": 15.4
     },
     {
       "key": "whistle_stop",
-      "name": "Whistle Stop",
+      "name": "Trading Port",
       "cost": 5,
       "set": "core",
       "styles": [
         "combo",
         "economy"
       ],
-      "favourWinPct": 22.5,
-      "margin": 18.3
+      "favourWinPct": 30,
+      "margin": 14.2
     },
     {
       "key": "hand_crank",
-      "name": "Hand Crank",
+      "name": "Petitioner",
       "cost": 2,
       "set": "core",
       "styles": [
         "spark"
       ],
-      "favourWinPct": 65,
-      "margin": 20.9
+      "favourWinPct": 66.3,
+      "margin": 14.6
     },
     {
       "key": "charge_meter",
-      "name": "Charge Meter",
+      "name": "Lady-in-Waiting",
       "cost": 3,
       "set": "core",
       "styles": [
         "spark",
         "combo"
       ],
-      "favourWinPct": 57.5,
-      "margin": 21.7
+      "favourWinPct": 48.8,
+      "margin": 15.5
     },
     {
       "key": "capacitor_bank",
-      "name": "Capacitor Bank",
+      "name": "Audience Hall",
       "cost": 4,
       "set": "core",
       "styles": [
@@ -474,24 +569,24 @@
         "devices",
         "works"
       ],
-      "favourWinPct": 65,
-      "margin": 20.9
+      "favourWinPct": 78.8,
+      "margin": 12.7
     },
     {
       "key": "steam_diverter",
-      "name": "Steam Diverter",
+      "name": "Crown Treasury",
       "cost": 4,
       "set": "core",
       "styles": [
         "spark",
         "economy"
       ],
-      "favourWinPct": 10,
-      "margin": 13.1
+      "favourWinPct": 13.8,
+      "margin": 10.7
     },
     {
       "key": "glow_mason",
-      "name": "Glow Mason",
+      "name": "Guild Banquet",
       "cost": 5,
       "set": "core",
       "styles": [
@@ -499,71 +594,71 @@
         "economy",
         "works"
       ],
-      "favourWinPct": 77.5,
-      "margin": 18.3
+      "favourWinPct": 70,
+      "margin": 14.2
     },
     {
       "key": "overcharge_lab",
-      "name": "Overcharge Lab",
+      "name": "Privy Council",
       "cost": 6,
       "set": "core",
       "styles": [
         "spark",
         "risk"
       ],
-      "favourWinPct": 55,
-      "margin": 21.8
+      "favourWinPct": 65,
+      "margin": 14.8
     },
     {
       "key": "signal_tower",
-      "name": "Signal Tower",
+      "name": "Road Warden",
       "cost": 3,
       "set": "core",
       "styles": [
         "interaction"
       ],
-      "favourWinPct": 10,
-      "margin": 13.1
+      "favourWinPct": 22.5,
+      "margin": 12.9
     },
     {
       "key": "city_messenger",
-      "name": "City Messenger",
+      "name": "Royal Runner",
       "cost": 4,
       "set": "core",
       "styles": [
         "defence",
         "economy"
       ],
-      "favourWinPct": 10,
-      "margin": 13.1
+      "favourWinPct": 5,
+      "margin": 6.8
     },
     {
       "key": "inspection_team",
-      "name": "Inspection Team",
+      "name": "Tax Assessors",
       "cost": 4,
       "set": "core",
       "styles": [
         "interaction",
         "economy"
       ],
-      "favourWinPct": 40,
-      "margin": 21.5
+      "favourWinPct": 45,
+      "margin": 15.4
     },
     {
       "key": "mutual_aid",
-      "name": "Mutual Aid",
+      "name": "Alms House",
       "cost": 4,
       "set": "core",
       "styles": [
         "interaction",
         "spark"
       ],
-      "favourWinPct": 75,
-      "margin": 19
+      "favourWinPct": 67.5,
+      "margin": 14.5
     },
     {
       "key": "permit_office",
-      "name": "Permit Office",
+      "name": "Licensing Hall",
       "cost": 5,
       "set": "core",
       "styles": [
@@ -571,7 +666,7 @@
         "economy"
       ],
       "favourWinPct": 10,
-      "margin": 13.1
+      "margin": 9.3
     },
     {
       "key": "night_watch",
@@ -582,215 +677,215 @@
         "defence",
         "economy"
       ],
-      "favourWinPct": 57.5,
-      "margin": 21.7
+      "favourWinPct": 56.3,
+      "margin": 15.4
     },
     {
       "key": "maintenance_cart",
-      "name": "Maintenance Cart",
+      "name": "Toll Gate",
       "cost": 3,
       "set": "core",
       "styles": [
         "devices",
         "spark"
       ],
-      "favourWinPct": 67.5,
-      "margin": 20.5
+      "favourWinPct": 55,
+      "margin": 15.4
     },
     {
       "key": "lamplighter",
-      "name": "Lamplighter",
+      "name": "Scriptorium",
       "cost": 4,
       "set": "core",
       "styles": [
         "devices",
         "cycling"
       ],
-      "favourWinPct": 35,
-      "margin": 20.9
+      "favourWinPct": 56.3,
+      "margin": 15.4
     },
     {
       "key": "clock_garden",
-      "name": "Clock Garden",
+      "name": "Cloister Garden",
       "cost": 4,
       "set": "core",
       "styles": [
         "works",
         "spark"
       ],
-      "favourWinPct": 55,
-      "margin": 21.8
+      "favourWinPct": 62.5,
+      "margin": 15
     },
     {
       "key": "gear_lease",
-      "name": "Gear Lease",
+      "name": "Market Stall",
       "cost": 5,
       "set": "core",
       "styles": [
         "devices",
         "economy"
       ],
-      "favourWinPct": 25,
-      "margin": 19
+      "favourWinPct": 42.5,
+      "margin": 15.3
     },
     {
       "key": "city_blueprint",
-      "name": "City Blueprint",
+      "name": "Town Plans",
       "cost": 5,
       "set": "core",
       "styles": [
         "cycling",
         "spark"
       ],
-      "favourWinPct": 75,
-      "margin": 19
+      "favourWinPct": 61.3,
+      "margin": 15.1
     },
     {
       "key": "grand_engine",
-      "name": "Grand Engine",
+      "name": "Cloth Hall",
       "cost": 7,
       "set": "core",
       "styles": [
         "devices",
         "economy"
       ],
-      "favourWinPct": 65,
-      "margin": 20.9
+      "favourWinPct": 53.8,
+      "margin": 15.5
     },
     {
       "key": "civic_scholar",
-      "name": "Civic Scholar",
+      "name": "Court Scholar",
       "cost": 3,
       "set": "core",
       "styles": [
         "scoring",
         "spark"
       ],
-      "favourWinPct": 60,
-      "margin": 21.5
+      "favourWinPct": 75,
+      "margin": 13.4
     },
     {
       "key": "museum_curator",
-      "name": "Museum Curator",
+      "name": "Royal Chronicler",
       "cost": 4,
       "set": "core",
       "styles": [
         "scoring",
         "cycling"
       ],
-      "favourWinPct": 30,
-      "margin": 20.1
+      "favourWinPct": 37.5,
+      "margin": 15
     },
     {
       "key": "patron_circle",
-      "name": "Patron Circle",
+      "name": "Benefactors",
       "cost": 5,
       "set": "core",
       "styles": [
         "scoring",
         "economy"
       ],
-      "favourWinPct": 27.5,
-      "margin": 19.6
+      "favourWinPct": 30,
+      "margin": 14.2
     },
     {
       "key": "silver_statue",
-      "name": "Silver Statue",
+      "name": "Silver Reliquary",
       "cost": 5,
       "set": "core",
       "styles": [
         "scoring",
         "spark"
       ],
-      "favourWinPct": 10,
-      "margin": 13.1
+      "favourWinPct": 28.8,
+      "margin": 14
     },
     {
       "key": "civic_embassy",
-      "name": "Civic Embassy",
+      "name": "Foreign Envoy",
       "cost": 6,
       "set": "core",
       "styles": [
         "scoring",
         "interaction"
       ],
-      "favourWinPct": 50,
-      "margin": 21.9
+      "favourWinPct": 57.5,
+      "margin": 15.3
     },
     {
       "key": "inventors_medal",
-      "name": "Inventor’s Medal",
+      "name": "Builder’s Honour",
       "cost": 7,
       "set": "core",
       "styles": [
         "scoring",
         "works"
       ],
-      "favourWinPct": 35,
-      "margin": 20.9
+      "favourWinPct": 52.5,
+      "margin": 15.5
     },
     {
       "key": "spark_coil",
-      "name": "Spark Coil",
+      "name": "Favour Purse",
       "cost": 3,
       "set": "foundry",
       "styles": [
         "spark",
         "economy"
       ],
-      "favourWinPct": 80,
-      "margin": 17.5
+      "favourWinPct": 70,
+      "margin": 14.2
     },
     {
       "key": "brass_bond",
-      "name": "Brass Bond",
+      "name": "Merchant Bond",
       "cost": 4,
       "set": "foundry",
       "styles": [
         "economy",
         "spark"
       ],
-      "favourWinPct": 40,
-      "margin": 21.5
+      "favourWinPct": 48.8,
+      "margin": 15.5
     },
     {
       "key": "relay_junction",
-      "name": "Relay Junction",
+      "name": "Market Square",
       "cost": 3,
       "set": "foundry",
       "styles": [
         "combo"
       ],
-      "favourWinPct": 20,
-      "margin": 17.5
+      "favourWinPct": 10,
+      "margin": 9.3
     },
     {
       "key": "chain_drive",
-      "name": "Chain Drive",
+      "name": "Guild Procession",
       "cost": 5,
       "set": "foundry",
       "styles": [
         "combo",
         "spark"
       ],
-      "favourWinPct": 35,
-      "margin": 20.9
+      "favourWinPct": 30,
+      "margin": 14.2
     },
     {
       "key": "flywheel",
-      "name": "Flywheel",
+      "name": "Tithe Barn",
       "cost": 4,
       "set": "foundry",
       "styles": [
         "devices",
         "economy"
       ],
-      "favourWinPct": 55,
-      "margin": 21.8
+      "favourWinPct": 42.5,
+      "margin": 15.3
     },
     {
       "key": "timer_switch",
-      "name": "Timer Switch",
+      "name": "Royal Commission",
       "cost": 3,
       "set": "foundry",
       "styles": [
@@ -798,46 +893,46 @@
         "combo"
       ],
       "favourWinPct": 5,
-      "margin": 9.6
+      "margin": 6.8
     },
     {
       "key": "belt_sorter",
-      "name": "Belt Sorter",
+      "name": "Grain Sorter",
       "cost": 2,
       "set": "foundry",
       "styles": [
         "cycling"
       ],
-      "favourWinPct": 10,
-      "margin": 13.1
+      "favourWinPct": 18.8,
+      "margin": 12.1
     },
     {
       "key": "salvage_hook",
-      "name": "Salvage Hook",
+      "name": "Ragpicker",
       "cost": 4,
       "set": "foundry",
       "styles": [
         "cycling",
         "spark"
       ],
-      "favourWinPct": 10,
-      "margin": 13.1
+      "favourWinPct": 28.8,
+      "margin": 14
     },
     {
       "key": "millrace",
-      "name": "Millrace",
+      "name": "Changing of the Guard",
       "cost": 5,
       "set": "foundry",
       "styles": [
         "cycling",
         "risk"
       ],
-      "favourWinPct": 45,
-      "margin": 21.8
+      "favourWinPct": 35,
+      "margin": 14.8
     },
     {
       "key": "slag_furnace",
-      "name": "Slag Furnace",
+      "name": "Lime Kiln",
       "cost": 3,
       "set": "foundry",
       "styles": [
@@ -848,120 +943,120 @@
     },
     {
       "key": "spark_exchange",
-      "name": "Spark Exchange",
+      "name": "Favour Broker",
       "cost": 4,
       "set": "foundry",
       "styles": [
         "spark",
         "economy"
       ],
-      "favourWinPct": 27.5,
-      "margin": 19.6
+      "favourWinPct": 42.5,
+      "margin": 15.3
     },
     {
       "key": "picket_line",
-      "name": "Picket Line",
+      "name": "Town Gossip",
       "cost": 3,
       "set": "night",
       "styles": [
         "interaction"
       ],
-      "favourWinPct": 15,
-      "margin": 15.6
+      "favourWinPct": 10,
+      "margin": 9.3
     },
     {
       "key": "corrosion_crew",
-      "name": "Corrosion Crew",
+      "name": "Tax Farmer",
       "cost": 5,
       "set": "night",
       "styles": [
         "interaction"
       ],
-      "favourWinPct": 60,
-      "margin": 21.5
+      "favourWinPct": 42.5,
+      "margin": 15.3
     },
     {
       "key": "noise_complaint",
-      "name": "Noise Complaint",
+      "name": "Guild Dispute",
       "cost": 4,
       "set": "night",
       "styles": [
         "interaction",
         "combo"
       ],
-      "favourWinPct": 17.5,
-      "margin": 16.7
+      "favourWinPct": 18.8,
+      "margin": 12.1
     },
     {
       "key": "whistleblower",
-      "name": "Whistleblower",
+      "name": "Court Informer",
       "cost": 3,
       "set": "night",
       "styles": [
         "defence",
         "interaction"
       ],
-      "favourWinPct": 45,
-      "margin": 21.8
+      "favourWinPct": 35,
+      "margin": 14.8
     },
     {
       "key": "ground_wire",
-      "name": "Ground Wire",
+      "name": "Sanctuary Writ",
       "cost": 2,
       "set": "night",
       "styles": [
         "defence",
         "spark"
       ],
-      "favourWinPct": 15,
-      "margin": 15.6
+      "favourWinPct": 25,
+      "margin": 13.4
     },
     {
       "key": "redline_boiler",
-      "name": "Redline Boiler",
+      "name": "Usurer",
       "cost": 3,
       "set": "night",
       "styles": [
         "risk",
         "economy"
       ],
-      "favourWinPct": 15,
-      "margin": 15.6
+      "favourWinPct": 37.5,
+      "margin": 15
     },
     {
       "key": "pressure_test",
-      "name": "Pressure Test",
+      "name": "Royal Audit",
       "cost": 4,
       "set": "night",
       "styles": [
         "risk"
       ],
-      "favourWinPct": 5,
-      "margin": 9.6
+      "favourWinPct": 17.5,
+      "margin": 11.8
     },
     {
       "key": "overload_relay",
-      "name": "Overload Relay",
+      "name": "Royal Progress",
       "cost": 6,
       "set": "night",
       "styles": [
         "risk",
         "spark"
       ],
-      "favourWinPct": 20,
-      "margin": 17.5
+      "favourWinPct": 25,
+      "margin": 13.4
     },
     {
       "key": "scrapyard_broker",
-      "name": "Scrapyard Broker",
+      "name": "Debt Collector",
       "cost": 2,
       "set": "night",
       "styles": [
         "risk",
         "economy"
       ],
-      "favourWinPct": 25,
-      "margin": 19
+      "favourWinPct": 22.5,
+      "margin": 12.9
     },
     {
       "key": "surveyor",
@@ -972,84 +1067,84 @@
         "works",
         "economy"
       ],
-      "favourWinPct": 0,
-      "margin": 0
+      "favourWinPct": 13.8,
+      "margin": 10.7
     },
     {
       "key": "zoning_board",
-      "name": "Zoning Board",
+      "name": "Borough Reeve",
       "cost": 4,
       "set": "town",
       "styles": [
         "works",
         "interaction"
       ],
-      "favourWinPct": 50,
-      "margin": 21.9
+      "favourWinPct": 51.3,
+      "margin": 15.5
     },
     {
       "key": "ribbon_cutter",
-      "name": "Ribbon Cutter",
+      "name": "Royal Dedication",
       "cost": 4,
       "set": "town",
       "styles": [
         "works",
         "spark"
       ],
-      "favourWinPct": 35,
-      "margin": 20.9
+      "favourWinPct": 20,
+      "margin": 12.4
     },
     {
       "key": "town_crier",
-      "name": "Town Crier",
+      "name": "Bellman",
       "cost": 3,
       "set": "town",
       "styles": [
         "works",
         "defence"
       ],
-      "favourWinPct": 20,
-      "margin": 17.5
+      "favourWinPct": 28.8,
+      "margin": 14
     },
     {
       "key": "civic_bond",
-      "name": "Civic Bond",
+      "name": "Civic Tribute",
       "cost": 5,
       "set": "town",
       "styles": [
         "scoring",
         "works"
       ],
-      "favourWinPct": 20,
-      "margin": 17.5
+      "favourWinPct": 25,
+      "margin": 13.4
     },
     {
       "key": "city_charter",
-      "name": "City Charter",
+      "name": "Civic Charter",
       "cost": 6,
       "set": "town",
       "styles": [
         "works",
         "scoring"
       ],
-      "favourWinPct": 30,
-      "margin": 20.1
+      "favourWinPct": 50,
+      "margin": 15.5
     },
     {
       "key": "patent_ledger",
-      "name": "Patent Ledger",
+      "name": "Guild Register",
       "cost": 4,
       "set": "town",
       "styles": [
         "scoring",
         "devices"
       ],
-      "favourWinPct": 10,
-      "margin": 13.1
+      "favourWinPct": 15,
+      "margin": 11.1
     },
     {
       "key": "plaque_foundry",
-      "name": "Plaque Foundry",
+      "name": "Heraldic Painter",
       "cost": 3,
       "set": "town",
       "styles": [
@@ -1057,458 +1152,916 @@
         "spark"
       ],
       "favourWinPct": 20,
-      "margin": 17.5
+      "margin": 12.4
+    },
+    {
+      "key": "royal_confessor",
+      "name": "Royal Confessor",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "spark"
+      ],
+      "favourWinPct": 0,
+      "margin": 0
+    },
+    {
+      "key": "mintmaster",
+      "name": "Mintmaster",
+      "cost": 5,
+      "set": "crown",
+      "styles": [
+        "economy",
+        "cycling"
+      ],
+      "favourWinPct": 37.5,
+      "margin": 15
+    },
+    {
+      "key": "estate_surveyor",
+      "name": "Estate Surveyor",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "scoring",
+        "cycling"
+      ],
+      "favourWinPct": 25,
+      "margin": 13.4
+    },
+    {
+      "key": "purification_house",
+      "name": "Purification House",
+      "cost": 3,
+      "set": "crown",
+      "styles": [
+        "cycling"
+      ],
+      "favourWinPct": 5,
+      "margin": 6.8
+    },
+    {
+      "key": "salvage_office",
+      "name": "Salvage Office",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "economy"
+      ],
+      "favourWinPct": 12.5,
+      "margin": 10.2
+    },
+    {
+      "key": "reclamation_guild",
+      "name": "Reclamation Guild",
+      "cost": 3,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "combo"
+      ],
+      "favourWinPct": 27.5,
+      "margin": 13.8
+    },
+    {
+      "key": "royal_tax_collector",
+      "name": "Royal Tax Collector",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "economy",
+        "spark"
+      ],
+      "favourWinPct": 23.8,
+      "margin": 13.2
+    },
+    {
+      "key": "royal_scrivener",
+      "name": "Royal Scrivener",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "combo"
+      ],
+      "favourWinPct": 17.5,
+      "margin": 11.8
+    },
+    {
+      "key": "noble_resettlement",
+      "name": "Noble Resettlement",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "combo"
+      ],
+      "favourWinPct": 20,
+      "margin": 12.4
+    },
+    {
+      "key": "burden_relief",
+      "name": "Burden Relief",
+      "cost": 2,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "risk"
+      ],
+      "favourWinPct": 2.5,
+      "margin": 4.8
+    },
+    {
+      "key": "treasury_auditor",
+      "name": "Treasury Auditor",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "economy",
+        "combo"
+      ],
+      "favourWinPct": 25,
+      "margin": 13.4
+    },
+    {
+      "key": "spice_exchange",
+      "name": "Spice Exchange",
+      "cost": 5,
+      "set": "crown",
+      "styles": [
+        "economy",
+        "spark"
+      ],
+      "favourWinPct": 77.5,
+      "margin": 12.9
+    },
+    {
+      "key": "trade_bonds",
+      "name": "Trade Bonds",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "economy"
+      ],
+      "favourWinPct": 36.3,
+      "margin": 14.9
+    },
+    {
+      "key": "royal_mint",
+      "name": "Royal Mint",
+      "cost": 5,
+      "set": "crown",
+      "styles": [
+        "economy",
+        "spark"
+      ],
+      "favourWinPct": 35,
+      "margin": 14.8
+    },
+    {
+      "key": "port_tariffs",
+      "name": "Port Tariffs",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "devices",
+        "economy"
+      ],
+      "favourWinPct": 27.5,
+      "margin": 13.8
+    },
+    {
+      "key": "guild_auction",
+      "name": "Guild Auction",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "economy",
+        "spark"
+      ],
+      "favourWinPct": 15,
+      "margin": 11.1
+    },
+    {
+      "key": "kingdom_courier",
+      "name": "Kingdom Courier",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "combo"
+      ],
+      "favourWinPct": 47.5,
+      "margin": 15.5
+    },
+    {
+      "key": "hall_of_archives",
+      "name": "Hall of Archives",
+      "cost": 3,
+      "set": "crown",
+      "styles": [
+        "cycling",
+        "combo"
+      ],
+      "favourWinPct": 23.8,
+      "margin": 13.2
+    },
+    {
+      "key": "great_council",
+      "name": "Great Council",
+      "cost": 5,
+      "set": "crown",
+      "styles": [
+        "combo",
+        "economy"
+      ],
+      "favourWinPct": 25,
+      "margin": 13.4
+    },
+    {
+      "key": "edict_of_inspection",
+      "name": "Edict of Inspection",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "interaction"
+      ],
+      "favourWinPct": 32.5,
+      "margin": 14.5
+    },
+    {
+      "key": "tax_arrears",
+      "name": "Tax Arrears",
+      "cost": 4,
+      "set": "crown",
+      "styles": [
+        "interaction",
+        "economy"
+      ],
+      "favourWinPct": 52.5,
+      "margin": 15.5
+    },
+    {
+      "key": "royal_advocate",
+      "name": "Royal Advocate",
+      "cost": 3,
+      "set": "crown",
+      "styles": [
+        "defence",
+        "economy"
+      ],
+      "favourWinPct": 35,
+      "margin": 14.8
+    },
+    {
+      "key": "court_saboteur",
+      "name": "Court Saboteur",
+      "cost": 5,
+      "set": "crown",
+      "styles": [
+        "interaction",
+        "economy"
+      ],
+      "favourWinPct": 26.3,
+      "margin": 13.6
+    },
+    {
+      "key": "noble_council",
+      "name": "Noble Council",
+      "cost": 5,
+      "set": "crown",
+      "styles": [
+        "scoring"
+      ],
+      "favourWinPct": 28.8,
+      "margin": 14
     }
   ],
   "usage": [
     {
       "key": "grand_engine",
-      "markets": 31,
-      "buyersPerGame": 0.13,
+      "markets": 47,
+      "buyersPerGame": 0.23,
       "copiesPerBuyer": 1,
-      "buyerWinPct": 100
-    },
-    {
-      "key": "overcharge_lab",
-      "markets": 45,
-      "buyersPerGame": 0.16,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 85.7
-    },
-    {
-      "key": "maintenance_cart",
-      "markets": 35,
-      "buyersPerGame": 0.71,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 52
+      "buyerWinPct": 72.7
     },
     {
       "key": "mutual_aid",
-      "markets": 45,
-      "buyersPerGame": 1.09,
+      "markets": 55,
+      "buyersPerGame": 0.85,
       "copiesPerBuyer": 1,
-      "buyerWinPct": 49
+      "buyerWinPct": 72.3
     },
     {
-      "key": "glow_mason",
-      "markets": 40,
-      "buyersPerGame": 0.98,
-      "copiesPerBuyer": 1.08,
-      "buyerWinPct": 48.7
-    },
-    {
-      "key": "capacitor_bank",
-      "markets": 33,
-      "buyersPerGame": 1.79,
-      "copiesPerBuyer": 1.12,
-      "buyerWinPct": 47.5
-    },
-    {
-      "key": "charge_meter",
-      "markets": 40,
-      "buyersPerGame": 1.1,
-      "copiesPerBuyer": 1.39,
-      "buyerWinPct": 46.6
-    },
-    {
-      "key": "civic_scholar",
-      "markets": 38,
-      "buyersPerGame": 0.92,
+      "key": "maintenance_cart",
+      "markets": 41,
+      "buyersPerGame": 0.66,
       "copiesPerBuyer": 1,
-      "buyerWinPct": 45.7
+      "buyerWinPct": 64.8
     },
     {
-      "key": "city_charter",
-      "markets": 42,
-      "buyersPerGame": 0.26,
-      "copiesPerBuyer": 1.45,
-      "buyerWinPct": 45.5
+      "key": "signal_tower",
+      "markets": 57,
+      "buyersPerGame": 0.19,
+      "copiesPerBuyer": 1.91,
+      "buyerWinPct": 63.6
     },
     {
       "key": "civic_embassy",
-      "markets": 39,
+      "markets": 50,
       "buyersPerGame": 0.36,
       "copiesPerBuyer": 1.5,
-      "buyerWinPct": 42.9
+      "buyerWinPct": 61.1
     },
     {
-      "key": "lamplighter",
-      "markets": 44,
-      "buyersPerGame": 1.09,
+      "key": "corrosion_crew",
+      "markets": 53,
+      "buyersPerGame": 0.45,
       "copiesPerBuyer": 1,
-      "buyerWinPct": 41.7
+      "buyerWinPct": 54.2
+    },
+    {
+      "key": "capacitor_bank",
+      "markets": 57,
+      "buyersPerGame": 1.42,
+      "copiesPerBuyer": 1.05,
+      "buyerWinPct": 53.1
+    },
+    {
+      "key": "civic_scholar",
+      "markets": 62,
+      "buyersPerGame": 0.95,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 50.8
+    },
+    {
+      "key": "overcharge_lab",
+      "markets": 43,
+      "buyersPerGame": 0.28,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 50
+    },
+    {
+      "key": "glow_mason",
+      "markets": 60,
+      "buyersPerGame": 0.98,
+      "copiesPerBuyer": 1.08,
+      "buyerWinPct": 49.2
+    },
+    {
+      "key": "picket_line",
+      "markets": 58,
+      "buyersPerGame": 0.24,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 46.4
+    },
+    {
+      "key": "night_watch",
+      "markets": 67,
+      "buyersPerGame": 0.42,
+      "copiesPerBuyer": 1.07,
+      "buyerWinPct": 46.4
+    },
+    {
+      "key": "salvage_office",
+      "markets": 49,
+      "buyersPerGame": 1.39,
+      "copiesPerBuyer": 1.22,
+      "buyerWinPct": 44.9
+    },
+    {
+      "key": "sorting_glasses",
+      "markets": 58,
+      "buyersPerGame": 0.55,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 40.6
+    },
+    {
+      "key": "gear_lease",
+      "markets": 55,
+      "buyersPerGame": 0.67,
+      "copiesPerBuyer": 1.03,
+      "buyerWinPct": 40.5
+    },
+    {
+      "key": "spice_exchange",
+      "markets": 55,
+      "buyersPerGame": 1.73,
+      "copiesPerBuyer": 1.09,
+      "buyerWinPct": 40.5
+    },
+    {
+      "key": "inspection_team",
+      "markets": 50,
+      "buyersPerGame": 0.72,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 40.3
+    },
+    {
+      "key": "inventors_medal",
+      "markets": 56,
+      "buyersPerGame": 1.25,
+      "copiesPerBuyer": 2.54,
+      "buyerWinPct": 38.6
+    },
+    {
+      "key": "city_blueprint",
+      "markets": 50,
+      "buyersPerGame": 1.86,
+      "copiesPerBuyer": 1.18,
+      "buyerWinPct": 38.2
+    },
+    {
+      "key": "charge_meter",
+      "markets": 55,
+      "buyersPerGame": 1,
+      "copiesPerBuyer": 1.47,
+      "buyerWinPct": 38.2
+    },
+    {
+      "key": "edict_of_inspection",
+      "markets": 54,
+      "buyersPerGame": 2.11,
+      "copiesPerBuyer": 1.11,
+      "buyerWinPct": 37.7
+    },
+    {
+      "key": "spark_coil",
+      "markets": 45,
+      "buyersPerGame": 1.33,
+      "copiesPerBuyer": 1.22,
+      "buyerWinPct": 36.7
+    },
+    {
+      "key": "noble_council",
+      "markets": 65,
+      "buyersPerGame": 1.69,
+      "copiesPerBuyer": 3.35,
+      "buyerWinPct": 36.4
+    },
+    {
+      "key": "mintmaster",
+      "markets": 57,
+      "buyersPerGame": 0.74,
+      "copiesPerBuyer": 1.07,
+      "buyerWinPct": 35.7
+    },
+    {
+      "key": "patent_ledger",
+      "markets": 44,
+      "buyersPerGame": 2.5,
+      "copiesPerBuyer": 3.16,
+      "buyerWinPct": 35.5
     },
     {
       "key": "hand_crank",
-      "markets": 30,
+      "markets": 58,
+      "buyersPerGame": 0.88,
+      "copiesPerBuyer": 1.12,
+      "buyerWinPct": 35.3
+    },
+    {
+      "key": "lamplighter",
+      "markets": 58,
       "buyersPerGame": 1,
-      "copiesPerBuyer": 1.07,
-      "buyerWinPct": 41.7
-    },
-    {
-      "key": "pressure_test",
-      "markets": 33,
-      "buyersPerGame": 0.45,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 40
-    },
-    {
-      "key": "foreman",
-      "markets": 38,
-      "buyersPerGame": 1.97,
-      "copiesPerBuyer": 1.21,
-      "buyerWinPct": 37.3
-    },
-    {
-      "key": "clockwork_archive",
-      "markets": 42,
-      "buyersPerGame": 1.21,
       "copiesPerBuyer": 1,
       "buyerWinPct": 35.3
     },
     {
-      "key": "whistle_stop",
-      "markets": 34,
-      "buyersPerGame": 1.85,
-      "copiesPerBuyer": 1.1,
-      "buyerWinPct": 34.9
+      "key": "foreman",
+      "markets": 52,
+      "buyersPerGame": 1.63,
+      "copiesPerBuyer": 1.07,
+      "buyerWinPct": 35.3
     },
     {
-      "key": "spark_coil",
-      "markets": 41,
-      "buyersPerGame": 1.98,
-      "copiesPerBuyer": 1.26,
-      "buyerWinPct": 34.6
-    },
-    {
-      "key": "brass_bond",
-      "markets": 40,
-      "buyersPerGame": 2.83,
-      "copiesPerBuyer": 1.19,
-      "buyerWinPct": 34.5
-    },
-    {
-      "key": "sorting_glasses",
-      "markets": 31,
-      "buyersPerGame": 1.03,
+      "key": "tax_arrears",
+      "markets": 47,
+      "buyersPerGame": 0.43,
       "copiesPerBuyer": 1,
-      "buyerWinPct": 34.4
+      "buyerWinPct": 35
     },
     {
-      "key": "city_blueprint",
-      "markets": 32,
-      "buyersPerGame": 2,
-      "copiesPerBuyer": 1.13,
-      "buyerWinPct": 34.4
+      "key": "civic_bond",
+      "markets": 55,
+      "buyersPerGame": 1.67,
+      "copiesPerBuyer": 3.27,
+      "buyerWinPct": 34.8
     },
     {
-      "key": "springboard",
-      "markets": 44,
+      "key": "noise_complaint",
+      "markets": 43,
       "buyersPerGame": 2.07,
-      "copiesPerBuyer": 1.24,
+      "copiesPerBuyer": 1.19,
+      "buyerWinPct": 34.8
+    },
+    {
+      "key": "clockwork_archive",
+      "markets": 49,
+      "buyersPerGame": 0.92,
+      "copiesPerBuyer": 1.02,
+      "buyerWinPct": 34.4
+    },
+    {
+      "key": "zoning_board",
+      "markets": 62,
+      "buyersPerGame": 1.71,
+      "copiesPerBuyer": 1.17,
+      "buyerWinPct": 34.4
+    },
+    {
+      "key": "silver_statue",
+      "markets": 59,
+      "buyersPerGame": 1.34,
+      "copiesPerBuyer": 3.11,
+      "buyerWinPct": 34.2
+    },
+    {
+      "key": "flywheel",
+      "markets": 46,
+      "buyersPerGame": 0.96,
+      "copiesPerBuyer": 1,
       "buyerWinPct": 34.1
     },
     {
-      "key": "chain_drive",
-      "markets": 26,
-      "buyersPerGame": 1.88,
-      "copiesPerBuyer": 1.27,
+      "key": "port_tariffs",
+      "markets": 59,
+      "buyersPerGame": 0.9,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 34
+    },
+    {
+      "key": "steam_diverter",
+      "markets": 49,
+      "buyersPerGame": 1.08,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 34
+    },
+    {
+      "key": "brass_bond",
+      "markets": 55,
+      "buyersPerGame": 2.82,
+      "copiesPerBuyer": 1.23,
+      "buyerWinPct": 33.5
+    },
+    {
+      "key": "city_charter",
+      "markets": 54,
+      "buyersPerGame": 0.22,
+      "copiesPerBuyer": 1.42,
+      "buyerWinPct": 33.3
+    },
+    {
+      "key": "court_saboteur",
+      "markets": 51,
+      "buyersPerGame": 0.82,
+      "copiesPerBuyer": 1.02,
+      "buyerWinPct": 33.3
+    },
+    {
+      "key": "trade_bonds",
+      "markets": 57,
+      "buyersPerGame": 2.07,
+      "copiesPerBuyer": 1.09,
+      "buyerWinPct": 33.1
+    },
+    {
+      "key": "kingdom_courier",
+      "markets": 59,
+      "buyersPerGame": 2.31,
+      "copiesPerBuyer": 1.18,
+      "buyerWinPct": 33.1
+    },
+    {
+      "key": "royal_mint",
+      "markets": 51,
+      "buyersPerGame": 1.67,
+      "copiesPerBuyer": 1.21,
+      "buyerWinPct": 32.9
+    },
+    {
+      "key": "royal_tax_collector",
+      "markets": 57,
+      "buyersPerGame": 1.07,
+      "copiesPerBuyer": 1.16,
+      "buyerWinPct": 32.8
+    },
+    {
+      "key": "spark_exchange",
+      "markets": 46,
+      "buyersPerGame": 1.07,
+      "copiesPerBuyer": 1,
       "buyerWinPct": 32.7
     },
     {
       "key": "clock_garden",
-      "markets": 42,
-      "buyersPerGame": 2.71,
-      "copiesPerBuyer": 1.18,
-      "buyerWinPct": 32.5
+      "markets": 55,
+      "buyersPerGame": 2.35,
+      "copiesPerBuyer": 1.2,
+      "buyerWinPct": 32.2
     },
     {
-      "key": "conveyor",
-      "markets": 37,
-      "buyersPerGame": 1,
-      "copiesPerBuyer": 1.62,
-      "buyerWinPct": 32.4
-    },
-    {
-      "key": "noise_complaint",
-      "markets": 30,
-      "buyersPerGame": 2.07,
-      "copiesPerBuyer": 1.11,
-      "buyerWinPct": 32.3
-    },
-    {
-      "key": "town_crier",
-      "markets": 37,
-      "buyersPerGame": 0.76,
-      "copiesPerBuyer": 1.86,
+      "key": "patron_circle",
+      "markets": 59,
+      "buyersPerGame": 0.47,
+      "copiesPerBuyer": 1.14,
       "buyerWinPct": 32.1
     },
     {
-      "key": "civic_bond",
-      "markets": 39,
-      "buyersPerGame": 1.85,
-      "copiesPerBuyer": 2.9,
+      "key": "springboard",
+      "markets": 62,
+      "buyersPerGame": 2,
+      "copiesPerBuyer": 1.18,
       "buyerWinPct": 31.9
     },
     {
-      "key": "belt_sorter",
-      "markets": 31,
-      "buyersPerGame": 1.32,
-      "copiesPerBuyer": 1.34,
+      "key": "city_messenger",
+      "markets": 60,
+      "buyersPerGame": 1.37,
+      "copiesPerBuyer": 1.13,
       "buyerWinPct": 31.7
     },
     {
       "key": "ribbon_cutter",
-      "markets": 39,
-      "buyersPerGame": 2.46,
-      "copiesPerBuyer": 1.25,
-      "buyerWinPct": 31.3
-    },
-    {
-      "key": "paper_fan",
-      "markets": 47,
-      "buyersPerGame": 0.68,
-      "copiesPerBuyer": 1.06,
-      "buyerWinPct": 31.3
-    },
-    {
-      "key": "night_watch",
-      "markets": 36,
-      "buyersPerGame": 0.64,
-      "copiesPerBuyer": 1.04,
-      "buyerWinPct": 30.4
-    },
-    {
-      "key": "silver_statue",
-      "markets": 39,
-      "buyersPerGame": 1.44,
-      "copiesPerBuyer": 2.98,
-      "buyerWinPct": 30.4
-    },
-    {
-      "key": "scrapyard_broker",
-      "markets": 38,
-      "buyersPerGame": 1.26,
-      "copiesPerBuyer": 1.33,
-      "buyerWinPct": 30.2
-    },
-    {
-      "key": "ground_wire",
-      "markets": 35,
-      "buyersPerGame": 1.51,
+      "markets": 59,
+      "buyersPerGame": 1.98,
       "copiesPerBuyer": 1.21,
-      "buyerWinPct": 30.2
+      "buyerWinPct": 31.6
     },
     {
-      "key": "zoning_board",
-      "markets": 35,
-      "buyersPerGame": 1.89,
-      "copiesPerBuyer": 1.18,
-      "buyerWinPct": 28.8
+      "key": "shift_bell",
+      "markets": 56,
+      "buyersPerGame": 0.34,
+      "copiesPerBuyer": 1.74,
+      "buyerWinPct": 31.6
     },
     {
-      "key": "patent_ledger",
-      "markets": 41,
-      "buyersPerGame": 2.05,
-      "copiesPerBuyer": 2.99,
-      "buyerWinPct": 28.6
+      "key": "treasury_auditor",
+      "markets": 44,
+      "buyersPerGame": 1.95,
+      "copiesPerBuyer": 1.14,
+      "buyerWinPct": 31.4
+    },
+    {
+      "key": "whistleblower",
+      "markets": 56,
+      "buyersPerGame": 0.45,
+      "copiesPerBuyer": 1.72,
+      "buyerWinPct": 30
+    },
+    {
+      "key": "copper_press",
+      "markets": 52,
+      "buyersPerGame": 1.38,
+      "copiesPerBuyer": 1.04,
+      "buyerWinPct": 29.9
+    },
+    {
+      "key": "royal_scrivener",
+      "markets": 54,
+      "buyersPerGame": 1.98,
+      "copiesPerBuyer": 1.39,
+      "buyerWinPct": 29.9
     },
     {
       "key": "salvage_hook",
-      "markets": 37,
-      "buyersPerGame": 2.49,
-      "copiesPerBuyer": 1.26,
-      "buyerWinPct": 28.3
+      "markets": 61,
+      "buyersPerGame": 2.15,
+      "copiesPerBuyer": 1.2,
+      "buyerWinPct": 29.8
+    },
+    {
+      "key": "whistle_stop",
+      "markets": 59,
+      "buyersPerGame": 1.73,
+      "copiesPerBuyer": 1.1,
+      "buyerWinPct": 29.4
+    },
+    {
+      "key": "chain_drive",
+      "markets": 54,
+      "buyersPerGame": 1.91,
+      "copiesPerBuyer": 1.19,
+      "buyerWinPct": 29.1
+    },
+    {
+      "key": "guild_auction",
+      "markets": 63,
+      "buyersPerGame": 1.43,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 28.9
+    },
+    {
+      "key": "paper_fan",
+      "markets": 56,
+      "buyersPerGame": 1.05,
+      "copiesPerBuyer": 1.1,
+      "buyerWinPct": 28.8
+    },
+    {
+      "key": "town_crier",
+      "markets": 68,
+      "buyersPerGame": 0.51,
+      "copiesPerBuyer": 1.71,
+      "buyerWinPct": 28.6
     },
     {
       "key": "museum_curator",
       "markets": 44,
-      "buyersPerGame": 1.05,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 28.3
-    },
-    {
-      "key": "signal_tower",
-      "markets": 39,
-      "buyersPerGame": 0.23,
-      "copiesPerBuyer": 1.78,
-      "buyerWinPct": 27.8
-    },
-    {
-      "key": "gearwright",
-      "markets": 43,
-      "buyersPerGame": 0.42,
+      "buyersPerGame": 0.82,
       "copiesPerBuyer": 1,
       "buyerWinPct": 27.8
     },
     {
-      "key": "spark_exchange",
-      "markets": 43,
-      "buyersPerGame": 1.35,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 27.6
-    },
-    {
-      "key": "steam_diverter",
-      "markets": 30,
-      "buyersPerGame": 0.97,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 27.6
-    },
-    {
-      "key": "flywheel",
-      "markets": 32,
-      "buyersPerGame": 0.97,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 27.4
-    },
-    {
-      "key": "inventors_medal",
-      "markets": 29,
-      "buyersPerGame": 0.52,
-      "copiesPerBuyer": 2.13,
-      "buyerWinPct": 26.7
-    },
-    {
-      "key": "surveyor",
-      "markets": 33,
-      "buyersPerGame": 1.3,
+      "key": "ground_wire",
+      "markets": 51,
+      "buyersPerGame": 1.49,
       "copiesPerBuyer": 1.28,
-      "buyerWinPct": 25.6
+      "buyerWinPct": 27.6
     },
     {
-      "key": "copper_press",
-      "markets": 40,
-      "buyersPerGame": 1.33,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 25.5
-    },
-    {
-      "key": "permit_office",
-      "markets": 35,
-      "buyersPerGame": 1.71,
-      "copiesPerBuyer": 1.2,
-      "buyerWinPct": 25
+      "key": "noble_resettlement",
+      "markets": 50,
+      "buyersPerGame": 2.18,
+      "copiesPerBuyer": 1.48,
+      "buyerWinPct": 26.6
     },
     {
       "key": "tally_clerk",
-      "markets": 43,
-      "buyersPerGame": 1.16,
-      "copiesPerBuyer": 1.4,
-      "buyerWinPct": 25
+      "markets": 55,
+      "buyersPerGame": 1.31,
+      "copiesPerBuyer": 1.26,
+      "buyerWinPct": 26.4
     },
     {
-      "key": "city_messenger",
-      "markets": 50,
-      "buyersPerGame": 1.24,
-      "copiesPerBuyer": 1.21,
-      "buyerWinPct": 24.2
+      "key": "great_council",
+      "markets": 58,
+      "buyersPerGame": 1.57,
+      "copiesPerBuyer": 1.19,
+      "buyerWinPct": 26.4
+    },
+    {
+      "key": "timer_switch",
+      "markets": 51,
+      "buyersPerGame": 0.37,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 26.3
+    },
+    {
+      "key": "scrapyard_broker",
+      "markets": 49,
+      "buyersPerGame": 1.49,
+      "copiesPerBuyer": 1.37,
+      "buyerWinPct": 26
     },
     {
       "key": "millrace",
-      "markets": 33,
-      "buyersPerGame": 0.52,
+      "markets": 54,
+      "buyersPerGame": 0.5,
+      "copiesPerBuyer": 1.07,
+      "buyerWinPct": 25.9
+    },
+    {
+      "key": "belt_sorter",
+      "markets": 64,
+      "buyersPerGame": 1.45,
+      "copiesPerBuyer": 1.29,
+      "buyerWinPct": 24.7
+    },
+    {
+      "key": "pressure_test",
+      "markets": 60,
+      "buyersPerGame": 0.35,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 23.8
+    },
+    {
+      "key": "supply_crane",
+      "markets": 41,
+      "buyersPerGame": 0.41,
       "copiesPerBuyer": 1,
       "buyerWinPct": 23.5
     },
     {
-      "key": "shift_bell",
-      "markets": 35,
-      "buyersPerGame": 0.37,
-      "copiesPerBuyer": 1.85,
+      "key": "surveyor",
+      "markets": 40,
+      "buyersPerGame": 1.18,
+      "copiesPerBuyer": 1.32,
+      "buyerWinPct": 23.4
+    },
+    {
+      "key": "royal_advocate",
+      "markets": 61,
+      "buyersPerGame": 0.64,
+      "copiesPerBuyer": 1,
       "buyerWinPct": 23.1
     },
     {
-      "key": "gear_lease",
-      "markets": 22,
-      "buyersPerGame": 1,
-      "copiesPerBuyer": 1.05,
-      "buyerWinPct": 22.7
-    },
-    {
-      "key": "corrosion_crew",
-      "markets": 40,
-      "buyersPerGame": 0.23,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 22.2
-    },
-    {
-      "key": "overload_relay",
-      "markets": 33,
-      "buyersPerGame": 0.21,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 21.4
-    },
-    {
-      "key": "timer_switch",
-      "markets": 35,
-      "buyersPerGame": 0.54,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 21.1
+      "key": "permit_office",
+      "markets": 53,
+      "buyersPerGame": 1.72,
+      "copiesPerBuyer": 1.18,
+      "buyerWinPct": 22
     },
     {
       "key": "plaque_foundry",
-      "markets": 44,
-      "buyersPerGame": 1.2,
-      "copiesPerBuyer": 1.42,
-      "buyerWinPct": 20.8
-    },
-    {
-      "key": "supply_crane",
-      "markets": 43,
-      "buyersPerGame": 0.56,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 16.7
-    },
-    {
-      "key": "whistleblower",
-      "markets": 32,
-      "buyersPerGame": 0.56,
-      "copiesPerBuyer": 1.72,
-      "buyerWinPct": 16.7
-    },
-    {
-      "key": "redline_boiler",
-      "markets": 40,
-      "buyersPerGame": 0.73,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 15.5
-    },
-    {
-      "key": "inspection_team",
-      "markets": 37,
-      "buyersPerGame": 1,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 14.9
-    },
-    {
-      "key": "picket_line",
-      "markets": 44,
-      "buyersPerGame": 0.18,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 12.5
-    },
-    {
-      "key": "patron_circle",
-      "markets": 43,
-      "buyersPerGame": 0.37,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 12.5
+      "markets": 62,
+      "buyersPerGame": 1.02,
+      "copiesPerBuyer": 1.43,
+      "buyerWinPct": 20.6
     },
     {
       "key": "relay_junction",
-      "markets": 36,
-      "buyersPerGame": 0.28,
+      "markets": 52,
+      "buyersPerGame": 0.31,
       "copiesPerBuyer": 2,
-      "buyerWinPct": 10
+      "buyerWinPct": 18.8
+    },
+    {
+      "key": "burden_relief",
+      "markets": 67,
+      "buyersPerGame": 1.7,
+      "copiesPerBuyer": 1.71,
+      "buyerWinPct": 18
+    },
+    {
+      "key": "reclamation_guild",
+      "markets": 57,
+      "buyersPerGame": 1,
+      "copiesPerBuyer": 1.46,
+      "buyerWinPct": 17.5
+    },
+    {
+      "key": "estate_surveyor",
+      "markets": 52,
+      "buyersPerGame": 1.23,
+      "copiesPerBuyer": 1.16,
+      "buyerWinPct": 15.6
+    },
+    {
+      "key": "hall_of_archives",
+      "markets": 58,
+      "buyersPerGame": 1.02,
+      "copiesPerBuyer": 1.47,
+      "buyerWinPct": 14.4
+    },
+    {
+      "key": "gearwright",
+      "markets": 64,
+      "buyersPerGame": 0.58,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 13.5
+    },
+    {
+      "key": "conveyor",
+      "markets": 52,
+      "buyersPerGame": 1.04,
+      "copiesPerBuyer": 1.43,
+      "buyerWinPct": 13
+    },
+    {
+      "key": "overload_relay",
+      "markets": 64,
+      "buyersPerGame": 0.25,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 12.5
+    },
+    {
+      "key": "redline_boiler",
+      "markets": 51,
+      "buyersPerGame": 0.65,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 9.1
+    },
+    {
+      "key": "royal_confessor",
+      "markets": 53,
+      "buyersPerGame": 1.25,
+      "copiesPerBuyer": 1.09,
+      "buyerWinPct": 7.6
+    },
+    {
+      "key": "purification_house",
+      "markets": 53,
+      "buyersPerGame": 0.51,
+      "copiesPerBuyer": 1.11,
+      "buyerWinPct": 7.4
     },
     {
       "key": "slag_furnace",
-      "markets": 36,
-      "buyersPerGame": 0.17,
-      "copiesPerBuyer": 1,
-      "buyerWinPct": 0
+      "markets": 56,
+      "buyersPerGame": 0.71,
+      "copiesPerBuyer": 1.13,
+      "buyerWinPct": 5
     }
   ],
-  "combos": []
+  "combos": [
+    {
+      "pair": "noble_council+patent_ledger",
+      "n": 31,
+      "winPct": 38.7
+    }
+  ]
 }
