@@ -1,0 +1,1514 @@
+{
+  "generated": "npm run balance",
+  "gamesPerComparison": 20,
+  "tables": [
+    {
+      "players": 2,
+      "games": 20,
+      "unfinished": 0,
+      "roundsMean": 25.4,
+      "turnsMax": 51,
+      "winnerScoreMean": 46.9,
+      "worksClaimedMean": 2.9,
+      "sparkPerTurnMean": 0.5,
+      "coinsPerTurnMean": 3.4,
+      "endedBy": {
+        "monument": 50,
+        "piles": 0,
+        "works": 50
+      },
+      "firstSeatWinPct": 40,
+      "fairShare": 50,
+      "firstSeatMargin": 21.5
+    },
+    {
+      "players": 3,
+      "games": 20,
+      "unfinished": 0,
+      "roundsMean": 23.9,
+      "turnsMax": 61,
+      "winnerScoreMean": 44.4,
+      "worksClaimedMean": 3.4,
+      "sparkPerTurnMean": 0.5,
+      "coinsPerTurnMean": 3.7,
+      "endedBy": {
+        "monument": 30,
+        "piles": 0,
+        "works": 70
+      },
+      "firstSeatWinPct": 30,
+      "fairShare": 33.3,
+      "firstSeatMargin": 20.1
+    },
+    {
+      "players": 4,
+      "games": 20,
+      "unfinished": 0,
+      "roundsMean": 20.1,
+      "turnsMax": 39,
+      "winnerScoreMean": 42.9,
+      "worksClaimedMean": 3.5,
+      "sparkPerTurnMean": 0.4,
+      "coinsPerTurnMean": 4,
+      "endedBy": {
+        "monument": 35,
+        "piles": 0,
+        "works": 65
+      },
+      "firstSeatWinPct": 20,
+      "fairShare": 25,
+      "firstSeatMargin": 17.5
+    },
+    {
+      "players": 5,
+      "games": 20,
+      "unfinished": 0,
+      "roundsMean": 15.8,
+      "turnsMax": 28,
+      "winnerScoreMean": 34.5,
+      "worksClaimedMean": 3.5,
+      "sparkPerTurnMean": 0.4,
+      "coinsPerTurnMean": 3.8,
+      "endedBy": {
+        "monument": 25,
+        "piles": 0,
+        "works": 75
+      },
+      "firstSeatWinPct": 10,
+      "fairShare": 20,
+      "firstSeatMargin": 13.1
+    },
+    {
+      "players": 6,
+      "games": 20,
+      "unfinished": 0,
+      "roundsMean": 15.5,
+      "turnsMax": 41,
+      "winnerScoreMean": 32.6,
+      "worksClaimedMean": 3.8,
+      "sparkPerTurnMean": 0.5,
+      "coinsPerTurnMean": 3.8,
+      "endedBy": {
+        "monument": 15,
+        "piles": 0,
+        "works": 85
+      },
+      "firstSeatWinPct": 20,
+      "fairShare": 16.7,
+      "firstSeatMargin": 17.5
+    }
+  ],
+  "styles": [
+    {
+      "profile": "Balanced",
+      "vsMoneyCore": 75,
+      "vsMoneyAll": 42.5,
+      "vsBalancedAll": null
+    },
+    {
+      "profile": "Economy",
+      "vsMoneyCore": 35,
+      "vsMoneyAll": 20,
+      "vsBalancedAll": 25
+    },
+    {
+      "profile": "Cycling",
+      "vsMoneyCore": 75,
+      "vsMoneyAll": 75,
+      "vsBalancedAll": 57.5
+    },
+    {
+      "profile": "Combo",
+      "vsMoneyCore": 87.5,
+      "vsMoneyAll": 50,
+      "vsBalancedAll": 40
+    },
+    {
+      "profile": "Spark",
+      "vsMoneyCore": 80,
+      "vsMoneyAll": 55,
+      "vsBalancedAll": 55
+    },
+    {
+      "profile": "Works",
+      "vsMoneyCore": 80,
+      "vsMoneyAll": 85,
+      "vsBalancedAll": 42.5
+    },
+    {
+      "profile": "Devices",
+      "vsMoneyCore": 90,
+      "vsMoneyAll": 70,
+      "vsBalancedAll": 40
+    },
+    {
+      "profile": "Interaction",
+      "vsMoneyCore": 62.5,
+      "vsMoneyAll": 55,
+      "vsBalancedAll": 60
+    },
+    {
+      "profile": "Defence",
+      "vsMoneyCore": 52.5,
+      "vsMoneyAll": 55,
+      "vsBalancedAll": 32.5
+    },
+    {
+      "profile": "Scoring",
+      "vsMoneyCore": 55,
+      "vsMoneyAll": 45,
+      "vsBalancedAll": 25
+    },
+    {
+      "profile": "Risk",
+      "vsMoneyCore": 95,
+      "vsMoneyAll": 60,
+      "vsBalancedAll": 37.5
+    }
+  ],
+  "roundRobin": {
+    "Balanced": {
+      "Economy": 62.5,
+      "Cycling": 45,
+      "Combo": 50,
+      "Spark": 60,
+      "Works": 42.5,
+      "Devices": 35,
+      "Interaction": 55,
+      "Defence": 65,
+      "Scoring": 77.5,
+      "Risk": 45
+    },
+    "Economy": {
+      "Balanced": 37.5,
+      "Cycling": 30,
+      "Combo": 25,
+      "Spark": 42.5,
+      "Works": 15,
+      "Devices": 30,
+      "Interaction": 60,
+      "Defence": 55,
+      "Scoring": 50,
+      "Risk": 45
+    },
+    "Cycling": {
+      "Balanced": 55,
+      "Economy": 70,
+      "Combo": 60,
+      "Spark": 40,
+      "Works": 30,
+      "Devices": 45,
+      "Interaction": 40,
+      "Defence": 55,
+      "Scoring": 75,
+      "Risk": 60
+    },
+    "Combo": {
+      "Balanced": 50,
+      "Economy": 75,
+      "Cycling": 40,
+      "Spark": 50,
+      "Works": 40,
+      "Devices": 32.5,
+      "Interaction": 45,
+      "Defence": 55,
+      "Scoring": 45,
+      "Risk": 50
+    },
+    "Spark": {
+      "Balanced": 40,
+      "Economy": 57.5,
+      "Cycling": 60,
+      "Combo": 50,
+      "Works": 25,
+      "Devices": 52.5,
+      "Interaction": 70,
+      "Defence": 75,
+      "Scoring": 75,
+      "Risk": 70
+    },
+    "Works": {
+      "Balanced": 57.5,
+      "Economy": 85,
+      "Cycling": 70,
+      "Combo": 60,
+      "Spark": 75,
+      "Devices": 40,
+      "Interaction": 52.5,
+      "Defence": 65,
+      "Scoring": 65,
+      "Risk": 70
+    },
+    "Devices": {
+      "Balanced": 65,
+      "Economy": 70,
+      "Cycling": 55,
+      "Combo": 67.5,
+      "Spark": 47.5,
+      "Works": 60,
+      "Interaction": 45,
+      "Defence": 65,
+      "Scoring": 75,
+      "Risk": 70
+    },
+    "Interaction": {
+      "Balanced": 45,
+      "Economy": 40,
+      "Cycling": 60,
+      "Combo": 55,
+      "Spark": 30,
+      "Works": 47.5,
+      "Devices": 55,
+      "Defence": 55,
+      "Scoring": 57.5,
+      "Risk": 60
+    },
+    "Defence": {
+      "Balanced": 35,
+      "Economy": 45,
+      "Cycling": 45,
+      "Combo": 45,
+      "Spark": 25,
+      "Works": 35,
+      "Devices": 35,
+      "Interaction": 45,
+      "Scoring": 60,
+      "Risk": 55
+    },
+    "Scoring": {
+      "Balanced": 22.5,
+      "Economy": 50,
+      "Cycling": 25,
+      "Combo": 55,
+      "Spark": 25,
+      "Works": 35,
+      "Devices": 25,
+      "Interaction": 42.5,
+      "Defence": 40,
+      "Risk": 27.5
+    },
+    "Risk": {
+      "Balanced": 55,
+      "Economy": 55,
+      "Cycling": 40,
+      "Combo": 50,
+      "Spark": 30,
+      "Works": 30,
+      "Devices": 30,
+      "Interaction": 40,
+      "Defence": 45,
+      "Scoring": 72.5
+    }
+  },
+  "cards": [
+    {
+      "key": "gearwright",
+      "name": "Gearwright",
+      "cost": 3,
+      "set": "core",
+      "styles": [
+        "cycling"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    },
+    {
+      "key": "shift_bell",
+      "name": "Shift Bell",
+      "cost": 3,
+      "set": "core",
+      "styles": [
+        "combo"
+      ],
+      "favourWinPct": 35,
+      "margin": 20.9
+    },
+    {
+      "key": "tally_clerk",
+      "name": "Tally Clerk",
+      "cost": 2,
+      "set": "core",
+      "styles": [
+        "combo",
+        "economy"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    },
+    {
+      "key": "supply_crane",
+      "name": "Supply Crane",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "economy"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    },
+    {
+      "key": "copper_press",
+      "name": "Copper Press",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "economy",
+        "risk"
+      ],
+      "favourWinPct": 30,
+      "margin": 20.1
+    },
+    {
+      "key": "foreman",
+      "name": "Foreman",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "cycling",
+        "spark"
+      ],
+      "favourWinPct": 65,
+      "margin": 20.9
+    },
+    {
+      "key": "paper_fan",
+      "name": "Paper Fan",
+      "cost": 2,
+      "set": "core",
+      "styles": [
+        "cycling"
+      ],
+      "favourWinPct": 15,
+      "margin": 15.6
+    },
+    {
+      "key": "conveyor",
+      "name": "Conveyor",
+      "cost": 3,
+      "set": "core",
+      "styles": [
+        "cycling",
+        "combo"
+      ],
+      "favourWinPct": 15,
+      "margin": 15.6
+    },
+    {
+      "key": "sorting_glasses",
+      "name": "Sorting Glasses",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "cycling",
+        "devices"
+      ],
+      "favourWinPct": 30,
+      "margin": 20.1
+    },
+    {
+      "key": "springboard",
+      "name": "Springboard",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "combo",
+        "spark"
+      ],
+      "favourWinPct": 47.5,
+      "margin": 21.9
+    },
+    {
+      "key": "clockwork_archive",
+      "name": "Clockwork Archive",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "cycling",
+        "spark"
+      ],
+      "favourWinPct": 27.5,
+      "margin": 19.6
+    },
+    {
+      "key": "whistle_stop",
+      "name": "Whistle Stop",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "combo",
+        "economy"
+      ],
+      "favourWinPct": 22.5,
+      "margin": 18.3
+    },
+    {
+      "key": "hand_crank",
+      "name": "Hand Crank",
+      "cost": 2,
+      "set": "core",
+      "styles": [
+        "spark"
+      ],
+      "favourWinPct": 65,
+      "margin": 20.9
+    },
+    {
+      "key": "charge_meter",
+      "name": "Charge Meter",
+      "cost": 3,
+      "set": "core",
+      "styles": [
+        "spark",
+        "combo"
+      ],
+      "favourWinPct": 57.5,
+      "margin": 21.7
+    },
+    {
+      "key": "capacitor_bank",
+      "name": "Capacitor Bank",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "spark",
+        "devices",
+        "works"
+      ],
+      "favourWinPct": 65,
+      "margin": 20.9
+    },
+    {
+      "key": "steam_diverter",
+      "name": "Steam Diverter",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "spark",
+        "economy"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "glow_mason",
+      "name": "Glow Mason",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "spark",
+        "economy",
+        "works"
+      ],
+      "favourWinPct": 77.5,
+      "margin": 18.3
+    },
+    {
+      "key": "overcharge_lab",
+      "name": "Overcharge Lab",
+      "cost": 6,
+      "set": "core",
+      "styles": [
+        "spark",
+        "risk"
+      ],
+      "favourWinPct": 55,
+      "margin": 21.8
+    },
+    {
+      "key": "signal_tower",
+      "name": "Signal Tower",
+      "cost": 3,
+      "set": "core",
+      "styles": [
+        "interaction"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "city_messenger",
+      "name": "City Messenger",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "defence",
+        "economy"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "inspection_team",
+      "name": "Inspection Team",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "interaction",
+        "economy"
+      ],
+      "favourWinPct": 40,
+      "margin": 21.5
+    },
+    {
+      "key": "mutual_aid",
+      "name": "Mutual Aid",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "interaction",
+        "spark"
+      ],
+      "favourWinPct": 75,
+      "margin": 19
+    },
+    {
+      "key": "permit_office",
+      "name": "Permit Office",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "interaction",
+        "economy"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "night_watch",
+      "name": "Night Watch",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "defence",
+        "economy"
+      ],
+      "favourWinPct": 57.5,
+      "margin": 21.7
+    },
+    {
+      "key": "maintenance_cart",
+      "name": "Maintenance Cart",
+      "cost": 3,
+      "set": "core",
+      "styles": [
+        "devices",
+        "spark"
+      ],
+      "favourWinPct": 67.5,
+      "margin": 20.5
+    },
+    {
+      "key": "lamplighter",
+      "name": "Lamplighter",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "devices",
+        "cycling"
+      ],
+      "favourWinPct": 35,
+      "margin": 20.9
+    },
+    {
+      "key": "clock_garden",
+      "name": "Clock Garden",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "works",
+        "spark"
+      ],
+      "favourWinPct": 55,
+      "margin": 21.8
+    },
+    {
+      "key": "gear_lease",
+      "name": "Gear Lease",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "devices",
+        "economy"
+      ],
+      "favourWinPct": 25,
+      "margin": 19
+    },
+    {
+      "key": "city_blueprint",
+      "name": "City Blueprint",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "cycling",
+        "spark"
+      ],
+      "favourWinPct": 75,
+      "margin": 19
+    },
+    {
+      "key": "grand_engine",
+      "name": "Grand Engine",
+      "cost": 7,
+      "set": "core",
+      "styles": [
+        "devices",
+        "economy"
+      ],
+      "favourWinPct": 65,
+      "margin": 20.9
+    },
+    {
+      "key": "civic_scholar",
+      "name": "Civic Scholar",
+      "cost": 3,
+      "set": "core",
+      "styles": [
+        "scoring",
+        "spark"
+      ],
+      "favourWinPct": 60,
+      "margin": 21.5
+    },
+    {
+      "key": "museum_curator",
+      "name": "Museum Curator",
+      "cost": 4,
+      "set": "core",
+      "styles": [
+        "scoring",
+        "cycling"
+      ],
+      "favourWinPct": 30,
+      "margin": 20.1
+    },
+    {
+      "key": "patron_circle",
+      "name": "Patron Circle",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "scoring",
+        "economy"
+      ],
+      "favourWinPct": 27.5,
+      "margin": 19.6
+    },
+    {
+      "key": "silver_statue",
+      "name": "Silver Statue",
+      "cost": 5,
+      "set": "core",
+      "styles": [
+        "scoring",
+        "spark"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "civic_embassy",
+      "name": "Civic Embassy",
+      "cost": 6,
+      "set": "core",
+      "styles": [
+        "scoring",
+        "interaction"
+      ],
+      "favourWinPct": 50,
+      "margin": 21.9
+    },
+    {
+      "key": "inventors_medal",
+      "name": "Inventor’s Medal",
+      "cost": 7,
+      "set": "core",
+      "styles": [
+        "scoring",
+        "works"
+      ],
+      "favourWinPct": 35,
+      "margin": 20.9
+    },
+    {
+      "key": "spark_coil",
+      "name": "Spark Coil",
+      "cost": 3,
+      "set": "foundry",
+      "styles": [
+        "spark",
+        "economy"
+      ],
+      "favourWinPct": 80,
+      "margin": 17.5
+    },
+    {
+      "key": "brass_bond",
+      "name": "Brass Bond",
+      "cost": 4,
+      "set": "foundry",
+      "styles": [
+        "economy",
+        "spark"
+      ],
+      "favourWinPct": 40,
+      "margin": 21.5
+    },
+    {
+      "key": "relay_junction",
+      "name": "Relay Junction",
+      "cost": 3,
+      "set": "foundry",
+      "styles": [
+        "combo"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    },
+    {
+      "key": "chain_drive",
+      "name": "Chain Drive",
+      "cost": 5,
+      "set": "foundry",
+      "styles": [
+        "combo",
+        "spark"
+      ],
+      "favourWinPct": 35,
+      "margin": 20.9
+    },
+    {
+      "key": "flywheel",
+      "name": "Flywheel",
+      "cost": 4,
+      "set": "foundry",
+      "styles": [
+        "devices",
+        "economy"
+      ],
+      "favourWinPct": 55,
+      "margin": 21.8
+    },
+    {
+      "key": "timer_switch",
+      "name": "Timer Switch",
+      "cost": 3,
+      "set": "foundry",
+      "styles": [
+        "devices",
+        "combo"
+      ],
+      "favourWinPct": 5,
+      "margin": 9.6
+    },
+    {
+      "key": "belt_sorter",
+      "name": "Belt Sorter",
+      "cost": 2,
+      "set": "foundry",
+      "styles": [
+        "cycling"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "salvage_hook",
+      "name": "Salvage Hook",
+      "cost": 4,
+      "set": "foundry",
+      "styles": [
+        "cycling",
+        "spark"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "millrace",
+      "name": "Millrace",
+      "cost": 5,
+      "set": "foundry",
+      "styles": [
+        "cycling",
+        "risk"
+      ],
+      "favourWinPct": 45,
+      "margin": 21.8
+    },
+    {
+      "key": "slag_furnace",
+      "name": "Slag Furnace",
+      "cost": 3,
+      "set": "foundry",
+      "styles": [
+        "cycling"
+      ],
+      "favourWinPct": 0,
+      "margin": 0
+    },
+    {
+      "key": "spark_exchange",
+      "name": "Spark Exchange",
+      "cost": 4,
+      "set": "foundry",
+      "styles": [
+        "spark",
+        "economy"
+      ],
+      "favourWinPct": 27.5,
+      "margin": 19.6
+    },
+    {
+      "key": "picket_line",
+      "name": "Picket Line",
+      "cost": 3,
+      "set": "night",
+      "styles": [
+        "interaction"
+      ],
+      "favourWinPct": 15,
+      "margin": 15.6
+    },
+    {
+      "key": "corrosion_crew",
+      "name": "Corrosion Crew",
+      "cost": 5,
+      "set": "night",
+      "styles": [
+        "interaction"
+      ],
+      "favourWinPct": 60,
+      "margin": 21.5
+    },
+    {
+      "key": "noise_complaint",
+      "name": "Noise Complaint",
+      "cost": 4,
+      "set": "night",
+      "styles": [
+        "interaction",
+        "combo"
+      ],
+      "favourWinPct": 17.5,
+      "margin": 16.7
+    },
+    {
+      "key": "whistleblower",
+      "name": "Whistleblower",
+      "cost": 3,
+      "set": "night",
+      "styles": [
+        "defence",
+        "interaction"
+      ],
+      "favourWinPct": 45,
+      "margin": 21.8
+    },
+    {
+      "key": "ground_wire",
+      "name": "Ground Wire",
+      "cost": 2,
+      "set": "night",
+      "styles": [
+        "defence",
+        "spark"
+      ],
+      "favourWinPct": 15,
+      "margin": 15.6
+    },
+    {
+      "key": "redline_boiler",
+      "name": "Redline Boiler",
+      "cost": 3,
+      "set": "night",
+      "styles": [
+        "risk",
+        "economy"
+      ],
+      "favourWinPct": 15,
+      "margin": 15.6
+    },
+    {
+      "key": "pressure_test",
+      "name": "Pressure Test",
+      "cost": 4,
+      "set": "night",
+      "styles": [
+        "risk"
+      ],
+      "favourWinPct": 5,
+      "margin": 9.6
+    },
+    {
+      "key": "overload_relay",
+      "name": "Overload Relay",
+      "cost": 6,
+      "set": "night",
+      "styles": [
+        "risk",
+        "spark"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    },
+    {
+      "key": "scrapyard_broker",
+      "name": "Scrapyard Broker",
+      "cost": 2,
+      "set": "night",
+      "styles": [
+        "risk",
+        "economy"
+      ],
+      "favourWinPct": 25,
+      "margin": 19
+    },
+    {
+      "key": "surveyor",
+      "name": "Surveyor",
+      "cost": 3,
+      "set": "town",
+      "styles": [
+        "works",
+        "economy"
+      ],
+      "favourWinPct": 0,
+      "margin": 0
+    },
+    {
+      "key": "zoning_board",
+      "name": "Zoning Board",
+      "cost": 4,
+      "set": "town",
+      "styles": [
+        "works",
+        "interaction"
+      ],
+      "favourWinPct": 50,
+      "margin": 21.9
+    },
+    {
+      "key": "ribbon_cutter",
+      "name": "Ribbon Cutter",
+      "cost": 4,
+      "set": "town",
+      "styles": [
+        "works",
+        "spark"
+      ],
+      "favourWinPct": 35,
+      "margin": 20.9
+    },
+    {
+      "key": "town_crier",
+      "name": "Town Crier",
+      "cost": 3,
+      "set": "town",
+      "styles": [
+        "works",
+        "defence"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    },
+    {
+      "key": "civic_bond",
+      "name": "Civic Bond",
+      "cost": 5,
+      "set": "town",
+      "styles": [
+        "scoring",
+        "works"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    },
+    {
+      "key": "city_charter",
+      "name": "City Charter",
+      "cost": 6,
+      "set": "town",
+      "styles": [
+        "works",
+        "scoring"
+      ],
+      "favourWinPct": 30,
+      "margin": 20.1
+    },
+    {
+      "key": "patent_ledger",
+      "name": "Patent Ledger",
+      "cost": 4,
+      "set": "town",
+      "styles": [
+        "scoring",
+        "devices"
+      ],
+      "favourWinPct": 10,
+      "margin": 13.1
+    },
+    {
+      "key": "plaque_foundry",
+      "name": "Plaque Foundry",
+      "cost": 3,
+      "set": "town",
+      "styles": [
+        "scoring",
+        "spark"
+      ],
+      "favourWinPct": 20,
+      "margin": 17.5
+    }
+  ],
+  "usage": [
+    {
+      "key": "grand_engine",
+      "markets": 31,
+      "buyersPerGame": 0.13,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 100
+    },
+    {
+      "key": "overcharge_lab",
+      "markets": 45,
+      "buyersPerGame": 0.16,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 85.7
+    },
+    {
+      "key": "maintenance_cart",
+      "markets": 35,
+      "buyersPerGame": 0.71,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 52
+    },
+    {
+      "key": "mutual_aid",
+      "markets": 45,
+      "buyersPerGame": 1.09,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 49
+    },
+    {
+      "key": "glow_mason",
+      "markets": 40,
+      "buyersPerGame": 0.98,
+      "copiesPerBuyer": 1.08,
+      "buyerWinPct": 48.7
+    },
+    {
+      "key": "capacitor_bank",
+      "markets": 33,
+      "buyersPerGame": 1.79,
+      "copiesPerBuyer": 1.12,
+      "buyerWinPct": 47.5
+    },
+    {
+      "key": "charge_meter",
+      "markets": 40,
+      "buyersPerGame": 1.1,
+      "copiesPerBuyer": 1.39,
+      "buyerWinPct": 46.6
+    },
+    {
+      "key": "civic_scholar",
+      "markets": 38,
+      "buyersPerGame": 0.92,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 45.7
+    },
+    {
+      "key": "city_charter",
+      "markets": 42,
+      "buyersPerGame": 0.26,
+      "copiesPerBuyer": 1.45,
+      "buyerWinPct": 45.5
+    },
+    {
+      "key": "civic_embassy",
+      "markets": 39,
+      "buyersPerGame": 0.36,
+      "copiesPerBuyer": 1.5,
+      "buyerWinPct": 42.9
+    },
+    {
+      "key": "lamplighter",
+      "markets": 44,
+      "buyersPerGame": 1.09,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 41.7
+    },
+    {
+      "key": "hand_crank",
+      "markets": 30,
+      "buyersPerGame": 1,
+      "copiesPerBuyer": 1.07,
+      "buyerWinPct": 41.7
+    },
+    {
+      "key": "pressure_test",
+      "markets": 33,
+      "buyersPerGame": 0.45,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 40
+    },
+    {
+      "key": "foreman",
+      "markets": 38,
+      "buyersPerGame": 1.97,
+      "copiesPerBuyer": 1.21,
+      "buyerWinPct": 37.3
+    },
+    {
+      "key": "clockwork_archive",
+      "markets": 42,
+      "buyersPerGame": 1.21,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 35.3
+    },
+    {
+      "key": "whistle_stop",
+      "markets": 34,
+      "buyersPerGame": 1.85,
+      "copiesPerBuyer": 1.1,
+      "buyerWinPct": 34.9
+    },
+    {
+      "key": "spark_coil",
+      "markets": 41,
+      "buyersPerGame": 1.98,
+      "copiesPerBuyer": 1.26,
+      "buyerWinPct": 34.6
+    },
+    {
+      "key": "brass_bond",
+      "markets": 40,
+      "buyersPerGame": 2.83,
+      "copiesPerBuyer": 1.19,
+      "buyerWinPct": 34.5
+    },
+    {
+      "key": "sorting_glasses",
+      "markets": 31,
+      "buyersPerGame": 1.03,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 34.4
+    },
+    {
+      "key": "city_blueprint",
+      "markets": 32,
+      "buyersPerGame": 2,
+      "copiesPerBuyer": 1.13,
+      "buyerWinPct": 34.4
+    },
+    {
+      "key": "springboard",
+      "markets": 44,
+      "buyersPerGame": 2.07,
+      "copiesPerBuyer": 1.24,
+      "buyerWinPct": 34.1
+    },
+    {
+      "key": "chain_drive",
+      "markets": 26,
+      "buyersPerGame": 1.88,
+      "copiesPerBuyer": 1.27,
+      "buyerWinPct": 32.7
+    },
+    {
+      "key": "clock_garden",
+      "markets": 42,
+      "buyersPerGame": 2.71,
+      "copiesPerBuyer": 1.18,
+      "buyerWinPct": 32.5
+    },
+    {
+      "key": "conveyor",
+      "markets": 37,
+      "buyersPerGame": 1,
+      "copiesPerBuyer": 1.62,
+      "buyerWinPct": 32.4
+    },
+    {
+      "key": "noise_complaint",
+      "markets": 30,
+      "buyersPerGame": 2.07,
+      "copiesPerBuyer": 1.11,
+      "buyerWinPct": 32.3
+    },
+    {
+      "key": "town_crier",
+      "markets": 37,
+      "buyersPerGame": 0.76,
+      "copiesPerBuyer": 1.86,
+      "buyerWinPct": 32.1
+    },
+    {
+      "key": "civic_bond",
+      "markets": 39,
+      "buyersPerGame": 1.85,
+      "copiesPerBuyer": 2.9,
+      "buyerWinPct": 31.9
+    },
+    {
+      "key": "belt_sorter",
+      "markets": 31,
+      "buyersPerGame": 1.32,
+      "copiesPerBuyer": 1.34,
+      "buyerWinPct": 31.7
+    },
+    {
+      "key": "ribbon_cutter",
+      "markets": 39,
+      "buyersPerGame": 2.46,
+      "copiesPerBuyer": 1.25,
+      "buyerWinPct": 31.3
+    },
+    {
+      "key": "paper_fan",
+      "markets": 47,
+      "buyersPerGame": 0.68,
+      "copiesPerBuyer": 1.06,
+      "buyerWinPct": 31.3
+    },
+    {
+      "key": "night_watch",
+      "markets": 36,
+      "buyersPerGame": 0.64,
+      "copiesPerBuyer": 1.04,
+      "buyerWinPct": 30.4
+    },
+    {
+      "key": "silver_statue",
+      "markets": 39,
+      "buyersPerGame": 1.44,
+      "copiesPerBuyer": 2.98,
+      "buyerWinPct": 30.4
+    },
+    {
+      "key": "scrapyard_broker",
+      "markets": 38,
+      "buyersPerGame": 1.26,
+      "copiesPerBuyer": 1.33,
+      "buyerWinPct": 30.2
+    },
+    {
+      "key": "ground_wire",
+      "markets": 35,
+      "buyersPerGame": 1.51,
+      "copiesPerBuyer": 1.21,
+      "buyerWinPct": 30.2
+    },
+    {
+      "key": "zoning_board",
+      "markets": 35,
+      "buyersPerGame": 1.89,
+      "copiesPerBuyer": 1.18,
+      "buyerWinPct": 28.8
+    },
+    {
+      "key": "patent_ledger",
+      "markets": 41,
+      "buyersPerGame": 2.05,
+      "copiesPerBuyer": 2.99,
+      "buyerWinPct": 28.6
+    },
+    {
+      "key": "salvage_hook",
+      "markets": 37,
+      "buyersPerGame": 2.49,
+      "copiesPerBuyer": 1.26,
+      "buyerWinPct": 28.3
+    },
+    {
+      "key": "museum_curator",
+      "markets": 44,
+      "buyersPerGame": 1.05,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 28.3
+    },
+    {
+      "key": "signal_tower",
+      "markets": 39,
+      "buyersPerGame": 0.23,
+      "copiesPerBuyer": 1.78,
+      "buyerWinPct": 27.8
+    },
+    {
+      "key": "gearwright",
+      "markets": 43,
+      "buyersPerGame": 0.42,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 27.8
+    },
+    {
+      "key": "spark_exchange",
+      "markets": 43,
+      "buyersPerGame": 1.35,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 27.6
+    },
+    {
+      "key": "steam_diverter",
+      "markets": 30,
+      "buyersPerGame": 0.97,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 27.6
+    },
+    {
+      "key": "flywheel",
+      "markets": 32,
+      "buyersPerGame": 0.97,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 27.4
+    },
+    {
+      "key": "inventors_medal",
+      "markets": 29,
+      "buyersPerGame": 0.52,
+      "copiesPerBuyer": 2.13,
+      "buyerWinPct": 26.7
+    },
+    {
+      "key": "surveyor",
+      "markets": 33,
+      "buyersPerGame": 1.3,
+      "copiesPerBuyer": 1.28,
+      "buyerWinPct": 25.6
+    },
+    {
+      "key": "copper_press",
+      "markets": 40,
+      "buyersPerGame": 1.33,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 25.5
+    },
+    {
+      "key": "permit_office",
+      "markets": 35,
+      "buyersPerGame": 1.71,
+      "copiesPerBuyer": 1.2,
+      "buyerWinPct": 25
+    },
+    {
+      "key": "tally_clerk",
+      "markets": 43,
+      "buyersPerGame": 1.16,
+      "copiesPerBuyer": 1.4,
+      "buyerWinPct": 25
+    },
+    {
+      "key": "city_messenger",
+      "markets": 50,
+      "buyersPerGame": 1.24,
+      "copiesPerBuyer": 1.21,
+      "buyerWinPct": 24.2
+    },
+    {
+      "key": "millrace",
+      "markets": 33,
+      "buyersPerGame": 0.52,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 23.5
+    },
+    {
+      "key": "shift_bell",
+      "markets": 35,
+      "buyersPerGame": 0.37,
+      "copiesPerBuyer": 1.85,
+      "buyerWinPct": 23.1
+    },
+    {
+      "key": "gear_lease",
+      "markets": 22,
+      "buyersPerGame": 1,
+      "copiesPerBuyer": 1.05,
+      "buyerWinPct": 22.7
+    },
+    {
+      "key": "corrosion_crew",
+      "markets": 40,
+      "buyersPerGame": 0.23,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 22.2
+    },
+    {
+      "key": "overload_relay",
+      "markets": 33,
+      "buyersPerGame": 0.21,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 21.4
+    },
+    {
+      "key": "timer_switch",
+      "markets": 35,
+      "buyersPerGame": 0.54,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 21.1
+    },
+    {
+      "key": "plaque_foundry",
+      "markets": 44,
+      "buyersPerGame": 1.2,
+      "copiesPerBuyer": 1.42,
+      "buyerWinPct": 20.8
+    },
+    {
+      "key": "supply_crane",
+      "markets": 43,
+      "buyersPerGame": 0.56,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 16.7
+    },
+    {
+      "key": "whistleblower",
+      "markets": 32,
+      "buyersPerGame": 0.56,
+      "copiesPerBuyer": 1.72,
+      "buyerWinPct": 16.7
+    },
+    {
+      "key": "redline_boiler",
+      "markets": 40,
+      "buyersPerGame": 0.73,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 15.5
+    },
+    {
+      "key": "inspection_team",
+      "markets": 37,
+      "buyersPerGame": 1,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 14.9
+    },
+    {
+      "key": "picket_line",
+      "markets": 44,
+      "buyersPerGame": 0.18,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 12.5
+    },
+    {
+      "key": "patron_circle",
+      "markets": 43,
+      "buyersPerGame": 0.37,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 12.5
+    },
+    {
+      "key": "relay_junction",
+      "markets": 36,
+      "buyersPerGame": 0.28,
+      "copiesPerBuyer": 2,
+      "buyerWinPct": 10
+    },
+    {
+      "key": "slag_furnace",
+      "markets": 36,
+      "buyersPerGame": 0.17,
+      "copiesPerBuyer": 1,
+      "buyerWinPct": 0
+    }
+  ],
+  "combos": []
+}
