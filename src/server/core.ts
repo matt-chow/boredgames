@@ -215,9 +215,13 @@ export class RoomCore {
       if (s !== null && this.meta.stateVersion !== this.game.meta.stateVersion) {
         if (!this.game.migrate) throw new RoomError('migrate', 'Saved game is from an incompatible version.', 500);
         s = this.game.migrate(s, this.meta.stateVersion);
+        // An outstanding undo holds a whole older state, so it has to come forward with the one it replaces.
+        const undo = this.store.getUndo();
+        if (undo) undo.state = this.game.migrate(undo.state, this.meta.stateVersion);
         this.meta.stateVersion = this.game.meta.stateVersion;
         this.store.transaction(() => {
           this.store.putState(s);
+          if (undo) this.store.putUndo(undo);
           this.store.putMeta(this.meta);
         });
       }

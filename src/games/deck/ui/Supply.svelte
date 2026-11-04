@@ -53,11 +53,17 @@
 {/snippet}
 
 <section class="supply" aria-label="Supply">
-  <div class="grid basics">
-    {#each basics as p (p.key)}{@render tile(p)}{/each}
+  <div class="group">
+    <h3 class="cap">Always available</h3>
+    <div class="grid basics">
+      {#each basics as p (p.key)}{@render tile(p)}{/each}
+    </div>
   </div>
-  <div class="grid market">
-    {#each market as p (p.key)}{@render tile(p)}{/each}
+  <div class="group">
+    <h3 class="cap">Market</h3>
+    <div class="grid market">
+      {#each market as p (p.key)}{@render tile(p)}{/each}
+    </div>
   </div>
 </section>
 
@@ -67,6 +73,15 @@
     grid-template-columns: 3fr 5fr;
     gap: 16px;
     min-width: 0;
+  }
+  .group {
+    min-width: 0;
+  }
+  .cap {
+    margin: 0 0 5px;
+    font: inherit;
+    font-size: 11px;
+    color: var(--ink-3);
   }
   .grid {
     display: grid;

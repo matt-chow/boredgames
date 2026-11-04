@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { createDeckGame, type DeckState, type DeckView } from '../../src/engine/deckbuilder';
 import { botMove, PROFILES } from '../../src/games/clockwork/rules/bot';
 import { RULES, RULES_V2 } from '../../src/games/clockwork/rules/ruleset';
+import { MemoryStore, RoomCore } from '../../src/server/core';
 import { ALL_SETS, game, Table } from './helpers';
 
 const v2 = createDeckGame(RULES_V2);
@@ -152,5 +153,80 @@ describe('rules editions', () => {
     const s = playOut(newGame(4, 'crown-4'), () => {});
     expect(s.over).toBe(true);
     expect(s.rulesVersion).toBe(3);
+  }, 60_000);
+});
+
+describe('a room saved before this edition', () => {
+  const opts = { now: () => 1000, seed: () => 'saved-room' };
+  const connected = new Set([0]);
+
+  /** The store as an older deploy left it: state version 1, no edition recorded, an undo still outstanding. */
+  function savedRoom() {
+    const store = new MemoryStore();
+    const first = RoomCore.create(store, opts, { code: 'ABCDEF', gameId: 'clockwork', name: 'One', th: 'a', bots: 1 });
+    first.handle(0, { t: 'start', id: 's', v: first.version }, connected);
+    const { rulesVersion: _, ...old } = v2.setup({ playerCount: 2, seed: 'older', config: { market: [], bans: [], sets: ['core'], projects: [] } });
+    store.putState(old);
+    const meta = store.getMeta()!;
+    meta.stateVersion = 1;
+    store.putMeta(meta);
+    store.putUndo({ seat: 0, version: meta.version, state: structuredClone(old) });
+    return store;
+  }
+  const stateOf = (store: MemoryStore) => store.getState() as DeckState;
+
+  it('KC3-VER-5: it loads on its original rules, and undo cannot bring back the older shape', () => {
+    const store = savedRoom();
+    const core = new RoomCore(store, opts);
+    expect((core.view(0, connected).game as DeckView).rulesVersion).toBe(RULES_V2.version);
+    expect(store.getMeta()!.stateVersion).toBe(game.meta.stateVersion);
+    expect(core.handle(0, { t: 'undo', id: 'u', v: core.version }, connected).ack?.ok).toBe(true);
+    expect(stateOf(store).rulesVersion).toBe(RULES_V2.version);
+    expect(new RoomCore(store, opts).view(0, connected).game).toMatchObject({ rulesVersion: RULES_V2.version });
+  });
+
+  it('KC3-VER-6: it plays to the end through reloads, never gaining a card of the newer edition', () => {
+    const store = savedRoom();
+    const older = new Set(RULES_V2.cards.map((c) => c.key));
+    for (let n = 0; n < 20_000; n++) {
+      const core = new RoomCore(store, opts);
+      if (core.status === 'over') break;
+      if (game.actors(stateOf(store)).includes(0)) {
+        const view = core.view(0, connected).game as DeckView;
+        const move = botMove(view, PROFILES[1], 0)!;
+        expect(move.actions.some((a, i) => core.handle(0, { t: 'act', id: `o${n}-${i}`, v: core.version, a }, connected).ack?.ok)).toBe(true);
+      } else expect(core.playBot()).toBe(true);
+    }
+    expect(new RoomCore(store, opts).status).toBe('over');
+    const end = stateOf(store);
+    expect(end.rulesVersion).toBe(RULES_V2.version);
+    for (const key of Object.values(end.cards)) expect(older.has(key)).toBe(true);
+  }, 60_000);
+
+  it('KC3-RENOWN-7: what the room sends a player before the end holds no rival total, and the history holds no total at all', () => {
+    const store = new MemoryStore();
+    const first = RoomCore.create(store, opts, { code: 'ABCDEF', gameId: 'clockwork', name: 'One', th: 'a', bots: 2 });
+    first.handle(0, { t: 'start', id: 's', v: first.version }, connected);
+    for (let n = 0; n < 5_000; n++) {
+      const core = new RoomCore(store, opts);
+      if (core.status === 'over') break;
+      const before = core.view(0, connected).game as DeckView;
+      expect(before.final).toBeNull();
+      for (const seat of [0, 1, 2]) {
+        const view = core.view(seat, connected).game as DeckView;
+        const wire = JSON.parse(JSON.stringify(view)) as DeckView;
+        for (const p of wire.players) if (p.seat !== seat) expect(p).not.toHaveProperty('vp');
+        for (const p of wire.players) expect(p).not.toHaveProperty('score');
+        expect(wire.score!.total).toBeTypeOf('number');
+      }
+      if (game.actors(store.getState() as DeckState).includes(0)) {
+        const move = botMove(before, PROFILES[1], 0)!;
+        move.actions.some((a, i) => core.handle(0, { t: 'act', id: `r${n}-${i}`, v: core.version, a }, connected).ack?.ok);
+      } else core.playBot();
+    }
+    expect(JSON.stringify(store.history)).not.toMatch(/"(vp|score|total|estates)"/);
+    const end = new RoomCore(store, opts);
+    expect(end.status).toBe('over');
+    expect((end.view(1, connected).game as DeckView).final).not.toBeNull();
   }, 60_000);
 });

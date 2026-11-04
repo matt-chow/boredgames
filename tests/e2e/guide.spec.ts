@@ -38,8 +38,12 @@ test('GUIDE-E1: the panel opens the full guide, with levels, search and Escape',
   await expect(d.getByRole('status')).toContainText('found');
   await d.getByRole('searchbox').fill('zzzzz');
   await expect(d.getByRole('status')).toContainText('Nothing found');
+  // Escape clears a search first, as every search box does, then closes only the guide.
+  await p.page.keyboard.press('Escape');
+  await expect(d.getByRole('searchbox')).toHaveValue('');
   await p.page.keyboard.press('Escape');
   await expect(p.page.getByRole('searchbox')).toBeHidden();
+  await expect(p.page.getByRole('button', { name: 'Create room' })).toBeVisible();
   expect(p.errors).toEqual([]);
 });
 
