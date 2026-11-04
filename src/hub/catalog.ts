@@ -20,4 +20,12 @@ export const CATALOG: CatalogEntry[] = [
     minutes: '45',
     pitch: 'Plant beans in the order you drew them, trade hard for the ones you need, and harvest for coins.',
   },
+  {
+    id: 'clockwork',
+    name: 'Clockwork Commons',
+    minPlayers: 2,
+    maxPlayers: 6,
+    minutes: '30-50',
+    pitch: "Build a workshop deck, bank Spark in your machines, and race rival workshops to finish the town's Public Works.",
+  },
 ];

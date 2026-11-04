@@ -1,0 +1,678 @@
+{
+  "note": "Every card and Public Work. \"placeholder\" entries show the original SVG scene from src/games/clockwork/ui/art.ts. \"asset\" is set when a finished image replaces it. Workflow in docs/CLOCKWORK.md.",
+  "style": "Warm brass and turquoise illustrated city workshop, painterly, no text, 16:9, readable when small.",
+  "entries": [
+    {
+      "key": "scrap",
+      "name": "Scrap",
+      "source": "supplied",
+      "prompt": "handful of reclaimed brass screws and metal scrap on wooden workbench",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "cog",
+      "name": "Cog",
+      "source": "supplied",
+      "prompt": "polished brass gear sitting on velvet with workshop light",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "dynamo",
+      "name": "Dynamo",
+      "source": "supplied",
+      "prompt": "compact luminous turquoise dynamo with copper coils",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "notebook",
+      "name": "Notebook",
+      "source": "supplied",
+      "prompt": "small illustrated inventor notebook with twine",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "blueprint",
+      "name": "Blueprint",
+      "source": "supplied",
+      "prompt": "technical city blueprint with delicate gold grid",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "monument",
+      "name": "Monument",
+      "source": "supplied",
+      "prompt": "grand clockwork arch monument at illuminated public square",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "rust",
+      "name": "Rust",
+      "source": "added",
+      "prompt": "flaking rusted gear plate on a dark workbench with orange corrosion",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "gearwright",
+      "name": "Gearwright",
+      "source": "supplied",
+      "prompt": "artisan measuring brass gear with calipers in cluttered clockwork workshop",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "shift_bell",
+      "name": "Shift Bell",
+      "source": "supplied",
+      "prompt": "bronze factory bell above warm steam-powered assembly line",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "tally_clerk",
+      "name": "Tally Clerk",
+      "source": "supplied",
+      "prompt": "cheerful accountant at small wooden desk with gear-ledger",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "supply_crane",
+      "name": "Supply Crane",
+      "source": "supplied",
+      "prompt": "mechanical crane lifting supply crate over canal warehouse",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "copper_press",
+      "name": "Copper Press",
+      "source": "supplied",
+      "prompt": "vintage copper stamp press with glowing hot metal plate",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "foreman",
+      "name": "Foreman",
+      "source": "supplied",
+      "prompt": "foreman with brass goggles overseeing miniature automata workers",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "paper_fan",
+      "name": "Paper Fan",
+      "source": "supplied",
+      "prompt": "ornamental folding paper fan blowing blueprints across desk",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "conveyor",
+      "name": "Conveyor",
+      "source": "supplied",
+      "prompt": "tin rollers and cloth belt carrying small brass components",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "sorting_glasses",
+      "name": "Sorting Glasses",
+      "source": "supplied",
+      "prompt": "intricate magnifying spectacles beside orderly stacks of mechanisms",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "springboard",
+      "name": "Springboard",
+      "source": "supplied",
+      "prompt": "clockwork springboard launcher in a playful inventor workshop",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "clockwork_archive",
+      "name": "Clockwork Archive",
+      "source": "supplied",
+      "prompt": "rotating cylindrical filing cabinets with illuminated catalog drawers",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "whistle_stop",
+      "name": "Whistle Stop",
+      "source": "supplied",
+      "prompt": "small brass commuter tram station with clock tower at twilight",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "hand_crank",
+      "name": "Hand Crank",
+      "source": "supplied",
+      "prompt": "small hand-cranked generator with soft cyan electrical glow",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "charge_meter",
+      "name": "Charge Meter",
+      "source": "supplied",
+      "prompt": "round analog gauge measuring luminous blue electricity",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "capacitor_bank",
+      "name": "Capacitor Bank",
+      "source": "supplied",
+      "prompt": "row of porcelain capacitors and brass piping in generator room",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "steam_diverter",
+      "name": "Steam Diverter",
+      "source": "supplied",
+      "prompt": "brass steam valve routing warm vapor through turquoise pipe",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "glow_mason",
+      "name": "Glow Mason",
+      "source": "supplied",
+      "prompt": "mason setting glowing glass lantern blocks into city pavement",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "overcharge_lab",
+      "name": "Overcharge Lab",
+      "source": "supplied",
+      "prompt": "inventor lab with bright electric arc and glass-tube machinery",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "signal_tower",
+      "name": "Signal Tower",
+      "source": "supplied",
+      "prompt": "semaphore tower with colored signal flags on roof",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "city_messenger",
+      "name": "City Messenger",
+      "source": "supplied",
+      "prompt": "courier on bicycle with brass mail satchel through rainy town",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "inspection_team",
+      "name": "Inspection Team",
+      "source": "supplied",
+      "prompt": "city inspection crew checking gears with clipboards",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "mutual_aid",
+      "name": "Mutual Aid",
+      "source": "supplied",
+      "prompt": "two inventors trading parts across glowing canal bridge",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "permit_office",
+      "name": "Permit Office",
+      "source": "supplied",
+      "prompt": "ornate municipal permit kiosk with stamps and documents",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "night_watch",
+      "name": "Night Watch",
+      "source": "supplied",
+      "prompt": "lantern-carrying watchkeeper with little automaton owl at night",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "maintenance_cart",
+      "name": "Maintenance Cart",
+      "source": "supplied",
+      "prompt": "clockwork maintenance trolley and tools on cobblestone alley",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "lamplighter",
+      "name": "Lamplighter",
+      "source": "supplied",
+      "prompt": "lamplighter raising blue lantern among evening rooftops",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "clock_garden",
+      "name": "Clock Garden",
+      "source": "supplied",
+      "prompt": "mechanical garden with delicate brass flowers that tick",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "gear_lease",
+      "name": "Gear Lease",
+      "source": "supplied",
+      "prompt": "rented industrial gears tagged with parchment contract labels",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "city_blueprint",
+      "name": "City Blueprint",
+      "source": "supplied",
+      "prompt": "large rolled blueprints over light table with miniature city model",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "grand_engine",
+      "name": "Grand Engine",
+      "source": "supplied",
+      "prompt": "enormous elegant brass turbine powering city through glowing cables",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "civic_scholar",
+      "name": "Civic Scholar",
+      "source": "supplied",
+      "prompt": "scholar with rolled municipal plans and gold-rimmed books",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "museum_curator",
+      "name": "Museum Curator",
+      "source": "supplied",
+      "prompt": "curator hanging an elegant clockwork exhibit in museum",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "patron_circle",
+      "name": "Patron Circle",
+      "source": "supplied",
+      "prompt": "wealthy city patrons at intimate lantern-lit invention gala",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "silver_statue",
+      "name": "Silver Statue",
+      "source": "supplied",
+      "prompt": "silver statue of clockmaker in a misty plaza",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "civic_embassy",
+      "name": "Civic Embassy",
+      "source": "supplied",
+      "prompt": "ornate diplomatic hall linking clockwork districts",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "inventors_medal",
+      "name": "Inventor’s Medal",
+      "source": "supplied",
+      "prompt": "gold medal with intricate gear insignia on dark velvet",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "spark_coil",
+      "name": "Spark Coil",
+      "source": "added",
+      "prompt": "tight copper coil throwing a thin turquoise arc in a dim generator room",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "brass_bond",
+      "name": "Brass Bond",
+      "source": "added",
+      "prompt": "printed municipal bond with a wax seal beside stacked brass coins",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "relay_junction",
+      "name": "Relay Junction",
+      "source": "added",
+      "prompt": "wall of brass relay switches joined by a single leaping arc",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "chain_drive",
+      "name": "Chain Drive",
+      "source": "added",
+      "prompt": "two meshing brass wheels linked by an oiled drive chain",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "flywheel",
+      "name": "Flywheel",
+      "source": "added",
+      "prompt": "heavy iron flywheel spinning in a steam-filled engine room",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "timer_switch",
+      "name": "Timer Switch",
+      "source": "added",
+      "prompt": "clock dial wired to a large knife switch at night",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "belt_sorter",
+      "name": "Belt Sorter",
+      "source": "added",
+      "prompt": "conveyor belt under a magnifying arm sorting small components",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "salvage_hook",
+      "name": "Salvage Hook",
+      "source": "added",
+      "prompt": "iron hook lowering into a heap of scrap in a rust-coloured yard",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "millrace",
+      "name": "Millrace",
+      "source": "added",
+      "prompt": "fast water channel turning a mill wheel beside a stone workshop",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "slag_furnace",
+      "name": "Slag Furnace",
+      "source": "added",
+      "prompt": "glowing furnace mouth with slag pouring at a foundry",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "spark_exchange",
+      "name": "Spark Exchange",
+      "source": "added",
+      "prompt": "brass balance scale weighing a bolt of light against a coin",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "picket_line",
+      "name": "Picket Line",
+      "source": "added",
+      "prompt": "workers with placards in a line outside a factory at night",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "corrosion_crew",
+      "name": "Corrosion Crew",
+      "source": "added",
+      "prompt": "hooded crew spraying rust across a brass machine",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "noise_complaint",
+      "name": "Noise Complaint",
+      "source": "added",
+      "prompt": "brass horn blaring toward a shuttered night street",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "whistleblower",
+      "name": "Whistleblower",
+      "source": "added",
+      "prompt": "clerk with a whistle holding up a ledger in a dark alley",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "ground_wire",
+      "name": "Ground Wire",
+      "source": "added",
+      "prompt": "thick copper cable running to a ground rod taking a lightning arc",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "redline_boiler",
+      "name": "Redline Boiler",
+      "source": "added",
+      "prompt": "boiler gauge in the red with rivets straining and steam escaping",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "pressure_test",
+      "name": "Pressure Test",
+      "source": "added",
+      "prompt": "engineer valve and gauge on a test rig venting steam",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "overload_relay",
+      "name": "Overload Relay",
+      "source": "added",
+      "prompt": "relay box overflowing with crackling arcs in a dark vault",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "scrapyard_broker",
+      "name": "Scrapyard Broker",
+      "source": "added",
+      "prompt": "broker counting coins between heaps of rusted parts",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "surveyor",
+      "name": "Surveyor",
+      "source": "added",
+      "prompt": "surveyor with brass instrument and marker flags in a meadow",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "zoning_board",
+      "name": "Zoning Board",
+      "source": "added",
+      "prompt": "city map on a table with official stamps and signs",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "ribbon_cutter",
+      "name": "Ribbon Cutter",
+      "source": "added",
+      "prompt": "civic ribbon and rosette stretched across a new archway",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "town_crier",
+      "name": "Town Crier",
+      "source": "added",
+      "prompt": "town crier with a brass horn beneath a clock tower at dusk",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "civic_bond",
+      "name": "Civic Bond",
+      "source": "added",
+      "prompt": "official city bond with a gear medal attached",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "city_charter",
+      "name": "City Charter",
+      "source": "added",
+      "prompt": "large charter scroll with a heavy stamp beside a tower",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "patent_ledger",
+      "name": "Patent Ledger",
+      "source": "added",
+      "prompt": "patent register open beside small brass gears",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "plaque_foundry",
+      "name": "Plaque Foundry",
+      "source": "added",
+      "prompt": "freshly cast bronze plaque above a foundry mould",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "canal_lights",
+      "name": "Canal Lights",
+      "source": "supplied",
+      "prompt": "hanging lanterns along arched canal at blue dusk",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "public_clock",
+      "name": "Public Clock",
+      "source": "supplied",
+      "prompt": "ornate clock face atop municipal tower",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "makers_fair",
+      "name": "Makers Fair",
+      "source": "supplied",
+      "prompt": "colorful outdoor inventor fair with booths",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "tram_extension",
+      "name": "Tram Extension",
+      "source": "supplied",
+      "prompt": "new small brass tram passing garden district",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "skybridge",
+      "name": "Skybridge",
+      "source": "supplied",
+      "prompt": "elevated pedestrian skybridge between clock towers",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "library_lanterns",
+      "name": "Library Lanterns",
+      "source": "supplied",
+      "prompt": "grand library with floating lantern stairwell",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "waterwheel",
+      "name": "Waterwheel",
+      "source": "supplied",
+      "prompt": "large decorative waterwheel powering town",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "city_illumination",
+      "name": "City Illumination",
+      "source": "supplied",
+      "prompt": "panoramic city glowing with synchronized lanterns",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "harbor_beacon",
+      "name": "Harbor Beacon",
+      "source": "added",
+      "prompt": "harbour lighthouse sending an electric beam over dark water",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "foundry_gate",
+      "name": "Foundry Gate",
+      "source": "added",
+      "prompt": "huge arched foundry entrance with fire inside",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "power_exchange",
+      "name": "Power Exchange",
+      "source": "added",
+      "prompt": "municipal hall of coils joined by a giant balance",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "aqueduct",
+      "name": "Aqueduct",
+      "source": "added",
+      "prompt": "stone aqueduct arches crossing a green valley",
+      "status": "placeholder",
+      "asset": null
+    },
+    {
+      "key": "rail_terminus",
+      "name": "Rail Terminus",
+      "source": "added",
+      "prompt": "arched railway terminus with a brass tram under lamps",
+      "status": "placeholder",
+      "asset": null
+    }
+  ]
+}

@@ -1,0 +1,1479 @@
+{
+  "project": "Clockwork Commons",
+  "version": "0.1.0",
+  "status": "original playable-content design; schema-neutral; not yet connected to the existing engine",
+  "license_note": "Original game concept and original card text supplied for this project. Art prompts describe original artwork; no external artwork included.",
+  "import_note": "Canonical content proposal, NOT the repository importer schema. Implement a reviewed adapter to the actual engine types. The effect opcodes below are design-level DSL and may require handlers. Do not parse summaries as code.",
+  "rules": {
+    "player_count": {
+      "min": 2,
+      "max": 6
+    },
+    "starting_deck": {
+      "scrap": 7,
+      "notebook": 3
+    },
+    "starting_hand": 5,
+    "turn_phases": [
+      "workshop",
+      "market",
+      "cleanup"
+    ],
+    "actions_per_turn": 1,
+    "buys_per_turn": 1,
+    "workshop_phase": "Play Action cards using Actions available; Device cards are played as Actions and their delayed effects resolve at next turn start. May end phase manually.",
+    "market_phase": "Play individual Currency cards for Coins; spend up to 2 Spark during this phase, each for +1 Coin. Buy cards from market or basic supply. A Public Work claim uses one Buy, its listed Coins, and its listed Spark; each Public Work may be claimed once per game. Unspent Coins expire at cleanup. No forced transitions.",
+    "spark": "Persistent player token, cap 8. Gain effects exceeding cap are lost. Market-phase conversion limited to 2 Spark total per turn. Spending Spark for Public Works is independent of conversion. End-game Spark may affect scoring.",
+    "market_setup": "Randomly choose 10 distinct market designs from the 36; each gets 10 copies for 2–4 players or 12 for 5–6. Select 5 distinct Public Works from the 8 at random, each claimable once; offer manual selection and shareable configuration.",
+    "basic_supply": "Scrap, Cog, Dynamo; Notebook, Blueprint, Monument. Quantity for prestige piles: 8 (2 players), 12 (3–4), 15 (5), 18 (6); currency piles should be generously provisioned and never empty in regular games.",
+    "end_condition": "At end of current active player turn: Monument pile empty OR 3 market piles empty OR 4 of 5 Public Works claimed. For 5–6 players: 4 market piles instead of 3. Winner has highest combined card Prestige plus Public Work Prestige; ties resolved by fewer turns, then shared victory.",
+    "triggers": "Resolve next-turn effects before workshop phase, in owner-chosen order when necessary. Device cards remain in play until delayed effect is complete and then discard at cleanup. Resolve all optional decisions with server-authoritative choices.",
+    "reshuffle": "When a draw is required and deck is insufficient, shuffle discard into draw deck using seeded RNG; do not shuffle cards held in hand or in-play devices.",
+    "player_visibility": "Hands and draw order private; hand counts, deck counts, discard tops, Supply and Public Works public.",
+    "undo": "Only allowed when no new hidden information was exposed, no irreversible inter-player commitment occurred, and engine declares action reversible."
+  },
+  "basic_cards": [
+    {
+      "id": "scrap",
+      "name": "Scrap",
+      "type": "Currency",
+      "cost": 0,
+      "quantity": 60,
+      "starting_per_player": 7,
+      "coins_when_played": 1,
+      "prestige": 0,
+      "art_prompt": "handful of reclaimed brass screws and metal scrap on wooden workbench"
+    },
+    {
+      "id": "cog",
+      "name": "Cog",
+      "type": "Currency",
+      "cost": 3,
+      "quantity": 40,
+      "starting_per_player": 0,
+      "coins_when_played": 2,
+      "prestige": 0,
+      "art_prompt": "polished brass gear sitting on velvet with workshop light"
+    },
+    {
+      "id": "dynamo",
+      "name": "Dynamo",
+      "type": "Currency",
+      "cost": 6,
+      "quantity": 30,
+      "starting_per_player": 0,
+      "coins_when_played": 3,
+      "prestige": 0,
+      "art_prompt": "compact luminous turquoise dynamo with copper coils"
+    },
+    {
+      "id": "notebook",
+      "name": "Notebook",
+      "type": "Prestige",
+      "cost": 2,
+      "quantity": "player_scaled",
+      "starting_per_player": 3,
+      "prestige": 1,
+      "art_prompt": "small illustrated inventor notebook with twine"
+    },
+    {
+      "id": "blueprint",
+      "name": "Blueprint",
+      "type": "Prestige",
+      "cost": 5,
+      "quantity": "player_scaled",
+      "starting_per_player": 0,
+      "prestige": 3,
+      "art_prompt": "technical city blueprint with delicate gold grid"
+    },
+    {
+      "id": "monument",
+      "name": "Monument",
+      "type": "Prestige",
+      "cost": 8,
+      "quantity": "player_scaled",
+      "starting_per_player": 0,
+      "prestige": 6,
+      "art_prompt": "grand clockwork arch monument at illuminated public square"
+    }
+  ],
+  "market_cards": [
+    {
+      "id": "gearwright",
+      "name": "Gearwright",
+      "cost": 3,
+      "types": [
+        "Action"
+      ],
+      "group": "Workshop",
+      "summary": "Draw 2, then place a card from your hand on the bottom of your deck.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 2
+        },
+        {
+          "op": "move_from_hand",
+          "count": 1,
+          "to": "deck_bottom",
+          "mandatory": true
+        }
+      ],
+      "art_prompt": "artisan measuring brass gear with calipers in cluttered clockwork workshop",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "shift_bell",
+      "name": "Shift Bell",
+      "cost": 3,
+      "types": [
+        "Action"
+      ],
+      "group": "Workshop",
+      "summary": "Draw 1; +2 Actions. If you already played another Action this turn, gain 1 Spark.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 1
+        },
+        {
+          "op": "actions",
+          "n": 2
+        },
+        {
+          "op": "if",
+          "condition": {
+            "op": "played_action_before_this"
+          },
+          "then": [
+            {
+              "op": "spark",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "bronze factory bell above warm steam-powered assembly line",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "tally_clerk",
+      "name": "Tally Clerk",
+      "cost": 2,
+      "types": [
+        "Action"
+      ],
+      "group": "Workshop",
+      "summary": "+1 Action and +1 Buy; gain 1 Spark if you have fewer than 2 Spark.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "buys",
+          "n": 1
+        },
+        {
+          "op": "if",
+          "condition": {
+            "op": "spark_below",
+            "n": 2
+          },
+          "then": [
+            {
+              "op": "spark",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "cheerful accountant at small wooden desk with gear-ledger",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "supply_crane",
+      "name": "Supply Crane",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "Workshop",
+      "summary": "+2 Coins, then gain a card costing up to 2 to your discard.",
+      "effects": [
+        {
+          "op": "coins",
+          "n": 2
+        },
+        {
+          "op": "gain",
+          "max_cost": 2,
+          "to": "discard",
+          "choose": true
+        }
+      ],
+      "art_prompt": "mechanical crane lifting supply crate over canal warehouse",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "copper_press",
+      "name": "Copper Press",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "Workshop",
+      "summary": "Trash one card from hand; +1 Coin per 2 Coin cost of that card, rounded up; gain 1 Spark.",
+      "effects": [
+        {
+          "op": "trash_from_hand",
+          "count": 1,
+          "optional": false,
+          "bind": "trashed"
+        },
+        {
+          "op": "coins_from_cost",
+          "bind": "trashed",
+          "divisor": 2,
+          "round": "up"
+        },
+        {
+          "op": "spark",
+          "n": 1
+        }
+      ],
+      "art_prompt": "vintage copper stamp press with glowing hot metal plate",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "foreman",
+      "name": "Foreman",
+      "cost": 5,
+      "types": [
+        "Action"
+      ],
+      "group": "Workshop",
+      "summary": "+1 Action. Choose: draw 3 cards and discard 1; or gain 2 Spark and +1 Buy.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "choose_one",
+          "options": [
+            {
+              "label": "Refine hand",
+              "effects": [
+                {
+                  "op": "draw",
+                  "n": 3
+                },
+                {
+                  "op": "discard_from_hand",
+                  "count": 1,
+                  "mandatory": true
+                }
+              ]
+            },
+            {
+              "label": "Charge and shop",
+              "effects": [
+                {
+                  "op": "spark",
+                  "n": 2
+                },
+                {
+                  "op": "buys",
+                  "n": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "art_prompt": "foreman with brass goggles overseeing miniature automata workers",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "paper_fan",
+      "name": "Paper Fan",
+      "cost": 2,
+      "types": [
+        "Action"
+      ],
+      "group": "Flow",
+      "summary": "Discard up to 2 cards, then draw that many plus 1.",
+      "effects": [
+        {
+          "op": "discard_from_hand",
+          "min": 0,
+          "max": 2,
+          "bind_count": "discarded"
+        },
+        {
+          "op": "draw_from_bound",
+          "bind": "discarded",
+          "add": 1
+        }
+      ],
+      "art_prompt": "ornamental folding paper fan blowing blueprints across desk",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "conveyor",
+      "name": "Conveyor",
+      "cost": 3,
+      "types": [
+        "Action"
+      ],
+      "group": "Flow",
+      "summary": "+1 Action; look at top 3 of your deck; put one in hand, rest on bottom in chosen order.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "inspect_top",
+          "n": 3,
+          "select_to_hand": 1,
+          "remainder": "bottom_in_chosen_order"
+        }
+      ],
+      "art_prompt": "tin rollers and cloth belt carrying small brass components",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "sorting_glasses",
+      "name": "Sorting Glasses",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "Flow",
+      "summary": "Draw 2; reveal one hand card. If it is a Device, gain 1 Spark; otherwise +1 Coin.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 2
+        },
+        {
+          "op": "reveal_from_hand",
+          "count": 1,
+          "bind": "revealed"
+        },
+        {
+          "op": "if",
+          "condition": {
+            "op": "bound_has_type",
+            "bind": "revealed",
+            "type": "Device"
+          },
+          "then": [
+            {
+              "op": "spark",
+              "n": 1
+            }
+          ],
+          "else_effects": [
+            {
+              "op": "coins",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "intricate magnifying spectacles beside orderly stacks of mechanisms",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "springboard",
+      "name": "Springboard",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "Flow",
+      "summary": "+2 Actions; you may discard a card to gain 1 Spark and draw 1.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 2
+        },
+        {
+          "op": "optional",
+          "effects": [
+            {
+              "op": "discard_from_hand",
+              "count": 1,
+              "mandatory": true
+            },
+            {
+              "op": "spark",
+              "n": 1
+            },
+            {
+              "op": "draw",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "clockwork springboard launcher in a playful inventor workshop",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "clockwork_archive",
+      "name": "Clockwork Archive",
+      "cost": 5,
+      "types": [
+        "Action"
+      ],
+      "group": "Flow",
+      "summary": "Draw 3; put 2 cards from your hand on top of your deck in chosen order; gain 1 Spark.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 3
+        },
+        {
+          "op": "move_from_hand",
+          "count": 2,
+          "to": "deck_top_ordered",
+          "mandatory": true
+        },
+        {
+          "op": "spark",
+          "n": 1
+        }
+      ],
+      "art_prompt": "rotating cylindrical filing cabinets with illuminated catalog drawers",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "whistle_stop",
+      "name": "Whistle Stop",
+      "cost": 5,
+      "types": [
+        "Action"
+      ],
+      "group": "Flow",
+      "summary": "+1 Action, +1 Buy, draw 2. You may spend 1 Spark to draw 1 more.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "buys",
+          "n": 1
+        },
+        {
+          "op": "draw",
+          "n": 2
+        },
+        {
+          "op": "optional_spend_spark",
+          "n": 1,
+          "effects": [
+            {
+              "op": "draw",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "small brass commuter tram station with clock tower at twilight",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "hand_crank",
+      "name": "Hand Crank",
+      "cost": 2,
+      "types": [
+        "Action"
+      ],
+      "group": "Energy",
+      "summary": "Gain 2 Spark; discard 1 card.",
+      "effects": [
+        {
+          "op": "spark",
+          "n": 2
+        },
+        {
+          "op": "discard_from_hand",
+          "count": 1,
+          "mandatory": true
+        }
+      ],
+      "art_prompt": "small hand-cranked generator with soft cyan electrical glow",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "charge_meter",
+      "name": "Charge Meter",
+      "cost": 3,
+      "types": [
+        "Action"
+      ],
+      "group": "Energy",
+      "summary": "+1 Action; gain 1 Spark. If you have 4 or more Spark after gaining, draw 1.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "spark",
+          "n": 1
+        },
+        {
+          "op": "if",
+          "condition": {
+            "op": "spark_at_least",
+            "n": 4
+          },
+          "then": [
+            {
+              "op": "draw",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "round analog gauge measuring luminous blue electricity",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "capacitor_bank",
+      "name": "Capacitor Bank",
+      "cost": 4,
+      "types": [
+        "Device"
+      ],
+      "group": "Energy",
+      "summary": "At the start of your next turn, gain 3 Spark and draw 1.",
+      "effects": [
+        {
+          "op": "schedule_next_turn_start",
+          "effects": [
+            {
+              "op": "spark",
+              "n": 3
+            },
+            {
+              "op": "draw",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "row of porcelain capacitors and brass piping in generator room",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "steam_diverter",
+      "name": "Steam Diverter",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "Energy",
+      "summary": "Spend up to 3 Spark; gain 2 Coins per Spark spent.",
+      "effects": [
+        {
+          "op": "spend_spark",
+          "min": 0,
+          "max": 3,
+          "bind_count": "spent"
+        },
+        {
+          "op": "coins_from_bound",
+          "bind": "spent",
+          "multiplier": 2
+        }
+      ],
+      "art_prompt": "brass steam valve routing warm vapor through turquoise pipe",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "glow_mason",
+      "name": "Glow Mason",
+      "cost": 5,
+      "types": [
+        "Action"
+      ],
+      "group": "Energy",
+      "summary": "+1 Buy, +2 Coins, gain 2 Spark.",
+      "effects": [
+        {
+          "op": "buys",
+          "n": 1
+        },
+        {
+          "op": "coins",
+          "n": 2
+        },
+        {
+          "op": "spark",
+          "n": 2
+        }
+      ],
+      "art_prompt": "mason setting glowing glass lantern blocks into city pavement",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "overcharge_lab",
+      "name": "Overcharge Lab",
+      "cost": 6,
+      "types": [
+        "Action"
+      ],
+      "group": "Energy",
+      "summary": "Draw 3; gain 2 Spark; at cleanup discard 1 additional card from hand if possible.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 3
+        },
+        {
+          "op": "spark",
+          "n": 2
+        },
+        {
+          "op": "schedule_cleanup",
+          "effects": [
+            {
+              "op": "discard_from_hand",
+              "count": 1,
+              "up_to_available": true
+            }
+          ]
+        }
+      ],
+      "art_prompt": "inventor lab with bright electric arc and glass-tube machinery",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "signal_tower",
+      "name": "Signal Tower",
+      "cost": 3,
+      "types": [
+        "Action"
+      ],
+      "group": "Interaction",
+      "summary": "+1 Action, +1 Coin. Each opponent reveals their top card and may put it on bottom; otherwise they discard it.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "coins",
+          "n": 1
+        },
+        {
+          "op": "attack_each",
+          "effects": [
+            {
+              "op": "reveal_top",
+              "n": 1,
+              "bind": "top"
+            },
+            {
+              "op": "choose_one",
+              "options": [
+                {
+                  "label": "Bottom of deck",
+                  "effects": [
+                    {
+                      "op": "move_bound",
+                      "bind": "top",
+                      "to": "deck_bottom"
+                    }
+                  ]
+                },
+                {
+                  "label": "Discard",
+                  "effects": [
+                    {
+                      "op": "move_bound",
+                      "bind": "top",
+                      "to": "discard"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "art_prompt": "semaphore tower with colored signal flags on roof",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "city_messenger",
+      "name": "City Messenger",
+      "cost": 4,
+      "types": [
+        "Action",
+        "Reaction"
+      ],
+      "group": "Interaction",
+      "summary": "Draw 1; +1 Buy. When targeted by an attack, you may reveal this to gain 1 Spark before resolving it.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 1
+        },
+        {
+          "op": "buys",
+          "n": 1
+        },
+        {
+          "op": "reaction",
+          "when": "targeted_by_attack",
+          "optional": true,
+          "effects": [
+            {
+              "op": "spark",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "courier on bicycle with brass mail satchel through rainy town",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "inspection_team",
+      "name": "Inspection Team",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "Interaction",
+      "summary": "+2 Coins. Each opponent with at least 5 cards in hand discards 1 chosen card.",
+      "effects": [
+        {
+          "op": "coins",
+          "n": 2
+        },
+        {
+          "op": "attack_each",
+          "effects": [
+            {
+              "op": "if",
+              "condition": {
+                "op": "hand_count_at_least",
+                "n": 5
+              },
+              "then": [
+                {
+                  "op": "discard_from_hand",
+                  "count": 1,
+                  "mandatory": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "art_prompt": "city inspection crew checking gears with clipboards",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "mutual_aid",
+      "name": "Mutual Aid",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "Interaction",
+      "summary": "Draw 2; choose one opponent: they draw 1, and you gain 2 Spark.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 2
+        },
+        {
+          "op": "choose_opponent",
+          "bind": "target"
+        },
+        {
+          "op": "target_effect",
+          "target": "target",
+          "effects": [
+            {
+              "op": "draw",
+              "n": 1
+            }
+          ]
+        },
+        {
+          "op": "spark",
+          "n": 2
+        }
+      ],
+      "art_prompt": "two inventors trading parts across glowing canal bridge",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "permit_office",
+      "name": "Permit Office",
+      "cost": 5,
+      "types": [
+        "Action"
+      ],
+      "group": "Interaction",
+      "summary": "+1 Action, +1 Buy. Choose an opponent; they may discard 1 card to gain 1 Spark; if they decline, gain 1 Spark.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "buys",
+          "n": 1
+        },
+        {
+          "op": "choose_opponent",
+          "bind": "target"
+        },
+        {
+          "op": "offer_choice_to_target",
+          "target": "target",
+          "options": [
+            {
+              "label": "Discard 1 and gain Spark",
+              "effects": [
+                {
+                  "op": "discard_from_hand",
+                  "count": 1,
+                  "mandatory": true
+                },
+                {
+                  "op": "spark",
+                  "n": 1
+                }
+              ]
+            },
+            {
+              "label": "Decline",
+              "effects": [
+                {
+                  "op": "spark",
+                  "n": 1,
+                  "target": "source_player"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "art_prompt": "ornate municipal permit kiosk with stamps and documents",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "night_watch",
+      "name": "Night Watch",
+      "cost": 5,
+      "types": [
+        "Action",
+        "Reaction"
+      ],
+      "group": "Interaction",
+      "summary": "+2 Coins, +1 Spark. When targeted by an attack, you may reveal this; discard 1 card to cancel effects on you.",
+      "effects": [
+        {
+          "op": "coins",
+          "n": 2
+        },
+        {
+          "op": "spark",
+          "n": 1
+        },
+        {
+          "op": "reaction",
+          "when": "targeted_by_attack",
+          "optional": true,
+          "require": {
+            "op": "hand_count_at_least",
+            "n": 1
+          },
+          "effects": [
+            {
+              "op": "discard_from_hand",
+              "count": 1,
+              "mandatory": true
+            },
+            {
+              "op": "cancel_attack_on_self"
+            }
+          ]
+        }
+      ],
+      "art_prompt": "lantern-carrying watchkeeper with little automaton owl at night",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "maintenance_cart",
+      "name": "Maintenance Cart",
+      "cost": 3,
+      "types": [
+        "Device"
+      ],
+      "group": "LongGame",
+      "summary": "At start of next turn, +1 Coin and +1 Spark.",
+      "effects": [
+        {
+          "op": "schedule_next_turn_start",
+          "effects": [
+            {
+              "op": "coins",
+              "n": 1
+            },
+            {
+              "op": "spark",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "clockwork maintenance trolley and tools on cobblestone alley",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "lamplighter",
+      "name": "Lamplighter",
+      "cost": 4,
+      "types": [
+        "Device"
+      ],
+      "group": "LongGame",
+      "summary": "Now draw 1; at start of next turn draw 2.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 1
+        },
+        {
+          "op": "schedule_next_turn_start",
+          "effects": [
+            {
+              "op": "draw",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "art_prompt": "lamplighter raising blue lantern among evening rooftops",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "clock_garden",
+      "name": "Clock Garden",
+      "cost": 4,
+      "types": [
+        "Action"
+      ],
+      "group": "LongGame",
+      "summary": "+1 Action, gain 1 Spark; if you completed a Public Work on your previous turn, draw 2.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "spark",
+          "n": 1
+        },
+        {
+          "op": "if",
+          "condition": {
+            "op": "completed_public_work_previous_turn"
+          },
+          "then": [
+            {
+              "op": "draw",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "art_prompt": "mechanical garden with delicate brass flowers that tick",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "gear_lease",
+      "name": "Gear Lease",
+      "cost": 5,
+      "types": [
+        "Device"
+      ],
+      "group": "LongGame",
+      "summary": "Now +2 Coins; at start of next turn +1 Buy and +1 Coin.",
+      "effects": [
+        {
+          "op": "coins",
+          "n": 2
+        },
+        {
+          "op": "schedule_next_turn_start",
+          "effects": [
+            {
+              "op": "buys",
+              "n": 1
+            },
+            {
+              "op": "coins",
+              "n": 1
+            }
+          ]
+        }
+      ],
+      "art_prompt": "rented industrial gears tagged with parchment contract labels",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "city_blueprint",
+      "name": "City Blueprint",
+      "cost": 5,
+      "types": [
+        "Action"
+      ],
+      "group": "LongGame",
+      "summary": "+1 Action; look at top 4 cards, keep up to 2 in hand, discard the rest; gain 1 Spark.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "inspect_top",
+          "n": 4,
+          "select_to_hand": {
+            "min": 0,
+            "max": 2
+          },
+          "remainder": "discard"
+        },
+        {
+          "op": "spark",
+          "n": 1
+        }
+      ],
+      "art_prompt": "large rolled blueprints over light table with miniature city model",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "grand_engine",
+      "name": "Grand Engine",
+      "cost": 7,
+      "types": [
+        "Device"
+      ],
+      "group": "LongGame",
+      "summary": "Now +2 Coins and +1 Spark; next turn +2 Coins and draw 2.",
+      "effects": [
+        {
+          "op": "coins",
+          "n": 2
+        },
+        {
+          "op": "spark",
+          "n": 1
+        },
+        {
+          "op": "schedule_next_turn_start",
+          "effects": [
+            {
+              "op": "coins",
+              "n": 2
+            },
+            {
+              "op": "draw",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "art_prompt": "enormous elegant brass turbine powering city through glowing cables",
+      "design_notes": "",
+      "printed_prestige": 0,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "civic_scholar",
+      "name": "Civic Scholar",
+      "cost": 3,
+      "types": [
+        "Action",
+        "Prestige"
+      ],
+      "group": "Prestige",
+      "summary": "Draw 1, gain 1 Spark; worth 1 Prestige at game end.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 1
+        },
+        {
+          "op": "spark",
+          "n": 1
+        }
+      ],
+      "art_prompt": "scholar with rolled municipal plans and gold-rimmed books",
+      "design_notes": "",
+      "printed_prestige": 1,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "museum_curator",
+      "name": "Museum Curator",
+      "cost": 4,
+      "types": [
+        "Action",
+        "Prestige"
+      ],
+      "group": "Prestige",
+      "summary": "Draw 2, then discard 1; worth 2 Prestige at game end.",
+      "effects": [
+        {
+          "op": "draw",
+          "n": 2
+        },
+        {
+          "op": "discard_from_hand",
+          "count": 1,
+          "mandatory": true
+        }
+      ],
+      "art_prompt": "curator hanging an elegant clockwork exhibit in museum",
+      "design_notes": "",
+      "printed_prestige": 2,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "patron_circle",
+      "name": "Patron Circle",
+      "cost": 5,
+      "types": [
+        "Action",
+        "Prestige"
+      ],
+      "group": "Prestige",
+      "summary": "+1 Buy and +2 Coins; worth 2 Prestige at game end.",
+      "effects": [
+        {
+          "op": "buys",
+          "n": 1
+        },
+        {
+          "op": "coins",
+          "n": 2
+        }
+      ],
+      "art_prompt": "wealthy city patrons at intimate lantern-lit invention gala",
+      "design_notes": "",
+      "printed_prestige": 2,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "silver_statue",
+      "name": "Silver Statue",
+      "cost": 5,
+      "types": [
+        "Prestige"
+      ],
+      "group": "Prestige",
+      "summary": "Worth 1 Prestige plus 1 per 3 Spark you hold at game end, rounded down.",
+      "effects": [
+        {
+          "op": "score",
+          "formula": {
+            "op": "add",
+            "terms": [
+              1,
+              {
+                "op": "floor_div",
+                "numerator": {
+                  "op": "player_spark"
+                },
+                "denominator": 3
+              }
+            ]
+          }
+        }
+      ],
+      "art_prompt": "silver statue of clockmaker in a misty plaza",
+      "design_notes": "",
+      "printed_prestige": null,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "civic_embassy",
+      "name": "Civic Embassy",
+      "cost": 6,
+      "types": [
+        "Action",
+        "Prestige"
+      ],
+      "group": "Prestige",
+      "summary": "+1 Action; gain 2 Spark, then you may give 1 Spark to an opponent to draw 2; worth 3 Prestige.",
+      "effects": [
+        {
+          "op": "actions",
+          "n": 1
+        },
+        {
+          "op": "spark",
+          "n": 2
+        },
+        {
+          "op": "optional",
+          "effects": [
+            {
+              "op": "choose_opponent",
+              "bind": "target"
+            },
+            {
+              "op": "transfer_spark",
+              "n": 1,
+              "to": "target"
+            },
+            {
+              "op": "draw",
+              "n": 2
+            }
+          ]
+        }
+      ],
+      "art_prompt": "ornate diplomatic hall linking clockwork districts",
+      "design_notes": "",
+      "printed_prestige": 3,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    },
+    {
+      "id": "inventors_medal",
+      "name": "Inventor’s Medal",
+      "cost": 7,
+      "types": [
+        "Prestige"
+      ],
+      "group": "Prestige",
+      "summary": "Worth 6 Prestige plus 1 per Public Work you completed.",
+      "effects": [
+        {
+          "op": "score",
+          "formula": {
+            "op": "add",
+            "terms": [
+              6,
+              {
+                "op": "public_works_completed"
+              }
+            ]
+          }
+        }
+      ],
+      "art_prompt": "gold medal with intricate gear insignia on dark velvet",
+      "design_notes": "",
+      "printed_prestige": null,
+      "quantity": "market",
+      "status": "design-needs-engine-validation"
+    }
+  ],
+  "public_works": [
+    {
+      "id": "canal_lights",
+      "name": "Canal Lights",
+      "coin_cost": 3,
+      "spark_cost": 2,
+      "prestige": 4,
+      "on_complete_effect": "gain 1 Spark immediately",
+      "art_prompt": "hanging lanterns along arched canal at blue dusk",
+      "claim_limit": 1
+    },
+    {
+      "id": "public_clock",
+      "name": "Public Clock",
+      "coin_cost": 4,
+      "spark_cost": 2,
+      "prestige": 5,
+      "on_complete_effect": "draw 1 immediately",
+      "art_prompt": "ornate clock face atop municipal tower",
+      "claim_limit": 1
+    },
+    {
+      "id": "makers_fair",
+      "name": "Makers Fair",
+      "coin_cost": 4,
+      "spark_cost": 3,
+      "prestige": 6,
+      "on_complete_effect": "gain 1 Buy immediately",
+      "art_prompt": "colorful outdoor inventor fair with booths",
+      "claim_limit": 1
+    },
+    {
+      "id": "tram_extension",
+      "name": "Tram Extension",
+      "coin_cost": 5,
+      "spark_cost": 3,
+      "prestige": 7,
+      "on_complete_effect": "gain 1 Coin immediately",
+      "art_prompt": "new small brass tram passing garden district",
+      "claim_limit": 1
+    },
+    {
+      "id": "skybridge",
+      "name": "Skybridge",
+      "coin_cost": 6,
+      "spark_cost": 3,
+      "prestige": 8,
+      "on_complete_effect": "gain 1 Spark immediately",
+      "art_prompt": "elevated pedestrian skybridge between clock towers",
+      "claim_limit": 1
+    },
+    {
+      "id": "library_lanterns",
+      "name": "Library Lanterns",
+      "coin_cost": 5,
+      "spark_cost": 4,
+      "prestige": 9,
+      "on_complete_effect": "draw 2 immediately",
+      "art_prompt": "grand library with floating lantern stairwell",
+      "claim_limit": 1
+    },
+    {
+      "id": "waterwheel",
+      "name": "Waterwheel",
+      "coin_cost": 6,
+      "spark_cost": 4,
+      "prestige": 10,
+      "on_complete_effect": "gain 2 Coins immediately",
+      "art_prompt": "large decorative waterwheel powering town",
+      "claim_limit": 1
+    },
+    {
+      "id": "city_illumination",
+      "name": "City Illumination",
+      "coin_cost": 8,
+      "spark_cost": 5,
+      "prestige": 13,
+      "on_complete_effect": "gain 2 Spark immediately",
+      "art_prompt": "panoramic city glowing with synchronized lanterns",
+      "claim_limit": 1
+    }
+  ],
+  "acceptance": {
+    "content_counts": {
+      "basic_cards": 6,
+      "market_cards": 36,
+      "public_works": 8
+    },
+    "first_release": "all 36 market designs and 8 Public Works implemented, at least one full 2–6-player simulation per seed batch, browser multiplayer scenarios, original placeholder illustrations or original generated artwork, staging deployment",
+    "test_targets": [
+      "Each effect and each branch",
+      "All Public Works and Spark cap/spending",
+      "3/4/5/6-player multiplayer room recovery",
+      "Bohnanza baseline unchanged",
+      "No private hand or deck leaks",
+      "Build and check clean"
+    ]
+  }
+}

@@ -14,5 +14,13 @@ export interface GameUiProps {
  */
 export const GAME_UI: Record<string, () => Promise<{ default: Component<GameUiProps> }>> = {
   bohnanza: () => import('./bohnanza/ui/Table.svelte'),
+  clockwork: () => import('./clockwork/ui/ClockworkTable.svelte'),
   tally: () => import('./tally/TallyTable.svelte'),
+  ...(__DECK_BENCH__ ? { fixture: () => import('./deck/ui/DeckTable.svelte') } : {}),
+};
+
+/** Optional game-specific section of the lobby, for settings a list of switches can't express. */
+export const GAME_SETUP: Record<string, () => Promise<{ default: Component<GameUiProps> }>> = {
+  clockwork: () => import('./deck/ui/MarketSetup.svelte'),
+  ...(__DECK_BENCH__ ? { fixture: () => import('./deck/ui/MarketSetup.svelte') } : {}),
 };
