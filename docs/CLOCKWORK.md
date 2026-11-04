@@ -93,6 +93,9 @@ Smaller readings, tested under their card or rule IDs:
 
 ## Balance
 
+The committed report predates the rename, so it uses the old card names. `name-mapping.json` translates them. It hasn't been
+regenerated.
+
 `npm run balance` plays seeded bot games and writes `docs/CLOCKWORK_BALANCE.md` and
 `data/clockwork-commons/balance-report.json`. The committed report is 20 games per comparison, run after the last change
 to the cards and bots, so favour-test results carry about ±22 points. Bots are simple heuristics. The report screens for

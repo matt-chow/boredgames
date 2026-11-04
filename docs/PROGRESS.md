@@ -50,8 +50,8 @@ Last updated 2026-11-03.
 
 ## Known limitations
 
-- Placeholder card art only. Licensed Bohnanza art can be dropped in via `ASSET_OVERRIDES` (ASSETS.md); Clockwork
-  Commons has its own image workflow (CLOCKWORK.md).
+- Placeholder card art only. Licensed Bohnanza art can be dropped in via `ASSET_OVERRIDES` (ASSETS.md); Kingdom &
+  Commerce has its own image workflow (CLOCKWORK.md).
 - No accounts: identity is a per-room cookie. Clearing cookies or switching browsers loses the seat.
 - A silently dead connection (no `offline` event) can take up to 28 s to notice.
 - Not tested on physical phones or Safari.
@@ -93,3 +93,26 @@ https://boredgames-staging.mchowcl.workers.dev. Rules, sets, interpretations, ba
   and server-side games.
 - 3–6 people in separate browsers, real phones and Safari haven't been tested.
 - A disconnected player holding a decision still blocks the table, as in Bohnanza.
+
+## v2.0: bookshelf and Kingdom & Commerce
+
+On `feat/hub-v2`, deployed to staging only. **Production is unchanged, and validation is incomplete.** Test state is in
+TESTING.md.
+
+| Checkpoint | State |
+|---|---|
+| 1 Baseline | Done: mechanics baseline and saved rooms recorded before any change |
+| 2 Bookshelf, 3 Game details | Done, browser-tested (`shelf.spec.ts`) |
+| 4 Theme architecture | Done, browser-tested (`theme.spec.ts`) |
+| 5 Kingdom rebrand | Done, unit-tested. `clockwork.spec.ts` hasn't completed since |
+| 6 Art and polish | Scenes done. Motion and sound have no per-game variation |
+| 7 Validation | **Partial:** the browser run was stopped for low memory |
+| 8 Staging | **Deployed, HTTP smoke test only:** no browser run against it yet |
+
+Not done:
+
+- Kingdom & Commerce has the shared sound and motion, not its own.
+- The inspect dialog's title stays in capitals, unlike the rest of the theme.
+- Art is original flat SVG, not painted illustration.
+- `docs/CLOCKWORK_BALANCE.md` still uses the old card names.
+- Bohnanza hasn't been compared by screenshot. Its rules and tests are untouched, and shared components fall back to its old values.

@@ -151,3 +151,28 @@ fit in the 100,000 rows-written daily limit. See DEPLOYMENT.md.
   heuristic bots at a small sample (CLOCKWORK.md).
 - **Dependency audit.** `npm audit` reports 2 low-severity advisories in `deepmerge`, a dev-only dependency of
   `@sveltejs/vite-plugin-svelte`. No fix is available upstream; nothing ships to users.
+
+## v2.0 results (2026-11-03)
+
+Run on the final code:
+
+- `npm run check`: 0 errors. `npx vitest run`: 478 / 478. `npm run build`: passes, including the no-bench check.
+- Staging HTTP smoke test: home page and both covers return 200, and a room can be created for each game, with an HttpOnly
+  cookie. In the first seconds after a deploy, one room reported the old game name. On a retry a minute later, it and a new
+  room both reported the new name.
+
+Run before the last small changes (test-only, plus documentation):
+
+- `shelf.spec.ts` and `theme.spec.ts`: 13 / 13 on one worker.
+
+### Still to run
+
+`clockwork`, `deck`, `bots`, `play`, `lobby` and `complete`, locally and then against staging. These have **no result**
+since the rebrand. The system stopped the run for low memory on this 7.5 GB machine, and it left no results. A test browser's
+GPU process alone had reached 869 MB. Close other programs first, and run the specs one file at a time:
+
+```sh
+npx playwright test clockwork --workers=1 --project=functional
+```
+
+A killed run can leave its browser and dev server alive. Check that port 5174 is free before starting another.

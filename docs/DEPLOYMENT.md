@@ -87,7 +87,7 @@ so they never contain hands or deck order. Cookies for deleted rooms simply stop
 
 ## Releasing v2.0 (bookshelf and Kingdom & Commerce) to production
 
-Needs the owner's approval. Staging has been verified first (TESTING.md).
+Needs the owner's approval. Finish the browser tests listed under "Still to run" in TESTING.md first.
 
 ```sh
 git switch feat/hub-v2 && git status                # clean, and on the commit staging was built from
