@@ -27,7 +27,8 @@ export default defineConfig({
   webServer: external
     ? undefined
     : {
-        command: `npx vite --port ${PORT} --strictPort`,
+        // Bench mode only adds the deck test bench to this dev server; see src/shared/bench.ts.
+        command: `npx vite --port ${PORT} --strictPort --mode bench`,
         url: `http://localhost:${PORT}`,
         reuseExistingServer: true,
         timeout: 120_000,

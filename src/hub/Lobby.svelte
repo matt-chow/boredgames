@@ -1,8 +1,10 @@
 <script lang="ts">
+  import type { Component } from 'svelte';
   import type { RoomConnection } from '../client/lib/connection.svelte';
   import { router } from '../client/lib/router.svelte';
   import { toasts } from '../client/lib/toast.svelte';
   import { GAMES } from '../games/registry';
+  import { GAME_SETUP, type GameUiProps } from '../games/ui';
   import type { OptionDescriptor } from '../engine/types';
   import type { RoomView } from '../shared/protocol';
   import Icon from './Icon.svelte';
@@ -14,6 +16,11 @@
   const host = $derived(room.seats.find((s) => s.host));
   const link = $derived(`${location.origin}/r/${room.code}`);
   let copied = $state(false);
+
+  let Setup = $state<Component<GameUiProps> | null>(null);
+  $effect(() => {
+    GAME_SETUP[room.gameId]?.().then((m) => (Setup = m.default));
+  });
 
   async function send(msg: Parameters<RoomConnection['send']>[0]) {
     const r = await conn.send(msg);
@@ -104,38 +111,43 @@
       <button class="btn ghost small leave" onclick={leave}><Icon name="leave" size={16} /> Leave table</button>
     </section>
 
-    <section class="opts" aria-labelledby="opts-h">
-      <h2 id="opts-h" class="h">Variants</h2>
-      {#if !room.canConfigure}
-        <p class="muted small">{host?.name ?? 'The host'} chooses the variants.</p>
-      {/if}
-      <ul>
-        {#each room.options as o (o.key)}
-          {@const ok = fits(o)}
-          {@const on = !!room.config[o.key]}
-          <li class:on class:off={!ok}>
-            <label>
-              <input
-                type="checkbox"
-                role="switch"
-                checked={on}
-                class:busy={conn.busy && room.canConfigure}
-                disabled={!room.canConfigure || conn.busy || (!!o.unavailableReason && !on)}
-                onchange={() => toggle(o)}
-              />
-              <span class="sw" aria-hidden="true"></span>
-              <span class="otext">
-                <span class="oname">{o.label}</span>
-                <span class="odesc">{o.unavailableReason ?? o.description}</span>
-                {#if !o.unavailableReason && !ok && n >= room.minPlayers}
-                  <span class="onote">Needs {o.playerCounts[0]}–{o.playerCounts[o.playerCounts.length - 1]} players.</span>
-                {/if}
-              </span>
-            </label>
-          </li>
-        {/each}
-      </ul>
-    </section>
+    {#if room.options.length}
+      <section class="opts" aria-labelledby="opts-h">
+        <h2 id="opts-h" class="h">Variants</h2>
+        {#if !room.canConfigure}
+          <p class="muted small">{host?.name ?? 'The host'} chooses the variants.</p>
+        {/if}
+        <ul>
+          {#each room.options as o (o.key)}
+            {@const ok = fits(o)}
+            {@const on = !!room.config[o.key]}
+            <li class:on class:off={!ok}>
+              <label>
+                <input
+                  type="checkbox"
+                  role="switch"
+                  checked={on}
+                  class:busy={conn.busy && room.canConfigure}
+                  disabled={!room.canConfigure || conn.busy || (!!o.unavailableReason && !on)}
+                  onchange={() => toggle(o)}
+                />
+                <span class="sw" aria-hidden="true"></span>
+                <span class="otext">
+                  <span class="oname">{o.label}</span>
+                  <span class="odesc">{o.unavailableReason ?? o.description}</span>
+                  {#if !o.unavailableReason && !ok && n >= room.minPlayers}
+                    <span class="onote">Needs {o.playerCounts[0]}–{o.playerCounts[o.playerCounts.length - 1]} players.</span>
+                  {/if}
+                </span>
+              </label>
+            </li>
+          {/each}
+        </ul>
+      </section>
+    {/if}
+    {#if Setup}
+      <Setup {conn} {room} />
+    {/if}
   </div>
 
   <footer class="start">

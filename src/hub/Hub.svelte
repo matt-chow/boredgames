@@ -20,6 +20,7 @@
   let nameInput: HTMLInputElement;
 
   const fan: Bean[] = ['red', 'blackeyed', 'chili', 'blue', 'green'];
+  const BENCH: CatalogEntry | null = __DECK_BENCH__ ? { id: 'fixture', name: 'Deck bench', minPlayers: 2, maxPlayers: 6, minutes: '', pitch: '' } : null;
 
   onMount(() => {
     document.title = 'Boredgames';
@@ -120,6 +121,13 @@
         </div>
       </article>
     {/each}
+
+    {#if BENCH}
+      <p class="bench">
+        Dev server:
+        <button class="btn small" disabled={!!busy} onclick={() => open(BENCH, true)}><Icon name="bot" size={16} /> Deck bench with a bot</button>
+      </p>
+    {/if}
 
     <div class="crate empty">
       <div class="ghosts" aria-hidden="true"><span></span><span></span></div>
@@ -356,6 +364,15 @@
     color: var(--ink-3);
     font-size: 13px;
     max-width: 52ch;
+  }
+
+  .bench {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: var(--ink-3);
   }
 
   /* An empty crate keeps the place for the next game. */

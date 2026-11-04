@@ -1,4 +1,4 @@
-import { GAMES, LISTED_GAMES } from '../games/registry';
+import { GAMES, HOSTABLE_GAMES, LISTED_GAMES } from '../games/registry';
 import { CODE_ALPHABET, CODE_LENGTH, normalizeCode, sessionCookie, type ApiError } from '../shared/protocol';
 import type { Env } from './room';
 
@@ -105,7 +105,7 @@ async function api(req: Request, env: Env, url: URL): Promise<Response> {
     const body = await readBody(req);
     if (!body) return fail(400, 'bad-request', 'Invalid request.');
     const gameId = typeof body.gameId === 'string' ? body.gameId : 'bohnanza';
-    if (!LISTED_GAMES.includes(gameId))
+    if (!HOSTABLE_GAMES.includes(gameId))
       return fail(400, 'bad-game', 'Unknown game.');
     const token = randomToken();
     const th = await sha256(token);

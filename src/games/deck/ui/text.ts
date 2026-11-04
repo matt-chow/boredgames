@@ -1,0 +1,76 @@
+/** Display helpers shared by the deck table. Pure, so they can be tested without a browser. */
+import type { CardDef, CardType, LogEntry, Ruleset } from '../../../engine/deckbuilder';
+
+/** Muted card-type colours. Sprout is never one of them: on the table it only ever means "legal / your move". */
+const TYPE_COLOR: Record<CardType, string> = {
+  action: '#5f7690',
+  treasure: '#c99a35',
+  victory: '#86689e',
+  penalty: '#6e4140',
+  attack: '#a94f39',
+  reaction: '#4d8486',
+  duration: '#b57d45',
+};
+
+/** The card's edge: one band for each type, top to bottom. */
+export function spine(types: CardType[]): string {
+  const colors = types.map((t) => TYPE_COLOR[t]);
+  if (colors.length === 1) return colors[0];
+  const band = 100 / colors.length;
+  return `linear-gradient(${colors.map((c, i) => `${c} ${i * band}% ${(i + 1) * band}%`).join(', ')})`;
+}
+
+export const typeLabel = (types: CardType[]) => types.map((t) => t[0].toUpperCase() + t.slice(1)).join(' · ');
+
+export const defsOf = (rules: Ruleset): Record<string, CardDef> => Object.fromEntries(rules.cards.map((c) => [c.key, c]));
+
+const list = (keys: string[], cardName: (key: string) => string) => keys.map(cardName).join(', ');
+const cards = (n: number) => (n === 1 ? 'a card' : `${n} cards`);
+
+const PLACE: Record<string, string> = {
+  trash: 'trashes',
+  discard: 'discards',
+  deck: 'puts on their deck',
+  'deck-bottom': 'puts under their deck',
+  hand: 'takes into hand',
+  play: 'puts into play',
+  supply: 'returns to the supply',
+  mat: 'sets aside',
+};
+
+/** One line of the table log. Unknown kinds fall through to a plain line, so a new engine event can't break the UI. */
+export function logLine(e: LogEntry, name: (seat: number) => string, cardName: (key: string) => string): string {
+  const who = name(e.seat);
+  const named = e.keys ? list(e.keys, cardName) : '';
+  if (e.kind.startsWith('move:')) return `${who} ${PLACE[e.kind.slice(5)] ?? 'moves'}: ${named || cards(e.count ?? 0)}`;
+  switch (e.kind) {
+    case 'turn':
+      return `${who} starts a turn`;
+    case 'play':
+      return `${who} plays ${named}`;
+    case 'buy':
+      return `${who} buys ${named}`;
+    case 'gain':
+      return `${who} gains ${named}`;
+    case 'draw':
+      return `${who} draws ${cards(e.count ?? 0)}`;
+    case 'shuffle':
+      return `${who} shuffles ${cards(e.count ?? 0)} into a new deck`;
+    case 'reveal':
+      return `${who} reveals ${named}`;
+    case 'look':
+      return e.keys ? `${who} sees ${named}` : `${who} looks at ${cards(e.count ?? 0)}`;
+    case 'vp':
+      return `${who} takes ${e.count} point ${e.count === 1 ? 'token' : 'tokens'}`;
+    case 'token':
+      return `${who}: ${e.count} ${e.token}`;
+    case 'claim':
+      return `${who} completes ${e.project ? cardName(e.project) : 'a project'}`;
+    case 'surcharge':
+      return `${who} raises the price of ${e.project ? cardName(e.project) : 'a project'}`;
+    case 'game-over':
+      return 'The game is over';
+    default:
+      return `${who}: ${e.kind}`;
+  }
+}

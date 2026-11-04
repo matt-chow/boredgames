@@ -370,6 +370,9 @@ export class RoomCore {
         if (!c || typeof c !== 'object' || Array.isArray(c)) throw new RoomError('bad-request', 'Invalid options.');
         const clean: Record<string, unknown> = {};
         for (const o of this.game.options) if (typeof c[o.key] === 'boolean') clean[o.key] = c[o.key];
+        const extra = this.game.sanitizeConfig?.(c);
+        if (extra && 'error' in extra) throw new RoomError('bad-config', extra.error);
+        if (extra) Object.assign(clean, extra.config);
         const next = { ...this.meta.config, ...clean };
         // Never accept an option that can't be played (e.g. the Duel).
         for (const o of this.game.options)
