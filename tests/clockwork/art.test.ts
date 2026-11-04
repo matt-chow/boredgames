@@ -1,11 +1,10 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { CARDS, WORKS } from '../../src/games/clockwork/rules/ruleset';
 import { artFor, artKeys, artParts, knownPart, sceneOf } from '../../src/games/clockwork/ui/art';
 
 const everything = [...CARDS.map((c) => c.key), ...WORKS.map((w) => w.key)];
-const manifest = JSON.parse(readFileSync('data/clockwork-commons/art-manifest.json', 'utf8')) as { entries: { key: string; prompt: string; source: string }[] };
-const spec = JSON.parse(readFileSync('data/clockwork-commons/clockwork_commons_original_cardset.json', 'utf8'));
+const manifest = JSON.parse(readFileSync('data/clockwork-commons/art-manifest.json', 'utf8')) as { entries: { key: string; name: string; brief: string; status: string; asset: string | null }[] };
 
 describe('coverage report', () => {
   it('CC-COVER-1: every card and Public Work is defined and has its own named test', () => {
@@ -30,13 +29,17 @@ describe('card art', () => {
     }
     expect(artFor('not-a-card')).toBeNull();
   });
-  it('CC-ART-3: the manifest lists everything, and keeps each supplied art direction word for word', () => {
+  it('CC-ART-3: the manifest lists everything, under its current name, and only claims the art that exists', () => {
     expect(manifest.entries.map((e) => e.key).sort()).toEqual([...everything].sort());
-    const supplied = new Map<string, string>([...spec.basic_cards, ...spec.market_cards, ...spec.public_works].map((c: { id: string; art_prompt: string }) => [c.id, c.art_prompt]));
+    const names = new Map([...CARDS, ...WORKS].map((c) => [c.key, c.name]));
     for (const e of manifest.entries) {
-      expect(e.prompt, e.key).toBeTruthy();
-      if (supplied.has(e.key)) expect(e.prompt).toBe(supplied.get(e.key));
-      expect(e.source).toBe(supplied.has(e.key) ? 'supplied' : 'added');
+      expect(e.name, e.key).toBe(names.get(e.key));
+      expect(e.brief, e.key).toBeTruthy();
+      expect(e.status === 'svg' ? e.asset : existsSync(`public${e.asset}`), e.key).toBe(e.status === 'svg' ? null : true);
     }
+  });
+  it('KC-ART-1: scenes hold no machinery left over from the old theme', () => {
+    const scenes = artKeys().map((k) => sceneOf(k)!).join('|');
+    for (const part of ['gear', 'cog', 'boiler', 'pipe', 'piston', 'dynamo', 'gauge']) expect(scenes).not.toMatch(new RegExp(`(^|\\|| )${part}( |$)`));
   });
 });

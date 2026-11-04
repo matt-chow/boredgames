@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { PHONE, joinRoom, newPlayer, roomViews, type Player } from './helpers';
 
-// Clockwork Commons through its real buttons on a real server. Also runs against staging with E2E_BASE_URL.
+// Kingdom & Commerce through its real buttons on a real server. Also runs against staging with E2E_BASE_URL.
 
 test.afterEach(async ({ browser }) => {
   await Promise.all(browser.contexts().map((c) => c.close()));
@@ -102,13 +102,13 @@ async function playOut(players: Player[], limit: number) {
   throw new Error('the game did not finish');
 }
 
-test.describe('Clockwork Commons', () => {
+test.describe('Kingdom & Commerce', () => {
   test.setTimeout(420_000);
 
   test('CC-E2E-1: it is on offer in the hub, and the lobby shows sets, market and Public Works', async ({ browser }) => {
     const host = await newPlayer(browser, 'Ada');
     await host.page.goto('/');
-    await expect(host.page.getByText('Clockwork Commons').first()).toBeVisible({ timeout: 15_000 });
+    await expect(host.page.getByText('Kingdom & Commerce').first()).toBeVisible({ timeout: 15_000 });
     await table(host, 1);
     await expect(host.page.locator('[data-set="core"]')).toBeChecked();
     await expect(host.page.locator('[data-set="foundry"]')).not.toBeChecked();
@@ -132,9 +132,10 @@ test.describe('Clockwork Commons', () => {
     await start(host);
     await expect(host.page.locator('.tile .art svg').first()).toBeVisible();
     await expect(host.page.locator('.hud .dc .art svg').first()).toBeVisible();
-    await expect(host.page.locator('.res .token dt')).toHaveText('Spark');
+    await expect(host.page.locator('.res .token dt')).toHaveText('Influence');
     await expect(host.page.locator('.work')).toHaveCount(5);
     await expect(host.page.getByRole('button', { name: /^Move on to Market/ })).toBeVisible();
+    await expect(host.page.locator('.opp').first()).not.toContainText('spark');
     await shot(host.page, 'cc-table');
     await host.page.locator('.tile').first().click({ button: 'right' });
     await expect(host.page.getByRole('dialog')).toContainText('Costs');

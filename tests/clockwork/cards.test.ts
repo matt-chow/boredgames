@@ -69,7 +69,7 @@ describe('Core Set: Workshop', () => {
     expect(a.discard()).toContain('notebook');
     const b = new Table(['foreman']);
     b.play('foreman');
-    b.opt('2 Spark');
+    b.opt('2 Influence');
     expect([b.spark(), b.buys]).toEqual([2, 2]);
   });
 });
@@ -702,7 +702,7 @@ describe('Night Shift', () => {
     other.play.push(other.hand.pop()!);
     t.setSpark(1, 1 - t.me);
     t.play('noise_complaint');
-    t.opt('Lose 1 Spark');
+    t.opt('Lose 1 Influence');
     expect(t.spark(1 - t.me)).toBe(0);
     t.play('noise_complaint');
     t.cards('notebook');
@@ -803,7 +803,7 @@ describe('Town Hall', () => {
     t.play('zoning_board');
     expect(t.spark()).toBe(1);
     expect(t.q.kind).toBe('option');
-    t.opt('Canal Lights');
+    t.opt('River Quay');
     expect(t.view().projects.find((p) => p.key === 'canal_lights')!.coins).toBe(3);
     expect(t.view(1 - t.me).projects.find((p) => p.key === 'canal_lights')!.coins).toBe(5);
     t.end();

@@ -258,6 +258,8 @@ export interface Ruleset {
   sets?: { key: string; name: string; text: string }[];
   defaultSets?: string[];
   labels?: Labels;
+  /** Rewords prompts and choices as they leave the server. Display only: saved state and what a choice does are untouched. */
+  present?(text: string): string;
   /** Replaces the engine's plain computer player. */
   bot?(view: DeckView): BotMove<DeckAction> | null;
 }

@@ -1,0 +1,151 @@
+/*
+ * Kingdom & Commerce's look. Every selector starts from the room's data-game-theme, so nothing here reaches the hub or
+ * another game even once this file is loaded. Burgundy leads, gold stays an accent, ivory carries what is read, charcoal
+ * is the table. A brighter gold takes the role of the signal colour inside this game only: see DECISIONS.md D26.
+ */
+[data-game-theme='clockwork'] {
+  --ground-0: #1a1418;
+  --ground-1: #261d23;
+  --ground-2: #30252c;
+  --ground-3: #3d2e37;
+  --rim: #4e3c47;
+  --rim-hi: #6d5563;
+  --ink: #f5e9d6;
+  --ink-2: #d8c9b3;
+  --ink-3: #ab9a8c;
+  --sprout: #edcb80;
+  --sprout-ink: #261d23;
+  --sprout-dim: rgb(237 203 128 / 0.18);
+  --warn: #e8927a;
+  --coin: #f5e9d6;
+  --coin-ink: #261d23;
+  --font-label: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+
+  --card-face: #f5e9d6;
+  --card-stack: #e6d7bf;
+  --card-edge-1: #bda98c;
+  --card-edge-2: #94806a;
+  --card-ink: #261d23;
+  --card-ink-2: rgb(38 29 35 / 0.76);
+  --card-rim: rgb(120 53 71 / 0.5);
+  --card-cost: #783547;
+  --card-cost-ink: #f5e9d6;
+  --card-coins: #76561c;
+  --card-points: #783547;
+  --card-minus: #5e3a34;
+
+  --table-glow: #4b2535;
+  --table-veil: rgb(26 20 24 / 0.72);
+
+  --type-action: #783547;
+  --type-treasure: #c9a263;
+  --type-victory: #5f6f49;
+  --type-penalty: #4a3a40;
+  --type-attack: #a8503c;
+  --type-reaction: #4f6272;
+  --type-duration: #8a6a45;
+}
+
+body:has([data-game-theme='clockwork']) {
+  background: #261d23;
+}
+
+/* Names are set like a printed title, not a stencil: serif, in the case they were written. */
+[data-game-theme='clockwork'] .label {
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/*
+ * This serif is wider than the stencil, so a long word drops below the cost instead of breaking mid-word.
+ */
+[data-game-theme='clockwork'] .dc .head {
+  display: flow-root;
+  font-size: var(--name);
+  line-height: 1.12;
+}
+[data-game-theme='clockwork'] .dc .cost {
+  float: left;
+  margin-right: 3px;
+}
+[data-game-theme='clockwork'] .dc .name {
+  font-size: calc(var(--name) * 0.92);
+  hyphens: manual;
+  overflow-wrap: normal;
+}
+
+/* Burgundy leads the actions. The gold edge keeps it clear on a dark table. */
+[data-game-theme='clockwork'] .btn.primary {
+  background: #783547;
+  border-color: #c9a263;
+  color: #f5e9d6;
+}
+[data-game-theme='clockwork'] .btn.primary:hover:not(:disabled) {
+  background: #8d4256;
+  border-color: #dcb97c;
+}
+[data-game-theme='clockwork'] .btn:hover:not(:disabled):not(.primary) {
+  background: var(--ground-3);
+  border-color: var(--rim-hi);
+}
+
+/* A burgundy line and a gold hairline inside the edge, as on a bound page. */
+[data-game-theme='clockwork'] .dc.face,
+[data-game-theme='clockwork'] button.tile.tile {
+  box-shadow:
+    var(--shadow-1),
+    inset 0 0 0 1px var(--card-rim),
+    inset 0 0 0 2.5px var(--card-face),
+    inset 0 0 0 3px rgb(201 162 99 / 0.65);
+}
+[data-game-theme='clockwork'] .dc .art,
+[data-game-theme='clockwork'] .tile .art,
+[data-game-theme='clockwork'] .work .art {
+  box-shadow: 0 0 0 1px rgb(38 29 35 / 0.28);
+}
+
+[data-game-theme='clockwork'] .dc.back {
+  background: #783547;
+  box-shadow:
+    var(--shadow-1),
+    inset 0 0 0 3px #5b2838,
+    inset 0 0 0 3.5px rgb(201 162 99 / 0.7);
+}
+[data-game-theme='clockwork'] .dc.back .mark {
+  border-color: #c9a263;
+}
+
+/* The courtly table: a burgundy glow on charcoal, with a faint woven lattice that is painted once and never moves. */
+[data-game-theme='clockwork'] .table.table {
+  background:
+    repeating-linear-gradient(45deg, rgb(245 233 214 / 0.016) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(-45deg, rgb(245 233 214 / 0.016) 0 1px, transparent 1px 22px),
+    radial-gradient(90% 70% at 50% 45%, var(--table-glow) 0%, transparent 70%),
+    var(--ground-1);
+}
+
+/* Influence: the one counter that carries over, so it is the one that gets the gold. */
+[data-game-theme='clockwork'] .res .token dd {
+  color: #e4c588;
+}
+
+[data-game-theme='clockwork'] .work.work {
+  background: #3a2330;
+  box-shadow: inset 0 0 0 1px rgb(201 162 99 / 0.4);
+}
+[data-game-theme='clockwork'] .work.work.on {
+  box-shadow: inset 0 0 0 2px var(--sprout);
+}
+[data-game-theme='clockwork'] .work .art.art {
+  height: 50px;
+}
+[data-game-theme='clockwork'] .tile .art.art {
+  height: 36px;
+}
+
+/* The tabletop itself: dark stained oak under a burgundy cast, where Bohnanza has charred timber. */
+[data-game-theme='clockwork'] .plane.plane {
+  background:
+    repeating-linear-gradient(90deg, rgb(245 233 214 / 0.012) 0 2px, transparent 2px 120px),
+    linear-gradient(#35202b, #2a1a23);
+}

@@ -91,17 +91,17 @@
     border-radius: 7px;
     font: inherit;
     text-align: left;
-    color: #2c2118;
-    background: #d9cdb5;
+    color: var(--card-ink, #2c2118);
+    background: var(--card-stack, #d9cdb5);
     overflow: hidden;
     box-shadow:
-      0 3px 0 -1px #a89a82,
-      0 5px 0 -2px #8a7d68,
+      0 3px 0 -1px var(--card-edge-1, #a89a82),
+      0 5px 0 -2px var(--card-edge-2, #8a7d68),
       var(--shadow-1);
   }
   button.tile {
     cursor: pointer;
-    background: #e8dec9;
+    background: var(--card-face, #e8dec9);
     outline: 2px solid var(--sprout);
     outline-offset: 1px;
     transition: transform var(--dur-1) var(--ease-out);
@@ -146,16 +146,16 @@
     border-radius: 50%;
     font-size: 12px;
     font-weight: 700;
-    color: var(--coin-ink);
-    background: var(--coin);
+    color: var(--card-cost-ink, var(--coin-ink));
+    background: var(--card-cost, var(--coin));
   }
   .cost.changed {
-    box-shadow: 0 0 0 2px #2c2118;
+    box-shadow: 0 0 0 2px var(--card-ink, #2c2118);
   }
   .count {
     font-size: 12px;
     font-weight: 600;
-    color: rgb(44 33 24 / 0.76);
+    color: var(--card-ink-2, rgb(44 33 24 / 0.76));
   }
   .name {
     font-size: 12.5px;
@@ -165,7 +165,7 @@
   .types {
     margin-top: auto;
     font-size: 9px;
-    color: rgb(44 33 24 / 0.76);
+    color: var(--card-ink-2, rgb(44 33 24 / 0.76));
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

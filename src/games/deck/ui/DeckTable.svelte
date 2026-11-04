@@ -255,7 +255,7 @@
     document.title = `${(isActive || asked) && !over ? '● ' : ''}${rules.name} · ${room.code}`;
   });
 
-  const lastLog = $derived(g.log.length ? logLine(g.log[g.log.length - 1], name, cardName) : '');
+  const lastLog = $derived(g.log.length ? logLine(g.log[g.log.length - 1], name, cardName, tokenName) : '');
   const marketCode = $derived(encodeMarket(rules, g.market, g.projects.map((p) => p.key)));
   const trashTop = $derived(g.trash.length ? g.trash[g.trash.length - 1] : null);
   const endPileNames = $derived(rules.endPiles.map(cardName).join(', '));
@@ -293,6 +293,7 @@
       <div class="opps">
         {#each others as s (s)}
           <Opponent
+            {tokenName}
             p={g.players[s]}
             {defs}
             name={name(s)}
@@ -402,7 +403,7 @@
         <button class="btn primary go" disabled={conn.busy} onclick={() => act({ type: 'play-treasures' })}>Play all {(words?.treasures ?? 'treasures').toLowerCase()}</button>
       {/if}
       {#if g.legal.convert}
-        <button class="btn go" disabled={conn.busy} onclick={() => act({ type: 'convert' })}>Convert Spark</button>
+        <button class="btn go" disabled={conn.busy} onclick={() => act({ type: 'convert' })}>Convert {tokenName(rules.convert?.token ?? '')}</button>
       {/if}
       {#if g.legal.endPhase}
         <button class="btn go" class:primary={phaseIsPrimary} disabled={conn.busy} onclick={() => act({ type: 'end-phase' })}>
@@ -419,7 +420,7 @@
       <header><b>Table log</b><button class="btn icon ghost" aria-label="Close log" onclick={() => (logOpen = false)}><Icon name="close" size={16} /></button></header>
       <ol>
         {#each [...g.log].reverse() as l (`${l.n}:${l.to ?? ''}`)}
-          <li>{logLine(l, name, cardName)}</li>
+          <li>{logLine(l, name, cardName, tokenName)}</li>
         {/each}
       </ol>
     </aside>
@@ -487,7 +488,7 @@
       'stage'
       'hud';
     background:
-      radial-gradient(90% 70% at 50% 45%, #2a1f16 0%, transparent 70%),
+      radial-gradient(90% 70% at 50% 45%, var(--table-glow, #2a1f16) 0%, transparent 70%),
       var(--ground-1);
     overflow: hidden;
   }
@@ -499,7 +500,7 @@
     gap: 12px;
     padding: max(8px, env(safe-area-inset-top)) 12px 8px 16px;
     border-bottom: 1px solid var(--rim);
-    background: rgb(15 11 8 / 0.6);
+    background: var(--table-veil, rgb(15 11 8 / 0.6));
     z-index: 20;
   }
   .who {
@@ -662,7 +663,7 @@
     margin: 0 0 8px;
     padding: 8px 12px;
     border-radius: var(--r-md);
-    background: rgb(15 11 8 / 0.6);
+    background: var(--table-veil, rgb(15 11 8 / 0.6));
     box-shadow: inset 0 0 0 1px var(--rim);
     pointer-events: auto;
   }
@@ -713,7 +714,7 @@
     max-width: min(560px, 80%);
     padding: 4px 12px;
     border-radius: 999px;
-    background: rgb(15 11 8 / 0.7);
+    background: var(--table-veil, rgb(15 11 8 / 0.7));
     color: var(--ink-3);
     font-size: 13px;
     white-space: nowrap;

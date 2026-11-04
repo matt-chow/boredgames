@@ -19,6 +19,11 @@ export const GAME_UI: Record<string, () => Promise<{ default: Component<GameUiPr
   ...(__DECK_BENCH__ ? { fixture: () => import('./deck/ui/DeckTable.svelte') } : {}),
 };
 
+/** A game's look, loaded as soon as its room is known so the lobby is dressed too. Scoped to its rooms by data-game-theme. */
+export const GAME_THEME: Record<string, () => Promise<unknown>> = {
+  clockwork: () => import('./clockwork/ui/theme.css'),
+};
+
 /** Optional game-specific section of the lobby, for settings a list of switches can't express. */
 export const GAME_SETUP: Record<string, () => Promise<{ default: Component<GameUiProps> }>> = {
   clockwork: () => import('./deck/ui/MarketSetup.svelte'),

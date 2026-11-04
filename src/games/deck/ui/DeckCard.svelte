@@ -90,11 +90,11 @@
     border-radius: 7px;
     font: inherit;
     text-align: left;
-    color: #2c2118;
+    color: var(--card-ink, #2c2118);
     overflow: hidden;
     box-shadow:
       var(--shadow-1),
-      inset 0 0 0 1px rgb(44 33 24 / 0.22);
+      inset 0 0 0 1px var(--card-rim, rgb(44 33 24 / 0.22));
   }
   .xs {
     --w: 44px;
@@ -124,7 +124,7 @@
     border-radius: 16px;
   }
   .face {
-    background: #e8dec9;
+    background: var(--card-face, #e8dec9);
   }
   .edge {
     position: absolute;
@@ -156,8 +156,8 @@
     border-radius: 50%;
     font-size: var(--name);
     font-weight: 700;
-    color: var(--coin-ink);
-    background: var(--coin);
+    color: var(--card-cost-ink, var(--coin-ink));
+    background: var(--card-cost, var(--coin));
   }
   .xs .cost {
     display: none;
@@ -195,13 +195,13 @@
     font-size: calc(var(--w) * 0.17);
   }
   .coins {
-    color: #8a6616;
+    color: var(--card-coins, #8a6616);
   }
   .points {
-    color: #63497a;
+    color: var(--card-points, #63497a);
   }
   .minus {
-    color: #7d3a35;
+    color: var(--card-minus, #7d3a35);
   }
   .text {
     margin-top: 2px;
@@ -217,7 +217,7 @@
     margin-top: auto;
     font-size: 8.5px;
     line-height: 1.1;
-    color: rgb(44 33 24 / 0.72);
+    color: var(--card-ink-2, rgb(44 33 24 / 0.72));
   }
   .xl .types {
     font-size: 13px;

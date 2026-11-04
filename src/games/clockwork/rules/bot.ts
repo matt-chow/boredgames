@@ -1,5 +1,5 @@
 /**
- * Computer players for Clockwork Commons. A profile only decides what to favour, so simulations can pit playstyles
+ * Computer players for Kingdom & Commerce. A profile only decides what to favour, so simulations can pit playstyles
  * against each other. Bots read the same `DeckView` a player sees and nothing else.
  */
 import type { BotMove } from '../../../engine/types';
@@ -81,13 +81,13 @@ export interface Profile {
   name: string;
   /** Added to a market card's appeal for each of its styles that matches. */
   likes: Partial<Record<Style, number>>;
-  /** How much a Public Work's Prestige counts against a Monument's. */
+  /** How much a Crown Project's Renown counts against a Great Abbey's. */
   works: number;
-  /** Most market cards to own before it only buys Currency and Prestige. */
+  /** Most market cards to own before it only buys Currency and Renown. */
   engine: number;
-  /** Keep Spark for Public Works instead of turning it into Coins. */
+  /** Keep Influence for Crown Projects instead of turning it into Coins. */
   hoard: boolean;
-  /** Start buying Prestige cards from this turn of its own. */
+  /** Start buying Renown cards from this turn of its own. */
   greening: number;
   /** A card to buy whenever it can, up to 3 copies. Balance runs use this to measure one card's strength. */
   favour?: string;
@@ -140,19 +140,19 @@ function chooseCards(q: PendingView): number[] {
 
 function chooseOption(q: PendingView, v: DeckView, profile: Profile): number {
   const options = q.options ?? [];
-  // Spending Spark: as much as it can.
+  // Spending Influence: as much as it can.
   if (options.length && options.every((o) => /^\d+$/.test(o))) return options.length - 1;
   if (options[0] === 'Yes') {
-    if (/Rust/.test(q.prompt) && /trash/i.test(q.prompt)) return 0;
+    if (/Debt/.test(q.prompt) && /trash/i.test(q.prompt)) return 0;
     const sparkNow = v.you === null ? 0 : (v.players[v.you].tokens[SPARK] ?? 0);
-    // A hoarder keeps its last Spark for a Public Work, unless a Rust is the price of keeping it.
-    if (profile.hoard && sparkNow <= 5 && /[Ss]pend/.test(q.prompt) && !/Rust/.test(q.prompt)) return 1;
+    // A hoarder keeps its last Influence for a Crown Project, unless a Debt is the price of keeping it.
+    if (profile.hoard && sparkNow <= 5 && /[Ss]pend/.test(q.prompt) && !/Debt/.test(q.prompt)) return 1;
     return 0;
   }
-  const sparky = options.findIndex((o) => /Spark/.test(o) && !/^Spend|Lose/.test(o));
+  const sparky = options.findIndex((o) => /Influence/.test(o) && !/^Spend|Lose/.test(o));
   if (profile.likes.spark && sparky >= 0) return sparky;
   if (v.you !== null && (v.players[v.you].tokens[SPARK] ?? 0) >= 2) {
-    const spend = options.findIndex((o) => /^Spend 2 Spark/.test(o));
+    const spend = options.findIndex((o) => /^Spend 2 Influence/.test(o));
     if (spend >= 0) return spend;
   }
   return 0;
@@ -237,7 +237,7 @@ function moves(v: DeckView, profile: Profile): DeckAction[] {
   if (v.turn.buys <= 0) return [{ type: 'end-phase' }];
   const work = [...v.legal.claim].sort((a, b) => workValue(v, b) - workValue(v, a))[0];
   if (work && profile.works > 0) return [{ type: 'claim', project: work }, { type: 'end-phase' }];
-  // Turn Spark into Coins when that reaches something better, unless saving it for a Work that is nearly affordable.
+  // Turn Influence into Coins when that reaches something better, unless saving it for a Project that is nearly affordable.
   const mine = owned(v);
   const late = isLate(v, profile);
   const score = (k: string) => buyScore(k, v, profile, mine, late);

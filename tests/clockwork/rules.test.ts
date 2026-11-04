@@ -416,7 +416,7 @@ describe('attacks and reactions', () => {
     const t = new Table(['permit_office'], { others: [['night_watch']] });
     t.play('permit_office');
     expect(t.q.kind).toBe('cards');
-    expect(t.q.prompt).toMatch(/Permit Office/);
+    expect(t.q.prompt).toMatch(/Licensing Hall/);
   });
   it('CC-REACT-5: in a larger game each opponent decides in turn order and one’s shield does not cover another', () => {
     const t = new Table(['picket_line'], { players: 3, others: [['ground_wire'], ['scrap']] });

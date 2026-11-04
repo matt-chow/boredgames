@@ -11,6 +11,7 @@
     bot,
     active,
     deciding,
+    tokenName,
   }: {
     p: PlayerView;
     defs: Record<string, CardDef>;
@@ -19,6 +20,7 @@
     bot: boolean;
     active: boolean;
     deciding: boolean;
+    tokenName: (token: string) => string;
   } = $props();
 
   const matTotal = $derived(Object.values(p.mats).reduce((a, m) => a + m.count, 0));
@@ -55,7 +57,7 @@
   {#if matTotal || tokens.length}
     <p class="extra">
       {#if matTotal}<span>{matTotal} set aside</span>{/if}
-      {#each tokens as [t, n] (t)}<span class="num">{n} {t}</span>{/each}
+      {#each tokens as [t, n] (t)}<span class="num">{n} {tokenName(t)}</span>{/each}
     </p>
   {/if}
 </section>

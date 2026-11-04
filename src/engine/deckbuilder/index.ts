@@ -257,6 +257,7 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
   let pending: PendingView | null = null;
   if (s.pending) {
     const q = s.pending;
+    const word = lib.rules.present ?? ((t: string) => t);
     const inHand = q.source !== null && s.players.some((p) => p.hand.includes(q.source!));
     const showSource = q.source !== null && (viewer === q.seat || !inHand);
     pending = {
@@ -264,8 +265,8 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
       seat: q.seat,
       kind: q.kind,
       source: showSource ? s.cards[q.source!] : null,
-      prompt: q.prompt,
-      after: q.after,
+      prompt: word(q.prompt),
+      after: q.after === undefined ? undefined : word(q.after),
       optional: q.optional,
       min: q.min,
       max: q.max,
@@ -273,7 +274,7 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
     if (viewer === q.seat) {
       pending.cards = q.cards.map(ref);
       pending.piles = q.piles;
-      pending.options = q.options;
+      pending.options = q.options?.map(word);
       pending.seats = q.seats;
       pending.hint = q.hint;
     }

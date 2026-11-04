@@ -1,0 +1,360 @@
+{
+  "game": {
+    "id": "clockwork",
+    "old": "Clockwork Commons",
+    "new": "Kingdom & Commerce"
+  },
+  "note": "Display names only. Keys, the game id and everything saved in rooms stay as they were.",
+  "terms": {
+    "Foundry Row": "Artisans’ Row",
+    "Night Shift": "Rival Houses",
+    "Town Hall": "The Chancery",
+    "Public Works": "Crown Projects",
+    "Public Work": "Crown Project",
+    "Core Works": "Core Projects",
+    "Spark": "Influence",
+    "Prestige": "Renown",
+    "Devices": "Establishments",
+    "Device": "Establishment",
+    "Workshop": "Royal Court",
+    "Hazard": "Burden"
+  },
+  "cards": {
+    "scrap": {
+      "old": "Scrap",
+      "new": "Clipped Penny"
+    },
+    "cog": {
+      "old": "Cog",
+      "new": "Groat"
+    },
+    "dynamo": {
+      "old": "Dynamo",
+      "new": "Florin"
+    },
+    "notebook": {
+      "old": "Notebook",
+      "new": "Land Grant"
+    },
+    "blueprint": {
+      "old": "Blueprint",
+      "new": "Manor Deed"
+    },
+    "monument": {
+      "old": "Monument",
+      "new": "Great Abbey"
+    },
+    "rust": {
+      "old": "Rust",
+      "new": "Debt"
+    },
+    "gearwright": {
+      "old": "Gearwright",
+      "new": "Guild Apprentice"
+    },
+    "shift_bell": {
+      "old": "Shift Bell",
+      "new": "Morning Bell"
+    },
+    "tally_clerk": {
+      "old": "Tally Clerk",
+      "new": "Tally Clerk"
+    },
+    "supply_crane": {
+      "old": "Supply Crane",
+      "new": "Treadwheel Crane"
+    },
+    "copper_press": {
+      "old": "Copper Press",
+      "new": "Coin Striker"
+    },
+    "foreman": {
+      "old": "Foreman",
+      "new": "Royal Architect"
+    },
+    "paper_fan": {
+      "old": "Paper Fan",
+      "new": "Winnowing Fan"
+    },
+    "conveyor": {
+      "old": "Conveyor",
+      "new": "Customs House"
+    },
+    "sorting_glasses": {
+      "old": "Sorting Glasses",
+      "new": "Assayer"
+    },
+    "springboard": {
+      "old": "Springboard",
+      "new": "Post Rider"
+    },
+    "clockwork_archive": {
+      "old": "Clockwork Archive",
+      "new": "Keeper of the Rolls"
+    },
+    "whistle_stop": {
+      "old": "Whistle Stop",
+      "new": "Trading Port"
+    },
+    "hand_crank": {
+      "old": "Hand Crank",
+      "new": "Petitioner"
+    },
+    "charge_meter": {
+      "old": "Charge Meter",
+      "new": "Lady-in-Waiting"
+    },
+    "capacitor_bank": {
+      "old": "Capacitor Bank",
+      "new": "Audience Hall"
+    },
+    "steam_diverter": {
+      "old": "Steam Diverter",
+      "new": "Crown Treasury"
+    },
+    "glow_mason": {
+      "old": "Glow Mason",
+      "new": "Guild Banquet"
+    },
+    "overcharge_lab": {
+      "old": "Overcharge Lab",
+      "new": "Privy Council"
+    },
+    "signal_tower": {
+      "old": "Signal Tower",
+      "new": "Road Warden"
+    },
+    "city_messenger": {
+      "old": "City Messenger",
+      "new": "Royal Runner"
+    },
+    "inspection_team": {
+      "old": "Inspection Team",
+      "new": "Tax Assessors"
+    },
+    "mutual_aid": {
+      "old": "Mutual Aid",
+      "new": "Alms House"
+    },
+    "permit_office": {
+      "old": "Permit Office",
+      "new": "Licensing Hall"
+    },
+    "night_watch": {
+      "old": "Night Watch",
+      "new": "Night Watch"
+    },
+    "maintenance_cart": {
+      "old": "Maintenance Cart",
+      "new": "Toll Gate"
+    },
+    "lamplighter": {
+      "old": "Lamplighter",
+      "new": "Scriptorium"
+    },
+    "clock_garden": {
+      "old": "Clock Garden",
+      "new": "Cloister Garden"
+    },
+    "gear_lease": {
+      "old": "Gear Lease",
+      "new": "Market Stall"
+    },
+    "city_blueprint": {
+      "old": "City Blueprint",
+      "new": "Town Plans"
+    },
+    "grand_engine": {
+      "old": "Grand Engine",
+      "new": "Cloth Hall"
+    },
+    "civic_scholar": {
+      "old": "Civic Scholar",
+      "new": "Court Scholar"
+    },
+    "museum_curator": {
+      "old": "Museum Curator",
+      "new": "Royal Chronicler"
+    },
+    "patron_circle": {
+      "old": "Patron Circle",
+      "new": "Benefactors"
+    },
+    "silver_statue": {
+      "old": "Silver Statue",
+      "new": "Silver Reliquary"
+    },
+    "civic_embassy": {
+      "old": "Civic Embassy",
+      "new": "Foreign Envoy"
+    },
+    "inventors_medal": {
+      "old": "Inventor’s Medal",
+      "new": "Builder’s Honour"
+    },
+    "spark_coil": {
+      "old": "Spark Coil",
+      "new": "Favour Purse"
+    },
+    "brass_bond": {
+      "old": "Brass Bond",
+      "new": "Merchant Bond"
+    },
+    "relay_junction": {
+      "old": "Relay Junction",
+      "new": "Market Square"
+    },
+    "chain_drive": {
+      "old": "Chain Drive",
+      "new": "Guild Procession"
+    },
+    "flywheel": {
+      "old": "Flywheel",
+      "new": "Tithe Barn"
+    },
+    "timer_switch": {
+      "old": "Timer Switch",
+      "new": "Royal Commission"
+    },
+    "belt_sorter": {
+      "old": "Belt Sorter",
+      "new": "Grain Sorter"
+    },
+    "salvage_hook": {
+      "old": "Salvage Hook",
+      "new": "Ragpicker"
+    },
+    "millrace": {
+      "old": "Millrace",
+      "new": "Changing of the Guard"
+    },
+    "slag_furnace": {
+      "old": "Slag Furnace",
+      "new": "Lime Kiln"
+    },
+    "spark_exchange": {
+      "old": "Spark Exchange",
+      "new": "Favour Broker"
+    },
+    "picket_line": {
+      "old": "Picket Line",
+      "new": "Town Gossip"
+    },
+    "corrosion_crew": {
+      "old": "Corrosion Crew",
+      "new": "Tax Farmer"
+    },
+    "noise_complaint": {
+      "old": "Noise Complaint",
+      "new": "Guild Dispute"
+    },
+    "whistleblower": {
+      "old": "Whistleblower",
+      "new": "Court Informer"
+    },
+    "ground_wire": {
+      "old": "Ground Wire",
+      "new": "Sanctuary Writ"
+    },
+    "redline_boiler": {
+      "old": "Redline Boiler",
+      "new": "Usurer"
+    },
+    "pressure_test": {
+      "old": "Pressure Test",
+      "new": "Royal Audit"
+    },
+    "overload_relay": {
+      "old": "Overload Relay",
+      "new": "Royal Progress"
+    },
+    "scrapyard_broker": {
+      "old": "Scrapyard Broker",
+      "new": "Debt Collector"
+    },
+    "surveyor": {
+      "old": "Surveyor",
+      "new": "Surveyor"
+    },
+    "zoning_board": {
+      "old": "Zoning Board",
+      "new": "Borough Reeve"
+    },
+    "ribbon_cutter": {
+      "old": "Ribbon Cutter",
+      "new": "Royal Dedication"
+    },
+    "town_crier": {
+      "old": "Town Crier",
+      "new": "Bellman"
+    },
+    "civic_bond": {
+      "old": "Civic Bond",
+      "new": "Civic Tribute"
+    },
+    "city_charter": {
+      "old": "City Charter",
+      "new": "Civic Charter"
+    },
+    "patent_ledger": {
+      "old": "Patent Ledger",
+      "new": "Guild Register"
+    },
+    "plaque_foundry": {
+      "old": "Plaque Foundry",
+      "new": "Heraldic Painter"
+    },
+    "canal_lights": {
+      "old": "Canal Lights",
+      "new": "River Quay"
+    },
+    "public_clock": {
+      "old": "Public Clock",
+      "new": "Bell Tower"
+    },
+    "makers_fair": {
+      "old": "Makers Fair",
+      "new": "Charter Fair"
+    },
+    "tram_extension": {
+      "old": "Tram Extension",
+      "new": "King’s Road"
+    },
+    "skybridge": {
+      "old": "Skybridge",
+      "new": "Stone Bridge"
+    },
+    "library_lanterns": {
+      "old": "Library Lanterns",
+      "new": "Hall of Records"
+    },
+    "waterwheel": {
+      "old": "Waterwheel",
+      "new": "River Mill"
+    },
+    "city_illumination": {
+      "old": "City Illumination",
+      "new": "City Walls"
+    },
+    "harbor_beacon": {
+      "old": "Harbor Beacon",
+      "new": "Harbour Light"
+    },
+    "foundry_gate": {
+      "old": "Foundry Gate",
+      "new": "Castle Gate"
+    },
+    "power_exchange": {
+      "old": "Power Exchange",
+      "new": "Exchange Hall"
+    },
+    "rail_terminus": {
+      "old": "Rail Terminus",
+      "new": "Royal Granary"
+    },
+    "aqueduct": {
+      "old": "Aqueduct",
+      "new": "Great Conduit"
+    }
+  }
+}

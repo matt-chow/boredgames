@@ -1,15 +1,15 @@
 /** Display helpers shared by the deck table. Pure, so they can be tested without a browser. */
 import type { CardDef, CardType, LogEntry, Ruleset } from '../../../engine/deckbuilder';
 
-/** Muted card-type colours. Sprout is never one of them: on the table it only ever means "legal / your move". */
+/** Muted card-type colours, which a game's theme can replace. Sprout is never one of them: on the table it only ever means "legal / your move". */
 const TYPE_COLOR: Record<CardType, string> = {
-  action: '#5f7690',
-  treasure: '#c99a35',
-  victory: '#86689e',
-  penalty: '#6e4140',
-  attack: '#a94f39',
-  reaction: '#4d8486',
-  duration: '#b57d45',
+  action: 'var(--type-action, #5f7690)',
+  treasure: 'var(--type-treasure, #c99a35)',
+  victory: 'var(--type-victory, #86689e)',
+  penalty: 'var(--type-penalty, #6e4140)',
+  attack: 'var(--type-attack, #a94f39)',
+  reaction: 'var(--type-reaction, #4d8486)',
+  duration: 'var(--type-duration, #b57d45)',
 };
 
 /** The card's edge: one band for each type, top to bottom. */
@@ -39,7 +39,7 @@ const PLACE: Record<string, string> = {
 };
 
 /** One line of the table log. Unknown kinds fall through to a plain line, so a new engine event can't break the UI. */
-export function logLine(e: LogEntry, name: (seat: number) => string, cardName: (key: string) => string): string {
+export function logLine(e: LogEntry, name: (seat: number) => string, cardName: (key: string) => string, tokenName: (token: string) => string = (t) => t): string {
   const who = name(e.seat);
   const named = e.keys ? list(e.keys, cardName) : '';
   if (e.kind.startsWith('move:')) return `${who} ${PLACE[e.kind.slice(5)] ?? 'moves'}: ${named || cards(e.count ?? 0)}`;
@@ -63,7 +63,7 @@ export function logLine(e: LogEntry, name: (seat: number) => string, cardName: (
     case 'vp':
       return `${who} takes ${e.count} point ${e.count === 1 ? 'token' : 'tokens'}`;
     case 'token':
-      return `${who}: ${e.count} ${e.token}`;
+      return `${who}: ${e.count} ${tokenName(e.token ?? '')}`;
     case 'claim':
       return `${who} completes ${e.project ? cardName(e.project) : 'a project'}`;
     case 'surcharge':

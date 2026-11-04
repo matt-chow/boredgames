@@ -7,7 +7,7 @@
   import { router } from '../client/lib/router.svelte';
   import { loadString, save } from '../client/lib/storage';
   import { MAX_NAME, normalizeName, type RoomSummary } from '../shared/protocol';
-  import { GAME_UI, type GameUiProps } from '../games/ui';
+  import { GAME_THEME, GAME_UI, type GameUiProps } from '../games/ui';
   import Lobby from './Lobby.svelte';
   import Icon from './Icon.svelte';
 
@@ -77,6 +77,11 @@
   const room = $derived(conn?.room ?? null);
 
   $effect(() => {
+    // A theme that fails to load leaves the game playable in the shared look.
+    GAME_THEME[room?.gameId ?? '']?.().catch(() => {});
+  });
+
+  $effect(() => {
     const id = room?.gameId;
     if (!id || GameUi || room?.status === 'lobby') return;
     const load = GAME_UI[id];
@@ -104,6 +109,7 @@
 </script>
 
 {#if stage === 'live' && conn}
+  <div class="themed" data-game-theme={room?.gameId}>
   {#if conn.ended}
     <div class="center">
       <div class="note">
@@ -129,6 +135,7 @@
       <Icon name="wifiOff" size={16} /> Reconnecting… your seat is safe.
     </div>
   {/if}
+  </div>
 {:else}
   <div class="center">
     {#if stage === 'loading'}
@@ -167,6 +174,9 @@
 {/if}
 
 <style>
+  .themed {
+    display: contents;
+  }
   .center {
     height: 100%;
     display: grid;

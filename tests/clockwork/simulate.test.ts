@@ -193,6 +193,7 @@ describe('in a room', () => {
 describe('audit', () => {
   const spec = JSON.parse(readFileSync('data/clockwork-commons/clockwork_commons_original_cardset.json', 'utf8'));
   const tests = ['tests/clockwork/cards.test.ts', 'tests/clockwork/rules.test.ts'].map((f) => readFileSync(f, 'utf8')).join('\n');
+  const names = JSON.parse(readFileSync('data/clockwork-commons/name-mapping.json', 'utf8')) as { cards: Record<string, { old: string; new: string }> };
 
   it('CC-AUDIT-1: all 50 supplied designs exist, with the supplied cost and Prestige', () => {
     const byKey = new Map(CARDS.map((c) => [c.key, c]));
@@ -205,7 +206,8 @@ describe('audit', () => {
     for (const w of spec.public_works) {
       const def = WORKS.find((x) => x.key === w.id);
       expect(def, w.id).toBeDefined();
-      expect(def!.name).toBe(w.name);
+      expect(names.cards[w.id].old).toBe(w.name);
+      expect(def!.name).toBe(names.cards[w.id].new);
     }
   });
   it('CC-AUDIT-2: every card and Public Work has a named behaviour test', () => {

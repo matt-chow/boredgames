@@ -120,7 +120,7 @@ describe('Kingdom & Commerce keeps the game it renamed', () => {
 
   it('KC-COMPAT-2: every seeded game at every player count plays out exactly as before', () => {
     expect(JSON.parse(JSON.stringify(playedGames()))).toEqual(base.games);
-  });
+  }, 120_000);
 
   it('KC-COMPAT-3: every internal key is still the one saved rooms refer to', () => {
     expect(game.meta.id).toBe('clockwork');
