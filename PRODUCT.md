@@ -42,7 +42,7 @@ the physical game. The trading is negotiated, not menu-driven. Nobody can cheat 
 
 - Rooms are joined by a 6-character code, and players enter only a display name.
 - Variants: Three New Bean Types, Field Bean, Bean Coin and Magpie. Duel is never offered, because it is for 2 players only.
-- The game has a "How to Play" popup, an end-of-game summary, reduced-motion, low-performance and mute settings, and
+- Each game has an in-game guide, an end-of-game summary, reduced-motion, low-performance and mute settings, and
   both spatial and compact table layouts.
 - **Artwork is original.** No official Bohnanza artwork is licensed. Card art must be replaceable through an asset
   manifest without touching rules or networking.

@@ -23,6 +23,7 @@ async function noSideScroll(page: Page) {
 test.describe('the home page', () => {
   for (const size of SIZES)
     test(`every game card is whole and reachable at ${size.width}x${size.height}, with 24 extra games`, async ({ page }) => {
+      test.skip(!!process.env.E2E_BASE_URL, 'the ?games fixture exists only on the dev server');
       await page.setViewportSize(size);
       await page.goto('/?games=24');
       const cards = page.locator('.games .feature');
@@ -67,6 +68,7 @@ test.describe('the home page', () => {
   });
 
   test('a long name wraps, and a game without a fan draws blank cards', async ({ page }) => {
+    test.skip(!!process.env.E2E_BASE_URL, 'the ?games fixture exists only on the dev server');
     await page.goto('/?games=1');
     const sample = page.locator('.feature', { hasText: 'A very long sample' });
     await expect(sample.locator('.blank')).toHaveCount(3);

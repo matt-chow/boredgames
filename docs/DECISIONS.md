@@ -225,3 +225,8 @@ writing KC3-VER-6. This is in the game-agnostic server, so it applies to any gam
 Each game's guide is a typed document in its `ui` folder, drawn by one shared `Guide.svelte`. GUIDE-* tests compare its numbers
 with the rulesets and replay its worked examples on the real engine, so a rules change fails until the guide is corrected. They
 check the scenarios, not every sentence: prose can still drift.
+
+### D34. A bot fix applies only to new editions
+The v3 bot stops trashing its own Renown only when the game's `rulesVersion` is 3 or higher. Bots are part of how a room plays, so
+fixing them everywhere would have changed rooms already in progress and the golden games that prove v2 hasn't drifted. The cost is
+that v2 rooms keep the weaker bot until they end.

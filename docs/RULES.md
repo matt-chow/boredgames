@@ -10,6 +10,9 @@ Rule IDs (R1.1, R4.6, …) are the names of tests in `tests/bohnanza/base-rules.
 at least one test. Lines marked **Interpretation** cover a point the rulebook leaves open. Each records what we chose
 and why. Tests cover their consequences.
 
+The in-game guide (`src/games/bohnanza/ui/guide.ts`) explains these rules to players. This file stays the authority, and
+GUIDE-* tests check the guide's numbers and worked examples against the engine.
+
 The engine is `src/games/bohnanza/rules/engine.ts`. It is a pure reducer: `apply(state, seat, action)` either returns
 a new state or rejects the action with a plain-language reason.
 

@@ -129,3 +129,43 @@ Work on branch `feat/v3`, reversible point: tag `pre-v3` at `6482560`. Productio
 **Checkpoint 2, homepage.** The bookshelf is gone (`GameBox`, `shelf.spec.ts`). Feature cards and game-owned fans replace
 it; **Open Table** opens the existing `GamePanel`. `tests/e2e/home.spec.ts`: 14/14 on one worker in Edge against the dev
 server, covering six viewports with 24 extra games.
+
+**Checkpoint 3, Kingdom visuals.** Medieval palette, table materials, 110 SVG art entries and a Kingdom cover, scoped to
+`[data-game-theme='clockwork']`. `theme.spec.ts` (KC-THEME-1) passes: nothing reaches the hub or Bohnanza. The art is SVG, not
+generated paintings (ASSETS.md).
+
+**Checkpoints 4 and 5, economy and content.** The v3 edition (`rulesVersion` 3): 7 basics in a permanent supply, private Renown,
+trashing, Royal Debt, attacks and reactions, and the new Crown Decrees set of 24 cards. The catalogue is 88 market cards in 5 sets,
+60 of them in the default Core + Crown Decrees game, and 15 Crown Projects. CLOCKWORK.md has the rules, tests are `KC3-*`.
+
+**Checkpoint 6, guides.** One shared `Guide.svelte`, one data document per game, opened from ? and the pre-game panel, with
+three levels, search, contents and contextual links. `guide.spec.ts` 4/4. GUIDE-* unit tests check the numbers and worked examples
+against the engine, not every sentence.
+
+**Checkpoint 7, gameplay testing.** On the code as of `a86a47a`: `npm run check` 0 errors, `npx vitest run` 538/538 in 19 files
+(run before the phone CSS fix, which touched no rules), `npm run build` passes. Browser, local, one worker, one spec at a time:
+`deck` 7/7, `play` 5/5, `complete` 4/4, `resilience` 3/3, `theme` 1/1, `home` 14/14 and `guide` 4/4 after the step-line change.
+`bots` 2/2 and `lobby` 2/2 just before it. `clockwork` 6/6, with CC-E2E-1, 4 and 5 last run before it and CC-E2E-2, 3 and 6 after.
+Balance: CLOCKWORK_BALANCE.md at 40 games per comparison, no card numbers changed.
+
+Found and fixed by these runs: bots trashed their own Renown (`KC3-BOT-1`, v3 only). The step line's ? was inside the live region,
+so screen readers announced it, in both games.
+
+**Checkpoint 8, compatibility.** `compat.test.ts` replays golden v2 games against a baseline. Also tested on real deployments, see
+checkpoint 10.
+
+**Checkpoint 9, visual QA.** Screenshots read by eye at 1366×768, 1366×860, 1024×600 and 390×844: table, Market phase, Play All,
+inspection, Deck Overview, lobby, end summary, and Bohnanza for comparison. One fault fixed: on a phone, the dashboard collapsed
+into a column beside the action buttons and covered the market. CC-E2E-6 now checks its height. Not checked: a physical phone, Safari.
+
+**Checkpoint 10, staging: partly verified.** `npm run deploy:staging` succeeded, version `4c4a3a73-ac34-496b-a720-51d86f723dd3` on
+https://boredgames-staging.mchowcl.workers.dev, with its own Worker and Durable Object namespace. Production stayed on
+`dc6aade2-31b8-4ee7-a3f1-8aa79f579a60`.
+
+- **Rules update, on real rooms:** a Kingdom & Commerce room and a Bohnanza room were started on the build staging had before. After
+  the deploy both reopened from the same cookies. The Kingdom room reported edition 2 and the same 16 piles, and was played to the end
+  with no page errors. This was one person and one bot. It used a temporary spec that isn't in the repo.
+- **Specs against staging:** `theme` 1/1, `lobby` 2/2, `home` 7 passed. The other 7 need the dev-only `?games` fixture, and now skip
+  on a deployed build; that skip hasn't been re-run.
+- **Not run on staging:** `guide`, `play`, `resilience`, `bots`, `clockwork`, `complete`. The system stopped the run for low memory. So no
+  complete v3 game and no two-person sync have been verified on staging yet.

@@ -77,7 +77,7 @@ were added, and both faults are now caught.
 | `bots.spec.ts` | one player practises against bots | From the home page's "Practise with bots", adds a bot in the lobby, starts, and plays until the turn has come back twice, so the bots took their turns through the server alarm |
 | | panning the table selects no text, and an offer started from a card asks who it is for | A leftover selection on the table does not block the next pan; tapping a hand card opens a slip with no recipient and Send disabled until one is picked |
 | `perf.spec.ts` | action round-trip, idle CPU, frame pacing, transfer size | See Performance below |
-| `clockwork.spec.ts` | CC-E2E-1 to CC-E2E-6 | Hub listing and lobby sets/market/Works; art, Spark and inspection; full game with rematch; two people in sync with reload and frame privacy; 6-seat game; phone layout |
+| `clockwork.spec.ts` | CC-E2E-1 to CC-E2E-6 | Hub listing and lobby sets/market/Crown Projects; art, Influence and inspection; full game with rematch; two people in sync with reload and frame privacy; 6-seat game; phone layout |
 | `deck.spec.ts` | DB-UI-1 to DB-UI-7, on the bench | Lobby market and bans; random market honours bans; a full game against a bot with rematch; two players with reload mid-decision, raw wrong-turn and stale rejection, and frame privacy; inspection and pile listing; phone layout with long-press inspection; card animations |
 
 **Latest results.**
@@ -145,9 +145,9 @@ fit in the 100,000 rows-written daily limit. See DEPLOYMENT.md.
   guarantee it in every run. V5.x unit tests cover the rules.
 - **Real devices.** Phone layouts were tested with a phone viewport in desktop Edge, not on a physical phone or Safari.
 - **Sound** has no automated test, and no one has listened to it yet. The owner should check it once.
-- **Clockwork Commons in a browser:** full browser games use one or two people, plus bots up to six seats. Every card's rules
+- **Kingdom & Commerce in a browser:** full browser games use one or two people, plus bots up to six seats. Every card's rules
   run in unit tests and server-side games, but random markets mean any browser run reaches only some of the prompts for
-  attacks, reactions and Devices. The 3–6 player person-only games are server-side simulations. Balance is measured with
+  attacks, reactions and Establishments. The 3–6 player person-only games are server-side simulations. Balance is measured with
   heuristic bots at a small sample (CLOCKWORK.md).
 - **Dependency audit.** `npm audit` reports 2 low-severity advisories in `deepmerge`, a dev-only dependency of
   `@sveltejs/vite-plugin-svelte`. No fix is available upstream; nothing ships to users.
@@ -165,11 +165,35 @@ Run before the last small changes (test-only, plus documentation):
 
 - `shelf.spec.ts` and `theme.spec.ts`: 13 / 13 on one worker.
 
-### Still to run
+The specs this section once listed as still to run have since passed on the v3 code, below.
 
-`clockwork`, `deck`, `bots`, `play`, `lobby` and `complete`, locally and then against staging. These have **no result**
-since the rebrand, which is now in production. The system stopped the run for low memory on this 7.5 GB machine, and it left no results. A test browser's
-GPU process alone had reached 869 MB. Close other programs first, and run the specs one file at a time:
+## v3.0 results (2026-11-04)
+
+PROGRESS.md has which spec ran on which commit. Local, one worker, one spec at a time:
+
+| Check | Result |
+|---|---|
+| `npm run check` | 0 errors |
+| `npx vitest run` | 538 / 538 in 19 files |
+| `npm run build` | passes, including the no-bench check |
+| `clockwork` | 6 / 6 |
+| `deck` | 7 / 7 |
+| `play` | 5 / 5 |
+| `complete` | 4 / 4 |
+| `resilience` | 3 / 3 |
+| `bots` | 2 / 2 |
+| `lobby` | 2 / 2 |
+| `guide` | 4 / 4 |
+| `home` | 14 / 14 |
+| `theme` | 1 / 1 |
+
+Not run on v3: the `perf` project.
+
+`complete` floods the dev server's output with `ResizeObserver loop completed` lines. The browser reports them from Bohnanza's
+size bindings (`Camera`, `Hand`), which v3 didn't change. They don't fail a test. Send output to a file and filter out `[WebServer]`:
+piping a run into `head` can cut off the result.
+
+On a machine this size, a long run can be stopped by the system for low memory. Close other programs and run one spec at a time:
 
 ```sh
 npx playwright test clockwork --workers=1 --project=functional
