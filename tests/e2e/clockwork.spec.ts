@@ -113,11 +113,11 @@ test.describe('Kingdom & Commerce', () => {
     await expect(host.page.locator('[data-set="core"]')).toBeChecked();
     await expect(host.page.locator('[data-set="foundry"]')).not.toBeChecked();
     await expect(host.page.locator('[data-pile="redline_boiler"]')).toHaveCount(0);
-    await expect(host.page.locator('[data-work]')).toHaveCount(8);
+    await expect(host.page.locator('[data-work]')).toHaveCount(10);
     await host.page.locator('[data-set="night"]').check({ force: true });
     await expect(host.page.locator('[data-pile="redline_boiler"]')).toBeVisible();
     await host.page.locator('[data-set="town"]').check({ force: true });
-    await expect(host.page.locator('[data-work]')).toHaveCount(13);
+    await expect(host.page.locator('[data-work]')).toHaveCount(15);
     await host.page.locator('[data-work="waterwheel"]').click();
     await expect(host.page.locator('[data-work="waterwheel"]')).toHaveAttribute('aria-pressed', 'true');
     await expect(host.page.getByRole('button', { name: 'Start the game' })).toBeDisabled();

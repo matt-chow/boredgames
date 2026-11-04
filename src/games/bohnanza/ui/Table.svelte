@@ -417,7 +417,7 @@
         {#if over}Game over{:else if isActive}Your turn{:else}{name(g.active)}’s turn{/if}
       </span>
     </div>
-    <p class="step" class:mine={step.mine} aria-live="polite">{step.text}<button type="button" class="ctx" aria-label="Explain this step" onclick={() => help(helpHere)}>?</button></p>
+    <div class="stepline"><p class="step" class:mine={step.mine} aria-live="polite">{step.text}</p><button type="button" class="ctx" aria-label="Explain this step" onclick={() => help(helpHere)}>?</button></div>
     <div class="tools">
       <button class="btn icon ghost" aria-label="Table log" onclick={() => (logOpen = !logOpen)}><Icon name="log" /></button>
       <SettingsMenu onhelp={() => help(null)} onquit={room.status === 'playing' ? () => (quitting = true) : undefined} />
@@ -664,6 +664,16 @@
   }
   .turn.you {
     color: var(--sprout);
+  }
+  /* The ? sits beside the live region, so a screen reader announces the step and not the button. */
+  .stepline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
+  }
+  .ctx {
+    flex: none;
   }
   .step {
     margin: 0;
@@ -1042,8 +1052,11 @@
     .tools {
       grid-area: tools;
     }
-    .step {
+    .stepline {
       grid-area: step;
+      justify-content: flex-start;
+    }
+    .step {
       text-align: left;
       font-size: 14px;
     }

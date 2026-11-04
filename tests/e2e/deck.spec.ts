@@ -175,11 +175,11 @@ test('DB-UI-3 a whole game through the UI against a bot reaches the results, and
 
   // View the table, come back, rematch.
   await page.getByRole('button', { name: 'View table' }).click();
-  await expect(page.locator('.sum')).toHaveCount(0);
+  await expect(page.locator('.scrim .sum')).toHaveCount(0);
   await shot(page, 'table-over');
   await page.getByRole('button', { name: 'Results' }).click();
   await page.getByRole('button', { name: 'Play again' }).click();
-  await expect(page.locator('.sum')).toHaveCount(0);
+  await expect(page.locator('.scrim .sum')).toHaveCount(0);
   expect(ana.errors).toEqual([]);
 });
 
@@ -291,10 +291,10 @@ test('DB-UI-5 cards can be inspected, and piles looked through, without playing 
   await expect
     .poll(async () => {
       await deckStep(ana);
-      return page.locator('.pile.tap').first().getAttribute('aria-label');
+      return page.getByRole('button', { name: /^Your discard pile/ }).getAttribute('aria-label');
     }, { timeout: 30_000 })
     .not.toContain(': 0 cards');
-  await page.locator('.pile.tap').first().click({ force: true });
+  await page.getByRole('button', { name: /^Your discard pile/ }).click({ force: true });
   const list = page.getByRole('dialog', { name: 'Your discard pile' });
   await expect(list).toBeVisible();
   // Copies in the list must not carry motion ids: only the table's own card may.
