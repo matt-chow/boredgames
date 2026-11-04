@@ -131,3 +131,50 @@ pending work is a JSON stack, so a game can stop at any decision and resume afte
 `GameModule` contract, so the server doesn't change. It is not registered in the hub and contains no game content;
 only a test fixture exercises it. Code from `paulbatum/Dominion` (MIT) was not reused, because its object graph doesn't
 persist. Scope and licensing questions are in DECKBUILDER_LICENSING.md, and the design is in DECKBUILDER.md.
+
+### D21. The deck table is built on a dev-only bench, before any card set exists
+No authorised card set exists yet, and inventing a catalog needs the owner's approval. The UI and infrastructure can
+still be built and tested, so they run on the fixture ruleset as a `deckbench` game. It exists only under
+`npm run dev:bench`, so D20's "not registered" still holds for production.
+
+- **Staying out of builds:** a literal `__DECK_BENCH__` guard at each site, an alias that stubs the module in builds,
+  and `scripts/no-bench.mjs`, which fails the build if anything is left. All three are needed: the first version used
+  a module-level constant, and the production bundles contained the fixture cards.
+- **Market config:** `GameModule` gains an optional `sanitizeConfig`, so a game can accept structured config while the
+  server stays game-agnostic. Boolean-only games leave it out and behave as before. A game can add a lobby section
+  through `GAME_SETUP`.
+- **Fixed tilt rather than true isometric:** the brief asks for a fixed-isometric view. The table reuses Bohnanza's
+  camera tilt with no rotation, because a 45° view skews the card text players have to read. This is a documented
+  difference from the brief, for the owner to confirm.
+- **`stateVersion` stays 1:** the new `play-treasures` frame and action only add to the shape, and no deck game has ever
+  been persisted outside a development machine.
+
+### D22. General mechanics, and no Dominion card set
+The owner asked to reassess implementing Dominion Second Edition's base game with the Bohnanza method. The comparison is
+in DECKBUILDER_LICENSING.md. Claude won't write that card set, its setup or a card-by-card mapping, in any form, so
+this is a limit on Claude's work and not a legal finding. The engine audit did find general gaps, so these were added
+as composable effects: `until`, zone and variable counts, combined conditions, whole-hand references, the trash as a
+choice source, `by` and `player` for acting across seats, `pick`, `select`, `pass-up`, `gain-card`, one-shot triggers,
+variable filters and points by kind of card.
+
+- **No new decision kinds:** several picks are repeated option prompts, so the table UI and the wire format don't change.
+- **`stateVersion` stays 1:** every change only adds to the shape, and no deck game has ever been persisted outside
+  development (as in D21).
+- **Privacy follows the decision, not the card's owner:** `by` shows cards only through `pending.cards`, which is sent
+  only to the deciding seat. Limbo stays private.
+
+### D23. Clockwork Commons is the first card set, and deck state is now versioned from here on
+The owner supplied an original card file and asked for it to be built, so the deck engine is now registered in the hub,
+replacing D20's "not registered" and D21's dev-only restriction for this game. The bench stays dev-only.
+
+- **Rules are data:** cards and Public Works are JSON effects on the generic engine, and the engine additions are all
+  optional `Ruleset` fields, so `src/server` didn't need to know about the game.
+- **`stateVersion` stays 1 for this release:** no deck game had been persisted outside development before it. From this
+  deployment on, deck games live in production, so **any further change to the state's shape needs a version bump and a
+  `migrate` step**.
+- **Balance results didn't change any card:** the sample is too small to override the owner's designs (CLOCKWORK.md).
+
+### D24. Staging is a separate Worker with its own Durable Objects
+`env.staging` in `wrangler.jsonc` deploys `boredgames-staging`. It has its own Durable Object namespace, so no room or
+session is shared with production. The Cloudflare Vite plugin picks the environment at build time, so `npm run
+deploy:staging` sets it, and refuses to publish a build not named for staging.

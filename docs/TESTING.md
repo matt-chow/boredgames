@@ -7,7 +7,13 @@ npm run check                     # svelte-check + Worker tsc: 0 errors, 0 warni
 npm test                          # Vitest unit, rules, projection, room-core and simulation tests
 npm run test:e2e                  # Playwright against a dev server it starts on :5174
 E2E_BASE_URL=https://boredgames.mchowcl.workers.dev npx playwright test   # same specs against the live site
+npm run dev:bench                 # dev server with the deck bench (fixture cards) on the hub
+npm run build                     # also fails if any of the bench reached the bundles (scripts/no-bench.mjs)
 ```
+
+The test server runs in bench mode so `deck.spec.ts` can host the fixture game. Playwright reuses a server already on
+:5174, so a plain `npm run dev` on that port makes the deck specs fail. Stop it first. `deck.spec.ts` can't run against
+the live site, because the bench isn't there. Set `DECK_SHOTS=<folder>` to save its screenshots.
 
 Playwright uses the installed Microsoft Edge (`msedge` channel) by default. To use Playwright's own Chromium, run
 `npx playwright install chromium` and set `E2E_CHANNEL=` (empty). Annotations (measurements, bot action counts)
@@ -27,6 +33,11 @@ that ID, so `npx vitest -t "R4.3"` runs one rule.
 | `tests/bohnanza/bot-player.test.ts` | B1, B2 | All-bot games across 7 configurations × 3 seeds, played by the server's bot; how the bot answers offers |
 | `tests/hub/catalog.test.ts` | | The hub catalog matches the server's listed games |
 | `tests/server/core.test.ts` | H1–H7 | Lobby, seats, host hand-over, versioning, stale and duplicate rejection, malformed input, undo limits, privacy of room views, restart/resume, retention, history, the Tally second game, bot seats (H7), quitting a game in progress: bot hand-over or ending the room (H8) |
+| `tests/deckbuilder/engine.test.ts`, `mechanics.test.ts`, `simulate.test.ts` | DB-* | The deck-building engine on fixture cards. See [DECKBUILDER.md](DECKBUILDER.md) |
+| `tests/clockwork/cards.test.ts` | CC-CARD-* | Each of the 71 cards' rules, one named test or more per card |
+| `tests/clockwork/rules.test.ts` | CC-SETUP, SPARK, PW, END, REACT, RUST, MARKET, PRIV, UNDO, I | Setup at each player count, Spark, each Public Work, endings, reactions, privacy, undo safety, interpretations |
+| `tests/clockwork/simulate.test.ts` | CC-SIM, CHAOS, ROOM, AUDIT | Complete games at 2–6 players through the room, with bots and with random legal answers; every card played and every Work claimed (CC-SIM-ALL); leak checks; determinism |
+| `tests/clockwork/art.test.ts` | CC-ART, CC-COVER | Art and its manifest for everything; coverage report complete |
 
 **Simulations.** The configurations are base 3/4/5, Magpie 4, Bean Coin 3 and 5, Three New Bean Types 3, Three New +
 Magpie 5, Field Bean 4, and Field Bean + Magpie 5. Each runs with the seeds `alpha`…`echo`. After every action it
@@ -41,7 +52,12 @@ checks:
 Each run writes its seed and full action sequence to `test-results/sim/<config>-<seed>.json`. `replay(seed, n, config,
 steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 
-**Latest result:** 7 files, **175 / 175 passed** (2026-11-02). `npm run check`: 0 errors, 0 warnings.
+**Latest result:** 10 files, **305 / 305 passed** (2026-11-03), including the earlier 175. `npm run check`: 0 errors,
+0 warnings.
+
+**Mutation check of the new mechanics** (2026-11-03, one-off, script not in the repo): 16 deliberate faults were put into
+`runtime.ts` one at a time. `mechanics.test.ts` caught 14. The other two were real test gaps, so DB-FX-30 and DB-FX-31
+were added, and both faults are now caught.
 
 ## Browser tests (Playwright)
 
@@ -61,9 +77,27 @@ steps)` in `tests/bohnanza/bot.ts` reproduces any run exactly.
 | `bots.spec.ts` | one player practises against bots | From the home page's "Practise with bots", adds a bot in the lobby, starts, and plays until the turn has come back twice, so the bots took their turns through the server alarm |
 | | panning the table selects no text, and an offer started from a card asks who it is for | A leftover selection on the table does not block the next pan; tapping a hand card opens a slip with no recipient and Send disabled until one is picked |
 | `perf.spec.ts` | action round-trip, idle CPU, frame pacing, transfer size | See Performance below |
+| `clockwork.spec.ts` | CC-E2E-1 to CC-E2E-6 | Hub listing and lobby sets/market/Works; art, Spark and inspection; full game with rematch; two people in sync with reload and frame privacy; 6-seat game; phone layout |
+| `deck.spec.ts` | DB-UI-1 to DB-UI-7, on the bench | Lobby market and bans; random market honours bans; a full game against a bot with rematch; two players with reload mid-decision, raw wrong-turn and stale rejection, and frame privacy; inspection and pile listing; phone layout with long-press inspection; card animations |
 
 **Latest results.**
 
+- **Clockwork Commons release** (2026-11-03): `npm run check` 0 errors; `npm test` 459 / 459. Full browser suite on one
+  worker, local: 27 passed, 1 skipped (a random-deal skip in `play.spec.ts`), 1 failed and 1 not run. The failure was
+  `CC-E2E-4`: a staging run started at the same time cleared the shared `test-results/` folder and removed its trace
+  files. Run alone, `CC-E2E-4` passed, and so did `perf.spec.ts`, which had been blocked by it. **Don't run two Playwright
+  runs from one checkout at once.** Staging: all 6 of `clockwork.spec.ts`. Production after deploying: `CC-E2E-1` to `3` and
+  all of `lobby`, `bots` and `complete` (11 passed).
+
+- **Local, general deck mechanics on the bench** (2026-11-03): `deck.spec.ts` alone on one worker: all 7 passed in
+  3.2 min. No browser test specifically drives the new mechanics, such as another player deciding or repeated option
+  picks. They are covered by unit tests and random simulations. The other specs were not re-run for this change, which
+  touched only the deck engine and fixture cards.
+- **Local, deck table on the bench** (2026-11-03): `deck.spec.ts` alone on one worker: all 7 passed in 3.7 min. The
+  **full suite has not completed with these changes.** The one attempt was stopped when the machine ran out of memory.
+  Before that, all 16 functional tests outside `deck.spec.ts` passed. `perf.spec.ts` never ran. Two deck tests failed
+  in that run and were then fixed in the spec: DB-UI-1 had too short a timeout under load, and DB-UI-7 checked for the
+  wrong elements. See Known gaps.
 - **Local, quit hands over to a bot or ends the game** (2026-11-02): all 17 tests passed in 5.3 min.
   **Live** after redeploying: all 17 passed in 3.7 min.
 - **Local, Quit game ends the game** (2026-11-02): all 16 tests passed in 5.9 min. **Live** after redeploying: all 16
@@ -101,6 +135,9 @@ fit in the 100,000 rows-written daily limit. See DEPLOYMENT.md.
 
 ## Known gaps
 
+- **Memory on the full suite.** On the 7.5 GB development laptop, three workers ran out of memory during the 24-test
+  run. Tests open browser contexts that stay open until their worker exits. `deck.spec.ts` now closes its own after
+  each test, and the older specs don't yet. Use `npx playwright test --workers=1` on a machine this size.
 - **Bean Coin claim dialog in the browser.** The e2e bot never reached the 5–6 coin field value needed to claim, so
   the claim / resist / hand-over dialog has not been exercised end to end. The rules behind it are covered by V4.2–V4.9
   unit tests and the `coin-3` / `coin-5` simulations.
@@ -108,5 +145,9 @@ fit in the 100,000 rows-written daily limit. See DEPLOYMENT.md.
   guarantee it in every run. V5.x unit tests cover the rules.
 - **Real devices.** Phone layouts were tested with a phone viewport in desktop Edge, not on a physical phone or Safari.
 - **Sound** has no automated test, and no one has listened to it yet. The owner should check it once.
+- **Clockwork Commons in a browser:** full browser games use one or two people, plus bots up to six seats. Every card's rules
+  run in unit tests and server-side games, but random markets mean any browser run reaches only some of the prompts for
+  attacks, reactions and Devices. The 3–6 player person-only games are server-side simulations. Balance is measured with
+  heuristic bots at a small sample (CLOCKWORK.md).
 - **Dependency audit.** `npm audit` reports 2 low-severity advisories in `deepmerge`, a dev-only dependency of
   `@sveltejs/vite-plugin-svelte`. No fix is available upstream; nothing ships to users.

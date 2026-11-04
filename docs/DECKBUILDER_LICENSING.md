@@ -18,8 +18,8 @@ Two different things limit this work, and they should not be confused:
 | Zones, seeded shuffling, turn structure, resources | None identified: functional mechanics | Built |
 | Decisions, attacks, reactions, durations, triggers, replays, cost changes, tokens, mats | None identified: functional mechanics | Built |
 | Multiplayer projection, undo safety, simulations, market validation and share codes | None: our own software | Built |
-| Original card sets using these mechanics, with original names, text and art | None identified, if independently designed | Not started; needs approval |
-| 2.5D table and card UI in the hub's own design language | None, if the look is our own | Not started |
+| Original card sets using these mechanics, with original names, text and art | None identified, if independently designed | Built: Clockwork Commons, from the owner's own card file (CLOCKWORK.md) |
+| 2.5D table and card UI in the hub's own design language | None, if the look is our own | Built; in production through Clockwork Commons |
 | Dominion's name and branding | Trademark question; Claude won't build it | Not built |
 | Dominion's card list and expansions, card by card, including renamed copies | Not a settled legal question here; Claude won't build it | Not built |
 | Its recommended market lists | Selection may be protected; Claude won't build it | Not built |
@@ -27,7 +27,42 @@ Two different things limit this work, and they should not be confused:
 | Its card art, layout and look | Copyright, possibly trade dress | Not built |
 
 **Closest alternative that keeps the mechanics:** original card sets on this engine, drawing on the same families of
-mechanics (see DECKBUILDER.md), designed as their own game and added to the hub only with the owner's approval.
+mechanics (see DECKBUILDER.md), designed as their own game and added to the hub only with the owner's approval. The owner
+supplied and approved one: Clockwork Commons.
+
+## Comparison with this repo's Bohnanza
+
+The owner asked whether Dominion Second Edition could be approached the way Bohnanza was. The review on 2026-11-03 found:
+
+| Question | What the Bohnanza code does |
+|---|---|
+| Rules to logic | The rulebooks were translated into numbered rules in `docs/RULES.md` and `docs/VARIANTS.md`, each with a test named by its ID. Gaps are written down as "Interpretation" lines. The logic is a hand-written reducer in `src/games/bohnanza/rules/engine.ts` |
+| Card definitions | One table in `src/games/bohnanza/rules/cards.ts`, typed `Record<Bean, BeanInfo>` |
+| Names, quantities, effects | The published names, counts and beanometers are reproduced, in code and in RULES.md. Bean behaviour is uniform, so the data is short. Special cases are in comments and the engine |
+| Artwork | Original placeholders in `src/games/bohnanza/ui/art.ts`. `docs/ASSETS.md` says no licence permitting redistribution was found, and nothing was scraped |
+| Separating mechanics from visuals | Rules never import art. `ASSET_OVERRIDES` allows licensed art to be added without touching rules |
+
+**The repo holds no permission for Bohnanza's content.** The position in `docs/ASSETS.md` covers art only. There is no
+document covering its names, counts, beanometers or the rules reproduced in RULES.md, and the README states only that
+it is an unofficial private project. So Bohnanza is not a precedent for permission. Whether that content needs
+permission is an open question for the owner, not something this note settles.
+
+**Technically the method would transfer. Claude won't apply it to Dominion's cards.** Numbered rules, typed definitions,
+tests by ID and art kept apart all work on this engine. But that method writes a published game's card set into the
+repo, which is the limit under Scope above. The difference from Bohnanza is one of what Claude will build, plus scale:
+Bohnanza's content is a short table of uniform beans, while Dominion's is a catalogue of individually designed cards,
+which is closer to open question 2 below. This note doesn't conclude that one is lawful and the other isn't.
+
+**Rulebook not read.** The fetch of the Second Edition rulebook PDF returned HTTP 403 on 2026-11-03, and no way around
+that was tried. Nothing here claims conformance to it. Mechanics were assessed from general knowledge of the genre.
+
+**What was done instead.** The engine gained general mechanics common across the genre (DB-FX-19…34, DB-ATT-8…14,
+DB-TRIG-5…7, DB-END-6, DB-PRIV-7…9), tested on cards named for what they exercise. The engine accepts any valid
+`Ruleset`, and has no Dominion ruleset, stub, setup table or card-by-card mapping. The limitation stays isolated: nothing
+in the engine, UI or server depends on which card set runs on it.
+
+An untracked planning file, `data/dominion/`, was in the working tree during this review. It wasn't used for anything here, it
+isn't in the tree now, and it was never committed.
 
 ## Sources reviewed
 
@@ -56,9 +91,30 @@ expression.
 
 ### `mehtank/androminion`
 
-- **Licence:** no repo-level licence file found in my search. The only licence text found was the Apache header on the
-  third-party `TouchListView`. **Treat it as not reusable.**
-- **Not inspected further:** the card description strings. Nothing from this repo was used.
+- **Licence:** none. GitHub's API reports no licence and the repo has no licence file. The only licence text found was
+  the Apache header on the third-party `TouchListView`. With no licence, no reuse right is granted. **Treat it as not
+  reusable.**
+- **What it is:** a Java Android app whose README calls it "Unofficial Dominion for Android" and says it is "neither
+  supported nor endorsed by Rio Grande Games". It has 109 Java files, and card strings in several languages under
+  `res/values-*/strings-cards.xml`.
+- **Reused here: nothing.** The card strings were located but not copied, and are the publisher's wording at most.
+
+### `sgraaf/dominion-setup`
+
+- **Licence:** GPL-3.0-only (`LICENSE` and `pyproject.toml`), by Steven van de Graaf.
+- **What it is:** a Python library and CLI that picks a setup. `src/dominion_setup/data/cards/*.json` holds structured
+  card data (`base.json` has 39 entries) with name, types, purpose, cost, set, editions, quantity, image and
+  instructions. `bin/scrape_cards_list.py` indicates the data was scraped.
+- **The licence does not clear the data.** The GPL can cover the author's code and, at most, their arrangement of the
+  data. It can't grant rights in a publisher's names or card text, and the README says nothing about card content.
+  Bundling GPL code or data here could also impose copyleft on what ships with it.
+- **Reused here: nothing.** Its market-selection idea is ordinary functionality, and this engine has its own.
+
+### Result
+
+None of the three repos supplies authorised card content. Nothing from them was copied, and none of their code was
+run. Game mechanics are generally not protected by copyright, but names, text, art and trade dress may be. Software
+licences on fan projects can't settle that, because the authors can only license what they own.
 
 ## Open questions
 

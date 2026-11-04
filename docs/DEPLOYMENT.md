@@ -6,6 +6,9 @@ billing upgrade is required. Do not add one without the owner's say-so.
 
 **Current deployment:** https://boredgames.mchowcl.workers.dev (Worker `boredgames`).
 
+**Staging:** https://boredgames-staging.mchowcl.workers.dev (Worker `boredgames-staging`). It has its own Durable Objects
+and shares no data with production (D24).
+
 ## First-time setup (owner)
 
 1. Create a free Cloudflare account and verify the email.
@@ -20,6 +23,16 @@ npm run check && npm test   # don't ship red
 npm run deploy              # vite build + wrangler deploy
 E2E_BASE_URL=https://<worker>.<subdomain>.workers.dev npx playwright test   # smoke test the live site
 ```
+
+Deploy to staging first and run the tests there:
+
+```sh
+npm run deploy:staging
+E2E_BASE_URL=https://boredgames-staging.mchowcl.workers.dev npx playwright test tests/e2e/clockwork.spec.ts --workers=1
+```
+
+The staging script builds for staging and stops if the build is for anything else. `npm run deploy` always builds again,
+for production, so its output can't carry over from staging.
 
 `wrangler.jsonc` holds the whole configuration: the Durable Object binding `ROOMS`, the migration tag `v1` declaring
 `RoomDO` as a SQLite class, SPA fallback for assets, and `run_worker_first` for `/api/*` and `/ws/*`. If you rename or

@@ -31,6 +31,8 @@
 | Game-module contract, seeded RNG | `src/engine` | nothing |
 | Bohnanza rules | `src/games/bohnanza/rules` | engine |
 | Second test game (Tally) | `src/games/tally` | engine |
+| Deck-building engine | `src/engine/deckbuilder` | engine |
+| Deck table UI, with a dev-only fixture game (D21) | `src/games/deck/ui`, `src/games/deckbench` | client libs, deck engine |
 | Registries | `src/games/registry.ts` (rules), `src/games/ui.ts` (lazy UI) | games |
 | Wire protocol | `src/shared/protocol.ts` | engine types |
 | Room lifecycle, sync, persistence interface | `src/server/core.ts` | engine, protocol (no Cloudflare APIs) |
@@ -48,7 +50,8 @@ are unit-tested without a Workers runtime.
 `src/engine/types.ts` defines `GameModule<Config, State, Action, View>`:
 
 - **metadata:** `meta` (id, name, min/max players, `stateVersion`).
-- **configuration:** `options`, `defaultConfig`, `validateConfig`.
+- **configuration:** `options`, `defaultConfig`, `validateConfig`, and an optional `sanitizeConfig` for settings that
+  aren't booleans. A game can add its own lobby section through `GAME_SETUP` in `src/games/ui.ts`.
 - **setup:** `setup({ playerCount, seed, config })`. All randomness comes from an RNG whose state is carried in the
   game state, so a game is reproducible from its seed and action log.
 - **legal actions and transitions:** `apply(state, seat, action)` returns `{ ok, state, undoable }` or
@@ -61,6 +64,9 @@ are unit-tested without a Workers runtime.
   receives only the bot seat's projection, so it cannot see hidden cards.
 - **UI registration:** one lazy entry in `GAME_UI`. Each table receives `{ conn, room }`. The hub lists games from
   `src/hub/catalog.ts`, which a unit test keeps in step with `LISTED_GAMES`.
+
+Clockwork Commons (`src/games/clockwork`) is data on the generic deck engine (`src/engine/deckbuilder`), with a shared table
+in `src/games/deck/ui`. The room core needed no game-specific change for it.
 
 The interface was shaped around one real game plus a deliberately tiny second one (`tally`). Tally exists to prove
 that the room core is game-agnostic; it is not listed in the hub.
