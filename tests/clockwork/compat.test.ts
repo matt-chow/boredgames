@@ -65,7 +65,9 @@ function catalogue() {
 /** A whole seeded bot game, as a fingerprint of everything that happened. */
 function fingerprint(players: number, seed: string) {
   let s = legacy.setup({ playerCount: players, seed, config: { market: [], bans: [], sets: ALL_SETS, projects: [] } });
-  const profiles = Array.from({ length: players }, (_, i) => PROFILES[(i * 3 + seed.length) % PROFILES.length]);
+  // The twelve bots that existed when the baseline was written. A later bot must not change who plays these seeds.
+  const bots = PROFILES.slice(0, 12);
+  const profiles = Array.from({ length: players }, (_, i) => bots[(i * 3 + seed.length) % bots.length]);
   let steps = 0;
   for (; steps < 30_000 && !s.over; steps++) {
     const [seat] = game.actors(s);

@@ -36,7 +36,7 @@ const start = async (p: Player) => {
 };
 
 /**
- * One step of a plain player, pressing what a person would press: answer the prompt, claim a Public Work, play what's
+ * One step of a plain player, pressing what a person would press: answer the prompt, claim a Crown Project, play what's
  * legal, buy the dearest pile, or move on. It never reads anything but the page.
  */
 function step(p: Player): Promise<string | null> {
@@ -105,7 +105,7 @@ async function playOut(players: Player[], limit: number) {
 test.describe('Kingdom & Commerce', () => {
   test.setTimeout(420_000);
 
-  test('CC-E2E-1: it is on offer in the hub, and the lobby shows sets, market and Public Works', async ({ browser }) => {
+  test('CC-E2E-1: it is on offer in the hub, and the lobby shows sets, market and Crown Projects', async ({ browser }) => {
     const host = await newPlayer(browser, 'Ada');
     await host.page.goto('/');
     await expect(host.page.getByText('Kingdom & Commerce').first()).toBeVisible({ timeout: 15_000 });
@@ -126,7 +126,7 @@ test.describe('Kingdom & Commerce', () => {
     await shot(host.page, 'cc-lobby');
   });
 
-  test('CC-E2E-2: a game shows art, Spark and Public Works, and inspection reads a card', async ({ browser }) => {
+  test('CC-E2E-2: a game shows art, Influence and Crown Projects, and inspection reads a card', async ({ browser }) => {
     const host = await newPlayer(browser, 'Ada');
     await table(host, 1);
     await start(host);
@@ -153,7 +153,7 @@ test.describe('Kingdom & Commerce', () => {
     await expect(host.page.locator('.sum h2')).toBeHidden({ timeout: 15_000 });
   });
 
-  test('CC-E2E-4: two people play in sync, a reconnect recovers the seat, and hands stay private', async ({ browser }) => {
+  test('CC-E2E-4: two people play in sync, a reconnect recovers the seat, and hands and Renown stay private (KC3-RENOWN-7)', async ({ browser }) => {
     const host = await newPlayer(browser, 'Ada');
     const guest = await newPlayer(browser, 'Bea');
     const code = await table(host);
@@ -174,14 +174,19 @@ test.describe('Kingdom & Commerce', () => {
     await playOut([host, guest], 3500);
     await expect(guest.page.locator('.sum h2')).toBeVisible({ timeout: 15_000 });
 
-    // Every view each browser was sent during play: only its own hand, and never another seat's cards or a deck order.
+    // Every view each browser was sent during play: only its own hand and Renown, never another seat's cards, a deck
+    // order or any final score.
     for (const p of [host, guest]) {
-      const views = roomViews(p).filter((v) => v.game && (v.game as { phase?: string }).phase !== 'over');
+      const views = roomViews(p).filter((v) => v.game && !(v.game as { over?: unknown }).over);
       expect(views.length).toBeGreaterThan(0);
       for (const v of views) {
-        const game = v.game as unknown as { players: Record<string, unknown>[] };
+        const game = v.game as unknown as { players: Record<string, unknown>[]; final: unknown };
+        expect(game.final, 'scores before the end').toBeNull();
         game.players.forEach((seat, i) => {
-          if (i !== v.you) expect(seat.hand, `seat ${i} seen by ${v.you}`).toBeUndefined();
+          if (i !== v.you) {
+            expect(seat.hand, `seat ${i} seen by ${v.you}`).toBeUndefined();
+            expect(seat.vp, `Renown of seat ${i} seen by ${v.you}`).toBeUndefined();
+          }
           expect(seat.deck).not.toBeInstanceOf(Array);
         });
       }
