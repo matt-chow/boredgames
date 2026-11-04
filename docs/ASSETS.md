@@ -20,6 +20,8 @@ The placeholders are fully functional:
 | Card back, coin, crate, table surface | CSS in `Card.svelte`, `Coins.svelte`, `Field.svelte`, `Camera.svelte` | Original (CSS only) | Project's own |
 | UI icons | `src/hub/Icon.svelte` (inline SVG paths) | Original, drawn for this project | Project's own |
 | Big Shoulders Stencil (label font, Latin subset, variable woff2) | `public/fonts/big-shoulders-stencil-latin.woff2` | The Big Shoulders Project Authors (github.com/xotypeco/big_shoulders) | SIL Open Font License 1.1 (`public/fonts/OFL.txt`) |
+| Box covers | `public/art/covers/*.svg` | Original, made for this project | Project's own |
+| Kingdom & Commerce card scenes (84, inline SVG) | `src/games/clockwork/ui/art.ts`, listed in `data/clockwork-commons/art-manifest.json` | Original, made for this project | Project's own |
 | Favicon | `public/favicon.svg` | Original | Project's own |
 | Sound effects | `src/client/lib/sound.ts` | Synthesised at runtime with the Web Audio API; no audio files | Project's own |
 

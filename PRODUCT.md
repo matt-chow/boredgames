@@ -23,7 +23,7 @@ Their job is to start a game quickly, play by the rules without arguing about th
 ## Product Purpose
 
 A private board game hub. Its first game is a complete, faithful online Bohnanza for 3–5 players with the official
-anniversary variants. Success means a full game plays to completion across devices without anyone needing to know
+anniversary variants. Its second is Kingdom & Commerce, an original deck-builder for 2–6. Success means a full game plays to completion across devices without anyone needing to know
 the rules by heart. Hidden information stays hidden, and reconnecting after a refresh is seamless.
 
 ## Positioning

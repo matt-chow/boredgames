@@ -85,6 +85,23 @@ Nothing about a room survives deletion. History rows hold only public informatio
 so they never contain hands or deck order. Cookies for deleted rooms simply stop matching anything, and they carry a
 `Max-Age`, so browsers drop them.
 
+## Releasing v2.0 (bookshelf and Kingdom & Commerce) to production
+
+Needs the owner's approval. Staging has been verified first (TESTING.md).
+
+```sh
+git switch feat/hub-v2 && git status                # clean, and on the commit staging was built from
+npx wrangler deployments list                       # note the current production version id, for rollback
+npm run check && npm test
+npm run deploy
+E2E_BASE_URL=https://boredgames.mchowcl.workers.dev npx playwright test shelf theme lobby --workers=1 --project=functional
+```
+
+No Durable Object migration, binding or secret changes. `stateVersion` is unchanged, so rooms in play carry on, and show
+the new wording on their next update. Rolling back restores the old look and wording, and those rooms still load, because
+nothing saved changed format. This holds for this release only: a later release with a real state migration can't assume
+that a code rollback reverses it. The git tag `pre-hub-v2` marks the code before this work.
+
 ## Rollback
 
 `npx wrangler deployments list` lists versions, and `npx wrangler rollback <version-id>` restores one. Persisted rooms

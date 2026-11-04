@@ -9,7 +9,7 @@
   "entries": [
     {
       "key": "scrap",
-      "name": "Scrap",
+      "name": "Clipped Penny",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-scrap",
@@ -54,7 +54,7 @@
     },
     {
       "key": "cog",
-      "name": "Cog",
+      "name": "Groat",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-cog",
@@ -105,7 +105,7 @@
     },
     {
       "key": "dynamo",
-      "name": "Dynamo",
+      "name": "Florin",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-dynamo",
@@ -139,7 +139,7 @@
     },
     {
       "key": "notebook",
-      "name": "Notebook",
+      "name": "Land Grant",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-notebook",
@@ -180,7 +180,7 @@
     },
     {
       "key": "blueprint",
-      "name": "Blueprint",
+      "name": "Manor Deed",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-blueprint",
@@ -200,7 +200,7 @@
     },
     {
       "key": "monument",
-      "name": "Monument",
+      "name": "Great Abbey",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-monument",
@@ -212,7 +212,7 @@
     },
     {
       "key": "rust",
-      "name": "Rust",
+      "name": "Debt",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-rust",
@@ -229,7 +229,7 @@
     },
     {
       "key": "gearwright",
-      "name": "Gearwright",
+      "name": "Guild Apprentice",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-gearwright",
@@ -242,7 +242,7 @@
     },
     {
       "key": "shift_bell",
-      "name": "Shift Bell",
+      "name": "Morning Bell",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-shift_bell",
@@ -262,7 +262,7 @@
     },
     {
       "key": "supply_crane",
-      "name": "Supply Crane",
+      "name": "Treadwheel Crane",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-supply_crane",
@@ -272,7 +272,7 @@
     },
     {
       "key": "copper_press",
-      "name": "Copper Press",
+      "name": "Coin Striker",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-copper_press",
@@ -283,7 +283,7 @@
     },
     {
       "key": "foreman",
-      "name": "Foreman",
+      "name": "Royal Architect",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-foreman",
@@ -294,7 +294,7 @@
     },
     {
       "key": "paper_fan",
-      "name": "Paper Fan",
+      "name": "Winnowing Fan",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-paper_fan",
@@ -306,7 +306,7 @@
     },
     {
       "key": "conveyor",
-      "name": "Conveyor",
+      "name": "Customs House",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-conveyor",
@@ -317,7 +317,7 @@
     },
     {
       "key": "sorting_glasses",
-      "name": "Sorting Glasses",
+      "name": "Assayer",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-sorting_glasses",
@@ -328,7 +328,7 @@
     },
     {
       "key": "springboard",
-      "name": "Springboard",
+      "name": "Post Rider",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-springboard",
@@ -338,7 +338,7 @@
     },
     {
       "key": "clockwork_archive",
-      "name": "Clockwork Archive",
+      "name": "Keeper of the Rolls",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-clockwork_archive",
@@ -346,7 +346,7 @@
     },
     {
       "key": "whistle_stop",
-      "name": "Whistle Stop",
+      "name": "Trading Port",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-whistle_stop",
@@ -354,7 +354,7 @@
     },
     {
       "key": "hand_crank",
-      "name": "Hand Crank",
+      "name": "Petitioner",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-hand_crank",
@@ -364,7 +364,7 @@
     },
     {
       "key": "charge_meter",
-      "name": "Charge Meter",
+      "name": "Lady-in-Waiting",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-charge_meter",
@@ -374,7 +374,7 @@
     },
     {
       "key": "capacitor_bank",
-      "name": "Capacitor Bank",
+      "name": "Audience Hall",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-capacitor_bank",
@@ -382,7 +382,7 @@
     },
     {
       "key": "steam_diverter",
-      "name": "Steam Diverter",
+      "name": "Crown Treasury",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-steam_diverter",
@@ -393,7 +393,7 @@
     },
     {
       "key": "glow_mason",
-      "name": "Glow Mason",
+      "name": "Guild Banquet",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-glow_mason",
@@ -409,7 +409,7 @@
     },
     {
       "key": "overcharge_lab",
-      "name": "Overcharge Lab",
+      "name": "Privy Council",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-overcharge_lab",
@@ -419,7 +419,7 @@
     },
     {
       "key": "signal_tower",
-      "name": "Signal Tower",
+      "name": "Road Warden",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-signal_tower",
@@ -430,7 +430,7 @@
     },
     {
       "key": "city_messenger",
-      "name": "City Messenger",
+      "name": "Royal Runner",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-city_messenger",
@@ -440,7 +440,7 @@
     },
     {
       "key": "inspection_team",
-      "name": "Inspection Team",
+      "name": "Tax Assessors",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-inspection_team",
@@ -454,7 +454,7 @@
     },
     {
       "key": "mutual_aid",
-      "name": "Mutual Aid",
+      "name": "Alms House",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-mutual_aid",
@@ -465,7 +465,7 @@
     },
     {
       "key": "permit_office",
-      "name": "Permit Office",
+      "name": "Licensing Hall",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-permit_office",
@@ -491,7 +491,7 @@
     },
     {
       "key": "maintenance_cart",
-      "name": "Maintenance Cart",
+      "name": "Toll Gate",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-maintenance_cart",
@@ -499,7 +499,7 @@
     },
     {
       "key": "lamplighter",
-      "name": "Lamplighter",
+      "name": "Scriptorium",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-lamplighter",
@@ -511,7 +511,7 @@
     },
     {
       "key": "clock_garden",
-      "name": "Clock Garden",
+      "name": "Cloister Garden",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-clock_garden",
@@ -519,7 +519,7 @@
     },
     {
       "key": "gear_lease",
-      "name": "Gear Lease",
+      "name": "Market Stall",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-gear_lease",
@@ -529,7 +529,7 @@
     },
     {
       "key": "city_blueprint",
-      "name": "City Blueprint",
+      "name": "Town Plans",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-city_blueprint",
@@ -539,7 +539,7 @@
     },
     {
       "key": "grand_engine",
-      "name": "Grand Engine",
+      "name": "Cloth Hall",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-grand_engine",
@@ -547,7 +547,7 @@
     },
     {
       "key": "civic_scholar",
-      "name": "Civic Scholar",
+      "name": "Court Scholar",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-civic_scholar",
@@ -555,7 +555,7 @@
     },
     {
       "key": "museum_curator",
-      "name": "Museum Curator",
+      "name": "Royal Chronicler",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-museum_curator",
@@ -563,7 +563,7 @@
     },
     {
       "key": "patron_circle",
-      "name": "Patron Circle",
+      "name": "Benefactors",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-patron_circle",
@@ -571,7 +571,7 @@
     },
     {
       "key": "silver_statue",
-      "name": "Silver Statue",
+      "name": "Silver Reliquary",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-silver_statue",
@@ -579,7 +579,7 @@
     },
     {
       "key": "civic_embassy",
-      "name": "Civic Embassy",
+      "name": "Foreign Envoy",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-civic_embassy",
@@ -589,7 +589,7 @@
     },
     {
       "key": "inventors_medal",
-      "name": "Inventor’s Medal",
+      "name": "Builder’s Honour",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-inventors_medal",
@@ -597,7 +597,7 @@
     },
     {
       "key": "spark_coil",
-      "name": "Spark Coil",
+      "name": "Favour Purse",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-spark_coil",
@@ -607,7 +607,7 @@
     },
     {
       "key": "brass_bond",
-      "name": "Brass Bond",
+      "name": "Merchant Bond",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-brass_bond",
@@ -615,7 +615,7 @@
     },
     {
       "key": "relay_junction",
-      "name": "Relay Junction",
+      "name": "Market Square",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-relay_junction",
@@ -623,7 +623,7 @@
     },
     {
       "key": "chain_drive",
-      "name": "Chain Drive",
+      "name": "Guild Procession",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-chain_drive",
@@ -631,7 +631,7 @@
     },
     {
       "key": "flywheel",
-      "name": "Flywheel",
+      "name": "Tithe Barn",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-flywheel",
@@ -641,7 +641,7 @@
     },
     {
       "key": "timer_switch",
-      "name": "Timer Switch",
+      "name": "Royal Commission",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-timer_switch",
@@ -649,7 +649,7 @@
     },
     {
       "key": "belt_sorter",
-      "name": "Belt Sorter",
+      "name": "Grain Sorter",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-belt_sorter",
@@ -659,7 +659,7 @@
     },
     {
       "key": "salvage_hook",
-      "name": "Salvage Hook",
+      "name": "Ragpicker",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-salvage_hook",
@@ -667,7 +667,7 @@
     },
     {
       "key": "millrace",
-      "name": "Millrace",
+      "name": "Changing of the Guard",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-millrace",
@@ -675,7 +675,7 @@
     },
     {
       "key": "slag_furnace",
-      "name": "Slag Furnace",
+      "name": "Lime Kiln",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-slag_furnace",
@@ -683,7 +683,7 @@
     },
     {
       "key": "spark_exchange",
-      "name": "Spark Exchange",
+      "name": "Favour Broker",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-spark_exchange",
@@ -691,7 +691,7 @@
     },
     {
       "key": "picket_line",
-      "name": "Picket Line",
+      "name": "Town Gossip",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-picket_line",
@@ -707,7 +707,7 @@
     },
     {
       "key": "corrosion_crew",
-      "name": "Corrosion Crew",
+      "name": "Tax Farmer",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-corrosion_crew",
@@ -717,7 +717,7 @@
     },
     {
       "key": "noise_complaint",
-      "name": "Noise Complaint",
+      "name": "Guild Dispute",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-noise_complaint",
@@ -725,7 +725,7 @@
     },
     {
       "key": "whistleblower",
-      "name": "Whistleblower",
+      "name": "Court Informer",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-whistleblower",
@@ -733,7 +733,7 @@
     },
     {
       "key": "ground_wire",
-      "name": "Ground Wire",
+      "name": "Sanctuary Writ",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-ground_wire",
@@ -744,7 +744,7 @@
     },
     {
       "key": "redline_boiler",
-      "name": "Redline Boiler",
+      "name": "Usurer",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-redline_boiler",
@@ -752,7 +752,7 @@
     },
     {
       "key": "pressure_test",
-      "name": "Pressure Test",
+      "name": "Royal Audit",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-pressure_test",
@@ -760,7 +760,7 @@
     },
     {
       "key": "overload_relay",
-      "name": "Overload Relay",
+      "name": "Royal Progress",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-overload_relay",
@@ -768,7 +768,7 @@
     },
     {
       "key": "scrapyard_broker",
-      "name": "Scrapyard Broker",
+      "name": "Debt Collector",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-scrapyard_broker",
@@ -784,7 +784,7 @@
     },
     {
       "key": "zoning_board",
-      "name": "Zoning Board",
+      "name": "Borough Reeve",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-zoning_board",
@@ -792,7 +792,7 @@
     },
     {
       "key": "ribbon_cutter",
-      "name": "Ribbon Cutter",
+      "name": "Royal Dedication",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-ribbon_cutter",
@@ -800,7 +800,7 @@
     },
     {
       "key": "town_crier",
-      "name": "Town Crier",
+      "name": "Bellman",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-town_crier",
@@ -808,7 +808,7 @@
     },
     {
       "key": "civic_bond",
-      "name": "Civic Bond",
+      "name": "Civic Tribute",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-civic_bond",
@@ -816,7 +816,7 @@
     },
     {
       "key": "city_charter",
-      "name": "City Charter",
+      "name": "Civic Charter",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-city_charter",
@@ -824,7 +824,7 @@
     },
     {
       "key": "patent_ledger",
-      "name": "Patent Ledger",
+      "name": "Guild Register",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-patent_ledger",
@@ -832,7 +832,7 @@
     },
     {
       "key": "plaque_foundry",
-      "name": "Plaque Foundry",
+      "name": "Heraldic Painter",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-CARD-plaque_foundry",
@@ -840,7 +840,7 @@
     },
     {
       "key": "canal_lights",
-      "name": "Canal Lights",
+      "name": "River Quay",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-canal_lights",
@@ -860,7 +860,7 @@
     },
     {
       "key": "public_clock",
-      "name": "Public Clock",
+      "name": "Bell Tower",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-public_clock",
@@ -874,7 +874,7 @@
     },
     {
       "key": "makers_fair",
-      "name": "Makers Fair",
+      "name": "Charter Fair",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-makers_fair",
@@ -882,7 +882,7 @@
     },
     {
       "key": "tram_extension",
-      "name": "Tram Extension",
+      "name": "King’s Road",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-tram_extension",
@@ -890,7 +890,7 @@
     },
     {
       "key": "skybridge",
-      "name": "Skybridge",
+      "name": "Stone Bridge",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-skybridge",
@@ -898,7 +898,7 @@
     },
     {
       "key": "library_lanterns",
-      "name": "Library Lanterns",
+      "name": "Hall of Records",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-library_lanterns",
@@ -906,7 +906,7 @@
     },
     {
       "key": "waterwheel",
-      "name": "Waterwheel",
+      "name": "River Mill",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-waterwheel",
@@ -914,7 +914,7 @@
     },
     {
       "key": "city_illumination",
-      "name": "City Illumination",
+      "name": "City Walls",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/ruleset.ts",
       "dedicatedTest": "CC-PW-city_illumination",
@@ -924,7 +924,7 @@
     },
     {
       "key": "harbor_beacon",
-      "name": "Harbor Beacon",
+      "name": "Harbour Light",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-PW-harbor_beacon",
@@ -932,7 +932,7 @@
     },
     {
       "key": "foundry_gate",
-      "name": "Foundry Gate",
+      "name": "Castle Gate",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-PW-foundry_gate",
@@ -940,26 +940,26 @@
     },
     {
       "key": "power_exchange",
-      "name": "Power Exchange",
+      "name": "Exchange Hall",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-PW-power_exchange",
       "alsoIn": []
     },
     {
-      "key": "aqueduct",
-      "name": "Aqueduct",
-      "source": "added",
-      "definedIn": "src/games/clockwork/rules/expansions.ts",
-      "dedicatedTest": "CC-PW-aqueduct",
-      "alsoIn": []
-    },
-    {
       "key": "rail_terminus",
-      "name": "Rail Terminus",
+      "name": "Royal Granary",
       "source": "added",
       "definedIn": "src/games/clockwork/rules/expansions.ts",
       "dedicatedTest": "CC-PW-rail_terminus",
+      "alsoIn": []
+    },
+    {
+      "key": "aqueduct",
+      "name": "Great Conduit",
+      "source": "added",
+      "definedIn": "src/games/clockwork/rules/expansions.ts",
+      "dedicatedTest": "CC-PW-aqueduct",
       "alsoIn": []
     }
   ]

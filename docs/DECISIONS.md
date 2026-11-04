@@ -178,3 +178,26 @@ replacing D20's "not registered" and D21's dev-only restriction for this game. T
 `env.staging` in `wrangler.jsonc` deploys `boredgames-staging`. It has its own Durable Object namespace, so no room or
 session is shared with production. The Cloudflare Vite plugin picks the environment at build time, so `npm run
 deploy:staging` sets it, and refuses to publish a build not named for staging.
+
+### D25. Kingdom & Commerce names avoid Dominion's
+The brief's rename offered examples such as Grand Market, Merchant Guild, Royal Steward and Noble Estate, and asked for a
+medieval economic kingdom-builder. That sits close to Dominion in genre, and those are or closely echo its card names and
+vocabulary. No Dominion card name was used, so a card that the brief illustrated with one has a different name. Mechanics
+and balance weren't touched. The owner's brief took precedence everywhere it was specific: the terms in the old-to-new table
+are exactly as requested.
+
+### D26. Inside Kingdom & Commerce, a bright gold takes the signal role
+Sprout green on burgundy and ivory fought with the palette. So inside `[data-game-theme='clockwork']`, `--sprout` is a brighter
+gold (`#edcb80`) that still means only "legal / your move". Antique gold on frames is duller and thinner, so the two read
+apart. The hub and Bohnanza keep sprout, and the role itself doesn't change.
+
+### D27. A rename reworded at projection, not in state
+Prompts and option labels are copied into saved state, so rooms saved before the rename hold the old words. Rewriting them
+would mean a migration and a `stateVersion` bump for no change in meaning, and a rollback couldn't undo it. Instead the
+ruleset's `present` rewords text as a view is built. State shape and `stateVersion` are unchanged, so a rollback to the
+previous build can still read every room. The old words stay in `legacy.ts` for as long as such rooms can exist.
+
+### D28. The game panel shows settings but doesn't edit them
+The panel lists each game's settings read-only, and the lobby stays the only place they are chosen. A second editor would
+need its own validation and a way to hand values to the room, and the server would still have to check them. Opening a table
+takes one more step in exchange for one authority.

@@ -1,7 +1,8 @@
 # Bored Games
 
-A private board game hub for a small group of friends. Its first game is a complete online **Bohnanza** for 3–5
-players. It also includes the official AMIGO anniversary variants that work at those player counts.
+A private board game hub for a small group of friends. It has a complete online **Bohnanza** for 3–5 players, with the
+official AMIGO anniversary variants that work at those player counts, and **Kingdom & Commerce**, an original medieval
+deck-builder for 2–6.
 
 - Live: https://boredgames.mchowcl.workers.dev
 - Stack: Svelte 5 + TypeScript + Vite on the client; Cloudflare Workers + SQLite-backed Durable Objects on the
@@ -11,10 +12,10 @@ players. It also includes the official AMIGO anniversary variants that work at t
 ## Play
 
 1. Open the site and enter a display name.
-2. On the game's crate, choose **Open a table**, or **Practise with bots** to play alone against simple computer
+2. Choose a game's box on the shelf, then **Open a table**, or **Practise with bots** to play alone against simple computer
    players. You can add bots from the lobby too.
 3. Share the six-letter code or the invite link. Friends join from their own devices.
-4. The host picks variants in the lobby and starts the game when 3–5 players are seated.
+4. The host picks the settings in the lobby and starts the game once enough players are seated.
 
 Each seat is bound to an HttpOnly cookie in the browser that took it. You can refresh, close the tab or lose the
 network, then come back and resume. Someone who only knows your name or the room code cannot take your seat.
@@ -56,9 +57,10 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 | [docs/TESTING.md](docs/TESTING.md) | Test suites, latest results and performance measurements |
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Cloudflare deployment, free-tier budget, retention |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Design and engineering decisions with reasons |
+| [docs/CLOCKWORK.md](docs/CLOCKWORK.md) | Kingdom & Commerce: rules, old and new names, art, theme |
 | [docs/ASSETS.md](docs/ASSETS.md) | Asset manifest and how to drop in licensed artwork |
 | [docs/PROGRESS.md](docs/PROGRESS.md) | Milestone status and known gaps |
 | [AGENTS.md](AGENTS.md) | Working rules for coding agents in this repo |
 
 Bohnanza is a game by Uwe Rosenberg, published by AMIGO and Rio Grande Games. This is an unofficial private project.
-All card artwork is original placeholder art (see docs/ASSETS.md).
+All card artwork is original (see docs/ASSETS.md).

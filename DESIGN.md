@@ -144,18 +144,21 @@ for panels and dialogs. Cards are portrait 5:7 (76 × 106 px at rest).
 - **Trading dock:** each proposed offer is a dashed "slip" (an offer addressed to you is edged in sprout). Once
   accepted, the cards fly to the receivers' pending area, so proposed and committed are never confused. Accept /
   Reject / Withdraw / Counter sit on the slip.
-- **Hub shelf:** the home page is a shelf of timber crates, one per listed game. A crate holds the game's cards fanned
-  as if dealt into it (the deal plays once on load, and the fan opens on hover or focus) and a paper label with the
-  stencilled name, a one-line pitch, players and length, and two actions: the sprout primary "Open a table" and the
-  plain "Practise with bots". An empty crate with dashed card outlines holds the place for the next game. The single
-  name field sits in the header and serves every action.
+- **Hub shelf:** the home page is a walnut bookshelf with one game box per catalog entry. The grid wraps, so a box is
+  never pushed off screen, and any number of games fits. Choosing a box opens its panel with the pitch, players, length,
+  settings and actions. The real settings stay in the lobby, which is their only authority. Active rooms are listed from
+  this browser's own history. Each box carries its game's own cover, so the shelf stays calm and the covers supply the
+  colour.
+- **Per-game themes:** a game may override tokens inside `[data-game-theme]`. Kingdom & Commerce uses burgundy, antique
+  gold, ivory and charcoal, and keeps the same layout, motion and components (docs/CLOCKWORK.md).
 - **Switches** (lobby variants): sprout when on; options that cannot be used at this player count stay visible with
   the reason.
 
 ## Do's and Don'ts
 
 - **Do** use the tokens in `src/client/styles/global.css`; never literal colours.
-- **Do** keep sprout for "legal / your turn" only.
+- **Do** keep sprout for "legal / your turn" only. A game theme may give that one role a different colour inside its own
+  rooms (D26), and must keep it to that one role.
 - **Do** animate `transform` and `opacity` only, with `--ease-out` and `--dur-1..3`, and skip motion under reduced
   motion or the low-performance setting.
 - **Don't** rotate the camera or skew text; controls stay front-facing.

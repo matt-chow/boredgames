@@ -65,8 +65,19 @@ are unit-tested without a Workers runtime.
 - **UI registration:** one lazy entry in `GAME_UI`. Each table receives `{ conn, room }`. The hub lists games from
   `src/hub/catalog.ts`, which a unit test keeps in step with `LISTED_GAMES`.
 
-Clockwork Commons (`src/games/clockwork`) is data on the generic deck engine (`src/engine/deckbuilder`), with a shared table
-in `src/games/deck/ui`. The room core needed no game-specific change for it.
+Kingdom & Commerce (`src/games/clockwork`, first released as Clockwork Commons) is data on the generic deck engine
+(`src/engine/deckbuilder`), with a shared table in `src/games/deck/ui`. The room core needed no game-specific change for it.
+
+**Presentation is per game; everything functional is shared.** Three things vary:
+
+- `src/hub/catalog.ts`: one data entry per game on the shelf (box cover, colours, pitch, player counts, length, settings
+  shown). `GameBox`, `GamePanel` and `RoomList` hold no game-specific code.
+- `GAME_THEME` in `src/games/ui.ts`: an optional lazy stylesheet. `RoomPage` puts `data-game-theme` around the room, and
+  the stylesheet's rules all start from that attribute, so it restyles through tokens and can't reach anything else.
+- A ruleset's optional `present(text)`: rewords text saved in state as a view is built, so a game can be renamed without
+  touching saved rooms or changing `stateVersion`.
+
+Networking, camera, drag and drop, animation, settings and accessibility aren't themed and aren't duplicated.
 
 The interface was shaped around one real game plus a deliberately tiny second one (`tally`). Tally exists to prove
 that the room core is game-agnostic; it is not listed in the hub.
