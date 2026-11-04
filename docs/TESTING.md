@@ -168,7 +168,7 @@ Run before the last small changes (test-only, plus documentation):
 ### Still to run
 
 `clockwork`, `deck`, `bots`, `play`, `lobby` and `complete`, locally and then against staging. These have **no result**
-since the rebrand. The system stopped the run for low memory on this 7.5 GB machine, and it left no results. A test browser's
+since the rebrand, which is now in production. The system stopped the run for low memory on this 7.5 GB machine, and it left no results. A test browser's
 GPU process alone had reached 869 MB. Close other programs first, and run the specs one file at a time:
 
 ```sh

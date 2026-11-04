@@ -96,8 +96,9 @@ https://boredgames-staging.mchowcl.workers.dev. Rules, sets, interpretations, ba
 
 ## v2.0: bookshelf and Kingdom & Commerce
 
-On `feat/hub-v2`, deployed to staging only. **Production is unchanged, and validation is incomplete.** Test state is in
-TESTING.md.
+Live in production since 2026-11-04 on the owner's instruction, as version `dc6aade2`, deployed from `feat/hub-v2`
+(not yet merged to `main`). The previous version is `788bce29`. **Validation is incomplete:** the browser specs below hadn't
+finished when it shipped. Test state is in TESTING.md.
 
 | Checkpoint | State |
 |---|---|
@@ -108,6 +109,7 @@ TESTING.md.
 | 6 Art and polish | Scenes done. Motion and sound have no per-game variation |
 | 7 Validation | **Partial:** the browser run was stopped for low memory |
 | 8 Staging | **Deployed, HTTP smoke test only:** no browser run against it yet |
+| Production | **Deployed, HTTP smoke test only:** no browser run against it yet |
 
 Not done:
 
