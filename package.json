@@ -14,6 +14,7 @@
     "balance": "vitest run --config scripts/balance.config.ts",
     "experiment:crown-end": "vitest run --config scripts/crown-end.config.ts",
     "experiment:crown-construction": "vitest run --config scripts/crown-construction.config.ts",
+    "experiment:bots": "vitest run --config scripts/bots.config.ts bot-benchmark --maxWorkers=1",
     "coverage:clockwork": "node scripts/clockwork-coverage.mjs",
     "deploy:staging": "node scripts/deploy-staging.mjs",
     "test:e2e": "playwright test",

@@ -200,6 +200,103 @@ function investmentsToEnd(v: DeckView): number {
   return open.slice(0, Math.max(0, (v.projectsEnd ?? 5) - done)).reduce((a, b) => a + b, 0);
 }
 
+/** Edition 4 plans from what the table can see. Earlier editions and trials keep the bots their rooms started with (CC-BOT-OLD). */
+const plans = (v: DeckView) => (v.rulesVersion ?? 0) >= 4 && !trial(v);
+const pileOf = (v: DeckView, key: string) => v.supply.find((p) => p.key === key)?.count ?? 99;
+const emptiedToEnd = (v: DeckView) => (v.players.length >= 5 ? 4 : 3);
+const openStages = (v: DeckView) => v.projects.reduce((a, p) => a + stagesLeft(p), 0);
+
+/** Roughly how many more rounds, by the nearest end condition, from public counts and the pace so far (CC-BOT-1). */
+export function roundsLeft(v: DeckView): number {
+  if (v.finalRound) return 0;
+  const n = v.players.length;
+  const played = Math.max(1, (v.turn.number + 1) / n);
+  const stages = v.projects.flatMap((p) => p.stages ?? []);
+  const funded = stages.filter((x) => x.by !== null).length;
+  const projects = openStages(v) / Math.max(n * 0.25, funded / played);
+  const duchies = pileOf(v, 'monument') / (n * 0.3);
+  const counts = v.market.map((k) => pileOf(v, k)).sort((a, b) => a - b);
+  const piles = counts.slice(0, emptiedToEnd(v)).reduce((a, c) => a + c, 0) / (n * 0.6);
+  return Math.min(projects, duchies, piles);
+}
+
+const cardRenown = (key: string): number => {
+  const vp = DEFS[key]?.vp;
+  if (typeof vp === 'number') return vp;
+  if (vp && 'base' in vp) return vp.base;
+  return vp && 'each' in vp ? vp.each * 2 : 0;
+};
+
+/**
+ * Each player's Renown as the table can see it: the starting Homesteads, funded stages, and cards shown as gained. Hidden gains don't appear (CC-BOT-2).
+ * shortcut: the view's log holds the last 300 entries, so a card gained long ago can drop out; to do better, count it on the server and make it public.
+ */
+export function publicRenown(v: DeckView): number[] {
+  const scores = v.players.map(() => 3);
+  for (const p of v.projects) for (const x of p.stages ?? []) if (x.by !== null) scores[x.by] += x.vp;
+  for (const e of v.log) {
+    if (e.to !== undefined || e.kind !== 'gain') continue;
+    for (const key of e.keys ?? []) scores[e.seat] += DEFS[key]?.types.includes('penalty') ? -1 : cardRenown(key);
+  }
+  if (v.you !== null && v.score) scores[v.you] = v.score.total;
+  return scores;
+}
+
+/** Would this buy or stage trigger the ending at the end of this turn? */
+function triggers(v: DeckView, action: DeckAction): boolean {
+  if (v.finalRound) return false;
+  if (action.type === 'claim') return openStages(v) === 1;
+  if (action.type !== 'buy') return false;
+  if (action.pile === 'monument') return pileOf(v, 'monument') === 1;
+  return v.market.includes(action.pile) && pileOf(v, action.pile) === 1 && v.market.filter((k) => pileOf(v, k) === 0).length === emptiedToEnd(v) - 1;
+}
+
+/** Renown a player can expect from their last turn. Used only to compare endings, never to read a hidden hand. */
+const LAST_TURN = 5;
+/** Clearly behind means by more than an estimate of this size can be trusted: about one Noble Estate. */
+const CLEARLY = 3;
+
+/** How far ahead you'd be once everyone still owed a turn has had it, after a move worth `gain` Renown. */
+function leadAfter(v: DeckView, gain: number): number {
+  const scores = publicRenown(v);
+  const n = v.players.length;
+  const owed = n - 1 - ((v.turn.number % n) + n) % n;
+  const later = new Set(Array.from({ length: owed }, (_, i) => (v.you! + 1 + i) % n));
+  const others = scores.map((s, seat) => (seat === v.you ? -Infinity : s + (later.has(seat) ? LAST_TURN : 0)));
+  return scores[v.you!] + gain - Math.max(...others);
+}
+
+/** Take an ending you'd win, refuse one you'd clearly lose, and otherwise judge the move as usual (CC-BOT-3). */
+function endingCall(v: DeckView, action: DeckAction, gain: number): 'take' | 'refuse' | null {
+  if (!triggers(v, action)) return null;
+  const lead = leadAfter(v, gain);
+  return lead > 0 ? 'take' : lead < -CLEARLY ? 'refuse' : null;
+}
+
+/** A stage in buyScore's units: its Renown, more as the game runs out, plus the reward, less the Influence it uses (CC-BOT-4). */
+function stageScore(v: DeckView, key: string, profile: Profile): number {
+  const p = v.projects.find((x) => x.key === key)!;
+  const r = roundsLeft(v);
+  if (v.finalRound) return p.vp * 10;
+  const rate = r <= 3 ? 5 : r <= 8 ? 3.5 : 2.5;
+  const influence = p.tokens[SPARK] ?? 0;
+  // The last two stages decide when the game ends, so the leader hurries them and anyone far behind holds back.
+  const lead = openStages(v) <= 2 ? leadAfter(v, p.vp) : 0;
+  const pressure = lead > CLEARLY ? 1.5 : lead < -CLEARLY ? 0.6 : 1;
+  return (p.vp + (stagesLeft(p) === 1 ? 1.5 : 0)) * rate * Math.max(0.6, profile.works) * pressure - influence * 0.5;
+}
+
+/** A card in the same units, from how many rounds it has left to pay for itself (CC-BOT-5). */
+function plannedBasic(key: string, v: DeckView, r: number): number {
+  if (key === 'monument') return r <= 5 || v.turn.coins >= 8 ? 30 : 4;
+  if (key === 'blueprint') return r <= 3 ? 14 : r <= 6 ? 8 : 1;
+  if (key === 'notebook') return r <= 1 ? 6 : r <= 2 ? 3 : -1;
+  const pays = Math.min(1, r / 3);
+  if (key === 'dynamo') return 7 * pays;
+  if (key === 'cog') return 3.5 * pays;
+  return -1;
+}
+
 /** Late in the game, once any end condition is near. Based only on public counts. */
 function isLate(v: DeckView, profile: Profile): boolean {
   const monuments = v.supply.find((p) => p.key === 'monument')?.count ?? 99;
@@ -212,6 +309,13 @@ function isLate(v: DeckView, profile: Profile): boolean {
 function buyScore(key: string, v: DeckView, profile: Profile, mine: string[], late: boolean): number {
   const d = DEFS[key];
   const cost = v.supply.find((p) => p.key === key)?.cost ?? d.cost;
+  const planned = plans(v);
+  if (planned) {
+    // On your last turn, only Renown you can take now counts.
+    if (v.finalRound) return cardRenown(key) > 0 && d.types.includes('victory') ? cardRenown(key) * 10 : -1;
+    if (d.basic) return plannedBasic(key, v, roundsLeft(v));
+    if (roundsLeft(v) <= 2 && !d.types.includes('victory')) return -1;
+  }
   if (d.basic) {
     if (key === 'scrap') return -1;
     if (key === 'monument') return late || v.turn.coins >= 8 ? 30 : 4;
@@ -277,8 +381,9 @@ function moves(v: DeckView, profile: Profile): DeckAction[] {
   if (v.legal.play.length) return [{ type: 'play-treasures' }, { type: 'end-phase' }];
   if (v.turn.buys <= 0) return [{ type: 'end-phase' }];
   const mine = owned(v);
-  const late = isLate(v, profile);
+  const late = plans(v) ? roundsLeft(v) <= 3 : isLate(v, profile);
   const score = (k: string) => buyScore(k, v, profile, mine, late);
+  if (plans(v)) return plannedMarket(v, profile, score);
   const worth = (key: string) => (trial(v) ? trialWorth(v, key) : workValue(v, key));
   const work = [...v.legal.claim].sort((a, b) => worth(b) - worth(a))[0];
   if (work && profile.works > 0) {
@@ -294,6 +399,39 @@ function moves(v: DeckView, profile: Profile): DeckAction[] {
   };
   if (v.legal.convert && !profile.hoard && bestAt(v.turn.coins + 1) > bestAt(v.turn.coins)) return [{ type: 'convert' }, { type: 'end-phase' }];
   const buy = [...v.legal.buy].sort((a, b) => score(b) - score(a) || a.localeCompare(b))[0];
+  if (buy && score(buy) >= 0) return [{ type: 'buy', pile: buy }, { type: 'end-phase' }];
+  return [{ type: 'end-phase' }];
+}
+
+/** Edition 4's Market phase: the best of every stage and buy, with the ending in mind. */
+function plannedMarket(v: DeckView, profile: Profile, score: (key: string) => number): DeckAction[] {
+  const you = v.players[v.you!];
+  const bestAt = (coins: number) => {
+    let best = -1;
+    for (const p of v.supply) if (p.buyable && p.count > 0 && p.cost <= coins && endingCall(v, { type: 'buy', pile: p.key }, cardRenown(p.key)) !== 'refuse') best = Math.max(best, score(p.key));
+    return best;
+  };
+  const claims = v.legal.claim.map((key) => ({ key, gain: v.projects.find((p) => p.key === key)!.vp }));
+  const buys = v.legal.buy.map((pile) => ({ pile, gain: cardRenown(pile) }));
+  // An ending you'd win comes first, Renown from a stage before the same from a card.
+  const claimEnd = claims.find((c) => endingCall(v, { type: 'claim', project: c.key }, c.gain) === 'take');
+  if (claimEnd) return [{ type: 'claim', project: claimEnd.key }, { type: 'end-phase' }];
+  const buyEnd = buys.find((c) => endingCall(v, { type: 'buy', pile: c.pile }, c.gain) === 'take');
+  if (buyEnd) return [{ type: 'buy', pile: buyEnd.pile }, { type: 'end-phase' }];
+
+  const open = claims.filter((c) => endingCall(v, { type: 'claim', project: c.key }, c.gain) !== 'refuse').map((c) => {
+    const p = v.projects.find((x) => x.key === c.key)!;
+    // With another Buy, the Coins it leaves can still buy something.
+    return { key: c.key, value: stageScore(v, c.key, profile) + (v.turn.buys > 1 ? Math.max(0, bestAt(v.turn.coins - p.coins)) : 0) };
+  }).sort((a, b) => b.value - a.value || a.key.localeCompare(b.key));
+  const best = bestAt(v.turn.coins);
+  if (open[0] && open[0].value >= best) return [{ type: 'claim', project: open[0].key }, { type: 'end-phase' }];
+
+  // Influence becomes Coins for a better buy, unless saved for a stage: near the cap and at the very end there's no reason to save.
+  const influence = you.tokens[SPARK] ?? 0;
+  const saving = profile.hoard && !v.finalRound && influence < 7;
+  if (v.legal.convert && !saving && bestAt(v.turn.coins + 1) > best) return [{ type: 'convert' }, { type: 'end-phase' }];
+  const buy = v.legal.buy.filter((k) => endingCall(v, { type: 'buy', pile: k }, cardRenown(k)) !== 'refuse').sort((a, b) => score(b) - score(a) || a.localeCompare(b))[0];
   if (buy && score(buy) >= 0) return [{ type: 'buy', pile: buy }, { type: 'end-phase' }];
   return [{ type: 'end-phase' }];
 }
