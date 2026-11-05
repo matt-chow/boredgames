@@ -1,4 +1,4 @@
-/** Trial Crown Project rules (CC-STAGE-*, docs/CLOCKWORK.md). Live rules stay as they were: see CC-STAGE-LIVE. */
+/** Trial Crown Project rules (CC-STAGE-*, docs/CLOCKWORK.md). Rooms on earlier rules stay as they were: see CC-STAGE-LIVE. */
 import { describe, expect, it } from 'vitest';
 import { assignStages, splitProject, type DeckState, type DeckView, type ProjectState } from '../../src/engine/deckbuilder';
 import { EDITIONS, STAGE_NAMES } from '../../src/games/clockwork/rules/editions';
@@ -482,12 +482,12 @@ describe('CC-STAGE saves and rooms', () => {
     expect(watching.score).toBeNull();
   });
 
-  it('CC-STAGE-LIVE: new games without a trial keep one-claim Projects and four to end', () => {
-    const t = new Table([]);
+  it('CC-STAGE-LIVE: rooms on edition 3 keep one-claim Projects and four to end, and new games name no trial', () => {
+    const t = new Table([], { v3: true });
     expect(t.s.rulesVersion).toBe(3);
     expect(t.s.projects.every((p) => !p.stages)).toBe(true);
-    expect(game.rules.projectsToEnd!(4)).toBe(4);
-    expect(game.rules.staged).toBeUndefined();
+    expect(game.rulesFor(3).projectsToEnd!(4)).toBe(4);
+    expect(game.rulesFor(3).staged).toBeUndefined();
     expect(game.defaultConfig(2).edition).toBeUndefined();
     expect(t.view().projects[0].stages).toBeUndefined();
     t.s.turn.phase = 'buy';
@@ -521,7 +521,7 @@ describe('CC-STAGE saves and rooms', () => {
       expect(send(core, { t: 'config', config: { edition: 'S1' } }).ack!.ok).toBe(false);
       expect(core.view(0, everyone).config.edition).toBeUndefined();
       send(core, { t: 'start' });
-      expect((core.view(0, everyone).game as DeckView).rulesVersion).toBe(3);
+      expect((core.view(0, everyone).game as DeckView).rulesVersion).toBe(4);
     });
 
     it('CC-STAGE-12: with experiments on the host can pick one, go back, and a rematch keeps it', () => {

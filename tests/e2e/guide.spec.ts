@@ -86,7 +86,7 @@ test('GUIDE-E5: the room’s guide states the rules chosen for it, in the lobby 
   let d = dialog(p.page).last();
   await expect(d.locator('#guide-q-end')).toBeVisible();
   await d.locator('#guide-q-end summary').click();
-  await expect(d.locator('#guide-q-end')).toContainText('4 Crown Projects');
+  await expect(d.locator('#guide-q-end')).toContainText('All 5 Crown Projects');
   await p.page.keyboard.press('Escape');
   const pick = p.page.locator('[data-edition]');
   if (await pick.count()) {
@@ -104,7 +104,7 @@ test('GUIDE-E5: the room’s guide states the rules chosen for it, in the lobby 
   await p.page.locator('[data-project-help]').click();
   d = dialog(p.page).last();
   await expect(d.locator('#guide-f-projects')).toHaveAttribute('open', '');
-  if (await pick.count()) await expect(d.locator('#guide-f-projects')).toContainText('stages each');
+  await expect(d.locator('#guide-f-projects')).toContainText('1 stage');
   expect(p.errors).toEqual([]);
 });
 

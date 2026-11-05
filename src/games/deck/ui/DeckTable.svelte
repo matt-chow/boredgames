@@ -45,10 +45,9 @@
   let quitting = $state(false);
   let howto = $state(false);
   let helpAt = $state<string | null>(null);
-  const guideOf = getContext<((edition?: string) => GuideDoc) | undefined>('deck-guide');
-  const guideDoc = $derived(guideOf?.(rules.edition?.code) ?? null);
+  const guideOf = getContext<((edition?: string, version?: number) => GuideDoc) | undefined>('deck-guide');
+  const guideDoc = $derived(guideOf?.(rules.edition?.code, g.rulesVersion) ?? null);
   setContext('deck-labels', () => rules.labels);
-  const olderEdition = $derived(!rules.edition && (g.rulesVersion ?? 0) < ((GAMES[room.gameId] as unknown as DeckGame).rules.version ?? 0));
   function help(id: string | null) {
     helpAt = id;
     howto = true;
@@ -60,7 +59,7 @@
   // ── the decision in front of this player ────────────────────────────
   const q = $derived(g.pending);
   const asked = $derived(q && q.seat === g.you ? q : null);
-  const helpHere = $derived(asked ? (asked.kind === 'react' ? 'f-attacks' : 'f-words') : g.turn.phase === 'action' ? 'f-action' : 'f-market');
+  const helpHere = $derived(g.finalRound ? 'f-end' : asked ? (asked.kind === 'react' ? 'f-attacks' : 'f-words') : g.turn.phase === 'action' ? 'f-action' : 'f-market');
   let picked = $state<number[]>([]);
   let pickedFor = -1;
   $effect(() => {
@@ -311,6 +310,7 @@
     <div class="who">
       <span class="code label" title="Table code">{room.code}</span>
       <span class="turn" class:you={!over && (isActive || !!asked)}>{turnLabel}</span>
+      {#if g.finalRound && !over}<span class="final" data-final-round aria-live="polite">Final round: {g.finalRound.turnsLeft} {g.finalRound.turnsLeft === 1 ? 'turn' : 'turns'} left</span>{/if}
     </div>
     <div class="stepline"><p class="step" class:mine={step.mine} aria-live="polite">{step.text}</p>{#if guideDoc}<button type="button" class="ctx" aria-label="Explain this step" onclick={() => help(helpHere)}>?</button>{/if}</div>
     <div class="tools">
@@ -508,7 +508,7 @@
 </Dialog>
 
 {#if guideDoc}
-  <Guide bind:open={howto} doc={guideDoc} at={helpAt} note={olderEdition ? 'This table began under an earlier edition and keeps its original rules to the end. See “Sets, variants and older rooms” in Detailed rules.' : ''} />
+  <Guide bind:open={howto} doc={guideDoc} at={helpAt} />
 {:else}
 <Dialog bind:open={howto} title="How a turn works">
   <ol class="how">
@@ -579,6 +579,12 @@
   }
   .turn.you {
     color: var(--sprout);
+  }
+  .final {
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    color: var(--ink);
   }
   /* The ? sits beside the live region, so a screen reader announces the step and not the button. */
   .stepline {

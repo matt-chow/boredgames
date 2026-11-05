@@ -276,6 +276,11 @@ export interface Ruleset {
     extraCoins: number;
     names: Record<string, readonly string[]>;
   };
+  /**
+   * An end condition no longer ends the game on the spot. It locks in, and play goes on until every player has had the
+   * same number of turns. Its absence means the game ends after the turn that met the condition.
+   */
+  finishRound?: boolean;
   /** Marks a trial edition, which a game only uses when its config asks for it. */
   edition?: Edition;
   /** Named groups of cards the host can switch on. */
@@ -449,6 +454,8 @@ export interface DeckState {
   over: boolean;
   /** The projects in this game, in the order chosen. */
   projects: ProjectState[];
+  /** Set for good once an end condition is met under `finishRound`: every seat plays until it has had `turns` turns. */
+  finalRound?: { by: number; turns: number };
 }
 
 /** One funded investment in a staged project, fixed when the game starts. */
@@ -588,6 +595,8 @@ export interface DeckView {
   projects: ProjectView[];
   /** How many complete projects end the game. */
   projectsEnd: number | null;
+  /** The game's ending has been triggered: who triggered it, and how many turns the table still has to play. */
+  finalRound: { by: number; turnsLeft: number } | null;
   legal: { play: CardId[]; buy: string[]; endPhase: boolean; convert: boolean; claim: string[] };
   log: LogEntry[];
   over: boolean;

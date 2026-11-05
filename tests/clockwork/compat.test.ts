@@ -132,7 +132,7 @@ describe('Kingdom & Commerce keeps the game it renamed', () => {
     expect(RULES.id).toBe('clockwork');
     expect(CARDS.map((c) => c.key)).toEqual(base.catalogue.cards.map((c: { key: string }) => c.key));
     expect(WORKS.map((w) => w.key)).toEqual(base.catalogue.projects.map((w: { key: string }) => w.key));
-    expect(game.meta.stateVersion).toBe(3);
+    expect(game.meta.stateVersion).toBe(4);
   });
 
   it.each(['rust', 'foreman', 'attack'])('KC-COMPAT-4: a room saved mid-decision (%s) opens and plays to the end', (name) => {

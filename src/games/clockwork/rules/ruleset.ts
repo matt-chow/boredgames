@@ -87,8 +87,8 @@ export const RULES_V2: Ruleset = {
   bot: (view) => clockworkBot(view),
 };
 
-/** Edition 3, for every new game: the Crown Decree set, and a smaller Debt pile (KC3-DEBT-1). */
-export const RULES: Ruleset = {
+/** Edition 3: the Crown Decree set, and a smaller Debt pile (KC3-DEBT-1). Rooms started on it keep it. */
+export const RULES_V3: Ruleset = {
   ...RULES_V2,
   version: 3,
   cards: CARDS,
@@ -96,4 +96,35 @@ export const RULES: Ruleset = {
   extraPiles: (market, n): Record<string, number> => (market.some((k) => RUST_MAKERS.has(k)) ? { rust: 5 * (n - 1) } : {}),
   sets: [...RULES_V2.sets!, { key: 'crown', name: 'Crown Decrees', text: 'Trashing and exchange, stronger Currency, new attacks and defences, and 2 more Crown Projects.' }],
   defaultSets: ['core', 'crown'],
+};
+
+/** Original stage names. A 2-stage Project uses the first and last. */
+export const STAGE_NAMES: Record<string, readonly [string, string, string]> = {
+  canal_lights: ['Piling', 'Stone Wharf', 'Harbour Cranes'],
+  public_clock: ['Footings', 'Belfry', 'Great Bell'],
+  makers_fair: ['Royal Licence', 'Fairground', 'Opening Day'],
+  tram_extension: ['Survey', 'Roadbed', 'Paving'],
+  skybridge: ['Piers', 'Arches', 'Parapets'],
+  library_lanterns: ['Archive Vaults', 'Reading Room', 'Seal of the Realm'],
+  waterwheel: ['Millrace', 'Waterwheel', 'Millstones'],
+  city_illumination: ['Foundations', 'Masonry', 'Fortification'],
+  common_fields: ['Clearing', 'Hedgerows', 'First Harvest'],
+  merchants_guildhall: ['Cornerstone', 'Great Hall', 'Guild Arms'],
+  harbor_beacon: ['Breakwater', 'Lantern Tower', 'First Flame'],
+  foundry_gate: ['Gatehouse', 'Portcullis', 'Drawbridge'],
+  power_exchange: ['Founders’ Charter', 'Trading Floor', 'Counting House'],
+  rail_terminus: ['Staddle Stones', 'Storehouse', 'King’s Seal'],
+  aqueduct: ['Springhead', 'Arcades', 'City Fountain'],
+};
+
+/**
+ * Edition 4, for every new game: the Crown Project rules chosen after the construction experiment (CC-F2-*) and the
+ * finished round at the end (CC-FINAL-*). Everything else is edition 3.
+ */
+export const RULES: Ruleset = {
+  ...RULES_V3,
+  version: 4,
+  projectsToEnd: () => 5,
+  staged: { counts: () => [1, 2, 2], extraCoins: 1, names: STAGE_NAMES },
+  finishRound: true,
 };

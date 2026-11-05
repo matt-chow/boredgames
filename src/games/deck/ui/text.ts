@@ -95,6 +95,8 @@ export function logLine(e: LogEntry, name: (seat: number) => string, cardName: (
       return `${who} funds stage ${e.stage?.[0]} of ${e.stage?.[1]} of ${e.project ? cardName(e.project) : 'a project'}`;
     case 'surcharge':
       return `${who} raises the price of ${e.project ? cardName(e.project) : 'a project'}`;
+    case 'final-round':
+      return `${who} triggers the end. The round finishes so everyone has the same number of turns`;
     case 'game-over':
       return 'The game is over';
     default:

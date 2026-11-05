@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { Table } from './helpers';
+import { TableV3 as Table } from './helpers';
 
 const noAsk = (t: Table) => expect(t.s.pending).toBeNull();
 

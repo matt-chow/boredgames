@@ -82,7 +82,7 @@ describe('undoing conversions', () => {
     const { store, res, seat } = table(8);
     const s = store.getState() as DeckState;
     // A Crown Project that draws a card from a hidden deck.
-    s.projects[0] = { ...s.projects[0], key: 'public_clock', by: null };
+    s.projects[0] = { key: 'public_clock', by: null, onTurn: null, surcharges: [] };
     s.turn.coins = 20;
     store.putState(s);
     const core = new RoomCore(store, opts);

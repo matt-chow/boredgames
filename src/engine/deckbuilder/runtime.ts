@@ -836,13 +836,32 @@ export class Runtime {
     return piles.filter((p) => p.length === 0).length >= emptyPilesToEnd(s.n);
   }
 
+  private finish() {
+    const s = this.state;
+    s.over = true;
+    s.stack = [];
+    this.log({ seat: s.turn.seat, kind: 'game-over' });
+  }
+
   private nextTurn() {
     const s = this.state;
     s.players[s.turn.seat].turns++;
-    if (this.gameEnds()) {
-      s.over = true;
-      s.stack = [];
-      this.log({ seat: s.turn.seat, kind: 'game-over' });
+    if (this.lib.rules.finishRound) {
+      if (!s.finalRound && this.gameEnds()) {
+        s.finalRound = { by: s.turn.seat, turns: Math.max(...s.players.map((p) => p.turns)) };
+        this.log({ seat: s.turn.seat, kind: 'final-round' });
+      }
+      if (s.finalRound) {
+        // Extra turns would raise the count everyone else has to reach, so none are taken from here on (CC-FINAL-5).
+        s.extraTurns = [];
+        const seats = s.players.map((_, i) => (s.turn.seat + 1 + i) % s.n);
+        const next = seats.find((seat) => s.players[seat].turns < s.finalRound!.turns);
+        if (next === undefined) this.finish();
+        else this.beginTurn(next);
+        return;
+      }
+    } else if (this.gameEnds()) {
+      this.finish();
       return;
     }
     this.beginTurn(s.extraTurns.length ? s.extraTurns.shift()! : (s.turn.seat + 1) % s.n);

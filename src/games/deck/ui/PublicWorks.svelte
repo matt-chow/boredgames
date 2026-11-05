@@ -57,7 +57,7 @@
 </script>
 
 <section class="works" aria-label={title}>
-  {#if trial}<p class="trial" data-trial>{trial}. <span class="num">{g.projects.filter((p) => p.by !== null).length}/{g.projectsEnd ?? g.projects.length}</span> complete to end the game.</p>{/if}
+  {#if trial || g.projects.some((p) => p.stages)}<p class="trial" data-trial>{trial ? `${trial}. ` : ''}<span class="num" data-projects-done>{g.projects.filter((p) => p.by !== null).length}/{g.projectsEnd ?? g.projects.length}</span> complete to end the game.</p>{/if}
   {#each g.projects as p (p.key)}
     {@const on = g.legal.claim.includes(p.key) && !busy}
     {@const next = nextStage(p)}

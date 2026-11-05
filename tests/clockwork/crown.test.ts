@@ -379,7 +379,7 @@ describe('Crown Decrees: scoring and projects', () => {
   });
 
   it('CC-PW-merchants_guildhall: the reward may trash a card from hand', () => {
-    const t = new Table(['rust'], { works: ['merchants_guildhall', 'common_fields', 'canal_lights', 'public_clock', 'makers_fair'], spark: 3 });
+    const t = new Table(['rust'], { works: ['merchants_guildhall', 'common_fields', 'canal_lights', 'public_clock', 'makers_fair'], spark: 3, v3: true });
     t.toMarket();
     t.s.turn.coins = 5;
     t.apply(t.me, { type: 'claim', project: 'merchants_guildhall' }).cards('rust');

@@ -41,11 +41,22 @@ describe('guide structure', () => {
 
   it('GUIDE-4: required topics are all covered', () => {
     const k = textOf(kingdom).toLowerCase();
-    for (const topic of ['starting', 'supply', 'market', 'discard', 'trash', 'exchange', 'attack', 'reaction', 'establishment', 'royal debt', 'influence', 'crown project', 'renown', 'conditional', 'player count', 'treasury', 'bronze', 'silver', 'gold', 'shuffled', 'improving your deck', 'lasts across', 'stage', 'trial rules', 'disconnect', 'bot', 'older rooms', 'private']) expect(k).toContain(topic);
+    for (const topic of ['starting', 'supply', 'market', 'discard', 'trash', 'exchange', 'attack', 'reaction', 'establishment', 'royal debt', 'influence', 'crown project', 'renown', 'conditional', 'player count', 'treasury', 'bronze', 'silver', 'gold', 'shuffled', 'improving your deck', 'lasts across', 'stage', 'final round', 'disconnect', 'bot', 'older rooms', 'private']) expect(k).toContain(topic);
     const b = textOf(beans).toLowerCase();
     for (const topic of ['fields', 'hand order', 'offer', 'counteroffer', 'gift', 'forced harvest', 'beanometer', 'draw', 'third', 'variants', 'player counts']) expect(b).toContain(topic);
   });
 });
+
+/** Make the deal give this Project its single stage, as an example assumes. */
+const oneStage = (t: Table, key: string) => {
+  const p = t.s.projects.find((x) => x.key === key)!;
+  p.stages = splitProject(RULES.projects!.find((x) => x.key === key)!, 1, 1, STAGE_NAMES[key]);
+};
+const stagesOf = (t: Table, key: string, n: number) => {
+  const p = t.s.projects.find((x) => x.key === key)!;
+  p.stages = splitProject(RULES.projects!.find((x) => x.key === key)!, n, 1, STAGE_NAMES[key]);
+  return p;
+};
 
 describe('Kingdom & Commerce numbers', () => {
   it('GUIDE-K1: what the guide states matches the ruleset', () => {
@@ -55,7 +66,10 @@ describe('Kingdom & Commerce numbers', () => {
     expect(RULES.handSize).toBe(5);
     expect(RULES.marketSize).toBe(10);
     expect(RULES.projectCount).toBe(5);
-    expect(RULES.projectsToEnd!(4)).toBe(4);
+    expect(RULES.projectsToEnd!(4)).toBe(5);
+    expect(RULES.staged!.counts(2)).toEqual([1, 2, 2]);
+    expect(RULES.staged!.extraCoins).toBe(1);
+    expect(RULES.finishRound).toBe(true);
     expect([2, 4, 5, 6].map((n) => RULES.emptyPilesToEnd(n))).toEqual([3, 3, 4, 4]);
     expect([2, 3, 4, 5, 6].map((n) => RULES.basicPiles(n).notebook)).toEqual([8, 12, 12, 15, 18]);
     expect(RULES.basicPiles(2)).toMatchObject({ scrap: 60, cog: 40, dynamo: 30 });
@@ -123,8 +137,9 @@ describe('Kingdom & Commerce worked examples', () => {
     expect(t.view().legal.buy).toContain('blueprint');
   });
 
-  it('GUIDE-K6: completing River Quay', () => {
+  it('GUIDE-K6: completing a one-stage River Quay', () => {
     const t = new Table([], { works: ['canal_lights', 'public_clock', 'makers_fair', 'tram_extension', 'skybridge'], spark: 2 });
+    oneStage(t, 'canal_lights');
     t.toMarket();
     t.s.turn.coins = 3;
     const before = t.view().score!.total;
@@ -151,6 +166,7 @@ describe('Kingdom & Commerce worked examples', () => {
 
   it('GUIDE-K8: final scoring adds up to 21', () => {
     const t = new Table(['blueprint', 'blueprint', 'monument', 'noble_council', 'rust'], { works: ['canal_lights', 'public_clock', 'makers_fair', 'tram_extension', 'skybridge'], spark: 2 });
+    oneStage(t, 'canal_lights');
     t.toMarket();
     t.s.turn.coins = 3;
     t.apply(t.me, { type: 'claim', project: 'canal_lights' });
@@ -162,13 +178,29 @@ describe('Kingdom & Commerce worked examples', () => {
 describe('Kingdom & Commerce rules for the room', () => {
   const body = (doc: GuideDoc, id: string) => doc.levels.flatMap((l) => l.sections).find((s) => s.id === id)!.body.map(blockText).join(' ');
 
-  it('GUIDE-K9: the live guide states the live rule, and names the trials as not live', () => {
+  it('GUIDE-K9: the current guide states the F2 rules and finishing the round', () => {
     expect(guideFor()).toBe(kingdom);
     expect(guideFor('nonsense')).toBe(kingdom);
+    expect(guideFor(undefined, 4)).toBe(kingdom);
     expect(kingdom.note).toBeUndefined();
-    expect(body(kingdom, 'q-end')).toContain('**4** Crown Projects');
-    expect(body(kingdom, 'f-projects')).toContain('This is the live rule');
-    expect(body(kingdom, 'r-staged')).toContain('These are trial rules, not the live game');
+    expect(body(kingdom, 'q-end')).toContain('**All 5** Crown Projects');
+    expect(body(kingdom, 'q-end')).toContain('The round then finishes');
+    expect(body(kingdom, 'f-projects')).toContain('one with 1 stage, two with 2 stages and two with 3 stages');
+    expect(body(kingdom, 'f-end')).toContain('same number of turns');
+    expect(body(kingdom, 'r-final')).toContain('stays triggered');
+    expect(textOf(kingdom)).not.toMatch(/trial|fewer turns ranks/i);
+  });
+
+  it.each([2, 3])('GUIDE-K9a: a room on edition %i shows its own rules, not the new ones', (version) => {
+    const doc = guideFor(undefined, version);
+    expect(doc.note).toContain('earlier edition');
+    expect(doc.note!.includes('Crown Decree')).toBe(version < 3);
+    expect(body(doc, 'q-end')).toContain('**4** Crown Projects');
+    expect(body(doc, 'f-end')).toContain('fewer turns ranks higher');
+    expect(body(doc, 'f-projects')).toContain('When **4** are complete');
+    expect(body(doc, 'r-final')).toContain('doesn’t finish the round');
+    expect(body(doc, 'f-examples')).not.toContain('Finishing the round');
+    expect(body(doc, 'f-examples')).not.toContain('three-stage');
   });
 
   it.each(EDITIONS.map((e) => e.edition!.code))('GUIDE-K10: a %s room’s guide states that room’s rule everywhere', (code) => {
@@ -181,8 +213,71 @@ describe('Kingdom & Commerce rules for the room', () => {
     expect(body(doc, 'q-end')).toContain('**All 5**');
     expect(body(doc, 'f-end')).toContain('all 5');
     expect(textOf(doc)).not.toMatch(/\*\*4\*\* (Crown Projects|are complete)|4 Crown Projects complete|fourth one/);
-    expect(body(doc, 'f-examples')).not.toContain('Completing a Crown Project');
-    expect(body(doc, 'f-projects').includes('stages each')).toBe(!!rules.staged);
+    expect(body(doc, 'f-examples')).not.toContain('Finishing the round');
+    expect(body(doc, 'r-final')).toContain('doesn’t finish the round');
+    expect(body(doc, 'f-projects').includes('stage')).toBe(!!rules.staged);
+  });
+});
+
+describe('edition 4 examples', () => {
+  const WALLS = ['city_illumination', 'public_clock', 'canal_lights', 'makers_fair', 'skybridge'];
+  const pay = (t: Table, key: string, coins: number, spark: number) => {
+    const seat = t.s.turn.seat;
+    t.s.turn.phase = 'buy';
+    t.s.turn.coins = coins;
+    t.s.turn.buys = 1;
+    t.setSpark(spark, seat);
+    t.apply(seat, { type: 'claim', project: key });
+    expect(t.s.turn.coins).toBe(0);
+    return seat;
+  };
+  const pass = (t: Table) => {
+    const [seat, n] = [t.s.turn.seat, t.s.turn.number];
+    t.apply(seat, { type: 'end-phase' });
+    if (!t.s.over && t.s.turn.number === n) t.apply(seat, { type: 'end-phase' });
+  };
+
+  it('GUIDE-K17: sharing a three-stage City Walls: 9 Coins as 3, 3, 3, and 13 Renown as 4, 4, 5', () => {
+    const t = new Table([], { players: 2, works: WALLS });
+    const p = stagesOf(t, 'city_illumination', 3);
+    expect(p.stages!.map((s) => [s.name, s.coins, s.tokens.spark, s.vp])).toEqual([['Foundations', 3, 1, 4], ['Masonry', 3, 2, 4], ['Fortification', 3, 2, 5]]);
+    const a = pay(t, 'city_illumination', 3, 1);
+    pass(t);
+    const b = pay(t, 'city_illumination', 3, 2);
+    pass(t);
+    expect(t.s.projects.find((x) => x.key === 'city_illumination')!.by).toBeNull();
+    expect(pay(t, 'city_illumination', 3, 2)).toBe(a);
+    expect(t.s.projects.find((x) => x.key === 'city_illumination')!.by).toBe(a);
+    expect(t.spark(a)).toBe(2);
+    expect([t.view(a).score!.projects, t.view(b).score!.projects]).toEqual([9, 4]);
+  });
+
+  it('GUIDE-K18: two-stage River Quay prices: 2 + 1 for 2, twice', () => {
+    const t = new Table([], { players: 2, works: WALLS });
+    expect(stagesOf(t, 'canal_lights', 2).stages!.map((s) => [s.name, s.coins, s.tokens.spark, s.vp])).toEqual([['Piling', 2, 1, 2], ['Harbour Cranes', 2, 1, 2]]);
+  });
+
+  it('GUIDE-K19: finishing the round: seats between the opener and the trigger do not play again, later seats do', () => {
+    const t = new Table([], { players: 4 });
+    const ana = t.s.turn.seat;
+    pass(t);
+    const ben = t.s.turn.seat;
+    const [cy, dee] = [(ben + 1) % 4, (ben + 2) % 4];
+    pass(t);
+    pass(t);
+    pass(t);
+    expect(t.s.turn.seat).toBe(ana);
+    pass(t);
+    t.s.supply.monument = [];
+    pass(t);
+    expect(t.s.finalRound).toEqual({ by: ben, turns: 2 });
+    expect(t.s.turn.seat).toBe(cy);
+    expect(t.view(cy).legal.buy).not.toContain('monument');
+    pass(t);
+    expect(t.s.turn.seat).toBe(dee);
+    pass(t);
+    expect(t.s.over).toBe(true);
+    expect(t.s.players.map((p) => p.turns)).toEqual([2, 2, 2, 2]);
   });
 });
 

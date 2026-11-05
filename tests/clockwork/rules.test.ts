@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { decodeMarket, encodeMarket, validateRuleset } from '../../src/engine/deckbuilder';
 import { RULES, WORKS as ALL_WORKS } from '../../src/games/clockwork/rules/ruleset';
-import { ALL_SETS, game, MARKET, Table, WORKS } from './helpers';
+import { ALL_SETS, game, MARKET, TableV3 as Table, WORKS } from './helpers';
 
 const fresh = (playerCount: number, config: Record<string, unknown> = {}, seed = 'setup') => game.setup({ playerCount, seed, config: { market: [], bans: [], ...config } });
 

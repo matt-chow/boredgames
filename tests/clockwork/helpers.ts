@@ -1,8 +1,11 @@
 /** A small table driver for Clockwork Commons tests. Every step goes through JSON, as a saved game would. */
 import type { DeckAction, DeckState, DeckView } from '../../src/engine/deckbuilder';
+import { createDeckGame } from '../../src/engine/deckbuilder';
 import { clockwork } from '../../src/games/clockwork';
+import { RULES_V3 } from '../../src/games/clockwork/rules/ruleset';
 
 export const game = clockwork;
+const v3 = createDeckGame(RULES_V3);
 export const ALL_SETS = ['core', 'foundry', 'night', 'town', 'crown'];
 export const MARKET = ['supply_crane', 'corrosion_crew', 'gearwright', 'foreman', 'hand_crank', 'glow_mason', 'tally_clerk', 'paper_fan', 'conveyor', 'flywheel'];
 export const WORKS = ['canal_lights', 'public_clock', 'makers_fair', 'tram_extension', 'skybridge'];
@@ -19,6 +22,8 @@ export interface Options {
   seed?: string;
   /** A trial edition's code. */
   edition?: string;
+  /** Start on edition 3, whose Projects are claimed whole and end the game at four. */
+  v3?: boolean;
 }
 
 export class Table {
@@ -27,7 +32,7 @@ export class Table {
 
   constructor(hand: string[], o: Options = {}) {
     const players = o.players ?? 2;
-    this.s = game.setup({
+    this.s = (o.v3 ? v3 : game).setup({
       playerCount: players,
       seed: o.seed ?? 'clockwork',
       config: { market: o.market ?? MARKET, bans: [], sets: ALL_SETS, projects: o.works ?? WORKS, ...(o.edition ? { edition: o.edition } : {}) },
@@ -182,4 +187,11 @@ export function assertConserved(s: DeckState) {
   for (const p of s.players) all.push(...p.deck, ...p.hand, ...p.discard, ...p.play, ...Object.values(p.mats).flat());
   const total = Object.keys(s.cards).length;
   if (all.length !== total || new Set(all).size !== total) throw new Error(`cards not conserved: ${all.length} placed, ${new Set(all).size} distinct, ${total} exist`);
+}
+
+/** A table on edition 3, for the tests of Projects claimed whole and of ending on the spot. Edition 4's are in final.test.ts. */
+export class TableV3 extends Table {
+  constructor(hand: string[], o: Options = {}) {
+    super(hand, { ...o, v3: true });
+  }
 }

@@ -22,8 +22,8 @@ export * from './market';
 export * from './stages';
 export type * from './types';
 
-/** 2 added `rulesVersion`, so a game stays on the rules it started with. 3 added optional project `stages`. */
-const STATE_VERSION = 3;
+/** 2 added `rulesVersion`, so a game stays on the rules it started with. 3 added optional project `stages`. 4 added optional `finalRound`. */
+const STATE_VERSION = 4;
 const DEFAULT_WORDS = { actions: 'actions', treasures: 'treasures', buyPhase: 'buy', project: 'project' };
 const title = (x: string) => x[0].toUpperCase() + x.slice(1);
 const fail = (code: string, error: string): ApplyResult<DeckState> => ({ ok: false, code, error });
@@ -352,6 +352,7 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
     pending,
     projects: projectViews,
     projectsEnd: lib.rules.projectsToEnd?.(s.n) ?? null,
+    finalRound: s.finalRound ? { by: s.finalRound.by, turnsLeft: s.players.reduce((a, p) => a + Math.max(0, s.finalRound!.turns - p.turns), 0) } : null,
     legal: viewer === null ? { play: [], buy: [], endPhase: false, convert: false, claim: [] } : legalMoves(s, lib, viewer),
     // Points gained directly would otherwise give away part of a rival's score, in saved logs too.
     log: s.log.filter((e) => (e.to === undefined || e.to === viewer) && (e.kind !== 'vp' || e.seat === viewer || s.over)),
@@ -444,8 +445,8 @@ export function createDeckGame(rules: Ruleset, older: Ruleset[] = [], trials: Ru
     },
     bot: rules.bot ?? bot,
     migrate(state, from) {
-      // 2 to 3 only added optional fields, so nothing already saved changes.
-      if (from === STATE_VERSION || from === 2) return state as DeckState;
+      // 2 to 4 only added optional fields, so nothing already saved changes.
+      if (from === STATE_VERSION || from === 2 || from === 3) return state as DeckState;
       // Nothing else in the room changes, so a save stays readable by anything that can read this one field.
       if (from === 1) return { ...(state as DeckState), rulesVersion: oldest };
       throw new Error(`deckbuilder: cannot read state version ${from}`);

@@ -157,14 +157,33 @@ asked (`CC-CARD-*` tests).
 3. **Cleanup:** discard, draw 5.
 
 Influence carries between turns, up to the cap. A Crown Project costs Coins and Influence, and each can be built once, by one
-player. The game ends when the Grand Duchy pile is empty, 4 Crown Projects are built, or enough market piles are empty.
+player. The ending is triggered when the Grand Duchy pile is empty, all 5 Crown Projects are complete, or enough market piles are empty; the round then finishes.
 Most Renown wins.
+
+## Edition 4: the final rules (CC-F2, CC-FINAL)
+
+New games use `rulesVersion` 4, the owner's chosen F2 construction rule plus a finished last round. Rooms keep the edition they started on, so edition 2, edition 3
+and the trials still play and read as they did (`guideFor(edition, version)`).
+
+- **CC-F2-1, counts.** Five Projects at every player count, of 1, 2, 2, 3 and 3 stages.
+- **CC-F2-2, price.** A Project's total is its printed price, plus 1 Coin when it has more than one stage. Renown and Influence totals are as printed.
+- **CC-F2-3, shared building.** Anyone may fund the next stage. Each stage's Renown goes to its funder at once and counts even if the Project is never finished. The rest follows CC-STAGE-2 to 9, which are live under this edition.
+- **CC-F2-4, ending.** All 5 complete triggers the end. Four don't. No player-count scaling.
+- **CC-F2-5, saves and docs.** The stage table is stored in the game at setup. State version 4 only adds the optional `finalRound`; nothing is rewritten when an older save loads. A room's guide matches its `rulesVersion`.
+- **CC-FINAL-1, the round finishes.** After a turn on which any end condition holds, the ending is latched and each seat with fewer turns than the most plays, in seat order, until all match.
+- **CC-FINAL-2, last seat.** If the last seat of the round triggers it, the game ends at once. If the first seat does, everyone else plays once more.
+- **CC-FINAL-3, can't be reversed.** The latch stays even if the condition stops holding.
+- **CC-FINAL-4, ordinary turns.** Legality and supply are unchanged in those turns, and Renown is counted after them.
+- **CC-FINAL-5, interpretation: extra turns.** The rule says every player ends on the same number of turns, so extra turns not yet taken are dropped once the ending is triggered, and a player behind catches up. No current card grants an extra turn; only the engine's `extra-turn` op can.
+- **CC-FINAL-6, interpretation: ties.** Equal turns make the older "fewer turns ranks higher" tie-break (CC-END-5) moot, so equal Renown shares the place.
+- **CC-FINAL-7, public.** The final round and turns left are public and reveal nothing hidden.
+- **CC-FINAL-8, saves.** A game saved in the final round finishes correctly after a reload.
 
 ## Staged construction trial (CC-STAGE)
 
-**Not the live rules.** New games still use edition 3: one player claims a Crown Project whole, and the game can end at 4 of 5. These six trial editions
-exist only for tests, for the experiment, and for rooms on a server with `EXPERIMENTS=on` (staging and development) whose host picks one. The owner chooses
-whether any of them replaces the live rule. Code: `src/engine/deckbuilder/stages.ts`, `src/games/clockwork/rules/editions.ts`.
+These trial editions made the choice above. They stay for rooms that started on one, for tests and experiments, and on servers with `EXPERIMENTS=on` (staging and
+development) whose host picks one, labelled as testing only. They end immediately rather than finishing the round. F2 here is the trial, version 104, not edition 4.
+Code: `src/engine/deckbuilder/stages.ts`, `src/games/clockwork/rules/editions.ts`.
 
 | Code | Version | Stages (1/2/3-stage Projects) | Total price | Ends at |
 |---|---|---|---|---|

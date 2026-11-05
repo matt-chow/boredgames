@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { createDeckGame, type DeckState, type DeckView } from '../../src/engine/deckbuilder';
 import { botMove, PROFILES } from '../../src/games/clockwork/rules/bot';
-import { RULES, RULES_V2 } from '../../src/games/clockwork/rules/ruleset';
+import { RULES, RULES_V2, RULES_V3 } from '../../src/games/clockwork/rules/ruleset';
 import { MemoryStore, RoomCore } from '../../src/server/core';
 import { ALL_SETS, game, Table } from './helpers';
 
@@ -50,7 +50,7 @@ describe('private Renown', () => {
   });
 
   it('KC3-RENOWN-3: conditional cards and completed projects land in their own lines', () => {
-    const t = new Table(['noble_council'], { works: ['canal_lights', 'public_clock', 'makers_fair', 'tram_extension', 'skybridge'], spark: 2 });
+    const t = new Table(['noble_council'], { works: ['canal_lights', 'public_clock', 'makers_fair', 'tram_extension', 'skybridge'], spark: 2, v3: true });
     t.toMarket();
     t.s.turn.coins = 3;
     t.apply(t.me, { type: 'claim', project: 'canal_lights' });
@@ -111,11 +111,12 @@ describe('rules editions', () => {
 
   it('KC3-VER-1: new games start on the new edition with the Crown Decrees on by default', () => {
     expect(game.rules).toBe(RULES);
-    expect(newGame().rulesVersion).toBe(3);
+    expect(newGame().rulesVersion).toBe(4);
     expect(RULES.defaultSets).toContain('crown');
-    expect(game.rulesFor(3)).toBe(RULES);
+    expect(game.rulesFor(4)).toBe(RULES);
+    expect(game.rulesFor(3)).toBe(RULES_V3);
     expect(game.rulesFor(2)).toBe(RULES_V2);
-    expect((game.project(newGame(), 0) as DeckView).rulesVersion).toBe(3);
+    expect((game.project(newGame(), 0) as DeckView).rulesVersion).toBe(4);
   });
 
   it('KC3-VER-2: a save from before editions migrates to v2 and changes nothing else', () => {
@@ -152,7 +153,8 @@ describe('rules editions', () => {
   it('KC3-VER-5: the same seed plays a new game to the end on the new edition', () => {
     const s = playOut(newGame(4, 'crown-4'), () => {});
     expect(s.over).toBe(true);
-    expect(s.rulesVersion).toBe(3);
+    expect(s.rulesVersion).toBe(4);
+    expect(new Set(s.players.map((p) => p.turns)).size).toBe(1);
   }, 60_000);
 });
 
