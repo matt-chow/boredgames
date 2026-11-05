@@ -105,28 +105,29 @@ that a code rollback reverses it. The git tag `pre-hub-v2` marks the code before
 
 ## Releasing v3.0 to production
 
-Not released. It needs the owner's approval, and it is the first release that changes a saved format, so read "Rollback"
-below before deploying.
+The owner approved this release, including rules edition 4. It is the first release that changes a saved format, so read
+"Rollback" below before deploying. The current production version before this release was
+`dc6aade2-31b8-4ee7-a3f1-8aa79f579a60`, and the tag `pre-release-e4` marks the code before the final cleanup.
 
 ```sh
 git switch feat/v3 && git status                    # clean, and on the commit staging was built from
 npx wrangler deployments list                       # note the current production version id
 npm run check && npm test
 npm run deploy
-E2E_BASE_URL=https://boredgames.mchowcl.workers.dev npx playwright test home theme lobby guide --workers=1 --project=functional
+E2E_NO_TRIALS=1 E2E_BASE_URL=https://boredgames.mchowcl.workers.dev npx playwright test home theme lobby guide --workers=1 --project=functional
 ```
 
 Afterwards, open one Kingdom & Commerce room that was already in play: it should carry on with its old cards and show the
 older-edition note. Start a new one: it should show Crown Decrees and private Renown.
 
-No Durable Object migration, binding or secret changes. The Kingdom & Commerce `stateVersion` goes from 1 to 2. The step
+No Durable Object migration, binding or secret changes. The Kingdom & Commerce `stateVersion` goes from 1 to 4. The step
 only marks a saved room as the v2 edition, and the room keeps playing the rules it started on. It runs the first time a
 room loads.
 
 ## Rollback
 
 **After v3.0, a code rollback isn't a clean undo.** Once v3 code has loaded a Kingdom & Commerce room, the room is saved as
-`stateVersion` 2. v2 code doesn't recognise that and refuses to open the room. The data is intact, and the room opens again
+`stateVersion` 4. v2 code doesn't recognise that and refuses to open the room. The data is intact, and the room opens again
 as soon as a v3 build is back, so prefer rolling forward with a fix. If you do roll back to v2 code, migrated rooms and
 rooms created under v3 stay unavailable until you redeploy. Bohnanza rooms aren't affected, because their format didn't change.
 

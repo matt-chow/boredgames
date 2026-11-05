@@ -299,7 +299,7 @@ describe('DISC closing', () => {
   });
 
   it('DISC-13: a room saved before this policy has neither field and works the same', () => {
-    const { core, store } = table();
+    const { store } = table();
     const meta = store.getMeta()!;
     delete meta.away;
     delete meta.standIn;

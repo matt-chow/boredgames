@@ -35,7 +35,7 @@ that ID, so `npx vitest -t "R4.3"` runs one rule.
 | `tests/server/core.test.ts` | H1–H7 | Lobby, seats, host hand-over, versioning, stale and duplicate rejection, malformed input, undo limits, privacy of room views, restart/resume, retention, history, the Tally second game, bot seats (H7), quitting a game in progress: bot hand-over or ending the room (H8) |
 | `tests/deckbuilder/engine.test.ts`, `mechanics.test.ts`, `simulate.test.ts` | DB-* | The deck-building engine on fixture cards. See [DECKBUILDER.md](DECKBUILDER.md) |
 | `tests/clockwork/cards.test.ts` | CC-CARD-* | Each of the 71 cards' rules, one named test or more per card |
-| `tests/clockwork/rules.test.ts` | CC-SETUP, SPARK, PW, END, REACT, RUST, MARKET, PRIV, UNDO, I | Setup at each player count, Spark, each Public Work, endings, reactions, privacy, undo safety, interpretations |
+| `tests/clockwork/rules.test.ts` | CC-SETUP, SPARK, PW, END, REACT, RUST, MARKET, PRIV, UNDO, I | Setup at each player count, Influence, each Crown Project, endings, reactions, privacy, undo safety, interpretations |
 | `tests/clockwork/simulate.test.ts` | CC-SIM, CHAOS, ROOM, AUDIT | Complete games at 2–6 players through the room, with bots and with random legal answers; every card played and every Work claimed (CC-SIM-ALL); leak checks; determinism |
 | `tests/clockwork/art.test.ts` | CC-ART, CC-COVER | Art and its manifest for everything; coverage report complete |
 

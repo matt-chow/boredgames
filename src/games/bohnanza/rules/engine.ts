@@ -109,8 +109,6 @@ export function setup(ctx: SetupContext<BohnanzaConfig>): BState {
 
 // ───────────────────────────── queries ─────────────────────────────
 
-export const beanOf = (s: BState, id: string): Bean => s.cards[id];
-
 export function fieldBean(s: BState, field: string[]): Bean | null {
   return field.length ? s.cards[field[0]] : null;
 }
@@ -722,7 +720,7 @@ function transferCoin(s: BState, to: number) {
 function stealableVictims(s: BState): number[] {
   if (!s.magpie) return [];
   return s.players
-    .map((p, i) => i)
+    .map((_, i) => i)
     .filter((i) => i !== s.active && !s.magpie!.victims.includes(i) && s.players[i].fields.some((f) => f.length));
 }
 

@@ -63,6 +63,7 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 | [docs/CLOCKWORK.md](docs/CLOCKWORK.md) | Kingdom & Commerce: rules, old and new names, art, theme |
 | [docs/ASSETS.md](docs/ASSETS.md) | Asset manifest and how to drop in licensed artwork |
 | [docs/PROGRESS.md](docs/PROGRESS.md) | Milestone status and known gaps |
+| [HUMAN_PLAYTEST.md](HUMAN_PLAYTEST.md) | How to play the current release and what feedback to send |
 | [AGENTS.md](AGENTS.md) | Working rules for coding agents in this repo |
 
 Bohnanza is a game by Uwe Rosenberg, published by AMIGO and Rio Grande Games. This is an unofficial private project.

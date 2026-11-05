@@ -32,9 +32,9 @@ All strategies pooled. Seats are in turn order. Trigger won is how often the pla
 | Economy | 50 | 18.4 | 30.3 | 9.7 | 4.2 | 30.9% | 32.0% | 68.0% | 0.0% | 0 |
 | Cycling | 50 | 18.4 | 34.8 | 7.9 | 3.2 | 22.1% | 58.0% | 42.0% | 0.0% | 0 |
 | Combo | 50 | 21.3 | 33.9 | 9.2 | 3.9 | 26.0% | 44.0% | 56.0% | 0.0% | 0 |
-| Spark | 50 | 11.8 | 22.9 | 10.7 | 4.8 | 44.9% | 10.0% | 90.0% | 0.0% | 0 |
-| Works | 50 | 12.8 | 21.4 | 10.8 | 4.9 | 49.7% | 6.0% | 94.0% | 0.0% | 0 |
-| Devices | 50 | 17.3 | 31.4 | 8.4 | 3.5 | 26.1% | 52.0% | 48.0% | 0.0% | 0 |
+| Influence Engine | 50 | 11.8 | 22.9 | 10.7 | 4.8 | 44.9% | 10.0% | 90.0% | 0.0% | 0 |
+| Crown Project Development | 50 | 12.8 | 21.4 | 10.8 | 4.9 | 49.7% | 6.0% | 94.0% | 0.0% | 0 |
+| Establishment Engine | 50 | 17.3 | 31.4 | 8.4 | 3.5 | 26.1% | 52.0% | 48.0% | 0.0% | 0 |
 | Interaction | 50 | 17.2 | 28.9 | 9.6 | 4.2 | 31.8% | 22.0% | 78.0% | 0.0% | 0 |
 | Defence | 50 | 18.8 | 31.9 | 9.2 | 3.9 | 26.5% | 44.0% | 56.0% | 0.0% | 0 |
 | Scoring | 50 | 22.8 | 36.5 | 9.6 | 4.0 | 25.2% | 42.0% | 58.0% | 0.0% | 0 |
@@ -47,9 +47,9 @@ Win rate pools all counts. Against fair is win rate relative to 1/players, avera
 
 | Strategy | Seats played | Win rate | 95% interval | Against fair |
 |---|---|---|---|---|
-| Spark | 183 | 52.5% | 45.2% to 59.6% | 2.10 |
-| Works | 184 | 42.8% | 35.9% to 50.1% | 1.71 |
-| Devices | 184 | 31.8% | 25.5% to 38.8% | 1.27 |
+| Influence Engine | 183 | 52.5% | 45.2% to 59.6% | 2.10 |
+| Crown Project Development | 184 | 42.8% | 35.9% to 50.1% | 1.71 |
+| Establishment Engine | 184 | 31.8% | 25.5% to 38.8% | 1.27 |
 | Balanced | 185 | 26.2% | 20.4% to 33.0% | 1.04 |
 | Risk | 183 | 24.6% | 18.9% to 31.3% | 0.99 |
 | Interaction | 186 | 23.1% | 17.6% to 29.7% | 0.92 |

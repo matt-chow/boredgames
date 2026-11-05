@@ -303,3 +303,6 @@ exactly, because changing those would change replays. The benchmark's imbalances
 ### D42. The whole catalogue is drawn from code
 All 110 illustrations are SVG written by build scripts, using the approved kit, with no image service. That keeps them small, editable and free of third-party rights. The cost is that scenes share a family of poses and props, so each was
 given its own subject and composition to avoid looking templated. Inline scenes stay as the fallback rather than being deleted, since they're the safety net for any future card.
+
+### D43. Edition 4 is the final release ruleset
+The owner confirmed edition 4 for release, including both D40 interpretations: unused turns and Buys don't carry into the final round, and equal Renown shares the place. Older rooms keep their editions. Internal names such as the game id `clockwork`, card keys and bot profile names stay, because saves, replays and benchmark seeds depend on them. Only what people read changed.

@@ -174,8 +174,8 @@ and the trials still play and read as they did (`guideFor(edition, version)`).
 - **CC-FINAL-2, last seat.** If the last seat of the round triggers it, the game ends at once. If the first seat does, everyone else plays once more.
 - **CC-FINAL-3, can't be reversed.** The latch stays even if the condition stops holding.
 - **CC-FINAL-4, ordinary turns.** Legality and supply are unchanged in those turns, and Renown is counted after them.
-- **CC-FINAL-5, interpretation: extra turns.** The rule says every player ends on the same number of turns, so extra turns not yet taken are dropped once the ending is triggered, and a player behind catches up. No current card grants an extra turn; only the engine's `extra-turn` op can.
-- **CC-FINAL-6, interpretation: ties.** Equal turns make the older "fewer turns ranks higher" tie-break (CC-END-5) moot, so equal Renown shares the place.
+- **CC-FINAL-5, confirmed by the owner: nothing carries over.** Every player ends on the same number of turns, so extra turns not yet taken are dropped once the ending is triggered, and a player behind catches up. Unused Buys and Actions don't carry either: every turn starts with 1 of each. No current card grants an extra turn; only the engine's `extra-turn` op can.
+- **CC-FINAL-6, confirmed by the owner: ties.** Equal turns make the older "fewer turns ranks higher" tie-break (CC-END-5) moot, so equal Renown shares the place.
 - **CC-FINAL-7, public.** The final round and turns left are public and reveal nothing hidden.
 - **CC-FINAL-8, saves.** A game saved in the final round finishes correctly after a reload.
 
@@ -267,8 +267,9 @@ Smaller readings, tested under their card or rule IDs:
 `npm run balance` plays seeded bot games and writes `docs/CLOCKWORK_BALANCE.md` and
 `data/clockwork-commons/balance-report.json`. The committed report is the v3 Standard game at 40 games per comparison
 (`BALANCE_GAMES=40`, about 30 minutes), so favour-test results carry about ±15.5 points. The default of 100 hasn't been run
-on v3. Bots are simple heuristics. The report screens for outliers and doesn't prove balance. Playstyle names in the report
-are the bots' internal names ("Spark" is Influence, "Works" is Crown Projects, "Devices" is Establishments).
+on v3. Bots are simple heuristics. The report screens for outliers and doesn't prove balance. Reports print Influence Engine,
+Crown Project Development and Establishment Engine for the bots whose internal names are `Spark`, `Works` and `Devices`. Those
+internal names stay because they seed the games.
 
 **No card numbers were changed because of these results.** None of them gives the evidence that would justify it.
 
@@ -307,7 +308,7 @@ baseline. New games get the corrected bot, which is still not a good judge of wh
 From [BOT_BENCHMARK.md](BOT_BENCHMARK.md): 10 games per strategy and player count, 120 mixed tables per count, seats rotated. The planning bot wins 73.1% at 2 players (fair 50%) and 42.1% at 4 (fair 25%) among the
 old logic, and no game got stuck. These rank bots. They don't prove a card is too strong, and nothing below was changed.
 
-- **Spark and Works lead.** At mixed tables they win 2.10 and 1.71 times a fair share, and their mirrors end in about 12 rounds where others take 16 to 23. Rushing Projects is the strongest thing the bots found.
+- **Influence Engine and Crown Project Development lead.** At mixed tables they win 2.10 and 1.71 times a fair share, and their mirrors end in about 12 rounds where others take 16 to 23. Rushing Projects is the strongest thing the bots found.
 - **Money, Scoring and Cycling trail** at about 0.6 times fair. Money funds 0.6 of 11 stages and always ends on Grand Duchy, so it barely touches Projects.
 - **Triggering usually wins:** 83.1% at 2 players, falling to 59.2% at 6.
 - **Projects end most large games:** 87.5% of mixed tables at 6 players and 50.8% at 2. F2 did not stop the shorter games at 5 and 6.

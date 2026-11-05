@@ -137,4 +137,3 @@ export type BAction =
   | { type: 'coinRespond'; resist: boolean }
   | { type: 'plantCoinCard'; field: number };
 
-export type BActionType = BAction['type'];

@@ -8,6 +8,7 @@ import { it } from 'vitest';
 import type { DeckAction, DeckState, DeckView } from '../src/engine/deckbuilder';
 import { clockwork as game } from '../src/games/clockwork';
 import { botMove, PROFILES, type Profile } from '../src/games/clockwork/rules/bot';
+import { botLabel } from './bot-labels';
 
 const N = Number(process.env.BENCH_GAMES ?? 20);
 const COUNTS = [2, 3, 4, 5, 6];
@@ -174,13 +175,13 @@ it('benchmarks edition 4 bots', () => {
     '',
     '## Mirrors by strategy',
     '',
-    table(['Strategy', 'Games', 'Median rounds', 'Mean score', 'Stages funded of 11', 'Projects complete', 'Project share of Renown', 'Grand Duchy', 'Projects', 'Piles', 'Stuck'], (mirror as { name: string; games: number; rounds: number; score: number; stages: number; complete: number; projectShare: number; duchy: string; projects: string; piles: string; stuck: number }[]).map((x) => [x.name, x.games, x.rounds.toFixed(1), x.score.toFixed(1), x.stages.toFixed(1), x.complete.toFixed(1), pct(x.projectShare), x.duchy, x.projects, x.piles, x.stuck])),
+    table(['Strategy', 'Games', 'Median rounds', 'Mean score', 'Stages funded of 11', 'Projects complete', 'Project share of Renown', 'Grand Duchy', 'Projects', 'Piles', 'Stuck'], (mirror as { name: string; games: number; rounds: number; score: number; stages: number; complete: number; projectShare: number; duchy: string; projects: string; piles: string; stuck: number }[]).map((x) => [botLabel(x.name), x.games, x.rounds.toFixed(1), x.score.toFixed(1), x.stages.toFixed(1), x.complete.toFixed(1), pct(x.projectShare), x.duchy, x.projects, x.piles, x.stuck])),
     '',
     '## Mixed tables',
     '',
     'Win rate pools all counts. Against fair is win rate relative to 1/players, averaged across counts: 1.00 is an even share.',
     '',
-    table(['Strategy', 'Seats played', 'Win rate', '95% interval', 'Against fair'], mixed.map((x) => [x.name, x.seats, pct(x.winRate), `${pct(x.ci[0])} to ${pct(x.ci[1])}`, x.vsFair.toFixed(2)])),
+    table(['Strategy', 'Seats played', 'Win rate', '95% interval', 'Against fair'], mixed.map((x) => [botLabel(x.name), x.seats, pct(x.winRate), `${pct(x.ci[0])} to ${pct(x.ci[1])}`, x.vsFair.toFixed(2)])),
     '',
     table(['Players', 'Games', 'Median rounds', 'Stages funded', 'Grand Duchy', 'Projects', 'Piles', 'Stuck', 'Win share by seat'], mixedByCount.map((x) => [x.players, x.games, x.rounds.toFixed(1), x.stages.toFixed(1), x.duchy, x.projects, x.piles, x.stuck, x.seats.join(', ')])),
     '',

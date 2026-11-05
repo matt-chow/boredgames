@@ -18,8 +18,8 @@ Two different things limit this work, and they should not be confused:
 | Zones, seeded shuffling, turn structure, resources | None identified: functional mechanics | Built |
 | Decisions, attacks, reactions, durations, triggers, replays, cost changes, tokens, mats | None identified: functional mechanics | Built |
 | Multiplayer projection, undo safety, simulations, market validation and share codes | None: our own software | Built |
-| Original card sets using these mechanics, with original names, text and art | None identified, if independently designed | Built: Clockwork Commons, from the owner's own card file (CLOCKWORK.md) |
-| 2.5D table and card UI in the hub's own design language | None, if the look is our own | Built; in production through Clockwork Commons |
+| Original card sets using these mechanics, with original names, text and art | None identified, if independently designed | Built: Kingdom & Commerce (then called Clockwork Commons), from the owner's own card file (CLOCKWORK.md) |
+| 2.5D table and card UI in the hub's own design language | None, if the look is our own | Built; in production through Kingdom & Commerce |
 | Dominion's name and branding | Trademark question; Claude won't build it | Not built |
 | Dominion's card list and expansions, card by card, including renamed copies | Not a settled legal question here; Claude won't build it | Not built |
 | Its recommended market lists | Selection may be protected; Claude won't build it | Not built |
@@ -28,7 +28,7 @@ Two different things limit this work, and they should not be confused:
 
 **Closest alternative that keeps the mechanics:** original card sets on this engine, drawing on the same families of
 mechanics (see DECKBUILDER.md), designed as their own game and added to the hub only with the owner's approval. The owner
-supplied and approved one: Clockwork Commons.
+supplied and approved one: Kingdom & Commerce, then called Clockwork Commons.
 
 ## Comparison with this repo's Bohnanza
 

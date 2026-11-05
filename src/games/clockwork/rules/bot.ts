@@ -468,4 +468,3 @@ export function botMove(v: DeckView, profile: Profile, delayMs = 500): BotMove<D
 
 export const clockworkBot = (v: DeckView) => botMove(v, BALANCED);
 
-export const typesOf = types;

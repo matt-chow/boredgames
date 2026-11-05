@@ -400,7 +400,6 @@ export function createDeckGame(rules: Ruleset, older: Ruleset[] = [], trials: Ru
     libs.set(r.version ?? 1, makeLibrary(r));
   }
   const oldest = (older[0] ?? rules).version ?? 1;
-  const lib = libs.get(rules.version ?? 1)!;
   const libFor = (version: number | undefined) => {
     const found = libs.get(version ?? oldest);
     if (!found) throw new Error(`deckbuilder: no rules for version ${version} of ${rules.id}`);

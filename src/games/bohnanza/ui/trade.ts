@@ -1,6 +1,6 @@
 import type { Bean } from '../rules/cards';
 import type { BeanCounts } from '../rules/state';
-import type { BView, CardV, OfferV } from '../rules/view';
+import type { BView, CardV } from '../rules/view';
 
 /** An offer being composed locally. Nothing is sent until the player presses Send. */
 export interface Draft {
@@ -64,4 +64,3 @@ export const newDraft = (targets: number[]): Draft => ({
   replyTo: null,
 });
 
-export const isLive = (o: OfferV) => o.status === 'open';

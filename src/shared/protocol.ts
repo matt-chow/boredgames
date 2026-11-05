@@ -4,8 +4,6 @@
  */
 import type { OptionDescriptor, PlayerResult } from '../engine/types';
 
-export const PROTOCOL_VERSION = 1;
-
 /** Room codes: 6 characters from an alphabet without look-alikes (no 0/O, 1/I/L). */
 export const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 export const CODE_LENGTH = 6;

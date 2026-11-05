@@ -58,7 +58,7 @@ export function botMove(v: BView): BotMove<BAction> | null {
     }
     case 'trade': {
       const mine = v.offers.filter((o) => o.status === 'open' && o.to === me);
-      if (mine.length) return go(mine.map((o) => answer(v, p, o)), REPLY_MS);
+      if (mine.length) return go(mine.map((o) => answer(p, o)), REPLY_MS);
       if (!active || !h.canEndTrading) return null;
       const gift = donation(v, p, me);
       return gift ? go([gift, { type: 'endTrading' }]) : go([{ type: 'endTrading' }], TRADE_MS);
@@ -126,7 +126,7 @@ function steals(v: BView, h: Hints, p: PlayerV): BAction[] {
 }
 
 /** Accept an offer that fits and costs no more cards than it brings; otherwise decline. */
-function answer(v: BView, p: PlayerV, o: OfferV): BAction {
+function answer(p: PlayerV, o: OfferV): BAction {
   const reject: BAction = { type: 'reject', offer: o.id };
   const hand = p.hand ?? [];
   // Give cards from the back of the hand: the front cards are what we plant next.

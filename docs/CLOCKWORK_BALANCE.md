@@ -37,9 +37,9 @@ Win % in two-player games with seats swapped.
 | Economy | 28.8 | 42.5 | 52.5 | 47.5 | 3/11 |
 | Cycling | 70 | 45 | 32.5 | 43.9 | 2/11 |
 | Combo | 76.3 | 35 | 22.5 | 36.4 | 2/11 |
-| Spark | 85 | 58.8 | 52.5 | 60 | 9/11 |
-| Works | 83.8 | 65 | 58.8 | 71.1 | 9/11 |
-| Devices | 92.5 | 55 | 57.5 | 59.3 | 7/11 |
+| Influence Engine | 85 | 58.8 | 52.5 | 60 | 9/11 |
+| Crown Project Development | 83.8 | 65 | 58.8 | 71.1 | 9/11 |
+| Establishment Engine | 92.5 | 55 | 57.5 | 59.3 | 7/11 |
 | Interaction | 63.8 | 51.3 | 35 | 58.9 | 7/11 |
 | Defence | 33.8 | 46.3 | 50 | 50 | 7/11 |
 | Scoring | 65 | 26.3 | 32.5 | 48 | 5/11 |

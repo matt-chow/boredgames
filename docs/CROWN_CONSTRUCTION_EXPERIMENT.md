@@ -1,6 +1,6 @@
 # Crown Project construction experiment
 
-**Status: results for owner decision. No staged rule has been adopted.** Production and new rooms still use the live rule: five Projects, each claimed whole, and the game ends at four of them. The six trial rules can only be selected in tests and on the staging build (CC-STAGE-12).
+**Status: historical. The owner chose F2, which is now edition 4 (CLOCKWORK.md). The text below is as written before that decision.** Production and new rooms still use the live rule: five Projects, each claimed whole, and the game ends at four of them. The six trial rules can only be selected in tests and on the staging build (CC-STAGE-12).
 
 Every figure below comes from [CROWN_CONSTRUCTION_RESULTS.md](CROWN_CONSTRUCTION_RESULTS.md), which has the full tables, including Treasury buying, Influence, strategy and market family. Raw data: `data/clockwork-commons/crown-construction-experiment.json`.
 

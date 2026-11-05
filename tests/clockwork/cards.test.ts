@@ -404,10 +404,6 @@ describe('Core Set: Long game', () => {
 });
 
 describe('Core Set: Prestige', () => {
-  const score = (t: Table, seat = t.me) => {
-    t.s.over = true;
-    return (t.view(seat).final ?? []);
-  };
   it('CC-CARD-civic_scholar: draws, gains Spark, is worth 1', () => {
     const t = new Table(['civic_scholar'], { deck: ['cog'] });
     t.play('civic_scholar');

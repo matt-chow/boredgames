@@ -178,7 +178,7 @@ describe('CC-FINAL: finishing the round', () => {
     expect(final.total).toBe(before + 3);
   });
 
-  it('CC-FINAL-5: extra turns are not taken after the trigger, and a player behind on turns catches up', () => {
+  it('CC-FINAL-5: extra turns are not taken after the trigger, a player behind on turns catches up, and unused Buys and Actions do not carry', () => {
     const t = new Table([], { players: 3 });
     const a = t.s.turn.seat;
     const b = (a + 1) % 3;
@@ -188,9 +188,13 @@ describe('CC-FINAL: finishing the round', () => {
     t.s.players[c].turns = 3;
     t.s.turn.seat = b;
     t.s.extraTurns = [b];
+    t.s.turn.buys = 4;
+    t.s.turn.actions = 4;
     t.s.supply.monument = [];
     pass(t);
     expect(t.s.extraTurns).toEqual([]);
+    expect(t.s.turn.buys).toBe(1);
+    expect(t.s.turn.actions).toBe(1);
     expect(turns(t.s)[b]).toBe(5);
     for (let i = 0; i < 2; i++) pass(t);
     expect(t.s.over).toBe(true);

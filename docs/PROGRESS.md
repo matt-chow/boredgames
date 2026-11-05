@@ -210,3 +210,7 @@ Both guides now open from the room as well as the pre-game panel, the ? menu and
 ### CP10: edition 4, bots and art verified locally
 
 Edition 4 (F2 and finishing the round), planning bots and all 110 illustrations are committed. 690 unit tests pass across 27 files, run one file at a time, and svelte-check and the worker type check are clean. Each e2e spec passes when run alone. Two tests in `clockwork.spec.ts` needed changes first: the phone catalog test now taps the label, and the final-round check moved to its own game (CC-E2E-7), which saw the label within at most four games. Benchmark results with the fixed bots are in BOT_BENCHMARK.md. Nothing is pushed, and production is untouched.
+
+### CP11: final terminology cleanup for release
+
+Bot reports now print Influence Engine, Crown Project Development and Establishment Engine; the internal profile names stay because they seed the benchmark. Active docs use current names, and dated experiments are labelled historical. Removed code with no consumers: `beanOf`, `BActionType`, `isLive`, `typesOf`, `PROTOCOL_VERSION`, and unused locals and parameters in five places. No files were deleted, because the audit found no unreferenced modules, assets, docs or tracked outputs. The owner confirmed CC-FINAL-5 and CC-FINAL-6 (D43), and the CC-FINAL-5 test now covers unused Buys and Actions. Added HUMAN_PLAYTEST.md.

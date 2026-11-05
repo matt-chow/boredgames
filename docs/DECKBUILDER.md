@@ -4,7 +4,7 @@ A generic engine for deck-building card games, in `src/engine/deckbuilder`. It i
 repo, and it contains no game. A game is a `Ruleset`: card definitions as typed data plus table rules.
 `createDeckGame(ruleset)` turns one into a normal `GameModule`.
 
-**Status: in production through Clockwork Commons ([CLOCKWORK.md](CLOCKWORK.md)).** Fixture cards named for what they exercise remain for engine tests. For what may go in a ruleset, see
+**Status: in production through Kingdom & Commerce ([CLOCKWORK.md](CLOCKWORK.md)).** Fixture cards named for what they exercise remain for engine tests. For what may go in a ruleset, see
 [DECKBUILDER_LICENSING.md](DECKBUILDER_LICENSING.md).
 
 To see the table on fixture cards, run `npm run dev:bench` and choose **Deck bench** on the hub. That bench stays out of
@@ -127,7 +127,7 @@ engine change.
 - **Extra turns are not limited.** A ruleset that needs a limit must define one.
 - **Ties** go to the player with fewer turns; players level on both share the win (DB-END-4).
 
-## Added for Clockwork Commons
+## Added for Kingdom & Commerce (first released as Clockwork Commons)
 
 All optional in a `Ruleset`: named resource tokens with caps, conversion to Coins (`convert`), buyable projects with
 rewards (`projects`, `projectCount`, `projectsToEnd`), selectable card sets (`sets`, `defaultSets`), renamed terms
@@ -142,7 +142,7 @@ fixture cards.
   prompt for everyone, which is a design choice for the UI stage. Which card it is stays hidden (DB-PRIV-5).
 - **A disconnected player holding a decision blocks the table.** Bohnanza has the same limit today; the hub has no
   decision timer. The quit flow hands the seat to a bot (D19).
-- **Fixture cards are for testing.** They aren't balanced or written for players. Clockwork Commons is the only authorised
+- **Fixture cards are for testing.** They aren't balanced or written for players. Kingdom & Commerce is the only authorised
   card set; see [DECKBUILDER_LICENSING.md](DECKBUILDER_LICENSING.md).
 - **The bot is deliberately plain.** It keeps games moving but doesn't play well.
 - **`custom` handlers are trusted code.** They must call `taint()` when they show hidden information, or undo could

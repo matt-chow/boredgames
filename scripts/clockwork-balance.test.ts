@@ -8,6 +8,7 @@ import { it } from 'vitest';
 import type { DeckAction, DeckState, DeckView } from '../src/engine/deckbuilder';
 import { clockwork as game } from '../src/games/clockwork';
 import { BALANCED, botMove, PROFILES, STYLES, type Profile } from '../src/games/clockwork/rules/bot';
+import { botLabel } from './bot-labels';
 import { CARDS } from '../src/games/clockwork/rules/ruleset';
 
 const N = Number(process.env.BALANCE_GAMES ?? 100);
@@ -239,7 +240,7 @@ ${head(['Style', 'vs Currency only (Core)', 'vs Currency only (all sets)', 'vs B
 ${styles
   .map((s) => {
     const rr = rrAverages.find((r) => r.name === s.profile)!;
-    return row([s.profile, s.vsMoneyCore, s.vsMoneyAll, s.vsBalancedAll ?? '-', rr.avg, `${rr.beats}/${field.length - 1}`]);
+    return row([botLabel(s.profile), s.vsMoneyCore, s.vsMoneyAll, s.vsBalancedAll ?? '-', rr.avg, `${rr.beats}/${field.length - 1}`]);
   })
   .join('\n')}
 
