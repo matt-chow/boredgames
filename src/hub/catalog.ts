@@ -65,9 +65,9 @@ export const CATALOG: CatalogEntry[] = [
     accent: '#783547',
     howTo: [
       'Royal Court: play Actions and Establishments. An Establishment stays out and works again at the start of your next turn.',
-      'Market: play Currency, turn Influence into Coins, buy from the permanent supply or the 10 market piles, or complete a Crown Project.',
+      'Market: play Currency, turn Influence into Coins, buy from the permanent supply or the 10 market piles, or fund the next stage of a Crown Project.',
       'Cleanup: discard everything and draw 5. Your purchases come round as your deck reshuffles.',
-      'Influence carries between turns. Your Renown is private until the end, when most Renown wins.',
+      'Influence carries between turns. When an end condition is met the round finishes, so everyone has equal turns. Most Renown wins, and it stays private until then.',
     ],
     settings: ['Which card sets are in play', 'A random or hand-picked market of 10', 'Banned cards', 'Crown Project selection', 'Market codes to share a setup'],
   },
