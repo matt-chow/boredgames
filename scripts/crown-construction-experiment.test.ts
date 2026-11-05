@@ -291,7 +291,7 @@ it('runs the construction experiment', () => {
     })),
     table('Treasury and market purchases per player', ['Rules', 'Players', 'Silver', 'Gold', 'Homestead', 'Noble Estate', 'Grand Duchy', 'Market'], each((s) => [f2(s.treasury.cog), f2(s.treasury.dynamo), f2(s.treasury.notebook), f2(s.treasury.blueprint), f2(s.treasury.monument), f2(s.marketBought)])),
     table('Influence per player', ['Rules', 'Players', 'Gained', 'On Projects', 'To Coins', 'Other', 'Unused at end'], each((s) => [f1(s.influence.gained), f1(s.influence.spentProject), f1(s.influence.spentConvert), f1(s.influence.spentOther), f1(s.influence.unused)])),
-    table('Strategy win rates, all player counts together', ['Strategy', ...CONFIGS.map((c) => c.id)], Object.keys(all.Live[2].strategies).sort().map((name) => [name, ...CONFIGS.map((c) => {
+    table('Strategy win rates, all player counts together', ['Strategy', ...CONFIGS.map((c) => c.id)], PROFILES.slice(1).map((p) => p.name).sort().map((name) => [name, ...CONFIGS.map((c) => {
       const games = COUNTS.map((p) => all[c.id][p].strategies[name]).filter(Boolean);
       return pct(games.reduce((a, e) => a + e.wins, 0) / Math.max(1, games.reduce((a, e) => a + e.n, 0)));
     })])),

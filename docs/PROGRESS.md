@@ -190,3 +190,11 @@ Not repeated on this deploy: the test that reopens rooms started on an earlier b
 ## Crown rework CP5: Project UI (staged trial)
 
 Five visible tiles remain. A staged tile shows pips and n/N, the next stage's name, its cost, and the reward only on the final stage. An eye button opens a details dialog: every stage, cost, Renown, funder and next contribution. The lobby's trial-rules selector only appears on servers that allow editions. Zero-cost tokens are hidden and 1 Coin is singular. CC-STAGE-UI (phone) passes.
+
+## CP4: Crown Project experiment finished (2026-11-04)
+
+4,200 paired games across Live, C0, C1, F1, F2, S1 and S2, at 2 to 6 players and on 4 market families, in 19.3 minutes. All finished, none stuck. Report and recommendation: docs/CROWN_CONSTRUCTION_EXPERIMENT.md. **Nothing adopted; owner decision pending.** Recommended: F2. Scaled S shortens 5 and 6 player games compared with live.
+
+## CP6 and CP7: art bible and five pilots
+
+docs/ART_BIBLE.md and five clear-line SVGs in public/cards/, built by scripts/art/. ART-1 to ART-5 pass. Remaining art not generated; owner approval pending.
