@@ -167,7 +167,29 @@ Run before the last small changes (test-only, plus documentation):
 
 The specs this section once listed as still to run have since passed on the v3 code, below.
 
-## v3.0 results (2026-11-04)
+## v3.0 latest results (`a7e91da`, 2026-11-04)
+
+One worker, one spec at a time, on the same commit.
+
+| Check | Local | Staging |
+|---|---|---|
+| `npm run check` | 0 errors | |
+| `npx vitest run` | 554 / 554 in 21 files | |
+| `npm run build` | passes, including the no-bench check | |
+| `clockwork` | 9 / 9 | 9 / 9 |
+| `complete` | 4 / 4 | 4 / 4 |
+| `play` | 5 / 5 | 5 / 5 |
+| `resilience` | 3 / 3 | 3 / 3 |
+| `bots` | 2 / 2 | 2 / 2 |
+| `guide` | 4 / 4 | 4 / 4 |
+| `lobby` | 2 / 2 | 2 / 2 |
+| `theme` | 1 / 1 | 1 / 1 |
+| `home` | 14 / 14 | 7 passed, 7 skipped (dev-only fixture) |
+| `deck` | 7 / 7 | can't run: the bench isn't deployed |
+
+Not run: the `perf` project, a physical phone, Safari.
+
+## v3.0 earlier results (`a86a47a`)
 
 PROGRESS.md has which spec ran on which commit. Local, one worker, one spec at a time:
 

@@ -169,3 +169,16 @@ https://boredgames-staging.mchowcl.workers.dev, with its own Worker and Durable 
   on a deployed build; that skip hasn't been re-run.
 - **Not run on staging:** `guide`, `play`, `resilience`, `bots`, `clockwork`, `complete`. The system stopped the run for low memory. So no
   complete v3 game and no two-person sync have been verified on staging yet.
+
+**Checkpoint 11, undo, Crown Project experiment, Treasury and symbols.** Commits `46aab94`, `8b2617d`, `a7e91da`.
+
+- **Undo:** deck games now take back up to 8 steps one at a time (KC3-UNDO). Revealing hidden information still ends the chain.
+- **Crown Project end rule:** compared on 1,200 bot games, rule unchanged. CROWN_END_EXPERIMENT.md, D35.
+- **Treasury and Kingdom Market:** Coins and Renown columns, with Copper, Silver and Gold as display names (KC3-TREASURY, D36).
+- **Symbols:** Actions, Buys, Coins, Influence and Renown, always beside the word and outside live regions (KC3-SYM).
+
+**Checkpoint 10 update, staging.** This replaces the "Not run on staging" line above. `a7e91da` is deployed as version
+`1d662575-818f-4f73-abaf-ce6a4ac8064a`. Against that build, one worker, one spec at a time: `guide` 4/4, `play` 5/5, `resilience` 3/3,
+`bots` 2/2, `clockwork` 9/9, `complete` 4/4, `theme` 1/1, `lobby` 2/2, `home` 7 passed and 7 skipped (dev-only fixture). So a complete v3 game,
+a 6-seat game and two-person sync with a reconnect have now run on staging. `deck` can't run there, because the bench isn't in deployed builds.
+Not repeated on this deploy: the test that reopens rooms started on an earlier build. Not run at all: `perf`, a physical phone, Safari.
