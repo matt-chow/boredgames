@@ -229,6 +229,15 @@ export const guide: GuideDoc = {
                 '**Garden** (6): –, 2, 3, –',
               ],
             },
+            'Only some variants add these. Three New Bean Types adds Brandy and Coffee with 3 players, or Cocoa and Brandy with 4 or 5. The Field Bean adds Field and Brandy.',
+            {
+              ul: [
+                '**Coffee** (24): 4, 7, 10, 12',
+                '**Brandy** (22): 4, 7, 9, 11',
+                '**Cocoa** (4): –, 2, 3, 4',
+                '**Field** (3): –, –, 3, –',
+              ],
+            },
           ],
         },
         {

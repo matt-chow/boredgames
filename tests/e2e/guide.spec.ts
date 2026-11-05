@@ -74,6 +74,40 @@ test('GUIDE-E3: Bohnanza help opens from the table', async ({ browser }) => {
   for (const x of players) expect(x.errors).toEqual([]);
 });
 
+test('GUIDE-E5: the room’s guide states the rules chosen for it, in the lobby and at the table', async ({ browser }) => {
+  const p = await newPlayer(browser, 'Ada');
+  await p.page.goto('/');
+  const code = await p.page.evaluate(async () => {
+    const r = await fetch('/api/rooms', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ gameId: 'clockwork', name: 'Ada', bots: 1 }) });
+    return ((await r.json()) as { code: string }).code;
+  });
+  await p.page.goto(`/r/${code}`);
+  await p.page.getByRole('button', { name: 'How to play' }).click();
+  let d = dialog(p.page).last();
+  await expect(d.locator('#guide-q-end')).toBeVisible();
+  await d.locator('#guide-q-end summary').click();
+  await expect(d.locator('#guide-q-end')).toContainText('4 Crown Projects');
+  await p.page.keyboard.press('Escape');
+  const pick = p.page.locator('[data-edition]');
+  if (await pick.count()) {
+    await pick.selectOption('F2');
+    await expect(pick).toHaveValue('F2');
+    await p.page.getByRole('button', { name: 'How to play' }).click();
+    d = dialog(p.page).last();
+    await expect(d).toContainText('Trial F2');
+    await d.locator('#guide-q-end summary').click();
+    await expect(d.locator('#guide-q-end')).toContainText('All 5');
+    await p.page.keyboard.press('Escape');
+  }
+  await p.page.getByRole('button', { name: 'Start the game' }).click();
+  await expect(p.page.locator('.table .turn')).toBeVisible({ timeout: 15_000 });
+  await p.page.locator('[data-project-help]').click();
+  d = dialog(p.page).last();
+  await expect(d.locator('#guide-f-projects')).toHaveAttribute('open', '');
+  if (await pick.count()) await expect(d.locator('#guide-f-projects')).toContainText('stages each');
+  expect(p.errors).toEqual([]);
+});
+
 test('GUIDE-E4: the guide fits a phone', async ({ browser }) => {
   const p = await newPlayer(browser, 'Ada', PHONE);
   await kingdomTable(p.page, 'Ada');

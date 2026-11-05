@@ -82,7 +82,7 @@
 <Dialog bind:open title={doc?.title ?? 'How to play'} wide>
   {#if doc && level}
     <div class="guide">
-      {#if note}<p class="note">{note}</p>{/if}
+      {#if note || doc.note}<p class="note">{note || doc.note}</p>{/if}
       <input class="find" type="search" placeholder="Search this guide" aria-label="Search this guide" bind:value={query} />
       {#if searching}
         <p class="count" role="status">{hits.length ? `${hits.length} ${hits.length === 1 ? 'section' : 'sections'} found` : 'Nothing found. Try one simpler word.'}</p>

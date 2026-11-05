@@ -1,4 +1,5 @@
-import type { GuideDoc } from '../../../hub/guide';
+import type { GuideBlock, GuideDoc } from '../../../hub/guide';
+import { EDITIONS } from '../rules/editions';
 
 /** Written from the engine and docs/CLOCKWORK.md. tests/guides.test.ts checks the numbers and replays the worked examples. */
 export const guide: GuideDoc = {
@@ -92,7 +93,7 @@ export const guide: GuideDoc = {
           id: 'f-supply',
           title: 'The Treasury and the Kingdom Market',
           body: [
-            'The **Treasury** is always available, in every game. It holds three Coins piles and three Renown piles:',
+            'The **Treasury** is permanent: the same piles are available in every game, and they can’t be chosen or banned. It holds three Coins piles and three Renown piles:',
             {
               ul: [
                 '**Bronze:** costs 0, gives 1 Coin. 60 in the pile.',
@@ -112,6 +113,7 @@ export const guide: GuideDoc = {
           title: 'How your deck cycles',
           body: [
             'A card you buy goes to your **discard pile**, not your hand. When you need to draw and your deck is empty, your discard pile is shuffled to make a new deck. So what you buy now comes round later, and a smaller deck comes round faster.',
+            '**Improving your deck** is most of the game. Every Bronze and Homestead you own takes up a draw that could have been something better. Buying stronger cards and trashing weak ones both raise what an average hand is worth. Renown cards do the opposite until the end, so most players build first and buy Renown later.',
             'Your deck’s order is hidden, even from you. The **deck overview** shows what you own, but not where it is.',
           ],
         },
@@ -126,7 +128,7 @@ export const guide: GuideDoc = {
         {
           id: 'f-establishment',
           title: 'Establishments',
-          body: ['An Establishment is played like an Action but stays in play after your turn. It works again at the start of your next turn, then goes to your discard pile with everything else at that turn’s Cleanup, unless its text says otherwise.'],
+          body: ['An Establishment is played like an Action but stays in play after your turn. It works again at the start of your next turn, then goes to your discard pile with everything else at that turn’s Cleanup, unless its text says otherwise. So its effect lasts across two of your turns.'],
         },
         {
           id: 'f-market',
@@ -193,6 +195,7 @@ export const guide: GuideDoc = {
           body: [
             'Five Crown Projects are on the table. Each can be completed once, by the first player to pay its price in Coins and Influence, during the Market phase. That uses 1 Buy. It gives you Renown right away, along with a one-off reward printed on it.',
             'Rewards and who built what are public. When **4** are complete, the game ends at the end of that turn, so finishing one is also a clock on everyone else.',
+            'This is the live rule. Trial rules that split Projects into stages are being tested and aren’t part of the live game. If your table uses one, this guide says so at the top and describes that rule here instead.',
           ],
         },
         {
@@ -379,6 +382,14 @@ export const guide: GuideDoc = {
             'When they return, the seat is theirs again straight away, from whatever point the game has reached. Moves the bot already made stay made.',
             'If nobody is left in person, the table closes. That includes a game played alone with bots: if you don’t return within 60 seconds, the game is deleted. A silent network failure can take up to about 40 seconds longer to notice than a closed tab.',
             'A player who chooses to quit hands their seat to a bot for good and can’t return. If nobody else is left in person, quitting ends the game.',
+            {
+              example: 'Losing the connection and coming back',
+              steps: [
+                'It’s your turn at a table of three when your connection drops. The others see you marked Away, and the game waits.',
+                'After 60 seconds a bot takes your seat, marked Bot playing, and makes your move using only what you could see.',
+                'You reconnect. The seat is yours again at once and the bot stops. Its move stands, and your cards, Influence and Renown are whatever that play left them.',
+              ],
+            },
           ],
         },
         {
@@ -404,6 +415,91 @@ export const guide: GuideDoc = {
                 'Sets: Core Set and Crown Decrees are on by default. Artisans’ Row, Rival Houses and The Chancery are optional.',
                 'A market code shares a game’s market and Projects with another host.',
                 '**Older rooms:** a game that began before this edition keeps its original rules to the end. It has no Crown Decree cards, and its Royal Debt pile holds 10 per opponent. Everything else in this guide applies.',
+                '**Trial rules:** see Staged Crown Projects. A game keeps the rules it started with, including a trial.',
+              ],
+            },
+          ],
+        },
+        {
+          id: 'r-staged',
+          title: 'Staged Crown Projects',
+          body: [
+            '**These are trial rules, not the live game.** Live tables use the rule under Crown Projects in How to play. No trial has been adopted. A trial only runs on the test server, when the host picks it in the room, and the room’s guide then says which one it is.',
+            '**How a stage works**',
+            {
+              ul: [
+                'A Project has 1, 2 or 3 stages. Each stage has its own price in Coins and Influence, and its own Renown. Each tile shows the next stage.',
+                'In the Market phase, for 1 Buy, you may pay the next unfunded stage of any Project and keep that stage’s Renown. Stages are funded in order, by anyone. Different players can fund different stages.',
+                'You can fund only one stage of a Project per turn, but stages of different Projects if you have the Buys and the price.',
+                'Renown from a stage counts at the end **even if the Project is never finished**.',
+                'The Project’s reward happens once, for whoever funds the last stage. A one-stage Project works exactly as a live claim does.',
+                'Who funded what is public. Your Renown total stays private.',
+              ],
+            },
+            '**The six trials**',
+            {
+              ul: [
+                '**C0:** 5 one-stage Projects, usual prices.',
+                '**C1:** as C0, each Project costing 1 Coin more.',
+                '**F1:** 1 one-stage, 2 two-stage and 2 three-stage Projects at every player count, 11 stages in all, at usual total prices.',
+                '**F2:** as F1, with 1 more Coin in the total of each two- or three-stage Project.',
+                '**S1:** stages by player count, at usual total prices. 2 players: 3 one-stage and 2 two-stage (7). 3 players: 2, 2 and 1 three-stage (9). 4 players: 1, 2 and 2 (11). 5 players: 3 two-stage and 2 three-stage (12). 6 players: 2 two-stage and 3 three-stage (13).',
+                '**S2:** as S1, with 1 more Coin in the total of each two- or three-stage Project.',
+              ],
+            },
+            '**Stage counts and prices**',
+            {
+              ul: [
+                'Which Project gets which stage count is dealt at random when the game starts. Price and Renown play no part in it.',
+                'A Project’s total is divided evenly. Spare Coins go on the earliest stages. Spare Influence and Renown go on the latest. Totals never change except for the extra Coin in F2, S2 and C1.',
+                'No card or market cost changes under any trial.',
+              ],
+            },
+            '**Ending and card wording**',
+            {
+              ul: [
+                'Under every trial the game ends after the turn in which **all 5** Projects are complete, or on the usual Grand Duchy or empty-pile endings. A part-built Project doesn’t count as complete.',
+                '**“Projects you completed”** on Builder’s Honour and Civic Charter counts finished Projects you funded at least one stage of. Several players can count the same one.',
+                '**“When you complete”** on Royal Dedication, Bellman and Cloister Garden means funding the last stage, not every stage.',
+                'Surveyor’s discount and Borough Reeve’s surcharge apply to whichever stage is next.',
+              ],
+            },
+            {
+              example: 'A one-stage Project (F1)',
+              steps: [
+                'River Quay has 1 stage here: 3 Coins and 2 Influence, for 4 Renown and a reward of 1 Influence.',
+                'With 3 Coins, 1 Buy and 2 Influence you fund it. It’s complete at once, and it’s yours alone.',
+              ],
+            },
+            {
+              example: 'Two players share three stages of City Walls (F1)',
+              steps: [
+                'City Walls totals 8 Coins, 5 Influence and 13 Renown. In three stages: Foundations 3 Coins + 1 Influence for 4 Renown, Masonry 3 + 2 for 4, Fortification 2 + 2 for 5.',
+                'You pay for Foundations and take 4 Renown. Your opponent pays for Masonry on their turn and takes 4.',
+                'On your next turn you pay for Fortification and take 5, and the reward of 2 Influence. The Project is complete.',
+                'You hold 9 of its Renown and your opponent 4, which is the printed 13 between you. Under F2 its 9 Coins divide as 3, 3 and 3.',
+              ],
+            },
+            {
+              example: 'Renown goes to whoever funded each stage (F1)',
+              steps: [
+                'Three players each fund one stage of City Walls: 4, 4 and 5 Renown.',
+                'Before the last stage is paid, the first two already hold their 4 each, and would keep it if the game ended there.',
+                'Only the third player gets the 2 Influence reward. All three count it as a Project they completed.',
+              ],
+            },
+            {
+              example: 'Six players and thirteen stages (S1)',
+              steps: [
+                'At 6 players there are 2 two-stage and 3 three-stage Projects: 2 × 2 + 3 × 3 = **13** stages, so 13 chances to contribute.',
+                'Under F1 the same table has 1 + 2 + 2 + 3 + 3 = **11**.',
+              ],
+            },
+            {
+              example: 'All five complete (any trial)',
+              steps: [
+                'Four Projects are complete. On a live table the game would end. Under a trial it carries on.',
+                'A player funds the last stage of the fifth Project. They finish their turn, and the game ends there.',
               ],
             },
           ],
@@ -427,3 +523,54 @@ export const guide: GuideDoc = {
     },
   ],
 };
+
+/** The sections a trial changes, so a trial room's guide states that room's rule rather than the live one. */
+function trialSections(staged: boolean): Record<string, GuideBlock[]> {
+  return {
+    'q-score': [staged ? 'Homestead 1, Noble Estate 3, Grand Duchy 6, plus scoring cards and the Renown of every Project stage you funded. Royal Debt is −1. Your total is private until the end.' : 'Homestead 1, Noble Estate 3, Grand Duchy 6, plus scoring cards and completed Crown Projects. Royal Debt is −1. Your total is private until the end.'],
+    'q-end': ['The game ends at the end of the turn in which any of these is true:', { ul: ['The Grand Duchy pile is empty.', '**All 5** Crown Projects are complete.', '**3** market piles are empty (**4** with 5 or 6 players).'] }],
+    'f-projects': staged
+      ? [
+          'Five Crown Projects are on the table, with 1, 2 or 3 stages each. In the Market phase, for 1 Buy, you may pay the next unfunded stage of any Project and keep that stage’s Renown, even if the Project is never finished. Anyone can fund the next stage, and the reward goes to whoever funds the last.',
+          'When **all 5** are complete, the game ends at the end of that turn. Staged Crown Projects in Detailed rules has the full rule and worked examples.',
+        ]
+      : ['Five Crown Projects are on the table. Each can be completed once, by the first player to pay its price in Coins and Influence, during the Market phase. That uses 1 Buy. It gives you Renown right away, along with a one-off reward printed on it.', 'Rewards and who built what are public. When **all 5** are complete, the game ends at the end of that turn.'],
+    'f-end': [
+      'The game checks for the end after each player’s turn: the Grand Duchy pile empty, all 5 Crown Projects complete, or 3 market piles empty (4 with 5 or 6 players). The current turn always finishes. A part-built Project doesn’t count. The permanent piles other than Grand Duchy don’t count as empty market piles.',
+      'Most Renown wins. If totals are equal, the player who took fewer turns ranks higher. If that’s also equal, they share the place.',
+    ],
+    'f-mistakes': [
+      {
+        ul: [
+          'Buying Renown too early. Renown cards do nothing in your hand, and they slow your deck.',
+          'Forgetting to convert Influence before buying a card you can nearly afford.',
+          'Letting Influence sit at 8. Anything more is lost.',
+          'Assuming a gained card is in your hand. It’s in your discard pile unless the card says otherwise.',
+          'Ignoring the Crown Project count. The fifth one ends the game, whoever is ahead.',
+        ],
+      },
+    ],
+  };
+}
+
+/** The guide for a room: the live one, or for a trial edition the same guide with that edition's rule in place. */
+export function guideFor(edition?: string | null): GuideDoc {
+  const rules = EDITIONS.find((r) => r.edition!.code === edition);
+  if (!rules) return guide;
+  const changed = trialSections(!!rules.staged);
+  return {
+    ...guide,
+    note: `This table is playing trial rules, not the live game. ${rules.edition!.name}: ${rules.edition!.text} See “Staged Crown Projects” in Detailed rules.`,
+    levels: guide.levels.map((l) => ({
+      ...l,
+      sections: l.sections.map((s) =>
+        changed[s.id]
+          ? { ...s, body: changed[s.id] }
+          : // Its price and result are the live rule's, and the trial section has its own examples.
+            s.id === 'f-examples'
+            ? { ...s, body: s.body.filter((b) => !(typeof b === 'object' && 'example' in b && b.example === 'Completing a Crown Project')) }
+            : s,
+      ),
+    })),
+  };
+}

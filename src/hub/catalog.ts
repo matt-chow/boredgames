@@ -24,7 +24,7 @@ export interface CatalogEntry {
   titleFont?: string;
   /** The rules in a few lines. The full guide for a game is at its table. */
   howTo: string[];
-  guide?: () => Promise<{ guide: GuideDoc }>;
+  guide?: () => Promise<{ guide: GuideDoc; guideFor?: (edition?: string | null) => GuideDoc }>;
   /** What the host can set in the room before starting. */
   settings: string[];
 }

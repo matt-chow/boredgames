@@ -18,6 +18,8 @@ export interface GuideLevel {
 
 export interface GuideDoc {
   title: string;
+  /** Shown above the guide, when this copy differs from the usual rules. */
+  note?: string;
   levels: GuideLevel[];
 }
 

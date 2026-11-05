@@ -14,6 +14,7 @@
     busy,
     name,
     trial = '',
+    onhelp,
     onclaim,
   }: {
     g: DeckView;
@@ -25,6 +26,7 @@
     name: (seat: number) => string;
     /** A trial edition's name; the live game shows nothing extra. */
     trial?: string;
+    onhelp?: () => void;
     onclaim: (key: string) => void;
   } = $props();
 
@@ -79,6 +81,7 @@
       <button type="button" class="look" data-look={p.key} aria-label="Details of {def(p.key)?.name ?? p.key}" onclick={() => look(p.key)}><Icon name="eye" size={14} /></button>
     </div>
   {/each}
+  {#if onhelp}<button type="button" class="link" data-project-help onclick={onhelp}>How {title} work</button>{/if}
 </section>
 
 <Dialog bind:open={lookOpen} title={seen ? (def(seen.key)?.name ?? seen.key) : title}>
@@ -118,6 +121,18 @@
     gap: 6px;
     min-width: 0;
     margin-top: 16px;
+  }
+  .link {
+    grid-column: 1 / -1;
+    justify-self: start;
+    min-height: 32px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ink-2);
+    font-size: 12px;
+    text-decoration: underline;
+    cursor: pointer;
   }
   .trial {
     grid-column: 1 / -1;

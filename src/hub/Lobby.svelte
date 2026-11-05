@@ -7,6 +7,8 @@
   import { GAME_SETUP, type GameUiProps } from '../games/ui';
   import type { OptionDescriptor } from '../engine/types';
   import type { RoomView } from '../shared/protocol';
+  import { CATALOG, type CatalogEntry } from './catalog';
+  import Guide from './Guide.svelte';
   import Icon from './Icon.svelte';
 
   let { conn, room }: { conn: RoomConnection; room: RoomView } = $props();
@@ -21,6 +23,16 @@
   $effect(() => {
     GAME_SETUP[room.gameId]?.().then((m) => (Setup = m.default));
   });
+
+  const loadGuide = $derived(CATALOG.find((g) => g.id === room.gameId)?.guide);
+  let guideOpen = $state(false);
+  let guideFile = $state<Awaited<ReturnType<NonNullable<CatalogEntry['guide']>>> | null>(null);
+  // Follows the host's choice of rules while it is open.
+  const guideDoc = $derived(guideFile ? (guideFile.guideFor?.(room.config.edition as string | undefined) ?? guideFile.guide) : null);
+  function openGuide() {
+    guideOpen = true;
+    loadGuide?.().then((m) => (guideFile = m));
+  }
 
   async function send(msg: Parameters<RoomConnection['send']>[0]) {
     const r = await conn.send(msg);
@@ -79,6 +91,7 @@
       <Icon name={copied ? 'check' : 'copy'} size={16} />
       {copied ? 'Link copied' : 'Copy invite link'}
     </button>
+    {#if loadGuide}<button class="btn small" onclick={openGuide}>How to play</button>{/if}
   </section>
 
   <div class="cols">
@@ -161,6 +174,8 @@
     {/if}
   </footer>
 </main>
+
+<Guide bind:open={guideOpen} doc={guideDoc} />
 
 <style>
   .lobby {
