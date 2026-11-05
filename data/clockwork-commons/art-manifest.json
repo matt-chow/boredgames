@@ -22,9 +22,9 @@
       "key": "dynamo",
       "name": "Gold",
       "oldName": "Dynamo",
-      "brief": "Guards and a steward beside the great iron-bound chests of the royal treasury.",
-      "status": "svg",
-      "asset": null
+      "brief": "A struck gold coin on a counting cloth, with the purse and stacks of the hoard behind it.",
+      "status": "pilot",
+      "asset": "/cards/dynamo.svg"
     },
     {
       "key": "notebook",
@@ -46,9 +46,9 @@
       "key": "monument",
       "name": "Grand Duchy",
       "oldName": "Monument",
-      "brief": "A rider approaching a great hilltop castle ruling over a wide duchy.",
-      "status": "svg",
-      "asset": null
+      "brief": "A fortified Renaissance estate seen from its avenue, with its gardens and vineyards around it.",
+      "status": "pilot",
+      "asset": "/cards/monument.svg"
     },
     {
       "key": "rust",
@@ -246,9 +246,9 @@
       "key": "night_watch",
       "name": "Night Watch",
       "oldName": "Night Watch",
-      "brief": "A watchman with a lantern and spear walking the night streets.",
-      "status": "svg",
-      "asset": null
+      "brief": "A moonlit wall walk: one guard has spotted distant torches, the others are only now turning.",
+      "status": "pilot",
+      "asset": "/cards/night_watch.svg"
     },
     {
       "key": "maintenance_cart",
@@ -366,9 +366,9 @@
       "key": "relay_junction",
       "name": "Market Square",
       "oldName": "Relay Junction",
-      "brief": "A busy market square full of stalls and people.",
-      "status": "svg",
-      "asset": null
+      "brief": "A busy Saturday in front of the guildhall: stalls, a fountain, a porter, and a child chasing a goose.",
+      "status": "pilot",
+      "asset": "/cards/relay_junction.svg"
     },
     {
       "key": "chain_drive",
@@ -678,9 +678,9 @@
       "key": "royal_confessor",
       "name": "Royal Confessor",
       "oldName": "Royal Confessor",
-      "brief": "A kneeling penitent handing over a burden to a hooded confessor before a reliquary.",
-      "status": "svg",
-      "asset": null
+      "brief": "A palace chapel. A kneeling king hands over a letter that the confessor burns, and a page sees it.",
+      "status": "pilot",
+      "asset": "/cards/royal_confessor.svg"
     },
     {
       "key": "mintmaster",

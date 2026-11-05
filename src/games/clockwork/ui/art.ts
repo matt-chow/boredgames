@@ -4,8 +4,15 @@
  * gradients or ids, since one card can be on screen many times. See docs/CLOCKWORK.md for replacing them with paintings.
  */
 
-/** Finished images, by card key, once they exist. A card listed here shows the image instead of its scene. */
-const IMAGES: Record<string, string> = {};
+/** Finished images, by card key (docs/ART_BIBLE.md). A card listed here shows the image instead of its scene. */
+const IMAGES: Record<string, string> = {
+  dynamo: '/cards/dynamo.svg',
+  monument: '/cards/monument.svg',
+  night_watch: '/cards/night_watch.svg',
+  relay_junction: '/cards/relay_junction.svg',
+  royal_confessor: '/cards/royal_confessor.svg',
+};
+export const artImages = () => IMAGES;
 
 const BURGUNDY = '#783547';
 const WINE = '#54263a';

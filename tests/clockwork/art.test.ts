@@ -25,7 +25,7 @@ describe('card art', () => {
   it('CC-ART-2: scenes only use parts that exist, and render as a single SVG', () => {
     for (const key of everything) {
       for (const part of artParts(sceneOf(key)!)) expect(knownPart(part), `${key}: ${part}`).toBe(true);
-      expect(artFor(key)).toMatch(/^<svg [^]*<\/svg>$/);
+      expect(artFor(key)).toMatch(/^(<svg [^]*<\/svg>|<img [^<>]*\/>)$/);
     }
     expect(artFor('not-a-card')).toBeNull();
   });
