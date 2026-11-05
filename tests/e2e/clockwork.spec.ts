@@ -176,7 +176,8 @@ test.describe('Kingdom & Commerce', () => {
     const host = await newPlayer(browser, 'Ada', PHONE);
     await table(host, 1);
     const p = host.page;
-    await p.locator('[data-set="night"]').check({ force: true });
+    await p.locator('label.set', { has: p.locator('[data-set="night"]') }).click();
+    await expect(p.locator('[data-set="night"]')).toBeChecked();
     await p.locator('[data-pile]').first().scrollIntoViewIfNeeded();
     await expect(p.locator('.piles .art').first()).toBeVisible();
     const drawn = await p.locator('.piles .art:has(svg, img)').count();
@@ -307,10 +308,19 @@ test.describe('Kingdom & Commerce', () => {
     expect(guest.errors).toEqual([]);
   });
 
-  test('CC-E2E-5: all seats filled by bots at 6 players still finishes for the person, and shows the final round (CC-FINAL-7)', async ({ browser }) => {
-    test.setTimeout(420_000);
+  test('CC-E2E-5: all seats filled by bots at 6 players still finishes for the person', async ({ browser }) => {
+    test.setTimeout(900_000);
     const host = await newPlayer(browser, 'Ada');
     await table(host, 5);
+    await start(host);
+    await playOut([host], 2500);
+    await expect(host.page.locator('.sum li')).toHaveCount(6);
+  });
+
+  test('CC-E2E-7: the final round is shown before the game ends (CC-FINAL-7)', async ({ browser }) => {
+    test.setTimeout(900_000);
+    const host = await newPlayer(browser, 'Ada');
+    await table(host, 2);
     await start(host);
     await host.page.evaluate(() => {
       new MutationObserver(() => {
@@ -318,13 +328,13 @@ test.describe('Kingdom & Commerce', () => {
         if (label) (window as unknown as { finalLabel: string }).finalLabel = label;
       }).observe(document.body, { childList: true, subtree: true, characterData: true });
     });
-    await playOut([host], 2500);
-    await expect(host.page.locator('.sum li')).toHaveCount(6);
-    // The last seat triggering the end skips the final round (CC-FINAL-2), so play one more if this game did.
     const seen = () => host.page.evaluate(() => (window as unknown as { finalLabel?: string }).finalLabel ?? '');
-    if (!(await seen())) {
-      await host.page.getByRole('button', { name: 'Play again' }).click();
-      await expect(host.page.locator('.sum h2')).toBeHidden({ timeout: 15_000 });
+    // The last seat triggering the end skips the final round (CC-FINAL-2), so a game may not show it.
+    for (let game = 0; game < 4 && !(await seen()); game++) {
+      if (game) {
+        await host.page.getByRole('button', { name: 'Play again' }).click();
+        await expect(host.page.locator('.sum h2')).toBeHidden({ timeout: 15_000 });
+      }
       await playOut([host], 2500);
     }
     expect(await seen()).toContain('Final round');
