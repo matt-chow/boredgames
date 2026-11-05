@@ -156,7 +156,12 @@ body:has([data-game-theme='clockwork']:not([data-fan])) {
 [data-game-theme='clockwork'] .work .art.art {
   height: 50px;
 }
-[data-game-theme='clockwork'] .tile .art.art {
+/* The Treasury is a burgundy strongbox with a gold edge, set apart from the open Kingdom Market. */
+[data-game-theme='clockwork'] .supply {
+  --treasury-bg: rgb(120 53 71 / 0.34);
+  --treasury-rim: rgb(201 162 99 / 0.55);
+}
+[data-game-theme='clockwork'] .tile:not(.bank) .art.art {
   height: 36px;
 }
 

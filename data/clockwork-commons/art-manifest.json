@@ -4,7 +4,7 @@
   "entries": [
     {
       "key": "scrap",
-      "name": "Coin Purse",
+      "name": "Copper",
       "oldName": "Scrap",
       "brief": "A market-goer counting a few pennies out of a small leather purse.",
       "status": "svg",
@@ -12,7 +12,7 @@
     },
     {
       "key": "cog",
-      "name": "Silver Chest",
+      "name": "Silver",
       "oldName": "Cog",
       "brief": "A merchant opening a strongbox of silver beside a street stall.",
       "status": "svg",
@@ -20,7 +20,7 @@
     },
     {
       "key": "dynamo",
-      "name": "Royal Treasury",
+      "name": "Gold",
       "oldName": "Dynamo",
       "brief": "Guards and a steward beside the great iron-bound chests of the royal treasury.",
       "status": "svg",

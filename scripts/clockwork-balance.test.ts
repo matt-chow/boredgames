@@ -228,7 +228,7 @@ ${tables.map((t) => row([t.players, t.games, t.unfinished, t.roundsMean, t.turns
 The Standard game (Core and Crown Decrees), mixed playstyles. Debt is copies held at the end. The scoring columns are the mean
 Renown per player from each source. Idle means a turn with nothing bought and nothing completed.
 
-${head(['Players', 'Idle turns %', 'First Royal Treasury (turn)', 'Attacks/game', 'Trashed/game', 'Debt per player', 'Most Debt', 'Estates', 'Special', 'Projects', 'Negative', 'Conditional'])}
+${head(['Players', 'Idle turns %', 'First Gold (turn)', 'Attacks/game', 'Trashed/game', 'Debt per player', 'Most Debt', 'Estates', 'Special', 'Projects', 'Negative', 'Conditional'])}
 ${tables.map((t) => row([t.players, t.idleTurnPct, t.firstTreasuryTurn, t.attacksPerGame, t.trashedPerGame, t.debtPerPlayer, t.debtMax, t.scoring.estates, t.scoring.special, t.scoring.projects, t.scoring.negative, t.scoring.conditional])).join('\n')}
 
 ## Playstyles

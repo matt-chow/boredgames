@@ -22,15 +22,15 @@
   "cards": {
     "scrap": {
       "old": "Scrap",
-      "new": "Coin Purse"
+      "new": "Copper"
     },
     "cog": {
       "old": "Cog",
-      "new": "Silver Chest"
+      "new": "Silver"
     },
     "dynamo": {
       "old": "Dynamo",
-      "new": "Royal Treasury"
+      "new": "Gold"
     },
     "notebook": {
       "old": "Notebook",

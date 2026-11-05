@@ -1,6 +1,7 @@
 <script lang="ts">
   import { untrack } from 'svelte';
   import Dialog from './Dialog.svelte';
+  import Icon from './Icon.svelte';
   import { searchGuide, type GuideBlock, type GuideDoc, type GuideLevel, type GuideSection } from './guide';
 
   let {
@@ -59,6 +60,10 @@
     <ul>{#each b.ul as line (line)}<li>{@render rich(line)}</li>{/each}</ul>
   {:else if 'ol' in b}
     <ol>{#each b.ol as line (line)}<li>{@render rich(line)}</li>{/each}</ol>
+  {:else if 'symbols' in b}
+    <dl class="symbols">
+      {#each b.symbols as s (s.name)}<div><dt><Icon name={s.icon} size={16} /> {s.name}</dt><dd>{s.text}</dd></div>{/each}
+    </dl>
   {:else}
     <div class="example">
       <h4>{b.example}</h4>
@@ -194,6 +199,24 @@
   }
   .sec :global(b) {
     color: var(--ink);
+  }
+  .symbols {
+    margin: 0;
+  }
+  .symbols div {
+    display: grid;
+    grid-template-columns: 7.5em minmax(0, 1fr);
+    gap: 8px;
+    padding: 3px 0;
+  }
+  .symbols dt {
+    font-weight: 600;
+  }
+  .symbols dt :global(svg) {
+    vertical-align: -3px;
+  }
+  .symbols dd {
+    margin: 0;
   }
   .example {
     margin: 8px 0;

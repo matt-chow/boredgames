@@ -59,9 +59,9 @@ describe('Kingdom & Commerce numbers', () => {
     expect(RULES.extraPiles!(['tax_arrears'], 3)).toEqual({ rust: 10 });
     const costs = Object.fromEntries(['scrap', 'cog', 'dynamo', 'notebook', 'blueprint', 'monument'].map((k) => [k, [defOf(k).name, defOf(k).cost, defOf(k).vp ?? 0]]));
     expect(costs).toEqual({
-      scrap: ['Coin Purse', 0, 0],
-      cog: ['Silver Chest', 3, 0],
-      dynamo: ['Royal Treasury', 6, 0],
+      scrap: ['Copper', 0, 0],
+      cog: ['Silver', 3, 0],
+      dynamo: ['Gold', 6, 0],
       notebook: ['Homestead', 2, 1],
       blueprint: ['Noble Estate', 5, 3],
       monument: ['Grand Duchy', 8, 6],

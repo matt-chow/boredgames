@@ -56,7 +56,7 @@
   {#if matTotal || tokens.length}
     <p class="extra">
       {#if matTotal}<span>{matTotal} set aside</span>{/if}
-      {#each tokens as [t, n] (t)}<span class="num">{n} {tokenName(t)}</span>{/each}
+      {#each tokens as [t, n] (t)}<span class="num"><Icon name="influence" size={12} /> {n} {tokenName(t)}</span>{/each}
     </p>
   {/if}
 </section>

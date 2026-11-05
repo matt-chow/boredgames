@@ -1,6 +1,8 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import type { DeckView, ProjectDef } from '../../../engine/deckbuilder';
+  import Icon from '../../../hub/Icon.svelte';
+  import ResText from './ResText.svelte';
 
   let {
     g,
@@ -29,12 +31,11 @@
 <section class="works" aria-label={title}>
   {#each g.projects as p (p.key)}
     {@const on = g.legal.claim.includes(p.key) && !busy}
-    {@const price = [`${p.coins} Coins`, ...Object.entries(p.tokens).map(([t, n]) => `${n} ${tokenName(t)}`)].join(' + ')}
     <button type="button" class="work" class:on class:taken={p.by !== null} disabled={!on} data-project={p.key} onclick={() => onclaim(p.key)}>
       {#if artOf?.(p.key)}<span class="art" aria-hidden="true">{@html artOf(p.key)}</span>{/if}
       <span class="nm label">{def(p.key)?.name ?? p.key}</span>
-      <span class="price num">{price}</span>
-      <span class="gets"><b class="num">{p.vp}</b> {points}. {def(p.key)?.text}</span>
+      <span class="price num"><Icon name="coin" size={12} /> {p.coins} Coins{#each Object.entries(p.tokens) as [t, n] (t)}{' + '}<Icon name="influence" size={12} /> {n} {tokenName(t)}{/each}</span>
+      <span class="gets"><Icon name="crown" size={12} /> <b class="num">{p.vp}</b> {points}. <ResText text={def(p.key)?.text ?? ''} /></span>
       {#if p.by !== null}<span class="by">Built by {name(p.by)}</span>{/if}
     </button>
   {/each}
@@ -98,5 +99,9 @@
   }
   .price {
     color: var(--coin);
+  }
+  .price :global(svg),
+  .gets > :global(svg) {
+    vertical-align: -2px;
   }
 </style>

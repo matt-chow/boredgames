@@ -3,6 +3,7 @@
   import { router } from '../../../client/lib/router.svelte';
   import { toasts } from '../../../client/lib/toast.svelte';
   import type { CardDef, DeckView, FinalScore } from '../../../engine/deckbuilder';
+  import Icon from '../../../hub/Icon.svelte';
   import type { RoomView } from '../../../shared/protocol';
 
   let {
@@ -65,7 +66,7 @@
           <span class="dt">
             {[...scoring(r), ...r.projects.map((p) => `${projectName(p.key)}: ${p.vp}`), ...(r.tokens ? [`Tokens: ${r.tokens}`] : [])].join(' · ') || `No ${points}`} · {r.turns} {r.turns === 1 ? 'turn' : 'turns'}
           </span>
-          <span class="sc num">{r.total}</span>
+          <span class="sc num"><Icon name="crown" size={14} /> {r.total}<span class="visually-hidden"> {points}</span></span>
           <span class="bd">Estates {r.breakdown.estates} · Special {r.breakdown.special} · {projectsWord} {r.breakdown.projects} · Negative {String(r.breakdown.negative).replace('-', '−')} · Conditional {r.breakdown.conditional}</span>
         </li>
       {/each}

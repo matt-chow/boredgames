@@ -50,6 +50,21 @@ export const guide: GuideDoc = {
             },
           ],
         },
+        {
+          id: 'q-symbols',
+          title: 'Symbols',
+          body: [
+            {
+              symbols: [
+                { icon: 'action', name: 'Actions', text: 'How many Action cards you can still play this turn.' },
+                { icon: 'buy', name: 'Buys', text: 'How many cards you can still buy this turn.' },
+                { icon: 'coin', name: 'Coins', text: 'What you have to spend this turn. Costs show the same symbol.' },
+                { icon: 'influence', name: 'Influence', text: 'Carries over between turns. Convert it to Coins, or spend it on Crown Projects.' },
+                { icon: 'crown', name: 'Renown', text: 'Your score. Highest at the end wins.' },
+              ],
+            },
+          ],
+        },
         { id: 'q-score', title: 'Scoring', body: ['Homestead 1, Noble Estate 3, Grand Duchy 6, plus scoring cards and completed Crown Projects. Royal Debt is −1. Your total is private until the end.'] },
         {
           id: 'q-end',
@@ -69,27 +84,27 @@ export const guide: GuideDoc = {
           id: 'f-setup',
           title: 'Setup and your starting deck',
           body: [
-            'The game seats 2 to 6 players. Each player starts with **7 Coin Purses** and **3 Homesteads**, shuffles them and draws 5. A random player goes first.',
-            'The host picks which card sets are in play, and can choose or ban cards. A game uses 10 market piles and 5 Crown Projects.',
+            'The game seats 2 to 6 players. Each player starts with **7 Coppers** and **3 Homesteads**, shuffles them and draws 5. A random player goes first.',
+            'The host picks which card sets are in play, and can choose or ban cards. A game uses 10 Kingdom Market piles and 5 Crown Projects.',
           ],
         },
         {
           id: 'f-supply',
-          title: 'The supply',
+          title: 'The Treasury and the Kingdom Market',
           body: [
-            'The **permanent supply** is available in every game, whatever the market holds:',
+            'The **Treasury** is always available, in every game. It holds three Coins piles and three Renown piles:',
             {
               ul: [
-                '**Coin Purse:** costs 0, gives 1 Coin. 60 in the pile.',
-                '**Silver Chest:** costs 3, gives 2 Coins. 40 in the pile.',
-                '**Royal Treasury:** costs 6, gives 3 Coins. 30 in the pile.',
+                '**Copper:** costs 0, gives 1 Coin. 60 in the pile.',
+                '**Silver:** costs 3, gives 2 Coins. 40 in the pile.',
+                '**Gold:** costs 6, gives 3 Coins. 30 in the pile.',
                 '**Homestead:** costs 2, worth 1 Renown.',
                 '**Noble Estate:** costs 5, worth 3 Renown.',
                 '**Grand Duchy:** costs 8, worth 6 Renown.',
               ],
             },
             'Each of the three Renown piles holds 8 cards with 2 players, 12 with 3–4, 15 with 5 and 18 with 6.',
-            'The **market** is the 10 piles chosen for this game, each of 10 cards (12 with 5 or 6 players). Each tile shows a card’s cost and how many are left. Tap and hold, or right-click, to read one.',
+            'The **Kingdom Market** is the 10 piles chosen for this game, each of 10 cards (12 with 5 or 6 players). Each tile shows a card’s cost and how many are left. Tap and hold, or right-click, to read one.',
           ],
         },
         {
@@ -209,24 +224,24 @@ export const guide: GuideDoc = {
             {
               example: 'A full first turn',
               steps: [
-                'Your hand: 3 Coin Purses and 2 Homesteads. You have no Actions to play, so press **Move on to Market**.',
+                'Your hand: 3 Coppers and 2 Homesteads. You have no Actions to play, so press **Move on to Market**.',
                 'Press **Play all Currency cards**. You now have **3 Coins** and 1 Buy.',
-                'Buy a **Silver Chest** for 3. It goes to your discard pile.',
+                'Buy a **Silver** for 3. It goes to your discard pile.',
                 'Press **End turn**. Everything goes to your discard pile and you draw 5 from your deck.',
               ],
             },
             {
               example: 'Improving your Currency',
               steps: [
-                'You play **Mintmaster** (Action) with a Silver Chest in hand. It lets you trash a Currency card.',
-                'You trash the Silver Chest (cost 3). You gain **1 Influence** and choose a Currency costing up to 6 to gain.',
-                'You pick a **Royal Treasury**. It goes on top of your deck, so you’ll draw it next.',
+                'You play **Mintmaster** (Action) with a Silver in hand. It lets you trash a Currency card.',
+                'You trash the Silver (cost 3). You gain **1 Influence** and choose a Currency costing up to 6 to gain.',
+                'You pick a **Gold**. It goes on top of your deck, so you’ll draw it next.',
               ],
             },
             {
               example: 'Trashing to thin your deck',
               steps: [
-                'You play **Royal Confessor** with a Coin Purse and a Homestead in hand, and trash both.',
+                'You play **Royal Confessor** with a Copper and a Homestead in hand, and trash both.',
                 'One Renown card was trashed, so you gain **1 Influence**. Your Renown falls by 1, because the Homestead no longer counts.',
                 'Your deck is 2 cards smaller, so your better cards come round sooner.',
               ],

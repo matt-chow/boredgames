@@ -1,6 +1,8 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import type { CardDef } from '../../../engine/deckbuilder';
+  import Icon from '../../../hub/Icon.svelte';
+  import ResText from './ResText.svelte';
   import { spine, typeLabel } from './text';
 
   let {
@@ -66,8 +68,8 @@
       <span class="name label">{def.name}</span>
     </span>
     {#if art}<span class="art" aria-hidden="true">{@html art}</span>{/if}
-    {#if value}<span class="value num {value.kind}" class:over={!!art}>{value.text}</span>{/if}
-    {#if size === 'lg' || size === 'xl'}<span class="text">{def.text}</span>{/if}
+    {#if value}<span class="value num {value.kind}" class:over={!!art}>{#if size !== 'xs'}<Icon name={value.kind === 'coins' ? 'coin' : 'crown'} size={12} />{/if}{value.text}</span>{/if}
+    {#if size === 'lg' || size === 'xl'}<span class="text"><ResText text={def.text} /></span>{/if}
     {#if size !== 'xs' && size !== 'sm'}<span class="types">{def.typeLine ?? typeLabel(def.types)}</span>{/if}
   {:else}
     <span class="mark" aria-hidden="true"></span>
@@ -189,6 +191,11 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .value :global(svg) {
+    width: 0.72em;
+    height: 0.72em;
+    margin-right: 0.1em;
   }
   .value.over {
     margin-block: 0;

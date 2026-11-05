@@ -76,9 +76,9 @@ export const currency = (key: string, name: string, cost: number, text: string, 
 const basic = { basic: true, set: undefined };
 
 export const BASICS: CardDef[] = [
-  currency('scrap', 'Coin Purse', 0, '+1 Coin.', 1, basic),
-  currency('cog', 'Silver Chest', 3, '+2 Coins.', 2, basic),
-  currency('dynamo', 'Royal Treasury', 6, '+3 Coins.', 3, basic),
+  currency('scrap', 'Copper', 0, '+1 Coin.', 1, basic),
+  currency('cog', 'Silver', 3, '+2 Coins.', 2, basic),
+  currency('dynamo', 'Gold', 6, '+3 Coins.', 3, basic),
   prestige('notebook', 'Homestead', 2, '1 Renown.', 1, basic),
   prestige('blueprint', 'Noble Estate', 5, '3 Renown.', 3, basic),
   prestige('monument', 'Grand Duchy', 8, '6 Renown. The game ends when this pile runs out.', 6, basic),

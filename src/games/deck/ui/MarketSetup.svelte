@@ -2,6 +2,7 @@
   import { toasts } from '../../../client/lib/toast.svelte';
   import { activeSets, decodeMarket, encodeMarket, selectable, selectableProjects, type DeckGame } from '../../../engine/deckbuilder';
   import Icon from '../../../hub/Icon.svelte';
+  import ResText from './ResText.svelte';
   import { GAMES } from '../../registry';
   import type { GameUiProps } from '../../ui';
 
@@ -156,7 +157,7 @@
           <span class="cost num">{c.cost}</span>
           <span class="txt">
             <span class="nm">{c.name}{#if banned}<span class="tag"> · banned</span>{/if}</span>
-            <span class="ds">{c.text}</span>
+            <span class="ds"><ResText text={c.text} labels={rules.labels} /></span>
           </span>
           {#if picked}<Icon name="check" size={16} />{/if}
         </button>
@@ -177,8 +178,8 @@
           <button type="button" class="pile" class:picked data-work={p.key} aria-pressed={picked} disabled={!canEdit || conn.busy} onclick={() => toggleProject(p.key)}>
             <span class="cost num">{p.coins}</span>
             <span class="txt">
-              <span class="nm">{p.name} · {p.vp} {rules.labels?.points ?? 'points'}</span>
-              <span class="ds">{Object.entries(p.tokens).map(([t, n]) => `${n} ${rules.labels?.tokens[t] ?? t}`).join(', ')}. {p.text}</span>
+              <span class="nm">{p.name} · <ResText text="{p.vp} {rules.labels?.points ?? 'points'}" labels={rules.labels} /></span>
+              <span class="ds"><ResText text="{Object.entries(p.tokens).map(([t, n]) => `${n} ${rules.labels?.tokens[t] ?? t}`).join(', ')}. {p.text}" labels={rules.labels} /></span>
             </span>
             {#if picked}<Icon name="check" size={16} />{/if}
           </button>

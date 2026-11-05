@@ -390,7 +390,7 @@ describe('Crown Decrees: scoring and projects', () => {
 });
 
 describe('Crown Decrees: the set', () => {
-  it('KC3-BOT-1: a v3 bot trashes a Coin Purse and keeps its Renown; a v2 room keeps the bot it started with', () => {
+  it('KC3-BOT-1: a v3 bot trashes a Copper and keeps its Renown; a v2 room keeps the bot it started with', () => {
     const renown = RULES.cards.find((c) => c.basic && c.types.includes('victory') && c.cost === 2)!.key;
     const t = new Table(['slag_furnace', renown, 'scrap']);
     t.play('slag_furnace');

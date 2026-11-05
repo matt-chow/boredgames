@@ -1,5 +1,5 @@
 /** Display helpers shared by the deck table. Pure, so they can be tested without a browser. */
-import type { CardDef, CardType, LogEntry, Ruleset } from '../../../engine/deckbuilder';
+import type { CardDef, CardType, Labels, LogEntry, Ruleset } from '../../../engine/deckbuilder';
 
 /** Muted card-type colours, which a game's theme can replace. Sprout is never one of them: on the table it only ever means "legal / your move". */
 const TYPE_COLOR: Record<CardType, string> = {
@@ -18,6 +18,31 @@ export function spine(types: CardType[]): string {
   if (colors.length === 1) return colors[0];
   const band = 100 / colors.length;
   return `linear-gradient(${colors.map((c, i) => `${c} ${i * band}% ${(i + 1) * band}%`).join(', ')})`;
+}
+
+export type ResIcon = 'action' | 'buy' | 'coin' | 'influence' | 'crown';
+
+const COUNTED: Record<string, ResIcon> = { Action: 'action', Actions: 'action', Buy: 'buy', Buys: 'buy', Coin: 'coin', Coins: 'coin' };
+
+/**
+ * Splits text so each resource word can sit beside its symbol. The word always stays, so a screen reader gets the same sentence.
+ * "Action" and the rest count only after a number: "+1 Action" is the resource, "an Action card" is not.
+ */
+export function resParts(text: string, labels?: Pick<Labels, 'points' | 'tokens'>): { text: string; icon?: ResIcon }[] {
+  const named = new Map<string, ResIcon>(Object.values(labels?.tokens ?? {}).map((w) => [w, 'influence']));
+  if (labels) named.set(labels.points, 'crown');
+  const words = [...named.keys()].join('|');
+  const found = new RegExp(`(\\d )(${Object.keys(COUNTED).join('|')})\\b${words ? `|\\b(${words})\\b` : ''}`, 'g');
+  const out: { text: string; icon?: ResIcon }[] = [];
+  let at = 0;
+  for (const m of text.matchAll(found)) {
+    const start = m.index + (m[1]?.length ?? 0);
+    if (start > at) out.push({ text: text.slice(at, start) });
+    out.push(m[2] ? { text: m[2], icon: COUNTED[m[2]] } : { text: m[3], icon: named.get(m[3]) });
+    at = m.index + m[0].length;
+  }
+  if (at < text.length) out.push({ text: text.slice(at) });
+  return out;
 }
 
 export const typeLabel = (types: CardType[]) => types.map((t) => t[0].toUpperCase() + t.slice(1)).join(' · ');

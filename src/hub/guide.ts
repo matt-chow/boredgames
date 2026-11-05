@@ -1,5 +1,7 @@
 /** A game's help, as data so it can be searched and tested. `**bold**` is the only inline markup. */
-export type GuideBlock = string | { ul: string[] } | { ol: string[] } | { example: string; steps: string[] };
+import type { IconName } from './Icon.svelte';
+
+export type GuideBlock = string | { ul: string[] } | { ol: string[] } | { example: string; steps: string[] } | { symbols: { icon: IconName; name: string; text: string }[] };
 
 export interface GuideSection {
   /** Stable id: contextual help links open a guide at one of these. */
@@ -23,6 +25,7 @@ export function blockText(b: GuideBlock): string {
   if (typeof b === 'string') return b;
   if ('ul' in b) return b.ul.join(' ');
   if ('ol' in b) return b.ol.join(' ');
+  if ('symbols' in b) return b.symbols.map((s) => `${s.name} ${s.text}`).join(' ');
   return `${b.example} ${b.steps.join(' ')}`;
 }
 

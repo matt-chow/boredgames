@@ -9,7 +9,7 @@
   "entries": [
     {
       "key": "scrap",
-      "name": "Coin Purse",
+      "name": "Copper",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-scrap",
@@ -71,7 +71,7 @@
     },
     {
       "key": "cog",
-      "name": "Silver Chest",
+      "name": "Silver",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-cog",
@@ -136,7 +136,7 @@
     },
     {
       "key": "dynamo",
-      "name": "Royal Treasury",
+      "name": "Gold",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-dynamo",

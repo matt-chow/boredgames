@@ -203,6 +203,36 @@ test.describe('Kingdom & Commerce', () => {
     await expect(host.page.locator('.sum li')).toHaveCount(6);
   });
 
+  for (const [label, size] of [['phone', PHONE], ['small laptop', { viewport: { width: 1024, height: 600 } }], ['laptop', { viewport: { width: 1366, height: 768 } }]] as const) {
+    test(`KC3-TREASURY-4: Treasury and Kingdom Market on a ${label}`, async ({ browser }) => {
+      const host = await newPlayer(browser, 'Ada', size);
+      await table(host, 1);
+      await start(host);
+      const page = host.page;
+      await expect(page.locator('.treasury .title')).toHaveText('Treasury');
+      await expect(page.locator('.treasury .note')).toHaveText('Always Available');
+      await expect(page.locator('.group:not(.treasury) .title')).toHaveText('Kingdom Market');
+      const column = (i: number) => page.locator('.treasury .column').nth(i);
+      await expect(column(0).locator('.kind')).toHaveText('Coins');
+      await expect(column(0).locator('.tile .name')).toHaveText(['Copper', 'Silver', 'Gold']);
+      await expect(column(1).locator('.kind')).toHaveText('Renown');
+      await expect(column(1).locator('.tile .name')).toHaveText(['Homestead', 'Noble Estate', 'Grand Duchy']);
+      await expect(page.locator('.treasury .column .tile .art svg')).toHaveCount(6);
+      await expect(page.locator('.market .tile')).toHaveCount(10);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+      expect(overflow).toBeLessThanOrEqual(0);
+      // Stacked one under another, in a column, with nothing cut off inside a tile.
+      const clipped = await page.evaluate(() =>
+        [...document.querySelectorAll<HTMLElement>('.treasury .tile, .market .tile')].filter((t) => t.scrollWidth > t.clientWidth + 1).length,
+      );
+      expect(clipped).toBe(0);
+      await expect(page.locator('.res dt svg')).toHaveCount(5);
+      // Symbols stay out of anything announced to a screen reader.
+      await expect(page.locator('[aria-live] svg, [aria-live] button')).toHaveCount(0);
+      await shot(page, `treasury-${label.replace(' ', '-')}`);
+    });
+  }
+
   test('CC-E2E-6: the phone layout fits and can be played', async ({ browser }) => {
     const host = await newPlayer(browser, 'Ada', PHONE);
     await table(host, 1);
@@ -213,7 +243,17 @@ test.describe('Kingdom & Commerce', () => {
     await shot(host.page, 'cc-phone');
     for (let i = 0; i < 6; i++) await step(host);
     // The dashboard stays one strip beside any action buttons, so it doesn't cover the market.
-    expect((await host.page.locator('.res').boundingBox())!.height).toBeLessThan(80);
+    expect((await host.page.locator('.res').boundingBox())!.height).toBeLessThan(62);
+    // Every market pile can be reached and tapped: nothing is left under the hand.
+    for (const i of [0, 9]) {
+      const tile = host.page.locator('.market .tile').nth(i);
+      await tile.scrollIntoViewIfNeeded();
+      const free = await tile.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return el.contains(document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2));
+      });
+      expect(free, `market pile ${i}`).toBe(true);
+    }
   });
 });
 

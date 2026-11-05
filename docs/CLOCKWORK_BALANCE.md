@@ -19,7 +19,7 @@ that came from them are recorded in docs/CLOCKWORK.md.
 The Standard game (Core and Crown Decrees), mixed playstyles. Debt is copies held at the end. The scoring columns are the mean
 Renown per player from each source. Idle means a turn with nothing bought and nothing completed.
 
-| Players | Idle turns % | First Royal Treasury (turn) | Attacks/game | Trashed/game | Debt per player | Most Debt | Estates | Special | Projects | Negative | Conditional |
+| Players | Idle turns % | First Gold (turn) | Attacks/game | Trashed/game | Debt per player | Most Debt | Estates | Special | Projects | Negative | Conditional |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2 | 7.9 | 8.8 | 3.6 | 3.3 | 0 | 0 | 26.8 | 0.4 | 9.3 | 0 | 2.3 |
 | 3 | 8.4 | 7.7 | 2.3 | 4.6 | 0.1 | 2 | 20.5 | 0.4 | 7.2 | -0.1 | 0.8 |

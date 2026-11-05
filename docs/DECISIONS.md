@@ -253,3 +253,11 @@ Limits: these are heuristic bots, not people. They didn't adapt to the rule: the
 open", which was written for A and so makes them buy Renown early under B and C. That likely exaggerates how much B and C reward Renown cards,
 and it may understate how short C could be. Each style's win rate has a margin of about ±8 points at these seat counts, so
 small gaps between styles mean nothing. One market family only. Time per turn and fun aren't measured.
+
+### D36. Copper, Silver and Gold replace D29's Currency names, at the owner's request
+The owner asked for these display names, so D29's Coin Purse, Silver Chest and Royal Treasury are gone. Keys, costs, values and
+quantities are unchanged, so rooms and replays are unaffected, and old prompts are reworded by `modernise`.
+
+For the owner to weigh: these three names at costs 0, 3 and 6 and values 1, 2 and 3, beside three Estate-style cards, sit close to the basic
+cards of a well-known published deck-builder. Numbers and common words aren't the concern alone; the combination is what makes the resemblance.
+The v3 brief said not to recreate a commercial catalogue, so this needs the owner's decision before production.

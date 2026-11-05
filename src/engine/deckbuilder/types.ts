@@ -218,6 +218,11 @@ export interface Labels {
   project: string;
   projects: string;
   tokens: Record<string, string>;
+  /** Headings over the supply. A game without them gets plain ones. */
+  basics?: string;
+  basicsNote?: string;
+  market?: string;
+  marketNote?: string;
 }
 
 /** One game's content and table rules. Lives in code, so it never enters persisted state. */

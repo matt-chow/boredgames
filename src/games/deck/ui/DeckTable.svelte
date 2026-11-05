@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getContext, onDestroy, onMount, tick } from 'svelte';
+  import { getContext, onDestroy, onMount, setContext, tick } from 'svelte';
   import { finishAll, play, snapshot, type Snapshot } from '../../../client/lib/motion';
   import { settings } from '../../../client/lib/settings.svelte';
   import { sfx } from '../../../client/lib/sound';
@@ -9,6 +9,7 @@
   import Guide from '../../../hub/Guide.svelte';
   import type { GuideDoc } from '../../../hub/guide';
   import Icon from '../../../hub/Icon.svelte';
+  import ResText from './ResText.svelte';
   import QuitGame from '../../../hub/QuitGame.svelte';
   import SettingsMenu from '../../../hub/SettingsMenu.svelte';
   import Camera from '../../bohnanza/ui/Camera.svelte';
@@ -45,6 +46,7 @@
   let howto = $state(false);
   let helpAt = $state<string | null>(null);
   const guideDoc = getContext<GuideDoc | undefined>('deck-guide');
+  setContext('deck-labels', () => rules.labels);
   const olderEdition = $derived((g.rulesVersion ?? 0) < ((GAMES[room.gameId] as unknown as DeckGame).rules.version ?? 0));
   function help(id: string | null) {
     helpAt = id;
@@ -412,11 +414,11 @@
 
   <footer class="hud">
     <dl class="res" aria-label="{isActive ? 'Your' : `${name(g.turn.seat)}’s`} turn: resources">
-      <div><dt>Actions</dt><dd class="num">{g.turn.actions}</dd></div>
-      <div><dt>Buys</dt><dd class="num">{g.turn.buys}</dd></div>
-      <div class="coins"><dt>Coins</dt><dd class="num">{g.turn.coins}</dd></div>
-      {#each Object.entries(rules.tokenCaps ?? {}) as [t, cap] (t)}<div class="token" title="Yours. Holds up to {cap}.{rules.convert?.token === t ? ` Convert up to ${rules.convert.maxPerTurn} a turn at ${rules.convert.coinsEach} Coin each in the ${buyStep} phase, or spend it on ${words?.projects ?? 'projects'}.` : ''}"><dt>{tokenName(t)}</dt><dd class="num">{mine.tokens[t] ?? 0}<small>/{cap}</small></dd></div>{/each}
-      {#if g.score}<div class="renown"><dt>{pointsWord}</dt><dd><button type="button" class="num" aria-label="Your {pointsWord}: {g.score.total}. Open the breakdown and your deck overview." onclick={() => (overviewOpen = true)}>{signed(g.score.total)}</button></dd></div>{/if}
+      <div><dt><Icon name="action" size={13} />Actions</dt><dd class="num">{g.turn.actions}</dd></div>
+      <div><dt><Icon name="buy" size={13} />Buys</dt><dd class="num">{g.turn.buys}</dd></div>
+      <div class="coins"><dt><Icon name="coin" size={13} />Coins</dt><dd class="num">{g.turn.coins}</dd></div>
+      {#each Object.entries(rules.tokenCaps ?? {}) as [t, cap] (t)}<div class="token" title="Yours. Holds up to {cap}.{rules.convert?.token === t ? ` Convert up to ${rules.convert.maxPerTurn} a turn at ${rules.convert.coinsEach} Coin each in the ${buyStep} phase, or spend it on ${words?.projects ?? 'projects'}.` : ''}"><dt><Icon name="influence" size={13} />{tokenName(t)}</dt><dd class="num">{mine.tokens[t] ?? 0}<small>/{cap}</small></dd></div>{/each}
+      {#if g.score}<div class="renown"><dt><Icon name="crown" size={13} />{pointsWord}</dt><dd><button type="button" class="num" aria-label="Your {pointsWord}: {g.score.total}. Open the breakdown and your deck overview." onclick={() => (overviewOpen = true)}>{signed(g.score.total)}</button></dd></div>{/if}
       <div class="phase"><dt>Phase</dt><dd>{g.turn.phase === 'action' ? (words?.actionPhase ?? 'Actions') : (words?.buyPhase ?? 'Buying')}</dd></div>
     </dl>
     <div class="hand-wrap">
@@ -429,10 +431,10 @@
         </button>
       {/if}
       {#if canTreasures}
-        <button class="btn primary go" disabled={conn.busy} onclick={() => act({ type: 'play-treasures' })}>Play all {(words?.treasures ?? 'treasures').toLowerCase()}</button>
+        <button class="btn primary go" disabled={conn.busy} onclick={() => act({ type: 'play-treasures' })}><Icon name="coin" size={16} /> Play all {(words?.treasures ?? 'treasures').toLowerCase()}</button>
       {/if}
       {#if g.legal.convert}
-        <button class="btn go" disabled={conn.busy} onclick={() => act({ type: 'convert' })}>Convert {tokenName(rules.convert?.token ?? '')} <span class="num">({g.turn.converted}/{rules.convert?.maxPerTurn})</span></button>
+        <button class="btn go" disabled={conn.busy} onclick={() => act({ type: 'convert' })}><Icon name="influence" size={16} /> Convert {tokenName(rules.convert?.token ?? '')} <span class="num">({g.turn.converted}/{rules.convert?.maxPerTurn})</span></button>
       {/if}
       {#if g.legal.endPhase}
         <button class="btn go" class:primary={phaseIsPrimary} disabled={conn.busy} onclick={() => act({ type: 'end-phase' })}>
@@ -474,7 +476,7 @@
   {#if g.score}
     <dl class="tally" aria-label="Your {pointsWord}">
       {#each scoreLines as [label, n] (label)}<div><dt>{label}</dt><dd class="num">{signed(n)}</dd></div>{/each}
-      <div class="sum"><dt>Your {pointsWord}</dt><dd class="num">{signed(g.score.total)}</dd></div>
+      <div class="sum"><dt><Icon name="crown" size={14} /> Your {pointsWord}</dt><dd class="num">{signed(g.score.total)}</dd></div>
     </dl>
     <p class="none">Only you can see this until the game ends. Trashed cards don’t count.</p>
   {/if}
@@ -493,9 +495,9 @@
     <div class="ins">
       <DeckCard def={inspected} size="xl" />
       <div class="facts">
-        <p>{inspected.text}</p>
+        <p><ResText text={inspected.text} /></p>
         <p class="meta">{inspected.typeLine ?? typeLabel(inspected.types)}</p>
-        <p class="meta">Costs <b class="num">{inspectedPile?.cost ?? inspected.cost}</b></p>
+        <p class="meta"><ResText text="Costs {inspectedPile?.cost ?? inspected.cost} {(inspectedPile?.cost ?? inspected.cost) === 1 ? 'Coin' : 'Coins'}" /></p>
         {#if inspectedPile}<p class="meta"><b class="num">{inspectedPile.count}</b> left in the supply</p>{/if}
       </div>
     </div>
@@ -734,6 +736,9 @@
     align-items: center;
   }
   .res dt {
+    display: flex;
+    align-items: center;
+    gap: 3px;
     font-size: 12px;
     color: var(--ink-3);
   }
@@ -1000,7 +1005,7 @@
     grid-area: res;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 2px 10px;
+    gap: 2px 6px;
     margin: 0;
     padding: 4px 8px;
   }
@@ -1010,8 +1015,20 @@
   .compact .res dt {
     font-size: 11px;
   }
+  .compact .res dt {
+    gap: 2px;
+    font-size: 11px;
+  }
+  .compact .res dt :global(svg) {
+    width: 11px;
+    height: 11px;
+  }
+  /* "Royal Court" on two lines keeps the whole dashboard one strip on a phone. */
   .compact .res .phase dd {
-    font-size: 14px;
+    font-size: 12px;
+    line-height: 1.1;
+    white-space: normal;
+    text-align: center;
   }
   .compact .actions {
     grid-area: actions;
