@@ -126,6 +126,68 @@ test.describe('Kingdom & Commerce', () => {
     await shot(host.page, 'cc-lobby');
   });
 
+  test('CATALOG-E2E-1: art, compact mode, search, filters and inspection leave the selection alone', async ({ browser }) => {
+    const host = await newPlayer(browser, 'Ada');
+    await table(host, 1);
+    const p = host.page;
+    // Pilot art for the Treasury loads as a real image.
+    const gold = p.locator('[data-basic="dynamo"] .art img');
+    await p.locator('[data-basic="dynamo"]').scrollIntoViewIfNeeded();
+    await expect.poll(() => gold.evaluate((i: HTMLImageElement) => i.naturalWidth)).toBeGreaterThan(0);
+    await shot(p, 'catalog-visual');
+
+    await p.getByRole('radio', { name: 'Choose piles' }).check({ force: true });
+    const first = p.locator('[data-pile]').first();
+    const key = (await first.getAttribute('data-pile'))!;
+    await first.click();
+    await expect(first).toHaveAttribute('aria-pressed', 'true');
+
+    // Inspecting another card opens details and chooses nothing.
+    const other = p.locator('[data-pile]').nth(1);
+    const otherKey = (await other.getAttribute('data-pile'))!;
+    await p.locator(`[data-inspect="${otherKey}"]`).click();
+    await expect(p.locator(`[data-detail="${otherKey}"]`)).toBeVisible();
+    await p.keyboard.press('Escape');
+    await expect(other).toHaveAttribute('aria-pressed', 'false');
+
+    // Filters hide without dropping the choice.
+    await p.locator('[data-catalog-search]').fill('night watch');
+    await expect(p.locator('[data-pile]')).toHaveCount(1);
+    await expect(p.locator('[data-catalog-count]')).toContainText('1 chosen is hidden');
+    await p.locator('[data-filter-clear]').click();
+    await expect(p.locator(`[data-pile="${key}"]`)).toHaveAttribute('aria-pressed', 'true');
+    await p.locator('[data-filter-type]').selectOption('Attack');
+    await expect(p.locator('[data-pile]').first()).toBeVisible();
+    await p.locator('[data-filter-clear]').click();
+
+    // Compact mode has no art, keeps the same controls, and is remembered.
+    await p.locator('[data-art-toggle]').uncheck();
+    await expect(p.locator('.piles .art')).toHaveCount(0);
+    await expect(p.locator(`[data-pile="${key}"]`)).toHaveAttribute('aria-pressed', 'true');
+    await expect(p.locator(`[data-inspect="${otherKey}"]`)).toBeVisible();
+    await shot(p, 'catalog-compact');
+    await p.reload();
+    await expect(p.locator('[data-art-toggle]')).not.toBeChecked();
+    await expect(p.locator('.piles .art')).toHaveCount(0);
+  });
+
+  test('CATALOG-E2E-2: on a phone the catalog fits, with only nearby art drawn', async ({ browser }) => {
+    const host = await newPlayer(browser, 'Ada', PHONE);
+    await table(host, 1);
+    const p = host.page;
+    await p.locator('[data-set="night"]').check({ force: true });
+    await p.locator('[data-pile]').first().scrollIntoViewIfNeeded();
+    await expect(p.locator('.piles .art').first()).toBeVisible();
+    const drawn = await p.locator('.piles .art:has(svg, img)').count();
+    expect(drawn).toBeLessThan(await p.locator('.piles .art').count());
+    const overflow = await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+    expect(overflow).toBeLessThanOrEqual(0);
+    await shot(p, 'catalog-phone');
+    await p.locator('[data-basic="monument"]').click();
+    await expect(p.locator('[data-detail="monument"]')).toBeVisible();
+    await shot(p, 'catalog-detail-phone');
+  });
+
   test('CC-STAGE-UI: a trial room shows five Projects with their stages, and inspection lists them', async ({ browser }) => {
     test.skip(!!process.env.E2E_NO_TRIALS, 'trial editions are off on this server');
     const host = await newPlayer(browser, 'Ada', PHONE);
@@ -247,7 +309,7 @@ test.describe('Kingdom & Commerce', () => {
       await expect(column(0).locator('.tile .name')).toHaveText(['Bronze', 'Silver', 'Gold']);
       await expect(column(1).locator('.kind')).toHaveText('Renown');
       await expect(column(1).locator('.tile .name')).toHaveText(['Homestead', 'Noble Estate', 'Grand Duchy']);
-      await expect(page.locator('.treasury .column .tile .art svg')).toHaveCount(6);
+      await expect(page.locator('.treasury .column .tile .art :is(svg, img)')).toHaveCount(6);
       await expect(page.locator('.market .tile')).toHaveCount(10);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
       expect(overflow).toBeLessThanOrEqual(0);

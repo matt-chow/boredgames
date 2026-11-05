@@ -198,3 +198,7 @@ Five visible tiles remain. A staged tile shows pips and n/N, the next stage's na
 ## CP6 and CP7: art bible and five pilots
 
 docs/ART_BIBLE.md and five clear-line SVGs in public/cards/, built by scripts/art/. ART-1 to ART-5 pass. Remaining art not generated; owner approval pending.
+
+### CP8: catalog (2026-11-04)
+
+The Kingdom & Commerce setup panel now has visual and compact catalog modes, a remembered "Show card artwork" toggle, search by name, filters for type, cost and set, a Treasury list separate from the market, and an inspection dialog that never changes the selection. Art loads only near the viewport. Selections, bans, market codes and the supply are unchanged. Tests: CATALOG-1 to 3, CATALOG-E2E-1 and 2. The whole clockwork spec ran with 3 failures, all KC3-TREASURY-4 counting Treasury art as inline `svg` while Gold and Grand Duchy are now pilot images. The locator now accepts both and that test passes 3/3 on all three screen sizes. The full spec is rerun in CP10.

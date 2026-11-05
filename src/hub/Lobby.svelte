@@ -391,6 +391,7 @@
     .start {
       flex-direction: column;
       gap: 10px;
+      background: linear-gradient(to top, var(--ground-1) 88%, transparent);
     }
     .go {
       width: 100%;

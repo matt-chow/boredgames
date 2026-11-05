@@ -26,6 +26,6 @@ export const GAME_THEME: Record<string, () => Promise<unknown>> = {
 
 /** Optional game-specific section of the lobby, for settings a list of switches can't express. */
 export const GAME_SETUP: Record<string, () => Promise<{ default: Component<GameUiProps> }>> = {
-  clockwork: () => import('./deck/ui/MarketSetup.svelte'),
+  clockwork: () => import('./clockwork/ui/ClockworkSetup.svelte'),
   ...(__DECK_BENCH__ ? { fixture: () => import('./deck/ui/MarketSetup.svelte') } : {}),
 };
