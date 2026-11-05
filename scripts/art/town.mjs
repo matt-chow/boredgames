@@ -1,5 +1,5 @@
 /** Market cards, second third: the town and its people (docs/ART_BIBLE.md). */
-import {  } from './scene.mjs';
+import { C, LINE, W, arch, balance, bale, banner, barrel, book, candle, cart, chest, cloud, coin, coins, cypress, desk, door, ell, fig, flame, floorTiles, ground, hills, horse, lantern, line, masonry, path, paving, pennon, pike, poly, purse, rect, rider, rng, roofline, room, sack, scroll, sheaf, sheet, shelves, sky, stool, table, tapestry, ticks, tower, vaultedRoof, wall, window3 } from './scene.mjs';
 
 /** Alms House: loaves handed from the door to a queue of the poor. */
 function mutual_aid() {

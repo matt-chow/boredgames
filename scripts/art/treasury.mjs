@@ -1,5 +1,5 @@
 /** Treasury cards and Crown Projects (docs/ART_BIBLE.md): objects and architecture. People are small here, or absent. */
-import {  } from './scene.mjs';
+import { C, H, LINE, W, arch, bale, banner, barrel, bell, cart, cloud, coin, column, cypress, door, ell, fig, flame, foliage, ground, hills, horse, house, lantern, line, masonry, night, path, paving, pennon, pike, poly, purse, rect, roofline, room, sack, sheaf, shelves, ship, sky, stall, table, ticks, tower, tree, vaultedRoof, wall, water, wheel, window3 } from './scene.mjs';
 
 /** Bronze: a palm's worth of worn pennies spilling from a small purse. */
 function scrap() {

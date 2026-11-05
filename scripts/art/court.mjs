@@ -1,5 +1,5 @@
 /** Market cards, last third: law, money and the Crown (docs/ART_BIBLE.md). */
-import {  } from './scene.mjs';
+import { C, H, LINE, W, arch, bale, banner, barrel, bell, book, candle, cart, chest, cloud, coin, coins, column, cypress, dais, desk, door, ell, fig, flame, floorTiles, ground, hills, horse, house, lantern, line, masonry, path, paving, pennon, pike, poly, purse, rect, rider, roofline, room, sack, scroll, sheet, shelves, shield, ship, sky, stall, table, tapestry, throne, ticks, tree, vaultedRoof, wall, water, wheel, window3 } from './scene.mjs';
 
 const armsOut = { armR: [[13, -102], [34, -92], [52, -92]], armL: [[-13, -102], [-20, -82], [-14, -66]] };
 

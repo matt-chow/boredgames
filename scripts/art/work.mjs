@@ -1,5 +1,5 @@
 /** Market cards, first third: trades, clerks and the court (docs/ART_BIBLE.md). Activity scenes carry large figures. */
-import {  } from './scene.mjs';
+import { C, LINE, W, arch, balance, bale, barrel, bell, book, candle, chest, cloud, coin, coins, column, cypress, dais, desk, door, ell, fig, flame, floorTiles, foliage, ground, hills, horse, lantern, line, masonry, path, paving, pennon, pike, poly, rect, rider, roofline, room, sack, scroll, sheaf, sheet, shelves, ship, sky, stall, stool, table, tapestry, throne, ticks, vaultedRoof, wall, water, wheel, window3 } from './scene.mjs';
 
 const tools = (x, y) => rect(x, y, 170, 58, C.wood, LINE.form) + line(`M${x + 20} ${y + 8}V${y + 44}M${x + 52} ${y + 8}V${y + 40}M${x + 86} ${y + 8}V${y + 46}M${x + 124} ${y + 8}V${y + 36}`, 3.4, C.woodDark) + rect(x + 10, y + 6, 20, 8, C.slateLight, LINE.fine) + rect(x + 46, y + 38, 12, 12, C.slateLight, LINE.fine) + poly([[x + 80, y + 46], [x + 92, y + 46], [x + 86, y + 54]], C.slateLight, LINE.fine) + path(`M${x + 112} ${y + 36}h26v8h-26Z`, C.slateLight, LINE.fine);
 
