@@ -43,7 +43,7 @@ replay against them.
 | Rival Houses | 10 | | Added: attacks, defences, payoffs that leave Debt behind | No |
 | The Chancery | 8 | 5 | Added: Crown Projects rivalry, other ways to score | No |
 
-That's 88 market cards, 7 basics (Copper, Silver, Gold, Homestead, Noble Estate, Grand Duchy, Royal Debt)
+That's 88 market cards, 7 basics (Bronze, Silver, Gold, Homestead, Noble Estate, Grand Duchy, Royal Debt)
 and 15 Crown Projects. The default "Standard" game is the first two sets, **60 market cards**. Hosts choose any sets of at
 least one. The Core Projects are available whichever sets are on. A game has 10 market piles and 5 Crown Projects, random or
 chosen, and both go in the shareable market code.
@@ -87,7 +87,7 @@ saved mid-turn by an earlier build undo the one step they saved (KC3-UNDO-6). Th
 
 ## Treasury and symbols (KC3-TREASURY, KC3-SYM)
 
-The six basic piles are shown as the **Treasury**, "Always Available": a Coins column (Copper, Silver, Gold) and a Renown column
+The six basic piles are shown as the **Treasury**, "Always Available": a Coins column (Bronze, Silver, Gold) and a Renown column
 (Homestead, Noble Estate, Grand Duchy), three piles each. Royal Debt, in games that hand it out, sits under both columns. The ten
 variable piles are the **Kingdom Market**, "Chosen for this game". The headings come from `Ruleset.labels`, so other deck games keep
 plain ones. This is display only: `scrap`, `cog` and `dynamo` keep their keys, costs, values and quantities, and saved prompts with
@@ -104,14 +104,14 @@ Six basics are always on the table, separate from the 10 market piles, and buyab
 
 | Card | Id | Cost | Gives |
 |---|---|---|---|
-| Copper | `scrap` | 0 | 1 Coin |
+| Bronze | `scrap` | 0 | 1 Coin |
 | Silver | `cog` | 3 | 2 Coins |
 | Gold | `dynamo` | 6 | 3 Coins |
 | Homestead | `notebook` | 2 | 1 Renown |
 | Noble Estate | `blueprint` | 5 | 3 Renown |
 | Grand Duchy | `monument` | 8 | 6 Renown |
 
-The starting deck is 7 Coppers and 3 Homesteads. Currency cards are played one at a time or with Play All Currency.
+The starting deck is 7 Bronze and 3 Homesteads. Currency cards are played one at a time or with Play All Currency.
 
 ## Private Renown (KC3-RENOWN)
 
@@ -224,7 +224,7 @@ What it can't show:
 - **Thinning.** The Thinning bot is the weakest style (29.1%), and Lime Kiln, Royal Confessor and Purification House score 0–5%.
   This looks like the bots, not the cards. Bots used to trash their own Renown first, which was a bug, now fixed for v3 games
   (`KC3-BOT-1`). The scores stayed low afterwards, idle turns rose from 4–7% to 8–11%, and the likely cause is bots trashing
-  Coppers until they run short of money. That cause hasn't been tested. Judge these cards by playing them.
+  Bronze until they run short of money. That cause hasn't been tested. Judge these cards by playing them.
 - **Royal Debt.** Bots ended with 0.1 copies per player at most, and 2 in the worst case. Tax Arrears is about neutral (52.5%). Burden
   Relief scores 2.5%, unsurprisingly, as there is almost no Debt for it to remove. Nothing here measures how harsh Debt is.
 - **Attack severity.** The report counts attacks (2.3 to 6.6 per game), not the harm they do.

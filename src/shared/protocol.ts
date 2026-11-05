@@ -45,6 +45,10 @@ export interface SeatInfo {
   host: boolean;
   /** A computer player run by the server. */
   bot: boolean;
+  /** The bot is only standing in: the seat goes back to its person when they return. */
+  standIn?: boolean;
+  /** This person lost their connection: when their grace period ends. */
+  graceUntil?: number;
 }
 
 /** Everything a member needs to render the room. `game` is the module's projection for that member. */

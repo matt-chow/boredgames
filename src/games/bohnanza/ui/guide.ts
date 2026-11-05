@@ -279,6 +279,15 @@ export const guide: GuideDoc = {
           body: ['This version plays with 3 to 5 people. Other counts are refused, and the two-player Duel variant isn’t offered. Computer players can fill seats.'],
         },
         {
+          id: 'r-disconnect',
+          title: 'If a player disconnects',
+          body: [
+            'A player who loses their connection keeps their seat, hand order, fields and coins, and has **60 seconds** to return. Everyone sees them marked Away, and the game waits if it needs them.',
+            'If they aren’t back in time, a **bot plays their seat**, marked Bot playing, under the same rules and seeing only what that player could see. When they return the seat is theirs again straight away. Moves the bot already made stay made.',
+            'If nobody is left in person, the table closes and the game is deleted. That includes a game played alone with bots. A player who chooses to quit hands their seat to a bot for good, or ends the game if nobody else is left in person.',
+          ],
+        },
+        {
           id: 'r-coin',
           title: 'Bean Coin details',
           body: [

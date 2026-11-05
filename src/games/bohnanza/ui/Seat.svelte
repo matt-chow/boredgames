@@ -11,6 +11,8 @@
     name,
     connected,
     bot = false,
+    standIn = false,
+    away = false,
     active,
     coinHolder = false,
     acting = false,
@@ -23,6 +25,8 @@
     connected: boolean;
     /** A computer player run by the server. */
     bot?: boolean;
+    standIn?: boolean;
+    away?: boolean;
     active: boolean;
     coinHolder?: boolean;
     /** The server is waiting on this player. */
@@ -37,13 +41,14 @@
 <section class="seat" class:active aria-label="{name}{active ? ', active player' : ''}">
   <header>
     {#if bot}
-      <span class="bot" title="Computer player"><Icon name="bot" size={14} /></span>
+      <span class="bot" title={standIn ? 'A bot plays this seat until they return' : 'Computer player'}><Icon name="bot" size={14} /></span>
     {:else}
       <span class="dot" class:on={connected} title={connected ? 'Online' : 'Offline'}></span>
     {/if}
     <span class="name">{name}</span>
     {#if coinHolder}<span class="beancoin" title="Holds the Bean Coin">Bean Coin</span>{/if}
     {#if acting && !active}<span class="acting">deciding…</span>{/if}
+    {#if standIn}<span class="note">Bot playing</span>{:else if away}<span class="note">Away</span>{/if}
     {#if !connected}<Icon name="wifiOff" size={14} />{/if}
   </header>
 
@@ -105,6 +110,11 @@
   }
   .bot {
     display: inline-flex;
+    color: var(--ink-3);
+  }
+  .note {
+    flex: none;
+    font-size: 12px;
     color: var(--ink-3);
   }
   .name {

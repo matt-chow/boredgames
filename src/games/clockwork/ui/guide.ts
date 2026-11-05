@@ -84,7 +84,7 @@ export const guide: GuideDoc = {
           id: 'f-setup',
           title: 'Setup and your starting deck',
           body: [
-            'The game seats 2 to 6 players. Each player starts with **7 Coppers** and **3 Homesteads**, shuffles them and draws 5. A random player goes first.',
+            'The game seats 2 to 6 players. Each player starts with **7 Bronze** and **3 Homesteads**, shuffles them and draws 5. A random player goes first.',
             'The host picks which card sets are in play, and can choose or ban cards. A game uses 10 Kingdom Market piles and 5 Crown Projects.',
           ],
         },
@@ -95,7 +95,7 @@ export const guide: GuideDoc = {
             'The **Treasury** is always available, in every game. It holds three Coins piles and three Renown piles:',
             {
               ul: [
-                '**Copper:** costs 0, gives 1 Coin. 60 in the pile.',
+                '**Bronze:** costs 0, gives 1 Coin. 60 in the pile.',
                 '**Silver:** costs 3, gives 2 Coins. 40 in the pile.',
                 '**Gold:** costs 6, gives 3 Coins. 30 in the pile.',
                 '**Homestead:** costs 2, worth 1 Renown.',
@@ -162,7 +162,7 @@ export const guide: GuideDoc = {
           title: 'Attacks and reactions',
           body: [
             'An **Attack** affects opponents, in turn order starting with the next player. When one is played, any target holding a **Reaction** can reveal it before the attack takes effect. Each Reaction says what it does. Royal Advocate, for one, goes to the bottom of your deck and makes you immune to that attack.',
-            'You’re only asked if you hold a Reaction. Everyone can see that someone is deciding, but not what they hold. If a player must choose, the game waits for them. It never chooses for them.',
+            'You’re only asked if you hold a Reaction. Everyone can see that someone is deciding, but not what they hold. If a player must choose, the game waits for them. Only a bot playing a disconnected player’s seat chooses for them (see If a player disconnects).',
           ],
         },
         {
@@ -224,7 +224,7 @@ export const guide: GuideDoc = {
             {
               example: 'A full first turn',
               steps: [
-                'Your hand: 3 Coppers and 2 Homesteads. You have no Actions to play, so press **Move on to Market**.',
+                'Your hand: 3 Bronze and 2 Homesteads. You have no Actions to play, so press **Move on to Market**.',
                 'Press **Play all Currency cards**. You now have **3 Coins** and 1 Buy.',
                 'Buy a **Silver** for 3. It goes to your discard pile.',
                 'Press **End turn**. Everything goes to your discard pile and you draw 5 from your deck.',
@@ -241,7 +241,7 @@ export const guide: GuideDoc = {
             {
               example: 'Trashing to thin your deck',
               steps: [
-                'You play **Royal Confessor** with a Copper and a Homestead in hand, and trash both.',
+                'You play **Royal Confessor** with a Bronze and a Homestead in hand, and trash both.',
                 'One Renown card was trashed, so you gain **1 Influence**. Your Renown falls by 1, because the Homestead no longer counts.',
                 'Your deck is 2 cards smaller, so your better cards come round sooner.',
               ],
@@ -373,7 +373,13 @@ export const guide: GuideDoc = {
         {
           id: 'r-disconnect',
           title: 'If a player disconnects',
-          body: ['The game waits for their decision, and doesn’t choose for them. They can rejoin and carry on from the same prompt. A player who quits hands their seat to a computer player.'],
+          body: [
+            'A player who loses their connection keeps their seat, cards, Influence, Crown Projects and score, and has **60 seconds** to return. Everyone sees them marked Away, and if it’s their decision the game waits.',
+            'If they aren’t back in time, a **bot plays their seat**, marked Bot playing. It follows the same rules as everyone, sees only what that player could see, and answers any question already waiting. Nothing about the seat is reset.',
+            'When they return, the seat is theirs again straight away, from whatever point the game has reached. Moves the bot already made stay made.',
+            'If nobody is left in person, the table closes. That includes a game played alone with bots: if you don’t return within 60 seconds, the game is deleted. A silent network failure can take up to about 40 seconds longer to notice than a closed tab.',
+            'A player who chooses to quit hands their seat to a bot for good and can’t return. If nobody else is left in person, quitting ends the game.',
+          ],
         },
         {
           id: 'r-debt',

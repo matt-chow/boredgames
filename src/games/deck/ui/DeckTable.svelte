@@ -329,6 +329,8 @@
             name={name(s)}
             connected={seatInfo(s)?.connected ?? false}
             bot={seatInfo(s)?.bot ?? false}
+            standIn={seatInfo(s)?.standIn}
+            away={!!seatInfo(s)?.graceUntil}
             active={g.turn.seat === s}
             deciding={q?.seat === s}
           />

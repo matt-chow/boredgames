@@ -182,3 +182,5 @@ https://boredgames-staging.mchowcl.workers.dev, with its own Worker and Durable 
 `bots` 2/2, `clockwork` 9/9, `complete` 4/4, `theme` 1/1, `lobby` 2/2, `home` 7 passed and 7 skipped (dev-only fixture). So a complete v3 game,
 a 6-seat game and two-person sync with a reconnect have now run on staging. `deck` can't run there, because the bench isn't in deployed builds.
 Not repeated on this deploy: the test that reopens rooms started on an earlier build. Not run at all: `perf`, a physical phone, Safari.
+
+**Crown Project rework, checkpoints 1 and 2.** Baseline at `0cfeabf`: check 0 errors, vitest 554/554, build passes. Copper is now Bronze (display only, D36a). Lost connections follow DISC-* (D37): 60 s grace, a bot stands in, the person reclaims, an empty room closes. Tests: `tests/server/disconnect.test.ts` and DISC-E2E-1, 2 in `resilience`.

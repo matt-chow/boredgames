@@ -76,7 +76,7 @@ export const currency = (key: string, name: string, cost: number, text: string, 
 const basic = { basic: true, set: undefined };
 
 export const BASICS: CardDef[] = [
-  currency('scrap', 'Copper', 0, '+1 Coin.', 1, basic),
+  currency('scrap', 'Bronze', 0, '+1 Coin.', 1, basic),
   currency('cog', 'Silver', 3, '+2 Coins.', 2, basic),
   currency('dynamo', 'Gold', 6, '+3 Coins.', 3, basic),
   prestige('notebook', 'Homestead', 2, '1 Renown.', 1, basic),

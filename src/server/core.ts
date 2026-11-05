@@ -26,6 +26,8 @@ const BOT_PREFIX = 'bot:';
 const BOT_NAMES = ['Bot Ada', 'Bot Bix', 'Bot Cog', 'Bot Dot', 'Bot Elo', 'Bot Fig'];
 export const isBot = (th: string) => th.startsWith(BOT_PREFIX);
 const MAX_ACTION_ID = 64;
+/** How long a person has to come back before a bot plays their seat, or the room closes if nobody else is left. */
+export const GRACE_MS = 60_000;
 
 export interface RoomMeta {
   schema: number;
@@ -40,6 +42,10 @@ export interface RoomMeta {
   stateVersion: number;
   createdAt: number;
   updatedAt: number;
+  /** Seat -> when its grace period ends, for people who lost their connection. Absent in rooms saved earlier. */
+  away?: Record<number, number>;
+  /** Seats a bot plays until the person comes back. Unlike a quit, the seat keeps its session. */
+  standIn?: number[];
 }
 
 export interface SeatRow {
@@ -204,7 +210,14 @@ export class RoomCore {
 
   isBotSeat(seat: number) {
     const s = this.seats[seat];
-    return !!s && isBot(s.th);
+    return !!s && (isBot(s.th) || !!this.meta.standIn?.includes(seat));
+  }
+
+  /** The next time a grace period ends, so the room can wake for it. */
+  get graceEndsAt(): number | null {
+    const now = this.opts.now();
+    const ends = Object.values(this.meta.away ?? {}).filter((t) => t > now);
+    return ends.length ? Math.min(...ends) : null;
   }
 
   get hostSeat() {
@@ -280,7 +293,9 @@ export class RoomCore {
         name: s.name,
         connected: isBot(s.th) || connected.has(i),
         host: i === this.hostSeat,
-        bot: isBot(s.th),
+        bot: this.isBotSeat(i),
+        ...(this.meta.standIn?.includes(i) ? { standIn: true } : {}),
+        ...(this.meta.away?.[i] ? { graceUntil: this.meta.away[i] } : {}),
       })),
       minPlayers: g.meta.minPlayers,
       maxPlayers: g.meta.maxPlayers,
@@ -440,7 +455,11 @@ export class RoomCore {
     const before = this.undoChain(seat);
     this.state = r.state;
     const over = this.game.isOver(r.state);
-    if (over) this.meta.status = 'over';
+    if (over) {
+      this.meta.status = 'over';
+      delete this.meta.away;
+      delete this.meta.standIn;
+    }
     const undoable = r.undoable && !over && !this.isBotSeat(seat);
     this.commit('act', seat, a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev, ...(before ? { prior: before } : {}) } : null });
   }
@@ -456,9 +475,62 @@ export class RoomCore {
     return last;
   }
 
+  /**
+   * Bring the room in line with who is connected (DISC-*). The room calls this whenever a socket opens or closes and
+   * when an alarm fires. A seat with a socket is back at once: the Durable Object runs one event at a time, so every
+   * call is an action boundary, and bots recompute their move from the current controller. 'closed' means no person is
+   * left, and the room must be deleted.
+   */
+  presence(connected: Set<number>): 'same' | 'changed' | 'closed' {
+    if (this.meta.status !== 'playing') return 'same';
+    const now = this.opts.now();
+    const away = { ...this.meta.away };
+    const standIn = new Set(this.meta.standIn);
+    const back: number[] = [];
+    const gone: number[] = [];
+    let graceChanged = false;
+    this.seats.forEach((s, i) => {
+      if (isBot(s.th)) return;
+      if (connected.has(i)) {
+        if (i in away) {
+          delete away[i];
+          graceChanged = true;
+        }
+        if (standIn.has(i)) back.push(i);
+      } else if (!standIn.has(i)) {
+        if (!(i in away)) {
+          away[i] = now + GRACE_MS;
+          graceChanged = true;
+        } else if (now >= away[i] && this.game.bot) gone.push(i); // Without bots the seat just waits for its player.
+      }
+    });
+    const here = this.seats.some((s, i) => !isBot(s.th) && (connected.has(i) || (!standIn.has(i) && !gone.includes(i) && now < away[i])));
+    if (!here) return 'closed';
+    for (const i of back) standIn.delete(i);
+    for (const i of gone) {
+      standIn.add(i);
+      delete away[i];
+    }
+    this.meta.away = away;
+    this.meta.standIn = [...standIn].sort((a, b) => a - b);
+    for (const i of gone) this.commit('takeover', i, {}, { undo: this.undoWithout(i) });
+    for (const i of back) this.commit('reclaim', i, {}, { undo: this.undoWithout(i) });
+    if (back.length || gone.length) return 'changed';
+    if (!graceChanged) return 'same';
+    // Waiting isn't a move, so nobody's move in flight should go stale and the version stays.
+    this.store.putMeta(this.meta);
+    return 'changed';
+  }
+
+  /** A seat changing hands costs that seat its undo, but not another player the one they are entitled to. */
+  private undoWithout(seat: number): UndoRow | null {
+    const u = this.store.getUndo();
+    return u && u.seat !== seat && u.version === this.meta.version ? { ...u, version: this.meta.version + 1 } : null;
+  }
+
   /** A quitter's seat goes to a bot only when the game has bots and someone else is seated in person. */
   private handsOver(seat: number) {
-    return !!this.game.bot && this.seats.some((s, i) => i !== seat && !isBot(s.th));
+    return !!this.game.bot && this.seats.some((s, i) => i !== seat && !isBot(s.th) && !this.meta.standIn?.includes(i));
   }
 
   /**
@@ -472,6 +544,7 @@ export class RoomCore {
     while (this.seats.some((s) => s.th === BOT_PREFIX + id)) id++;
     this.seats[seat] = { th: BOT_PREFIX + id, name: `${[...gone.name].slice(0, 14).join('').trim()} (bot)`, joinedAt: this.opts.now() };
     if (gone.th === this.meta.hostTh) this.meta.hostTh = this.seats.find((s) => !isBot(s.th))?.th ?? '';
+    if (this.meta.away) delete this.meta.away[seat];
     this.commit('quit', seat, {}, { seats: true, undo: null });
     return gone.th;
   }

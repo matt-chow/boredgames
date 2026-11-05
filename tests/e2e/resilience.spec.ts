@@ -1,5 +1,36 @@
 import { expect, test } from '@playwright/test';
-import { activePlayer, newPlayer, rawSend, roomViews, startTable } from './helpers';
+import { activePlayer, createRoom, newPlayer, rawSend, roomViews, startTable } from './helpers';
+
+test('DISC-E2E-1: a closed tab gets a bot after the grace period, and the person takes the seat back', async ({ browser }) => {
+  test.setTimeout(180_000);
+  const players = await Promise.all(['Ana', 'Bo', 'Cy'].map((n) => newPlayer(browser, n)));
+  const code = await startTable(players);
+  const [ana, bo] = players;
+  const seat = ana.page.locator('.seat', { hasText: 'Bo' });
+  await bo.page.goto('about:blank');
+  await expect(seat.getByText('Away')).toBeVisible({ timeout: 15_000 });
+  await expect(seat.getByText('Bot playing')).toBeVisible({ timeout: 75_000 });
+  await expect(ana.page.getByText('Bo didn’t return in time.')).toBeVisible();
+
+  await bo.page.goto(`/r/${code}`);
+  await expect(bo.page.getByText('Welcome back.')).toBeVisible({ timeout: 15_000 });
+  await expect(seat.getByText('Bot playing')).toBeHidden({ timeout: 15_000 });
+  await expect(ana.page.getByText('Bo is back and plays their own seat again.')).toBeVisible();
+});
+
+test('DISC-E2E-2: alone with bots, the room closes when the grace period runs out', async ({ browser }) => {
+  test.setTimeout(150_000);
+  const p = await newPlayer(browser, 'Ana');
+  const code = await createRoom(p);
+  await p.page.getByRole('button', { name: /Add a bot|Add bot/ }).click();
+  await p.page.getByRole('button', { name: /Add a bot|Add bot/ }).click();
+  await p.page.getByRole('button', { name: /^Start/ }).click();
+  await expect(p.page.locator('.table .turn')).toBeVisible();
+  const exists = async () => (await p.page.request.get(`/api/rooms/${code}`)).status();
+  expect(await exists()).toBe(200);
+  await p.page.goto('about:blank');
+  await expect.poll(exists, { timeout: 80_000, intervals: [3000] }).toBe(404);
+});
 
 test('a refresh restores the same seat and hand; dropping offline shows a reconnect state', async ({ browser }) => {
   const players = await Promise.all(['Ana', 'Bo', 'Cy'].map((n) => newPlayer(browser, n)));

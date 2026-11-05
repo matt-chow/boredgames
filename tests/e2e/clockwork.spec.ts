@@ -214,7 +214,7 @@ test.describe('Kingdom & Commerce', () => {
       await expect(page.locator('.group:not(.treasury) .title')).toHaveText('Kingdom Market');
       const column = (i: number) => page.locator('.treasury .column').nth(i);
       await expect(column(0).locator('.kind')).toHaveText('Coins');
-      await expect(column(0).locator('.tile .name')).toHaveText(['Copper', 'Silver', 'Gold']);
+      await expect(column(0).locator('.tile .name')).toHaveText(['Bronze', 'Silver', 'Gold']);
       await expect(column(1).locator('.kind')).toHaveText('Renown');
       await expect(column(1).locator('.tile .name')).toHaveText(['Homestead', 'Noble Estate', 'Grand Duchy']);
       await expect(page.locator('.treasury .column .tile .art svg')).toHaveCount(6);

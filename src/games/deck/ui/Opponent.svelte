@@ -9,6 +9,8 @@
     name,
     connected,
     bot,
+    standIn = false,
+    away = false,
     active,
     deciding,
     tokenName,
@@ -18,6 +20,8 @@
     name: string;
     connected: boolean;
     bot: boolean;
+    standIn?: boolean;
+    away?: boolean;
     active: boolean;
     deciding: boolean;
     tokenName: (token: string) => string;
@@ -30,11 +34,12 @@
 <section class="opp" class:active class:deciding aria-label={name}>
   <header>
     {#if bot}
-      <span class="bot" title="Computer player"><Icon name="bot" size={14} /></span>
+      <span class="bot" title={standIn ? 'A bot plays this seat until they return' : 'Computer player'}><Icon name="bot" size={14} /></span>
     {:else}
       <span class="dot" class:on={connected} title={connected ? 'Online' : 'Offline'}></span>
     {/if}
     <b class="who">{name}</b>
+    {#if standIn}<span class="note">Bot playing</span>{:else if away}<span class="note">Away</span>{/if}
   </header>
   <div class="zones">
     <span class="zone" data-anchor="hand-{p.seat}" title="Cards in hand"><DeckCard size="xs" /><b class="num">{p.handCount}</b></span>
@@ -103,6 +108,11 @@
   }
   .bot {
     display: inline-flex;
+    color: var(--ink-3);
+  }
+  .note {
+    flex: none;
+    font-size: 11px;
     color: var(--ink-3);
   }
   .zones {

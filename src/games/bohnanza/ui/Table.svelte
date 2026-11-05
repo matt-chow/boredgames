@@ -434,6 +434,8 @@
             name={name(s)}
             connected={seatInfo(s)?.connected ?? false}
             bot={seatInfo(s)?.bot ?? false}
+            standIn={seatInfo(s)?.standIn}
+            away={!!seatInfo(s)?.graceUntil}
             active={g.active === s}
             coinHolder={g.coin?.owner === s}
             acting={room.actors.includes(s)}

@@ -18,12 +18,19 @@ export interface Env {
 
 interface Attachment {
   th: string;
+  /** When the socket opened. Absent on sockets accepted before this field existed. */
+  at?: number;
 }
 
 const MAX_MESSAGE_BYTES = 16 * 1024;
 /** Token bucket per socket: burst 20, refill 10/s. In-memory; resets on hibernation, which is fine. */
 const BUCKET_MAX = 20;
 const BUCKET_RATE = 10;
+/** The client pings every 20 s, answered without waking the room. This long without one means the connection died silently. */
+const SILENT_MS = 70_000;
+/** How soon after the last change, and then how often, a stalled table checks for those silent connections. */
+const STALL_MS = 45_000;
+const STALL_REPEAT_MS = 30_000;
 
 /** SQLite-backed implementation of the room store. All calls are synchronous. */
 class SqlStore implements RoomStore {
@@ -167,9 +174,12 @@ export class RoomDO extends DurableObject<Env> {
           const pair = new WebSocketPair();
           const [client, server] = Object.values(pair);
           this.ctx.acceptWebSocket(server);
-          server.serializeAttachment({ th } satisfies Attachment);
+          server.serializeAttachment({ th, at: Date.now() } satisfies Attachment);
+          // This view still shows a bot in the seat, so a returning player can be told it played for them.
           this.send(server, { t: 'room', room: room.view(seat, this.connected()) });
-          this.broadcast(server);
+          room.presence(this.connected());
+          this.broadcast();
+          await this.schedule();
           return new Response(null, { status: 101, webSocket: client });
         }
       }
@@ -210,23 +220,33 @@ export class RoomDO extends DurableObject<Env> {
       }
     }
     if (res.changed) {
+      // A game that just started can already have someone offline.
+      if (room.presence(this.connected()) === 'closed') return this.wipe();
       await this.schedule();
       this.broadcast();
     }
   }
 
   async webSocketClose(ws: WebSocket) {
-    this.broadcast(ws);
+    await this.lost(ws);
   }
 
   async webSocketError(ws: WebSocket) {
+    await this.lost(ws);
+  }
+
+  private async lost(ws: WebSocket) {
+    if (!this.store.getMeta()) return;
+    if (this.room().presence(this.connected(ws)) === 'closed') return this.wipe();
+    await this.schedule();
     this.broadcast(ws);
   }
 
   /**
-   * One alarm serves two jobs: playing the next computer-player move once its
-   * delay since the last change has passed, and deleting rooms that have been
-   * idle past their retention window.
+   * One alarm serves every timed job: playing the next computer-player move once
+   * its delay since the last change has passed, ending grace periods, noticing
+   * connections that died silently, and deleting rooms that have been idle past
+   * their retention window.
    */
   async alarm() {
     if (!this.store.initialized() || !this.store.getMeta()) return;
@@ -234,11 +254,12 @@ export class RoomDO extends DurableObject<Env> {
     const now = Date.now();
     if (now >= room.expiresAt) {
       for (const s of this.ctx.getWebSockets()) s.close(4004, 'Room expired');
-      this.core = null;
-      await this.ctx.storage.deleteAlarm();
-      await this.ctx.storage.deleteAll();
-      return;
+      return this.wipe();
     }
+    this.closeSilent(now);
+    const was = room.presence(this.connected());
+    if (was === 'closed') return this.wipe();
+    if (was === 'changed') this.broadcast();
     const bot = this.botDue();
     if (bot && now >= room.updatedAt + bot.delayMs) {
       if (room.playBot()) this.broadcast();
@@ -257,9 +278,26 @@ export class RoomDO extends DurableObject<Env> {
       this.send(s, a?.th === quitter ? { t: 'bye', reason: 'left' } : { t: 'bye', reason: 'ended', by: name });
       s.close(4001, 'Game ended');
     }
+    await this.wipe();
+  }
+
+  private async wipe() {
     this.core = null;
     await this.ctx.storage.deleteAlarm();
     await this.ctx.storage.deleteAll();
+  }
+
+  /**
+   * Close sockets that stopped pinging. A dropped network sends no close event, so these seats still look connected.
+   * shortcut: only a stalled table checks (see schedule), so a silent drop starts its grace up to 100 s after the last
+   * ping and only once the table waits on someone; check on a fixed timer if free-tier wakes turn out not to matter.
+   */
+  private closeSilent(now: number) {
+    for (const s of this.ctx.getWebSockets()) {
+      const a = s.deserializeAttachment() as Attachment | null;
+      const last = this.ctx.getWebSocketAutoResponseTimestamp(s)?.getTime() ?? a?.at ?? now;
+      if (now - last > SILENT_MS) s.close(1011, 'No ping');
+    }
   }
 
   private botDue() {
@@ -267,11 +305,16 @@ export class RoomDO extends DurableObject<Env> {
     return room.version === this.botStuckAt ? null : room.nextBot();
   }
 
-  /** Wake for the next bot move if one is due, otherwise at the retention deadline. */
+  /** Wake for whichever comes first: the next bot move, a grace period ending, a stalled table, the retention deadline. */
   private async schedule() {
     const room = this.room();
+    const now = Date.now();
     const bot = this.botDue();
-    await this.ctx.storage.setAlarm(bot ? Math.max(Date.now(), room.updatedAt + bot.delayMs) : room.expiresAt);
+    const times = [room.expiresAt];
+    if (bot) times.push(Math.max(now, room.updatedAt + bot.delayMs));
+    if (room.graceEndsAt) times.push(room.graceEndsAt);
+    if (room.status === 'playing' && this.ctx.getWebSockets().length) times.push(Math.max(now + STALL_REPEAT_MS, room.updatedAt + STALL_MS));
+    await this.ctx.storage.setAlarm(Math.min(...times));
   }
 
   private allow(ws: WebSocket): boolean {

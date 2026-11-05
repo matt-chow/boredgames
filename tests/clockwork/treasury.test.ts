@@ -15,15 +15,17 @@ describe('KC3-TREASURY', () => {
       const c = BASICS.find((b) => b.key === key)!;
       return [c.name, c.cost, c.coins];
     };
-    expect(fact('scrap')).toEqual(['Copper', 0, 1]);
+    expect(fact('scrap')).toEqual(['Bronze', 0, 1]);
     expect(fact('cog')).toEqual(['Silver', 3, 2]);
     expect(fact('dynamo')).toEqual(['Gold', 6, 3]);
   });
 
   it('KC3-TREASURY-2: prompts saved under any earlier name read the new one', () => {
-    expect(modernise('Trash a Coin Purse or a Silver Chest for a Royal Treasury.')).toBe('Trash a Copper or a Silver for a Gold.');
-    expect(modernise('Trash a Scrap or a Groat for a Florin.')).toBe('Trash a Copper or a Silver for a Gold.');
-    expect(modernise('Gain a Gold or a Silver or a Copper.')).toBe('Gain a Gold or a Silver or a Copper.');
+    expect(modernise('Trash a Coin Purse or a Silver Chest for a Royal Treasury.')).toBe('Trash a Bronze or a Silver for a Gold.');
+    expect(modernise('Trash a Scrap or a Groat for a Florin.')).toBe('Trash a Bronze or a Silver for a Gold.');
+    expect(modernise('Gain a Gold or a Silver or a Copper.')).toBe('Gain a Gold or a Silver or a Bronze.');
+    expect(modernise('Gain a Gold or a Silver or a Bronze.')).toBe('Gain a Gold or a Silver or a Bronze.');
+    expect(modernise('Play a Copper Press.')).toBe('Play a Coin Striker.');
   });
 
   it('KC3-TREASURY-3: both editions show the same headings', () => {

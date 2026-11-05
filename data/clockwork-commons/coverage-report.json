@@ -9,7 +9,7 @@
   "entries": [
     {
       "key": "scrap",
-      "name": "Copper",
+      "name": "Bronze",
       "source": "supplied",
       "definedIn": "src/games/clockwork/rules/cards.ts",
       "dedicatedTest": "CC-CARD-scrap",

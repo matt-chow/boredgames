@@ -261,3 +261,24 @@ quantities are unchanged, so rooms and replays are unaffected, and old prompts a
 For the owner to weigh: these three names at costs 0, 3 and 6 and values 1, 2 and 3, beside three Estate-style cards, sit close to the basic
 cards of a well-known published deck-builder. Numbers and common words aren't the concern alone; the combination is what makes the resemblance.
 The v3 brief said not to recreate a commercial catalogue, so this needs the owner's decision before production.
+
+### D36a. Bronze, Silver and Gold are the final names, and the owner has accepted them
+This adds to D36 and doesn't replace it. The owner chose the final Currency names: **Bronze** (cost 0, 1 Coin), **Silver** (cost 3, 2 Coins) and **Gold**
+(cost 6, 3 Coins). Copper became Bronze. Keys, costs, values and quantities are unchanged, and `modernise` rewords every earlier name in saved prompts.
+
+Bronze, Silver and Gold are commonplace currency words, and the owner accepts them as such. That settles the wording of these three names only. The
+wider question D36 raised, how close the game's overall structure and basic-card set sit to a well-known published deck-builder, is a separate one.
+Accepting these names doesn't answer it, and nothing here is a statement about legal or licensing risk.
+
+### D37. Lost connections: 60 seconds, then a bot stands in; an empty room closes
+The owner's policy (DISC-*), and the authorisation that replaces the earlier rule that the game never decides for someone disconnected.
+- The seat keeps its session hash, so coming back is an ordinary reconnect. `meta.away` and `meta.standIn` live in the JSON meta row, so the seats table and
+  rooms saved earlier need no migration.
+- `RoomCore.presence` is the one place that reconciles who is connected. A takeover and a reclaim each commit and bump the version; starting a grace period
+  doesn't, so it can't make somebody's move stale. Durable Objects run one event at a time, so every event is an action boundary and a human and a bot can't
+  both act: a bot recomputes its move from the seat's current controller, and a human move from before the change is stale.
+- Rooms where nobody is connected and nothing wakes them keep their old behaviour until someone comes back, because an idle room has no alarm before its
+  retention date. So a deploy can't close a room nobody is looking at; it can only close one that notices the absence.
+- **Silent drops:** closed tabs are seen at once. A network that dies without a close event is only noticed by the ping timestamp, and checking costs a wake,
+  so only a table with no change for 45 s checks, then every 30 s. A silent drop's grace starts up to about 100 s after the last ping. It can start later for a
+  seat the table isn't waiting on, which does no harm because the game has no need of them until then.

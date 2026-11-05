@@ -37,12 +37,20 @@
   function connect() {
     rememberRoom(code);
     conn = new RoomConnection(code);
-    // Someone quit mid-game while others play on: their seat is still there, now played by a bot.
+    // A seat changed hands: someone quit, someone's connection ran out, or someone came back.
     conn.onRoom((next, prev) => {
       if (!prev || prev.status !== 'playing') return;
-      for (const s of next.seats)
-        if (s.bot && s.seat !== next.you && prev.seats[s.seat] && !prev.seats[s.seat].bot)
-          toasts.push(`${prev.seats[s.seat].name} left the game. A bot plays their seat now.`);
+      for (const s of next.seats) {
+        const was = prev.seats[s.seat];
+        if (!was) continue;
+        if (s.seat === next.you) {
+          if (was.standIn && !s.standIn) toasts.push('Welcome back. A bot played your seat while you were away, and it’s yours again.');
+          continue;
+        }
+        if (s.standIn && !was.standIn) toasts.push(`${s.name} didn’t return in time. A bot plays their seat until they’re back.`);
+        else if (s.bot && !was.bot) toasts.push(`${was.name} left the game. A bot plays their seat now.`);
+        else if (was.standIn && !s.standIn && !s.bot) toasts.push(`${s.name} is back and plays their own seat again.`);
+      }
     });
     stage = 'live';
   }
