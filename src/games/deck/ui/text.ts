@@ -91,6 +91,8 @@ export function logLine(e: LogEntry, name: (seat: number) => string, cardName: (
       return `${who}: ${e.count} ${tokenName(e.token ?? '')}`;
     case 'claim':
       return `${who} completes ${e.project ? cardName(e.project) : 'a project'}`;
+    case 'fund':
+      return `${who} funds stage ${e.stage?.[0]} of ${e.stage?.[1]} of ${e.project ? cardName(e.project) : 'a project'}`;
     case 'surcharge':
       return `${who} raises the price of ${e.project ? cardName(e.project) : 'a project'}`;
     case 'game-over':

@@ -282,3 +282,8 @@ The owner's policy (DISC-*), and the authorisation that replaces the earlier rul
 - **Silent drops:** closed tabs are seen at once. A network that dies without a close event is only noticed by the ping timestamp, and checking costs a wake,
   so only a table with no change for 45 s checks, then every 30 s. A silent drop's grace starts up to about 100 s after the last ping. It can start later for a
   seat the table isn't waiting on, which does no harm because the game has no need of them until then.
+
+### D38. Trial editions, not a flag on the live rules
+Each construction candidate is a full edition with its own `rulesVersion`, the same mechanism that keeps old rooms on old rules. So a staged room keeps its rules for good, and whichever is chosen can
+become the default by being copied into a new edition, with nothing to migrate. Stage tables are saved in the game rather than derived on load, which makes a later change to the division rule safe for rooms in progress.
+The selector lives in the room config and is gated by the `EXPERIMENTS` server var, off in production. A live room can't reach them.

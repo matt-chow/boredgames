@@ -253,6 +253,13 @@ export function validateRuleset(rules: Ruleset): string[] {
   if (new Set((rules.projects ?? []).map((p) => p.key)).size !== (rules.projects ?? []).length) problems.push('duplicate project');
   if ((rules.projectCount ?? 0) > (rules.projects ?? []).length) problems.push('more projects wanted than exist');
   if (rules.convert && rules.convert.maxPerTurn < 0) problems.push('negative conversion limit');
+  if (rules.staged) {
+    for (const p of rules.projects ?? []) if ((rules.staged.names[p.key] ?? []).length < 3) problems.push(`${p.key}: needs 3 stage names`);
+    for (let n = rules.minPlayers; n <= rules.maxPlayers; n++) {
+      const sum = rules.staged.counts(n).reduce((a, b) => a + b, 0);
+      if (sum !== rules.projectCount) problems.push(`${n} players: ${sum} staged projects, not ${rules.projectCount}`);
+    }
+  }
   for (const c of rules.cards) if (c.set && rules.sets && !rules.sets.some((x) => x.key === c.set)) problems.push(`${c.key}: unknown set ${c.set}`);
   for (const s of rules.startingDeck) ref('startingDeck', s.key);
   for (const k of rules.endPiles) ref('endPiles', k);

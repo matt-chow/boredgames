@@ -3,6 +3,7 @@
  * decision, be persisted, and resume exactly where it left off.
  */
 import { shuffle } from '../rng';
+import { helpedComplete, nextStage } from './stages';
 import type {
   CardDef,
   CardFilter,
@@ -33,8 +34,8 @@ const NO_DISCOUNT = { coins: 0, tokens: 0 };
 
 /** What this seat would pay for a project right now. */
 export function projectPrice(state: DeckState, lib: Library, key: string, seat: number): { coins: number; tokens: Record<string, number> } {
-  const def = lib.rules.projects!.find((p) => p.key === key)!;
   const here = state.projects.find((p) => p.key === key);
+  const def = (here && nextStage(here)) ?? lib.rules.projects!.find((p) => p.key === key)!;
   const mine = seat === state.turn.seat ? state.turn.projectDiscount : NO_DISCOUNT;
   const extra = (here?.surcharges ?? []).filter((x) => x.by !== seat).reduce((a, x) => a + x.coins, 0);
   return {
@@ -191,7 +192,7 @@ export class Runtime {
     if ('mul' in n) return this.num(c, n.mul[0]) * n.mul[1];
     if ('div' in n) return (n.up ? Math.ceil : Math.floor)(this.num(c, n.div[0]) / n.div[1]);
     if ('actionsPlayed' in n) return this.state.turn.actionsPlayed;
-    if ('projects' in n) return this.state.projects.filter((x) => x.by !== null && (n.projects === 'all' || x.by === ctx.player)).length;
+    if ('projects' in n) return this.state.projects.filter((x) => n.projects === 'all' ? x.by !== null : helpedComplete(x, ctx.player)).length;
     return Object.values(this.state.supply).filter((p) => p.length === 0).length;
   }
 
@@ -240,6 +241,7 @@ export class Runtime {
     if ('pileEmpty' in q) return (this.state.supply[q.pileEmpty]?.length ?? 0) === 0;
     if ('claimedLastTurn' in q) {
       const last = this.state.players[ctx.player].turns - 1;
+      // In a staged project `by` is whoever funded the last stage, so this is a completion, as the card says (CC-STAGE-8).
       return this.state.projects.some((x) => x.by === ctx.player && x.onTurn === last);
     }
     if ('any' in q) return q.any.some((x) => this.cond(c, x));
@@ -948,10 +950,20 @@ export class Runtime {
     s.turn.coins -= price.coins;
     for (const [t, n] of Object.entries(price.tokens)) this.changeToken(seat, t, -n);
     const here = s.projects.find((p) => p.key === key)!;
+    const stage = nextStage(here);
+    if (stage) {
+      stage.by = seat;
+      stage.onTurn = s.players[seat].turns;
+      (s.turn.funded ??= []).push(key);
+      if (nextStage(here)) {
+        this.log({ seat, kind: 'fund', project: key, stage: [here.stages!.indexOf(stage) + 1, here.stages!.length] });
+        return this.run();
+      }
+    }
     here.by = seat;
     here.onTurn = s.players[seat].turns;
     here.surcharges = [];
-    this.log({ seat, kind: 'claim', project: key });
+    this.log({ seat, kind: 'claim', project: key, ...(stage ? { stage: [here.stages!.length, here.stages!.length] as [number, number] } : {}) });
     this.fire('claim', seat, null);
     this.pushFx(this.newCtx({ player: seat }), def.effects);
     this.run();

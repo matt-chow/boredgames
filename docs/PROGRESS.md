@@ -184,3 +184,5 @@ a 6-seat game and two-person sync with a reconnect have now run on staging. `dec
 Not repeated on this deploy: the test that reopens rooms started on an earlier build. Not run at all: `perf`, a physical phone, Safari.
 
 **Crown Project rework, checkpoints 1 and 2.** Baseline at `0cfeabf`: check 0 errors, vitest 554/554, build passes. Copper is now Bronze (display only, D36a). Lost connections follow DISC-* (D37): 60 s grace, a bot stands in, the person reclaims, an empty room closes. Tests: `tests/server/disconnect.test.ts` and DISC-E2E-1, 2 in `resilience`.
+
+**Crown rework checkpoint 3, trial staged engine.** Six trial editions (C0, C1, F1, F2, S1, S2) run on the live engine under rule IDs CC-STAGE-*; state version 3 only adds optional fields. Off in production, on through `EXPERIMENTS` in staging. `tests/clockwork/staged.test.ts` and DISC-14 cover it. Live rules unchanged.

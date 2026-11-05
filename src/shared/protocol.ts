@@ -53,6 +53,8 @@ export interface SeatInfo {
 
 /** Everything a member needs to render the room. `game` is the module's projection for that member. */
 export interface RoomView {
+  /** Trial rules the host may pick. Only present on a server with experiments on. */
+  editions?: { code: string; name: string; text: string }[];
   code: string;
   gameId: string;
   gameName: string;

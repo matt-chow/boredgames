@@ -62,6 +62,8 @@ export interface GameModule<Config = unknown, State = unknown, Action = unknown,
    * refuse the message. Games with only boolean options leave this out.
    */
   sanitizeConfig?(raw: Record<string, unknown>): { config: Partial<Config> } | { error: string };
+  /** Trial rules a host may pick through `config.edition`, on a server with experiments on. */
+  editions?: { code: string; name: string; text: string }[];
   setup(ctx: SetupContext<Config>): State;
   /**
    * Validate and apply an action by `seat`. Must not mutate `state`.

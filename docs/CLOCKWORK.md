@@ -157,8 +157,42 @@ asked (`CC-CARD-*` tests).
 3. **Cleanup:** discard, draw 5.
 
 Influence carries between turns, up to the cap. A Crown Project costs Coins and Influence, and each can be built once, by one
-player. The game ends when the Grand Duchy pile is empty, 4 Crown Projects are built (5 at 5 or 6 players, per `projectsToEnd`), or enough market piles are empty.
+player. The game ends when the Grand Duchy pile is empty, 4 Crown Projects are built, or enough market piles are empty.
 Most Renown wins.
+
+## Staged construction trial (CC-STAGE)
+
+**Not the live rules.** New games still use edition 3: one player claims a Crown Project whole, and the game can end at 4 of 5. These six trial editions
+exist only for tests, for the experiment, and for rooms on a server with `EXPERIMENTS=on` (staging and development) whose host picks one. The owner chooses
+whether any of them replaces the live rule. Code: `src/engine/deckbuilder/stages.ts`, `src/games/clockwork/rules/editions.ts`.
+
+| Code | Version | Stages (1/2/3-stage Projects) | Total price | Ends at |
+|---|---|---|---|---|
+| C0 | 101 | 5/0/0 | original | 5 of 5 |
+| C1 | 102 | 5/0/0 | +1 Coin each | 5 of 5 |
+| F1 | 103 | 1/2/2 at every count | original | 5 of 5 |
+| F2 | 104 | 1/2/2 at every count | +1 Coin on each multi-stage Project | 5 of 5 |
+| S1 | 105 | 2p 3/2/0, 3p 2/2/1, 4p 1/2/2, 5p 0/3/2, 6p 0/2/3 (7, 9, 11, 12, 13 investments) | original | 5 of 5 |
+| S2 | 106 | as S1 | +1 Coin on each multi-stage Project | 5 of 5 |
+
+- **CC-STAGE-1, counts.** Exactly five different Projects, with the counts above.
+- **CC-STAGE-2, assignment.** Stage counts are dealt by shuffling the game's five Projects on their own random stream (`<seed>:stages`). Price and Renown play no part,
+  and the market, deal and first player don't depend on it, so tables on one seed compare fairly across editions.
+- **CC-STAGE-3, division.** With `n` stages, Coins are `floor(total/n)` with the remainder on the earliest stages; Influence and Renown are `floor(total/n)` with the
+  remainder on the latest. Totals are preserved. A 2-stage Project uses the first and last stage names. City Walls in 3: 3 Coins + 1 Influence for 4 Renown, 3 + 2 for 4, 2 + 2 for 5.
+  Known weak spots at original prices: River Quay's first of 3 stages is 1 Coin for 1 Renown, and Exchange Hall's last of 3 is 2 Influence with no Coins for 3 Renown. No stage is free.
+- **CC-STAGE-4, S2 and F2.** One more Coin in the Project's total, not per stage, divided the same way. One-stage Projects don't change. C1 adds 1 Coin to every Project. No card or market cost changes.
+- **CC-STAGE-5, contributing.** In the Market phase, for one Buy, the player to move may pay the next unfunded stage of a Project and takes that stage's Renown. Only one stage of
+  each Project per turn, but different Projects in one turn as Buys and funds allow. No refunds or transfers. Everyone sees who funded what. Stages are funded in order.
+- **CC-STAGE-6, Renown and reward.** Renown is earned stage by stage and counts at the end even if the Project is never finished. The Project's listed reward (Draw 2 and so on) happens once,
+  for whoever funds the last stage. A one-stage Project works as a claim always has.
+- **CC-STAGE-7, interpretation: "Projects you completed".** Builder's Honour and Civic Charter count finished Projects you funded at least one stage of, because a Project now belongs to everyone who built it. Several players can count one Project. Civic Tribute counts finished Projects, by anyone.
+- **CC-STAGE-8, interpretation: "when you complete".** Royal Dedication, Bellman and Cloister Garden react to funding the **last** stage, not to every stage. Otherwise a 3-stage Project would pay them three times.
+- **CC-STAGE-9, interpretation: discounts and surcharges.** Surveyor's discount and Borough Reeve's surcharge apply to whichever stage is next. Both apply again to another stage in the time they last. Borough Reeve can name any Project with a stage left.
+- **CC-STAGE-10, ending.** The game ends after the turn on which all five are fully funded, or on the usual Grand Duchy or empty-pile endings. A part-built Project doesn't count.
+- **CC-STAGE-11, saves.** The stage table (names, prices, Renown, who funded each) is stored in the game when it starts, under `rulesVersion` 101 to 106, so it can't change under a room. State version 3 only adds optional fields; nothing is rewritten when an older save loads.
+- **CC-STAGE-12, access.** Production refuses `config.edition` and doesn't offer the list, because `EXPERIMENTS` is only set in `env.staging`.
+- **CC-STAGE-LIVE.** Edition 3 and older rooms run the code they always did, with their bots unchanged. Bots only compare a Project with the best buy in a trial edition (`rulesVersion >= 100`).
 
 ## Interpretations
 

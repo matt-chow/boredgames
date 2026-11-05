@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "balance": "vitest run --config scripts/balance.config.ts",
     "experiment:crown-end": "vitest run --config scripts/crown-end.config.ts",
+    "experiment:crown-construction": "vitest run --config scripts/crown-construction.config.ts",
     "coverage:clockwork": "node scripts/clockwork-coverage.mjs",
     "deploy:staging": "node scripts/deploy-staging.mjs",
     "test:e2e": "playwright test",

@@ -21,7 +21,9 @@
         "bindings": [{ "name": "ROOMS", "class_name": "RoomDO" }]
       },
       "migrations": [{ "tag": "v1", "new_sqlite_classes": ["RoomDO"] }],
-      "observability": { "enabled": true }
+      "observability": { "enabled": true },
+      // Lets hosts here pick trial rules. Never set this for production.
+      "vars": { "EXPERIMENTS": "on" }
     }
   }
 }

@@ -17,6 +17,8 @@ export interface Options {
   market?: string[];
   works?: string[];
   seed?: string;
+  /** A trial edition's code. */
+  edition?: string;
 }
 
 export class Table {
@@ -28,7 +30,7 @@ export class Table {
     this.s = game.setup({
       playerCount: players,
       seed: o.seed ?? 'clockwork',
-      config: { market: o.market ?? MARKET, bans: [], sets: ALL_SETS, projects: o.works ?? WORKS },
+      config: { market: o.market ?? MARKET, bans: [], sets: ALL_SETS, projects: o.works ?? WORKS, ...(o.edition ? { edition: o.edition } : {}) },
     });
     this.me = this.s.turn.seat;
     const zone = this.s.players[this.me];

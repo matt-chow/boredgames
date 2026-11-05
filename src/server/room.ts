@@ -14,6 +14,8 @@ import {
 export interface Env {
   ROOMS: DurableObjectNamespace<RoomDO>;
   ASSETS: Fetcher;
+  /** "on" lets hosts pick trial rules. Set in `env.staging` only. */
+  EXPERIMENTS?: string;
 }
 
 interface Attachment {
@@ -137,7 +139,7 @@ export class RoomDO extends DurableObject<Env> {
     ctx.setWebSocketAutoResponse(new WebSocketRequestResponsePair('{"t":"ping"}', '{"t":"pong"}'));
   }
 
-  private opts = { now: () => Date.now(), seed: randomSeed };
+  private opts = { now: () => Date.now(), seed: randomSeed, experiments: __DECK_BENCH__ || this.env.EXPERIMENTS === 'on' };
 
   private room(): RoomCore {
     if (!this.core) this.core = new RoomCore(this.store, this.opts);

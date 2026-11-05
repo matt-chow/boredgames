@@ -189,10 +189,21 @@ function chooseOption(q: PendingView, v: DeckView, profile: Profile): number {
 
 const owned = (v: DeckView): string[] => Object.entries(v.owned).flatMap(([key, n]) => Array<string>(n).fill(key));
 
+/** Trial editions compare a Project with the best buy. Earlier ones keep the bots their rooms started with. */
+const trial = (v: DeckView) => (v.rulesVersion ?? 0) >= 100;
+const stagesLeft = (p: DeckView['projects'][number]) => (p.stages ? p.stages.filter((x) => x.by === null).length : p.by === null ? 1 : 0);
+
+/** The fewest investments that would end the game through Crown Projects. */
+function investmentsToEnd(v: DeckView): number {
+  const done = v.projects.filter((p) => p.by !== null).length;
+  const open = v.projects.filter((p) => p.by === null).map(stagesLeft).sort((a, b) => a - b);
+  return open.slice(0, Math.max(0, (v.projectsEnd ?? 5) - done)).reduce((a, b) => a + b, 0);
+}
+
 /** Late in the game, once any end condition is near. Based only on public counts. */
 function isLate(v: DeckView, profile: Profile): boolean {
   const monuments = v.supply.find((p) => p.key === 'monument')?.count ?? 99;
-  const open = v.projects.filter((p) => p.by === null).length;
+  const open = trial(v) ? (investmentsToEnd(v) <= (v.projects.some((p) => p.stages) ? 2 : 1) ? 0 : 99) : v.projects.filter((p) => p.by === null).length;
   const emptied = v.market.filter((k) => v.supply.find((p) => p.key === k)?.count === 0).length;
   const turn = v.you === null ? 0 : (v.turn.number + 1) / Math.max(1, v.players.length);
   return monuments <= 3 || open <= 2 || emptied >= 2 || turn >= profile.greening;
@@ -265,12 +276,17 @@ function moves(v: DeckView, profile: Profile): DeckAction[] {
   }
   if (v.legal.play.length) return [{ type: 'play-treasures' }, { type: 'end-phase' }];
   if (v.turn.buys <= 0) return [{ type: 'end-phase' }];
-  const work = [...v.legal.claim].sort((a, b) => workValue(v, b) - workValue(v, a))[0];
-  if (work && profile.works > 0) return [{ type: 'claim', project: work }, { type: 'end-phase' }];
-  // Turn Influence into Coins when that reaches something better, unless saving it for a Project that is nearly affordable.
   const mine = owned(v);
   const late = isLate(v, profile);
   const score = (k: string) => buyScore(k, v, profile, mine, late);
+  const worth = (key: string) => (trial(v) ? trialWorth(v, key) : workValue(v, key));
+  const work = [...v.legal.claim].sort((a, b) => worth(b) - worth(a))[0];
+  if (work && profile.works > 0) {
+    // The bonus and the Renown still to come make up for a small stage. 3 and 5 per Renown is what buyScore pays for Renown cards.
+    const best = trial(v) ? Math.max(-1, ...v.legal.buy.map(score)) : -Infinity;
+    if (worth(work) * (late ? 5 : 3) * profile.works >= best) return [{ type: 'claim', project: work }, { type: 'end-phase' }];
+  }
+  // Turn Influence into Coins when that reaches something better, unless saving it for a Project that is nearly affordable.
   const bestAt = (coins: number) => {
     let best = -1;
     for (const p of v.supply) if (p.buyable && p.count > 0 && p.cost <= coins) best = Math.max(best, score(p.key));
@@ -283,6 +299,11 @@ function moves(v: DeckView, profile: Profile): DeckAction[] {
 }
 
 const workValue = (v: DeckView, key: string) => v.projects.find((p) => p.key === key)?.vp ?? 0;
+/** The next investment's Renown, plus a point for the reward that comes with the last stage. */
+const trialWorth = (v: DeckView, key: string) => {
+  const p = v.projects.find((x) => x.key === key)!;
+  return p.vp + (stagesLeft(p) === 1 ? 1 : 0);
+};
 
 export function botMove(v: DeckView, profile: Profile, delayMs = 500): BotMove<DeckAction> | null {
   if (v.over || v.you === null) return null;

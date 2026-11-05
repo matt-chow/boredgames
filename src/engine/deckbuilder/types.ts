@@ -206,6 +206,13 @@ export interface ProjectDef {
   set?: string;
 }
 
+/** A set of trial rules a server with experiments on can offer the host. */
+export interface Edition {
+  code: string;
+  name: string;
+  text: string;
+}
+
 /** Words a game uses for the engine's generic concepts. */
 export interface Labels {
   actionPhase: string;
@@ -261,6 +268,16 @@ export interface Ruleset {
   projectCount?: number;
   /** The game ends after a turn when this many projects have been claimed. */
   projectsToEnd?(players: number): number;
+  /** Projects are built in stages that any player may fund. Its absence means one player claims each one whole. */
+  staged?: {
+    /** How many projects have one, two and three stages. */
+    counts(players: number): [number, number, number];
+    /** Added to the total coin price of a project with more than one stage. */
+    extraCoins: number;
+    names: Record<string, readonly string[]>;
+  };
+  /** Marks a trial edition, which a game only uses when its config asks for it. */
+  edition?: Edition;
   /** Named groups of cards the host can switch on. */
   sets?: { key: string; name: string; text: string }[];
   defaultSets?: string[];
@@ -379,6 +396,8 @@ export interface LogEntry {
   count?: number;
   token?: string;
   project?: string;
+  /** Which stage of `project`, counted from 1, and how many it has. Only on a staged project. */
+  stage?: [number, number];
   /** Private to one seat. Omitted from every other seat's projection. */
   to?: number;
 }
@@ -398,6 +417,8 @@ export interface TurnState {
   converted: number;
   /** Taken off the cost of this player's projects this turn. */
   projectDiscount: { coins: number; tokens: number };
+  /** Projects this player has funded a stage of this turn. */
+  funded?: string[];
   costMods: { delta: number; filter?: CardMatch }[];
 }
 
@@ -430,11 +451,24 @@ export interface DeckState {
   projects: ProjectState[];
 }
 
-export interface ProjectState {
-  key: string;
-  /** Who completed it, and on which of their own turns (counted from 0). */
+/** One funded investment in a staged project, fixed when the game starts. */
+export interface ProjectStage {
+  name: string;
+  coins: number;
+  tokens: Record<string, number>;
+  vp: number;
+  /** Who funded it, and on which of their own turns. */
   by: number | null;
   onTurn: number | null;
+}
+
+export interface ProjectState {
+  key: string;
+  /** Who completed it, and on which of their own turns (counted from 0). In a staged project, who funded the last stage. */
+  by: number | null;
+  onTurn: number | null;
+  /** Absent in a game where projects are claimed whole. */
+  stages?: ProjectStage[];
   /** Costs every other player more until `by`'s next turn starts. */
   surcharges: { by: number; coins: number }[];
 }
@@ -457,6 +491,8 @@ export interface DeckConfig {
   projects?: string[];
   /** The groups of cards a random market may draw from. */
   sets?: string[];
+  /** A trial edition's code. Only a server with experiments on stores one. */
+  edition?: string | null;
 }
 
 export interface CardRefView {
@@ -486,10 +522,12 @@ export interface PendingView {
 export interface ProjectView {
   key: string;
   by: number | null;
-  /** The price right now for the player viewing, discounts and surcharges included. */
+  /** The price right now for the player viewing, discounts and surcharges included. In a staged project, of the next stage. */
   coins: number;
   tokens: Record<string, number>;
+  /** What the next investment pays. Once complete, what the project paid in all. */
   vp: number;
+  stages?: { name: string; coins: number; tokens: Record<string, number>; vp: number; by: number | null }[];
 }
 
 export interface PlayerView {
@@ -548,6 +586,8 @@ export interface DeckView {
   revealed: CardRefView[];
   pending: PendingView | null;
   projects: ProjectView[];
+  /** How many complete projects end the game. */
+  projectsEnd: number | null;
   legal: { play: CardId[]; buy: string[]; endPhase: boolean; convert: boolean; claim: string[] };
   log: LogEntry[];
   over: boolean;

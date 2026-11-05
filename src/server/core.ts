@@ -122,6 +122,8 @@ export interface HandleResult {
 export interface CoreOptions {
   now: () => number;
   seed: () => string;
+  /** Hosts may pick a game's trial editions. Staging and development only. */
+  experiments?: boolean;
 }
 
 export class RoomCore {
@@ -301,6 +303,7 @@ export class RoomCore {
       maxPlayers: g.meta.maxPlayers,
       config: { ...this.meta.config },
       options: g.options,
+      ...(this.opts.experiments && g.editions?.length ? { editions: g.editions } : {}),
       configError,
       canStart: this.meta.status === 'lobby' && !configError && this.mayManage(seat, connected),
       canConfigure: this.meta.status === 'lobby' && this.mayManage(seat, connected),
@@ -391,6 +394,7 @@ export class RoomCore {
         if (!c || typeof c !== 'object' || Array.isArray(c)) throw new RoomError('bad-request', 'Invalid options.');
         const clean: Record<string, unknown> = {};
         for (const o of this.game.options) if (typeof c[o.key] === 'boolean') clean[o.key] = c[o.key];
+        if (c.edition !== undefined && !this.opts.experiments) throw new RoomError('bad-config', 'Trial rules are not available here.');
         const extra = this.game.sanitizeConfig?.(c);
         if (extra && 'error' in extra) throw new RoomError('bad-config', extra.error);
         if (extra) Object.assign(clean, extra.config);

@@ -1,5 +1,6 @@
 /** Losing the connection (DISC-*): grace, a bot standing in, coming back and closing an empty room. */
 import { describe, expect, it } from 'vitest';
+import type { DeckState, DeckView } from '../../src/engine/deckbuilder';
 import { GRACE_MS, MemoryStore, RoomCore } from '../../src/server/core';
 
 let clock = 1_000_000;
@@ -169,6 +170,69 @@ describe('DISC reclaim', () => {
     after(GRACE_MS);
     core.presence(here);
     expect(core.view(seat, here).canUndo).toBe(false);
+  });
+});
+
+describe('DISC during a Crown Project', () => {
+  const trial = { now: () => clock, seed: () => 'fixed-seed', experiments: true };
+
+  it('DISC-14: a stand-in answers the reward of a Project its person just completed, and later funds stages under the same rules', () => {
+    const store = new MemoryStore();
+    const core = RoomCore.create(store, trial, { code: 'ABCDEF', gameId: 'clockwork', name: 'Ann', th: 'th0' });
+    core.join('Bo', 'th1');
+    const both = seats(0, 1);
+    const config = {
+      edition: 'S1',
+      market: ['supply_crane', 'corrosion_crew', 'gearwright', 'foreman', 'hand_crank', 'glow_mason', 'tally_clerk', 'paper_fan', 'conveyor', 'flywheel'],
+      projects: ['merchants_guildhall', 'canal_lights', 'public_clock', 'makers_fair', 'skybridge'],
+    };
+    expect(send(core, 0, { t: 'config', config }, both).ack!.ok).toBe(true);
+    send(core, 0, { t: 'start' }, both);
+
+    // Make the Guildhall one stage and hand the player to move what it costs: the reward asks about the hand.
+    const saved = store.getState() as DeckState;
+    const person = saved.turn.seat;
+    const guild = saved.projects.find((p) => p.key === 'merchants_guildhall')!;
+    guild.stages = guild.stages!.flatMap((x, i, all) => (i === 0 ? [{ ...x, name: 'Merchants’ Guildhall', coins: 5, tokens: { spark: 3 }, vp: 6 }] : all.length ? [] : [x]));
+    saved.turn.phase = 'buy';
+    saved.turn.coins = 20;
+    saved.players[person].tokens.spark = 8;
+    store.putState(saved);
+    const fresh = new RoomCore(store, trial);
+    const everyone = seats(0, 1);
+    expect(send(fresh, person, { t: 'act', a: { type: 'claim', project: 'merchants_guildhall' } }, everyone).ack!.ok).toBe(true);
+    expect(fresh.nextBot()).toBeNull();
+    const asked = fresh.view(person, everyone).game as DeckView;
+    expect(asked.pending?.seat).toBe(person);
+
+    // The person goes. Nothing is answered for them during the grace.
+    const here = seats(1 - person);
+    fresh.presence(here);
+    after(GRACE_MS - 1);
+    fresh.presence(here);
+    expect(fresh.isBotSeat(person)).toBe(false);
+    after(1);
+    fresh.presence(here);
+    expect(fresh.isBotSeat(person)).toBe(true);
+    expect(fresh.nextBot()).not.toBeNull();
+    expect(fresh.playBot()).toBe(true);
+    const answered = fresh.view(1 - person, here).game as DeckView;
+    expect(answered.pending).toBeNull();
+    // The Project and its Renown still belong to the seat, and the person gets them back.
+    expect(answered.projects.find((p) => p.key === 'merchants_guildhall')!.by).toBe(person);
+
+    // The stand-in keeps playing through a whole game; each stage it funds is checked like anyone's.
+    for (let i = 0; i < 20000 && fresh.status === 'playing'; i++) {
+      if (fresh.nextBot()) expect(fresh.playBot()).toBe(true);
+      else expect(playFor(fresh, 1 - person, here)).toBe(true);
+    }
+    expect(fresh.status).toBe('over');
+    fresh.presence(seats(0, 1));
+    expect(fresh.seatOf(`th${person}`)).toBe(person);
+    const final = (fresh.view(person, seats(0, 1)).game as DeckView).final!;
+    expect(final[person].projects.some((p) => p.key === 'merchants_guildhall' && p.vp === 6)).toBe(true);
+    // A game's bookkeeping names a move's kind, never a hidden card.
+    expect(JSON.stringify(store.history.filter((h) => h.kind === 'takeover'))).not.toContain('hand');
   });
 });
 
