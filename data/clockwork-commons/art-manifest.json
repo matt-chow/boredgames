@@ -1,5 +1,5 @@
 {
-  "note": "Every card and Crown Project. \"svg\" entries show the original scene from src/games/clockwork/ui/art.ts; none are generated paintings. \"asset\" is set when a finished image replaces one. Workflow in docs/CLOCKWORK.md.",
+  "note": "Every card and Crown Project. \"final\" entries have a clear-line illustration in public/cards, drawn from code in scripts/art; none are generated paintings. \"svg\" would mean a card still shows its inline scene from src/games/clockwork/ui/art.ts.",
   "style": "Minimalist medieval editorial illustration: soft flat shapes, burgundy, antique gold, warm ivory and charcoal with muted natural colours. People without detailed faces, inhabited places, no text, no machinery, 16:9, readable when small.",
   "entries": [
     {
@@ -7,23 +7,23 @@
       "name": "Bronze",
       "oldName": "Scrap",
       "brief": "A market-goer counting a few pennies out of a small leather purse.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/scrap.svg"
     },
     {
       "key": "cog",
       "name": "Silver",
       "oldName": "Cog",
       "brief": "A merchant opening a strongbox of silver beside a street stall.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/cog.svg"
     },
     {
       "key": "dynamo",
       "name": "Gold",
       "oldName": "Dynamo",
       "brief": "A struck gold coin on a counting cloth, with the purse and stacks of the hoard behind it.",
-      "status": "pilot",
+      "status": "final",
       "asset": "/cards/dynamo.svg"
     },
     {
@@ -31,23 +31,23 @@
       "name": "Homestead",
       "oldName": "Notebook",
       "brief": "A family farmstead: a small house, a tilled field and a farmer at work.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/notebook.svg"
     },
     {
       "key": "blueprint",
       "name": "Noble Estate",
       "oldName": "Blueprint",
       "brief": "A modest manor house with its owner at the door.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/blueprint.svg"
     },
     {
       "key": "monument",
       "name": "Grand Duchy",
       "oldName": "Monument",
       "brief": "A fortified Renaissance estate seen from its avenue, with its gardens and vineyards around it.",
-      "status": "pilot",
+      "status": "final",
       "asset": "/cards/monument.svg"
     },
     {
@@ -55,199 +55,199 @@
       "name": "Royal Debt",
       "oldName": "Rust",
       "brief": "A debtor kneeling before a creditor and an open ledger.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/rust.svg"
     },
     {
       "key": "gearwright",
       "name": "Guild Apprentice",
       "oldName": "Gearwright",
       "brief": "A master guildsman teaching an apprentice at the workbench.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/gearwright.svg"
     },
     {
       "key": "shift_bell",
       "name": "Morning Bell",
       "oldName": "Shift Bell",
       "brief": "A town waking to the morning bell, workers setting out.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/shift_bell.svg"
     },
     {
       "key": "tally_clerk",
       "name": "Tally Clerk",
       "oldName": "Tally Clerk",
       "brief": "A clerk seated at a desk, marking tallies into a ledger.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/tally_clerk.svg"
     },
     {
       "key": "supply_crane",
       "name": "Treadwheel Crane",
       "oldName": "Supply Crane",
       "brief": "A wooden treadwheel crane lifting stone at a quay.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/supply_crane.svg"
     },
     {
       "key": "copper_press",
       "name": "Coin Striker",
       "oldName": "Copper Press",
       "brief": "A moneyer striking coins with a hammer on a block.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/copper_press.svg"
     },
     {
       "key": "foreman",
       "name": "Royal Architect",
       "oldName": "Foreman",
       "brief": "The royal architect showing plans to a mason beside a rising hall.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/foreman.svg"
     },
     {
       "key": "paper_fan",
       "name": "Winnowing Fan",
       "oldName": "Paper Fan",
       "brief": "A farm worker winnowing grain with a shallow basket.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/paper_fan.svg"
     },
     {
       "key": "conveyor",
       "name": "Customs House",
       "oldName": "Conveyor",
       "brief": "A customs house on the waterfront with cargo and a guard.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/conveyor.svg"
     },
     {
       "key": "sorting_glasses",
       "name": "Assayer",
       "oldName": "Sorting Glasses",
       "brief": "An assayer testing a coin at a balance.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/sorting_glasses.svg"
     },
     {
       "key": "springboard",
       "name": "Post Rider",
       "oldName": "Springboard",
       "brief": "A post rider galloping along an open road with a message.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/springboard.svg"
     },
     {
       "key": "clockwork_archive",
       "name": "Keeper of the Rolls",
       "oldName": "Clockwork Archive",
       "brief": "An archivist in a room of shelved rolls, holding one up.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/clockwork_archive.svg"
     },
     {
       "key": "whistle_stop",
       "name": "Trading Port",
       "oldName": "Whistle Stop",
       "brief": "A busy trading port with ships at evening.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/whistle_stop.svg"
     },
     {
       "key": "hand_crank",
       "name": "Petitioner",
       "oldName": "Hand Crank",
       "brief": "Petitioners waiting, one kneeling with a written request.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/hand_crank.svg"
     },
     {
       "key": "charge_meter",
       "name": "Lady-in-Waiting",
       "oldName": "Charge Meter",
       "brief": "A lady-in-waiting whispering at court.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/charge_meter.svg"
     },
     {
       "key": "capacitor_bank",
       "name": "Audience Hall",
       "oldName": "Capacitor Bank",
       "brief": "A monarch receiving a visitor in a tall audience hall.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/capacitor_bank.svg"
     },
     {
       "key": "steam_diverter",
       "name": "Crown Treasury",
       "oldName": "Steam Diverter",
       "brief": "Royal treasure chests behind a guarded door, with a ring of keys.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/steam_diverter.svg"
     },
     {
       "key": "glow_mason",
       "name": "Guild Banquet",
       "oldName": "Glow Mason",
       "brief": "Guild members seated at a long banquet table.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/glow_mason.svg"
     },
     {
       "key": "overcharge_lab",
       "name": "Privy Council",
       "oldName": "Overcharge Lab",
       "brief": "The privy council in close session over a document.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/overcharge_lab.svg"
     },
     {
       "key": "signal_tower",
       "name": "Road Warden",
       "oldName": "Signal Tower",
       "brief": "A road warden stopping a traveller on the highway.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/signal_tower.svg"
     },
     {
       "key": "city_messenger",
       "name": "Royal Runner",
       "oldName": "City Messenger",
       "brief": "A royal runner sprinting down a street with a sealed letter.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/city_messenger.svg"
     },
     {
       "key": "inspection_team",
       "name": "Tax Assessors",
       "oldName": "Inspection Team",
       "brief": "Two tax assessors with a ledger questioning a shopkeeper.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/inspection_team.svg"
     },
     {
       "key": "mutual_aid",
       "name": "Alms House",
       "oldName": "Mutual Aid",
       "brief": "Alms given to the poor at a charitable house.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/mutual_aid.svg"
     },
     {
       "key": "permit_office",
       "name": "Licensing Hall",
       "oldName": "Permit Office",
       "brief": "A clerk granting a sealed licence to a merchant.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/permit_office.svg"
     },
     {
       "key": "night_watch",
       "name": "Night Watch",
       "oldName": "Night Watch",
       "brief": "A moonlit wall walk: one guard has spotted distant torches, the others are only now turning.",
-      "status": "pilot",
+      "status": "final",
       "asset": "/cards/night_watch.svg"
     },
     {
@@ -255,119 +255,119 @@
       "name": "Toll Gate",
       "oldName": "Maintenance Cart",
       "brief": "A toll keeper's barrier across a road with a cart waiting.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/maintenance_cart.svg"
     },
     {
       "key": "lamplighter",
       "name": "Scriptorium",
       "oldName": "Lamplighter",
       "brief": "Monks copying manuscripts at sloped desks.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/lamplighter.svg"
     },
     {
       "key": "clock_garden",
       "name": "Cloister Garden",
       "oldName": "Clock Garden",
       "brief": "Monks walking in a quiet walled cloister garden.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/clock_garden.svg"
     },
     {
       "key": "gear_lease",
       "name": "Market Stall",
       "oldName": "Gear Lease",
       "brief": "A small market stall under a striped awning with its keeper.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/gear_lease.svg"
     },
     {
       "key": "city_blueprint",
       "name": "Town Plans",
       "oldName": "City Blueprint",
       "brief": "Town leaders studying a plan of the walled town.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/city_blueprint.svg"
     },
     {
       "key": "grand_engine",
       "name": "Cloth Hall",
       "oldName": "Grand Engine",
       "brief": "A great cloth hall with merchants and bales.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/grand_engine.svg"
     },
     {
       "key": "civic_scholar",
       "name": "Court Scholar",
       "oldName": "Civic Scholar",
       "brief": "A court scholar reading at a desk.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/civic_scholar.svg"
     },
     {
       "key": "museum_curator",
       "name": "Royal Chronicler",
       "oldName": "Museum Curator",
       "brief": "The royal chronicler recording the realm's history.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/museum_curator.svg"
     },
     {
       "key": "patron_circle",
       "name": "Benefactors",
       "oldName": "Patron Circle",
       "brief": "Well-dressed benefactors giving to a cause.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/patron_circle.svg"
     },
     {
       "key": "silver_statue",
       "name": "Silver Reliquary",
       "oldName": "Silver Statue",
       "brief": "A silver reliquary displayed with people paying respect.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/silver_statue.svg"
     },
     {
       "key": "civic_embassy",
       "name": "Foreign Envoy",
       "oldName": "Civic Embassy",
       "brief": "A foreign envoy arriving under a banner with a castle behind.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/civic_embassy.svg"
     },
     {
       "key": "inventors_medal",
       "name": "Builder’s Honour",
       "oldName": "Inventor’s Medal",
       "brief": "The monarch awarding a medal to a master builder.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/inventors_medal.svg"
     },
     {
       "key": "spark_coil",
       "name": "Favour Purse",
       "oldName": "Spark Coil",
       "brief": "A purse of favours passed across a table.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/spark_coil.svg"
     },
     {
       "key": "brass_bond",
       "name": "Merchant Bond",
       "oldName": "Brass Bond",
       "brief": "Two merchants sealing a written bond.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/brass_bond.svg"
     },
     {
       "key": "relay_junction",
       "name": "Market Square",
       "oldName": "Relay Junction",
       "brief": "A busy Saturday in front of the guildhall: stalls, a fountain, a porter, and a child chasing a goose.",
-      "status": "pilot",
+      "status": "final",
       "asset": "/cards/relay_junction.svg"
     },
     {
@@ -375,311 +375,311 @@
       "name": "Guild Procession",
       "oldName": "Chain Drive",
       "brief": "A guild procession marching with banners.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/chain_drive.svg"
     },
     {
       "key": "flywheel",
       "name": "Tithe Barn",
       "oldName": "Flywheel",
       "brief": "A large tithe barn with grain being carried in.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/flywheel.svg"
     },
     {
       "key": "timer_switch",
       "name": "Royal Commission",
       "oldName": "Timer Switch",
       "brief": "A monarch handing a sealed commission to a kneeling officer.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/timer_switch.svg"
     },
     {
       "key": "belt_sorter",
       "name": "Grain Sorter",
       "oldName": "Belt Sorter",
       "brief": "Workers sorting grain into sacks.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/belt_sorter.svg"
     },
     {
       "key": "salvage_hook",
       "name": "Ragpicker",
       "oldName": "Salvage Hook",
       "brief": "A ragpicker gathering cloth from a heap in the street.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/salvage_hook.svg"
     },
     {
       "key": "millrace",
       "name": "Changing of the Guard",
       "oldName": "Millrace",
       "brief": "Guards relieving guards at the castle gate.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/millrace.svg"
     },
     {
       "key": "slag_furnace",
       "name": "Lime Kiln",
       "oldName": "Slag Furnace",
       "brief": "A lime kiln burning stone, with a worker and blocks.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/slag_furnace.svg"
     },
     {
       "key": "spark_exchange",
       "name": "Favour Broker",
       "oldName": "Spark Exchange",
       "brief": "A broker balancing favours and coin between two clients.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/spark_exchange.svg"
     },
     {
       "key": "picket_line",
       "name": "Town Gossip",
       "oldName": "Picket Line",
       "brief": "Townsfolk trading rumours in a narrow street.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/picket_line.svg"
     },
     {
       "key": "corrosion_crew",
       "name": "Tax Farmer",
       "oldName": "Corrosion Crew",
       "brief": "A tax farmer collecting from a townsman with a guard.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/corrosion_crew.svg"
     },
     {
       "key": "noise_complaint",
       "name": "Guild Dispute",
       "oldName": "Noise Complaint",
       "brief": "Guildsmen arguing, arms raised, under a guild banner.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/noise_complaint.svg"
     },
     {
       "key": "whistleblower",
       "name": "Court Informer",
       "oldName": "Whistleblower",
       "brief": "A hooded figure passing a secret note at court.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/whistleblower.svg"
     },
     {
       "key": "ground_wire",
       "name": "Sanctuary Writ",
       "oldName": "Ground Wire",
       "brief": "A fugitive arriving at a church door, holding a writ of sanctuary.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/ground_wire.svg"
     },
     {
       "key": "redline_boiler",
       "name": "Usurer",
       "oldName": "Redline Boiler",
       "brief": "A moneylender offering coin at a dark counter.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/redline_boiler.svg"
     },
     {
       "key": "pressure_test",
       "name": "Royal Audit",
       "oldName": "Pressure Test",
       "brief": "Royal auditors examining account books and a chest.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/pressure_test.svg"
     },
     {
       "key": "overload_relay",
       "name": "Royal Progress",
       "oldName": "Overload Relay",
       "brief": "A royal progress, mounted and bannered, on the road.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/overload_relay.svg"
     },
     {
       "key": "scrapyard_broker",
       "name": "Debt Collector",
       "oldName": "Scrapyard Broker",
       "brief": "A debt collector with a chest at a debtor's door.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/scrapyard_broker.svg"
     },
     {
       "key": "surveyor",
       "name": "Surveyor",
       "oldName": "Surveyor",
       "brief": "A surveyor pacing out land with a staff.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/surveyor.svg"
     },
     {
       "key": "zoning_board",
       "name": "Borough Reeve",
       "oldName": "Zoning Board",
       "brief": "A borough reeve setting a rule before the town hall.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/zoning_board.svg"
     },
     {
       "key": "ribbon_cutter",
       "name": "Royal Dedication",
       "oldName": "Ribbon Cutter",
       "brief": "A monarch opening a new gate as people watch.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/ribbon_cutter.svg"
     },
     {
       "key": "town_crier",
       "name": "Bellman",
       "oldName": "Town Crier",
       "brief": "A bellman ringing a bell and calling out news in the street.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/town_crier.svg"
     },
     {
       "key": "civic_bond",
       "name": "Civic Tribute",
       "oldName": "Civic Bond",
       "brief": "Townsfolk bringing tribute to a chest under the belfry.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/civic_bond.svg"
     },
     {
       "key": "city_charter",
       "name": "Civic Charter",
       "oldName": "City Charter",
       "brief": "A monarch granting a charter to a town's officers.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/city_charter.svg"
     },
     {
       "key": "patent_ledger",
       "name": "Guild Register",
       "oldName": "Patent Ledger",
       "brief": "A guild register open on a table, kept by a warden.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/patent_ledger.svg"
     },
     {
       "key": "plaque_foundry",
       "name": "Heraldic Painter",
       "oldName": "Plaque Foundry",
       "brief": "A painter finishing a coat of arms on a shield.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/plaque_foundry.svg"
     },
     {
       "key": "canal_lights",
       "name": "River Quay",
       "oldName": "Canal Lights",
       "brief": "A busy stone quay on the river.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/canal_lights.svg"
     },
     {
       "key": "public_clock",
       "name": "Bell Tower",
       "oldName": "Public Clock",
       "brief": "A tall town bell tower above the rooftops.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/public_clock.svg"
     },
     {
       "key": "makers_fair",
       "name": "Charter Fair",
       "oldName": "Makers Fair",
       "brief": "A charter fair of tents and stalls.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/makers_fair.svg"
     },
     {
       "key": "tram_extension",
       "name": "King’s Road",
       "oldName": "Tram Extension",
       "brief": "A straight new royal road leading to a far castle.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/tram_extension.svg"
     },
     {
       "key": "skybridge",
       "name": "Stone Bridge",
       "oldName": "Skybridge",
       "brief": "A stone bridge of arches with travellers over a river.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/skybridge.svg"
     },
     {
       "key": "library_lanterns",
       "name": "Hall of Records",
       "oldName": "Library Lanterns",
       "brief": "A hall of records with shelves and a hanging lantern.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/library_lanterns.svg"
     },
     {
       "key": "waterwheel",
       "name": "River Mill",
       "oldName": "Waterwheel",
       "brief": "A river mill with its waterwheel turning.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/waterwheel.svg"
     },
     {
       "key": "city_illumination",
       "name": "City Walls",
       "oldName": "City Illumination",
       "brief": "Great city walls with towers and the town behind.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/city_illumination.svg"
     },
     {
       "key": "harbor_beacon",
       "name": "Harbour Light",
       "oldName": "Harbor Beacon",
       "brief": "A harbour light tower guiding a ship home.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/harbor_beacon.svg"
     },
     {
       "key": "foundry_gate",
       "name": "Castle Gate",
       "oldName": "Foundry Gate",
       "brief": "A formidable castle gate with its guards.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/foundry_gate.svg"
     },
     {
       "key": "power_exchange",
       "name": "Exchange Hall",
       "oldName": "Power Exchange",
       "brief": "Merchants dealing inside an exchange hall.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/power_exchange.svg"
     },
     {
       "key": "rail_terminus",
       "name": "Royal Granary",
       "oldName": "Rail Terminus",
       "brief": "A large royal granary with sacks being stored.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/rail_terminus.svg"
     },
     {
       "key": "aqueduct",
       "name": "Great Conduit",
       "oldName": "Aqueduct",
       "brief": "A great stone conduit of arches, with workers beneath.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/aqueduct.svg"
     },
     {
       "key": "royal_confessor",
       "name": "Royal Confessor",
       "oldName": "Royal Confessor",
       "brief": "A palace chapel. A kneeling king hands over a letter that the confessor burns, and a page sees it.",
-      "status": "pilot",
+      "status": "final",
       "asset": "/cards/royal_confessor.svg"
     },
     {
@@ -687,200 +687,200 @@
       "name": "Mintmaster",
       "oldName": "Mintmaster",
       "brief": "A master of the mint striking coins over a hearth while a worker carries sacks.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/mintmaster.svg"
     },
     {
       "key": "estate_surveyor",
       "name": "Estate Surveyor",
       "oldName": "Estate Surveyor",
       "brief": "A surveyor with plans walking the boundary of a farm below a manor.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/estate_surveyor.svg"
     },
     {
       "key": "purification_house",
       "name": "Purification House",
       "oldName": "Purification House",
       "brief": "Townsfolk bringing bundles to a whitewashed almshouse to be burned away.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/purification_house.svg"
     },
     {
       "key": "salvage_office",
       "name": "Salvage Office",
       "oldName": "Salvage Office",
       "brief": "A clerk weighing an old chest and handing a receipt across a counter.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/salvage_office.svg"
     },
     {
       "key": "reclamation_guild",
       "name": "Reclamation Guild",
       "oldName": "Reclamation Guild",
       "brief": "Guild workers carting away broken goods from a yard behind a tall house.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/reclamation_guild.svg"
     },
     {
       "key": "royal_tax_collector",
       "name": "Royal Tax Collector",
       "oldName": "Royal Tax Collector",
       "brief": "A crowned collector at a roadside table counting a sack of coins.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/royal_tax_collector.svg"
     },
     {
       "key": "royal_scrivener",
       "name": "Royal Scrivener",
       "oldName": "Royal Scrivener",
       "brief": "A scrivener striking lines from a long ledger by candlelight.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/royal_scrivener.svg"
     },
     {
       "key": "noble_resettlement",
       "name": "Noble Resettlement",
       "oldName": "Noble Resettlement",
       "brief": "A noble family leaving a manor by cart toward a new hall across the river.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/noble_resettlement.svg"
     },
     {
       "key": "burden_relief",
       "name": "Burden Relief",
       "oldName": "Burden Relief",
       "brief": "A debtor lifting a heavy bundle off a neighbour’s back in a quiet lane.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/burden_relief.svg"
     },
     {
       "key": "treasury_auditor",
       "name": "Treasury Auditor",
       "oldName": "Treasury Auditor",
       "brief": "An auditor checking stacked coin against a ledger in a vaulted room.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/treasury_auditor.svg"
     },
     {
       "key": "spice_exchange",
       "name": "Spice Exchange",
       "oldName": "Spice Exchange",
       "brief": "Merchants trading sacks of spice beneath a bright awning at the quay.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/spice_exchange.svg"
     },
     {
       "key": "trade_bonds",
       "name": "Trade Bonds",
       "oldName": "Trade Bonds",
       "brief": "Two merchants sealing a paper bond across a table, coins between them.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/trade_bonds.svg"
     },
     {
       "key": "royal_mint",
       "name": "Royal Mint",
       "oldName": "Royal Mint",
       "brief": "Rows of coiners at benches beneath the royal banner.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/royal_mint.svg"
     },
     {
       "key": "port_tariffs",
       "name": "Port Tariffs",
       "oldName": "Port Tariffs",
       "brief": "A customs officer tallying barrels unloaded from a ship at a harbour.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/port_tariffs.svg"
     },
     {
       "key": "guild_auction",
       "name": "Guild Auction",
       "oldName": "Guild Auction",
       "brief": "An auctioneer raising a hand above a crowd of buyers in a guild square.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/guild_auction.svg"
     },
     {
       "key": "kingdom_courier",
       "name": "Kingdom Courier",
       "oldName": "Kingdom Courier",
       "brief": "A courier on horseback galloping along a road between hills with a satchel.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/kingdom_courier.svg"
     },
     {
       "key": "hall_of_archives",
       "name": "Hall of Archives",
       "oldName": "Hall of Archives",
       "brief": "A keeper pulling one scroll from tall shelves in a lantern-lit archive.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/hall_of_archives.svg"
     },
     {
       "key": "great_council",
       "name": "Great Council",
       "oldName": "Great Council",
       "brief": "Nobles seated either side of a long table before the throne.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/great_council.svg"
     },
     {
       "key": "edict_of_inspection",
       "name": "Edict of Inspection",
       "oldName": "Edict of Inspection",
       "brief": "A herald reading an edict while officers look through a merchant’s stall.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/edict_of_inspection.svg"
     },
     {
       "key": "tax_arrears",
       "name": "Tax Arrears",
       "oldName": "Tax Arrears",
       "brief": "Guards at a cottage door calling in unpaid taxes from a worried farmer.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/tax_arrears.svg"
     },
     {
       "key": "royal_advocate",
       "name": "Royal Advocate",
       "oldName": "Royal Advocate",
       "brief": "An advocate holding up a sealed writ, shielding a merchant before the court.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/royal_advocate.svg"
     },
     {
       "key": "court_saboteur",
       "name": "Court Saboteur",
       "oldName": "Court Saboteur",
       "brief": "A hooded figure at night slipping a paper out of a noble’s chest.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/court_saboteur.svg"
     },
     {
       "key": "noble_council",
       "name": "Noble Council",
       "oldName": "Noble Council",
       "brief": "Landholders from many small farms gathered before a noble in a green field.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/noble_council.svg"
     },
     {
       "key": "common_fields",
       "name": "Common Fields",
       "oldName": "Common Fields",
       "brief": "Villagers sharing a harvest of sheaves on open common land.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/common_fields.svg"
     },
     {
       "key": "merchants_guildhall",
       "name": "Merchants’ Guildhall",
       "oldName": "Merchants’ Guildhall",
       "brief": "A great timbered guildhall on a busy square with stalls before it.",
-      "status": "svg",
-      "asset": null
+      "status": "final",
+      "asset": "/cards/merchants_guildhall.svg"
     }
   ]
 }

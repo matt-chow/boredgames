@@ -4,14 +4,28 @@
  * gradients or ids, since one card can be on screen many times. See docs/CLOCKWORK.md for replacing them with paintings.
  */
 
-/** Finished images, by card key (docs/ART_BIBLE.md). A card listed here shows the image instead of its scene. */
-const IMAGES: Record<string, string> = {
-  dynamo: '/cards/dynamo.svg',
-  monument: '/cards/monument.svg',
-  night_watch: '/cards/night_watch.svg',
-  relay_junction: '/cards/relay_junction.svg',
-  royal_confessor: '/cards/royal_confessor.svg',
-};
+/** Cards with a finished image in public/cards (docs/ART_BIBLE.md). Any other card falls back to its inline scene. */
+const ILLUSTRATED = [
+   'aqueduct', 'belt_sorter', 'blueprint', 'brass_bond', 'burden_relief', 'canal_lights', 'capacitor_bank',
+   'chain_drive', 'charge_meter', 'city_blueprint', 'city_charter', 'city_illumination', 'city_messenger',
+   'civic_bond', 'civic_embassy', 'civic_scholar', 'clock_garden', 'clockwork_archive', 'cog', 'common_fields',
+   'conveyor', 'copper_press', 'corrosion_crew', 'court_saboteur', 'dynamo', 'edict_of_inspection',
+   'estate_surveyor', 'flywheel', 'foreman', 'foundry_gate', 'gear_lease', 'gearwright', 'glow_mason',
+   'grand_engine', 'great_council', 'ground_wire', 'guild_auction', 'hall_of_archives', 'hand_crank',
+   'harbor_beacon', 'inspection_team', 'inventors_medal', 'kingdom_courier', 'lamplighter', 'library_lanterns',
+   'maintenance_cart', 'makers_fair', 'merchants_guildhall', 'millrace', 'mintmaster', 'monument', 'museum_curator',
+   'mutual_aid', 'night_watch', 'noble_council', 'noble_resettlement', 'noise_complaint', 'notebook',
+   'overcharge_lab', 'overload_relay', 'paper_fan', 'patent_ledger', 'patron_circle', 'permit_office', 'picket_line',
+   'plaque_foundry', 'port_tariffs', 'power_exchange', 'pressure_test', 'public_clock', 'purification_house',
+   'rail_terminus', 'reclamation_guild', 'redline_boiler', 'relay_junction', 'ribbon_cutter', 'royal_advocate',
+   'royal_confessor', 'royal_mint', 'royal_scrivener', 'royal_tax_collector', 'rust', 'salvage_hook',
+   'salvage_office', 'scrap', 'scrapyard_broker', 'shift_bell', 'signal_tower', 'silver_statue', 'skybridge',
+   'slag_furnace', 'sorting_glasses', 'spark_coil', 'spark_exchange', 'spice_exchange', 'springboard',
+   'steam_diverter', 'supply_crane', 'surveyor', 'tally_clerk', 'tax_arrears', 'timer_switch', 'town_crier',
+   'trade_bonds', 'tram_extension', 'treasury_auditor', 'waterwheel', 'whistle_stop', 'whistleblower',
+   'zoning_board',
+];
+const IMAGES: Record<string, string> = Object.fromEntries(ILLUSTRATED.map((key) => [key, `/cards/${key}.svg`]));
 export const artImages = () => IMAGES;
 
 const BURGUNDY = '#783547';
