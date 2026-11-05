@@ -84,7 +84,12 @@ numbers and worked examples against the real rules.
 
 **Rule editions are saved with the game.** A deck-builder game records `rulesVersion` when it's created, and the engine
 reads cards, Crown Projects and scoring for that edition. New Kingdom & Commerce games start on the newest edition, and
-games already in play finish on the one they began with (CLOCKWORK.md, Editions).
+games already in play finish on the one they began with (CLOCKWORK.md, Editions). The newest is edition 4, with the final
+Crown Project rules and a finished last round. Bots read the edition from their view too, so older games keep their old bot
+decisions. A room's guide also follows its edition (`guideFor`).
+
+**Card art is static.** Kingdom & Commerce's illustrations are SVG files in `public/cards/`, served by the assets binding and
+loaded with `<img loading="lazy">`, so they cost no Worker requests beyond the free static tier and no inline DOM.
 
 Networking, camera, drag and drop, animation, settings and accessibility aren't themed and aren't duplicated.
 

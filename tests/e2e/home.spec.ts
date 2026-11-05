@@ -46,7 +46,7 @@ test.describe('the home page', () => {
     await expect(bean.locator('.dc')).toHaveCount(0);
     await expect(kingdom.locator('.dc.face')).toHaveCount(5);
     await expect(kingdom.locator('[data-bean]')).toHaveCount(0);
-    await expect(kingdom.locator('.dc .art svg').first()).toBeVisible();
+    await expect(kingdom.locator('.dc .art :is(svg, img)').first()).toBeVisible();
   });
 
   test('the fan stays inside its card and simplifies on a narrow phone', async ({ page }) => {

@@ -1,7 +1,7 @@
 /**
- * Kingdom & Commerce's card illustrations: original flat SVG scenes of places, people and work, built from a small kit
- * so that every card shares one look. Static strings from this file only, so rendering them as markup is safe. No
- * gradients or ids, since one card can be on screen many times. See docs/CLOCKWORK.md for replacing them with paintings.
+ * Kingdom & Commerce's card illustrations. Every card has a clear-line image in public/cards (docs/ART_BIBLE.md). The
+ * flat inline scenes below remain as the fallback for a card with no image yet. Static strings from this file only, so
+ * rendering them as markup is safe. No gradients or ids, since one card can be on screen many times.
  */
 
 /** Cards with a finished image in public/cards (docs/ART_BIBLE.md). Any other card falls back to its inline scene. */

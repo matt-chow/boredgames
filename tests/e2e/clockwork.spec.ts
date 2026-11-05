@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
 import { PHONE, joinRoom, newPlayer, roomViews, type Player } from './helpers';
 
@@ -222,8 +223,9 @@ test.describe('Kingdom & Commerce', () => {
     const host = await newPlayer(browser, 'Ada');
     await table(host, 1);
     await start(host);
-    await expect(host.page.locator('.tile .art svg').first()).toBeVisible();
-    await expect(host.page.locator('.hud .dc .art svg').first()).toBeVisible();
+    await expect(host.page.locator('.tile .art img').first()).toBeVisible();
+    await expect(host.page.locator('.hud .dc .art img').first()).toBeVisible();
+    await expect(host.page.locator('.work .art img').first()).toBeVisible();
     await expect(host.page.locator('.res .token dt')).toHaveText('Influence');
     await expect(host.page.locator('.work')).toHaveCount(5);
     await expect(host.page.getByRole('button', { name: /^Move on to Market/ })).toBeVisible();
@@ -232,6 +234,24 @@ test.describe('Kingdom & Commerce', () => {
     await host.page.locator('.tile').first().click({ button: 'right' });
     await expect(host.page.getByRole('dialog')).toContainText('Costs');
     await shot(host.page, 'cc-inspect');
+  });
+
+  test('ART-E2E-1: every illustration is served as an SVG, and those on the table draw', async ({ browser }) => {
+    const host = await newPlayer(browser, 'Ada');
+    const keys = (JSON.parse(readFileSync('data/clockwork-commons/art-manifest.json', 'utf8')) as { entries: { key: string }[] }).entries.map((e) => e.key);
+    await host.page.goto('/');
+    const served = await host.page.evaluate(async (all) => Promise.all(all.map(async (key) => {
+      const r = await fetch(`/cards/${key}.svg`);
+      return { key, ok: r.ok, type: r.headers.get('content-type') ?? '' };
+    })), keys);
+    expect(served).toHaveLength(110);
+    expect(served.filter((f) => !f.ok || !f.type.includes('image/svg')), 'failed files').toEqual([]);
+    await table(host, 1);
+    await start(host);
+    await expect(host.page.locator('.tile .art img').first()).toBeVisible();
+    await expect.poll(() => host.page.evaluate(() => [...document.images].filter((i) => i.loading !== 'lazy' || i.getBoundingClientRect().top < innerHeight).every((i) => i.complete && i.naturalWidth > 0))).toBe(true);
+    await shot(host.page, 'art-table');
+    expect(host.errors).toEqual([]);
   });
 
   test('CC-E2E-3: a full 2-player game with a person and a bot finishes, and a rematch starts', async ({ browser }) => {
@@ -287,12 +307,27 @@ test.describe('Kingdom & Commerce', () => {
     expect(guest.errors).toEqual([]);
   });
 
-  test('CC-E2E-5: all seats filled by bots at 6 players still finishes for the person', async ({ browser }) => {
+  test('CC-E2E-5: all seats filled by bots at 6 players still finishes for the person, and shows the final round (CC-FINAL-7)', async ({ browser }) => {
+    test.setTimeout(420_000);
     const host = await newPlayer(browser, 'Ada');
     await table(host, 5);
     await start(host);
+    await host.page.evaluate(() => {
+      new MutationObserver(() => {
+        const label = document.querySelector('[data-final-round]')?.textContent;
+        if (label) (window as unknown as { finalLabel: string }).finalLabel = label;
+      }).observe(document.body, { childList: true, subtree: true, characterData: true });
+    });
     await playOut([host], 2500);
     await expect(host.page.locator('.sum li')).toHaveCount(6);
+    // The last seat triggering the end skips the final round (CC-FINAL-2), so play one more if this game did.
+    const seen = () => host.page.evaluate(() => (window as unknown as { finalLabel?: string }).finalLabel ?? '');
+    if (!(await seen())) {
+      await host.page.getByRole('button', { name: 'Play again' }).click();
+      await expect(host.page.locator('.sum h2')).toBeHidden({ timeout: 15_000 });
+      await playOut([host], 2500);
+    }
+    expect(await seen()).toContain('Final round');
   });
 
   for (const [label, size] of [['phone', PHONE], ['small laptop', { viewport: { width: 1024, height: 600 } }], ['laptop', { viewport: { width: 1366, height: 768 } }]] as const) {

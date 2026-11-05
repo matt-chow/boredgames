@@ -1,8 +1,8 @@
 # Kingdom & Commerce art bible
 
-The standard for card illustrations. Status: **pilot, awaiting owner approval.** Five cards exist. No others are to be
-drawn until the owner approves the direction. Every other card keeps its existing scene from
-`src/games/clockwork/ui/art.ts`.
+The standard for card illustrations. Status: **approved by the owner, and complete.** All 110 cards and Crown Projects have
+an illustration: the five approved pilots, unchanged, and 105 drawn afterwards to the same standard. A card added later
+falls back to an inline scene from `src/games/clockwork/ui/art.ts` until it is drawn.
 
 ## The look in one paragraph
 
@@ -108,10 +108,12 @@ Compositions must differ card to card. A catalog page should never look like one
 
 - **Location and name:** `public/cards/<card key>.svg`, using the stable internal card key from the rules, never the
   display name. So Gold is `dynamo.svg`, and a later rename cannot break an asset.
-- **Registration:** a file is shown once its key is listed in `IMAGES` in `src/games/clockwork/ui/art.ts`. Any card not
-  listed keeps its scene, so a card never has a missing image.
-- **Source:** drawn from code in `scripts/art/pilot.mjs` with the kit in `scripts/art/kit.mjs`, using shared primitives
-  (`person`, `arch`, `masonry`, `cypress`, `foliage`). Run `node scripts/build-pilot-art.mjs` to regenerate.
+- **Registration:** a file is shown once its key is listed in `ILLUSTRATED` in `src/games/clockwork/ui/art.ts`. Any card
+  not listed keeps its scene, so a card never has a missing image.
+- **Source:** drawn from code, using the shared primitives in `scripts/art/kit.mjs` and `scripts/art/scene.mjs`. The pilots
+  are in `scripts/art/pilot.mjs` (`node scripts/build-pilot-art.mjs`), and are not rebuilt by the catalogue script. The rest
+  are in `treasury.mjs`, `work.mjs`, `town.mjs` and `court.mjs`: run `node scripts/build-card-art.mjs [key ...]`. That script
+  refuses a pilot key, and warns above the size budget.
 - **Shape of a file:** one root `<svg>` with `viewBox="0 0 640 360"`, a `<title>`, and one group setting round joins.
   Standalone: no external references, `<image>`, scripts, event handlers, `<style>`, fonts or text.
 - **Card text** is never in the art. Svelte draws name, cost and rules text around it.
@@ -123,6 +125,10 @@ Compositions must differ card to card. A catalog page should never look like one
 - Budget: 48 KB per file before compression, enforced by a test. SVG text gzips to roughly a third.
 - Files load through `<img loading="lazy">`, so an inline DOM tree is never built for them and a long catalog costs
   nothing until a row scrolls into view. The browser's cache handles repeats.
+
+Measured on the complete set of 110: smallest 3,177 bytes, median 9,299, largest 40,523 (`relay_junction`, a pilot), and
+1,139,876 in all. Gzipped, the whole set is 197,338 bytes, a mean of 1.8 KB and at most 5.8 KB a card. `public/_headers`
+lets browsers cache `/cards/*` for a day. The inline fallback scenes stay in the bundle, so its size did not change.
 
 ## Legibility at card size
 
@@ -137,6 +143,18 @@ Review every illustration at these sizes before accepting it:
 
 At 60 pixels wide, the subject's silhouette and colour must still say what it is. Fine lines are allowed to fade away,
 main masses are not. The strip crop must show part of the subject, not only sky.
+
+## Known weak spots
+
+All 110 were reviewed in contact sheets at 60 by 34, 88 by 50 and as a 150-pixel strip crop. Silhouettes read at each
+size. These are accepted but are the first to redraw if the owner wants more:
+
+- `burden_relief`: the bundle sits above a figure who only bends slightly, so the weight reads less than it should.
+- `patent_ledger`: the warden is small behind the book, and the quill stands free.
+- `belt_sorter`, `noise_complaint` and a few others: the strip crop shows the subject but can cut off heads.
+
+Contact-sheet review is not the same as seeing every card in play, and no person other than the author has reviewed the
+105 new drawings yet.
 
 ## Pilot cards and how they resolve
 

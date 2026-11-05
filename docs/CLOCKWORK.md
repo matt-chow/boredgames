@@ -179,6 +179,22 @@ and the trials still play and read as they did (`guideFor(edition, version)`).
 - **CC-FINAL-7, public.** The final round and turns left are public and reveal nothing hidden.
 - **CC-FINAL-8, saves.** A game saved in the final round finishes correctly after a reload.
 
+## Edition 4 bots (CC-BOT)
+
+Bots in edition 4 games plan from their own `project(state, seat)` view: nothing else is passed to them. Results and the remaining
+imbalances are in [BOT_BENCHMARK.md](BOT_BENCHMARK.md). Card effects, costs and Renown were not changed for bots.
+
+- **CC-BOT-1, length of the game.** `roundsLeft` estimates the rounds left from public progress towards each end condition. It falls as they near, and is 0 in the final round.
+- **CC-BOT-2, public scores.** `publicRenown` counts stages funded and gains shown in the log, so it is a lower bound for an opponent. Only a bot's own total is exact. The shortcut is noted in the code: the log holds the last 300 entries.
+- **CC-BOT-3, ending the game.** `triggers` and `leadAfter` decide whether a move would end the game and who would lead. A bot takes the last stage or last Grand Duchy when that wins, and refuses when it would clearly lose.
+- **CC-BOT-4, stages.** `stageScore` compares a stage's Renown, its price and the rounds left. A bot funds a stage only when it beats the best buy.
+- **CC-BOT-5, timing.** Currency early, and Renown when the game is nearly over.
+- **CC-BOT-6, last turn.** Every profile on its last turn takes the most Renown it can, and never Currency.
+- **CC-BOT-7, hidden information.** Changing an opponent's hidden cards changes nothing a bot does.
+- **CC-BOT-8, finishing.** Every profile finishes a game with legal moves, on equal turns.
+- **CC-BOT-9, money floor.** A bot won't trash below 6 Coins of money in its deck, and takes a free Bronze when it has less. Without this, Thinning bots trashed all their money and games stalled.
+- **CC-BOT-OLD, older games.** Editions before 4 and the trials keep their old bot decisions, so saved games and the golden games in `compat.test.ts` play the same. A fingerprint of old-edition bot moves was byte-identical before and after this work.
+
 ## Staged construction trial (CC-STAGE)
 
 These trial editions made the choice above. They stay for rooms that started on one, for tests and experiments, and on servers with `EXPERIMENTS=on` (staging and
@@ -288,19 +304,17 @@ baseline. New games get the corrected bot, which is still not a good judge of wh
 
 ## Art
 
-Every card and Crown Project has its own original scene, drawn from flat SVG parts in `src/games/clockwork/ui/art.ts`: a
-medieval subject on a parchment-toned sky, with no gears, steam or brass (CC-ART-1 to 3, KC-ART-1). They are inline, so they
-need no network request and can't fail to load. **They are simple vector illustrations, not paintings.** No image-generation
-tool was available, and no raster art exists.
+Every card and Crown Project has its own illustration in `public/cards/<key>.svg`, drawn from code in the approved clear-line
+style: Early Renaissance subjects, consistent linework, natural colours and blank faces. These are vector drawings; no
+image-generation tool or raster art is involved. `docs/ART_BIBLE.md` is the standard and says how to draw or rebuild one.
 
-`data/clockwork-commons/art-manifest.json` holds the name, former name, subject and status of each. To replace a scene with a
-finished image:
+`data/clockwork-commons/art-manifest.json` holds the name, former name, subject, status and asset of each. A card with no file
+falls back to its flat inline scene from `src/games/clockwork/ui/art.ts` (CC-ART-1 to 3, KC-ART-1), which needs no network
+request. To add one:
 
-1. Use the entry's `brief` and the shared `style`. Generate at 16:9 with no text, and export a small WebP. Keep the rights
-   records with the file.
-2. Put it in `public/art/clockwork/<key>.webp`, and add the key to `IMAGES` in `art.ts`. The card, supply tile and Crown
-   Project then show it instead of the scene.
-3. In the manifest, set `status` to `final` and `asset` to the path.
+1. Draw it in the right file in `scripts/art/`, and run `node scripts/build-card-art.mjs <key>`.
+2. Add the key to `ILLUSTRATED` in `art.ts`. The card, supply tile, Crown Project, details dialog and market setup then show it.
+3. In the manifest, set `status` to `final` and `asset` to the path. The ART tests in `tests/clockwork/pilot-art.test.ts` check the rest.
 
 ## Theme
 

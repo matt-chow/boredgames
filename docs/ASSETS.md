@@ -21,7 +21,7 @@ The placeholders are fully functional:
 | UI icons | `src/hub/Icon.svelte` (inline SVG paths) | Original, drawn for this project | Project's own |
 | Big Shoulders Stencil (label font, Latin subset, variable woff2) | `public/fonts/big-shoulders-stencil-latin.woff2` | The Big Shoulders Project Authors (github.com/xotypeco/big_shoulders) | SIL Open Font License 1.1 (`public/fonts/OFL.txt`) |
 | Box covers | `public/art/covers/*.svg` | Original, made for this project | Project's own |
-| Kingdom & Commerce card and Crown Project scenes (110 manifest entries, inline SVG; none are generated paintings). Five are clear-line pilots in `public/cards/`, drawn from code in `scripts/art/`; see docs/ART_BIBLE.md | `src/games/clockwork/ui/art.ts`, listed in `data/clockwork-commons/art-manifest.json` | Original, made for this project | Project's own |
+| Kingdom & Commerce card and Crown Project scenes (110 manifest entries; none are generated paintings). All 110 are clear-line SVGs in `public/cards/`, drawn from code in `scripts/art/`, with inline fallback scenes for a card not yet drawn; see docs/ART_BIBLE.md | `public/cards/`, `src/games/clockwork/ui/art.ts`, listed in `data/clockwork-commons/art-manifest.json` | Original, made for this project | Project's own |
 | Favicon | `public/favicon.svg` | Original | Project's own |
 | Sound effects | `src/client/lib/sound.ts` | Synthesised at runtime with the Web Audio API; no audio files | Project's own |
 

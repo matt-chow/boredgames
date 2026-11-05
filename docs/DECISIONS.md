@@ -287,3 +287,19 @@ The owner's policy (DISC-*), and the authorisation that replaces the earlier rul
 Each construction candidate is a full edition with its own `rulesVersion`, the same mechanism that keeps old rooms on old rules. So a staged room keeps its rules for good, and whichever is chosen can
 become the default by being copied into a new edition, with nothing to migrate. Stage tables are saved in the game rather than derived on load, which makes a later change to the division rule safe for rooms in progress.
 The selector lives in the room config and is gated by the `EXPERIMENTS` server var, off in production. A live room can't reach them.
+
+### D39. F2 becomes edition 4
+The owner chose F2 as the final Crown Project rule. It's a new edition, not a change to edition 3, so rooms already in play keep their rules and guide. It copies the trial's construction into the live
+rules: five Projects of 1, 2, 2, 3 and 3 stages at every player count, and 1 extra Coin for a multi-stage Project. The stage table is saved at setup (D38), so `stateVersion` 4 only adds an optional `finalRound`.
+
+### D40. Finishing the round, and two interpretations
+Any end condition now latches and the round finishes, so everyone has equal turns. The brief doesn't say what happens to extra turns or ties once this holds, so these are recorded as interpretations: extra
+turns not yet taken are dropped once the end is triggered (CC-FINAL-5), and the "fewer turns ranks higher" tie-break can't apply, so equal Renown shares the place (CC-FINAL-6). The owner may want to review both.
+
+### D41. Bots plan from their view, and only in edition 4
+The bots got a shared estimate of the game's length and of public scores, rather than per-profile tuning, so that every strategy gains from it (CC-BOT). They read only `project(state, seat)`, and older editions keep the old decisions
+exactly, because changing those would change replays. The benchmark's imbalances are reported and not corrected: the owner asked that card effects, costs and Renown not be changed automatically.
+
+### D42. The whole catalogue is drawn from code
+All 110 illustrations are SVG written by build scripts, using the approved kit, with no image service. That keeps them small, editable and free of third-party rights. The cost is that scenes share a family of poses and props, so each was
+given its own subject and composition to avoid looking templated. Inline scenes stay as the fallback rather than being deleted, since they're the safety net for any future card.
