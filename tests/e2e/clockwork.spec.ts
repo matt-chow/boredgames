@@ -126,6 +126,36 @@ test.describe('Kingdom & Commerce', () => {
     await shot(host.page, 'cc-lobby');
   });
 
+  test('CC-STAGE-UI: a trial room shows five Projects with their stages, and inspection lists them', async ({ browser }) => {
+    test.skip(!!process.env.E2E_NO_TRIALS, 'trial editions are off on this server');
+    const host = await newPlayer(browser, 'Ada', PHONE);
+    await table(host, 5);
+    await host.page.locator('[data-edition]').selectOption('S1');
+    await expect(host.page.locator('[data-edition]')).toHaveValue('S1');
+    await start(host);
+    const tiles = host.page.locator('.work');
+    await expect(tiles).toHaveCount(5);
+    await expect(host.page.locator('[data-trial]')).toContainText('0/5');
+    // Six players, S1: two Projects of 2 stages and three of 3, thirteen investments in all.
+    await expect(host.page.locator('[data-progress="0/2"]')).toHaveCount(2);
+    await expect(host.page.locator('[data-progress="0/3"]')).toHaveCount(3);
+    await expect(host.page.locator('.pip')).toHaveCount(13);
+    await expect(host.page.locator('[data-progress="0/3"]').first()).toHaveAttribute('aria-label', '0 of 3 stages funded');
+    const box = await host.page.locator('.works').boundingBox();
+    expect(box!.x + box!.width).toBeLessThanOrEqual(PHONE.viewport!.width);
+    await host.page.locator('.works').scrollIntoViewIfNeeded();
+    await shot(host.page, 'stage-phone');
+
+    const key = await host.page.locator('.work:has([data-progress="0/3"])').first().getAttribute('data-project');
+    await host.page.locator(`[data-look="${key}"]`).click();
+    await expect(host.page.locator('[data-stage]')).toHaveCount(3);
+    await expect(host.page.locator('[data-stage="0"]')).toContainText('Next');
+    await expect(host.page.locator('[data-stage="1"]')).toContainText('Not yet open');
+    await shot(host.page, 'stage-inspect-phone');
+    await host.page.keyboard.press('Escape');
+    await expect(host.page.locator('[data-stage]').first()).toBeHidden();
+  });
+
   test('CC-E2E-2: a game shows art, Influence and Crown Projects, and inspection reads a card', async ({ browser }) => {
     const host = await newPlayer(browser, 'Ada');
     await table(host, 1);

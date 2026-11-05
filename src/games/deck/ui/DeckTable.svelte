@@ -47,7 +47,7 @@
   let helpAt = $state<string | null>(null);
   const guideDoc = getContext<GuideDoc | undefined>('deck-guide');
   setContext('deck-labels', () => rules.labels);
-  const olderEdition = $derived((g.rulesVersion ?? 0) < ((GAMES[room.gameId] as unknown as DeckGame).rules.version ?? 0));
+  const olderEdition = $derived(!rules.edition && (g.rulesVersion ?? 0) < ((GAMES[room.gameId] as unknown as DeckGame).rules.version ?? 0));
   function help(id: string | null) {
     helpAt = id;
     howto = true;
@@ -340,7 +340,7 @@
       <Supply {g} {defs} live={livePiles} onpick={pickPile} />
 
       {#if g.projects.length}
-        <PublicWorks {g} works={rules.projects ?? []} title={words?.projects ?? 'Projects'} points={words?.points ?? 'points'} {tokenName} busy={conn.busy} {name} onclaim={(project) => act({ type: 'claim', project })} />
+        <PublicWorks {g} works={rules.projects ?? []} title={words?.projects ?? 'Projects'} points={words?.points ?? 'points'} {tokenName} busy={conn.busy} {name} trial={rules.edition?.name} onclaim={(project) => act({ type: 'claim', project })} />
       {/if}
 
       <section class="own" aria-label="Your area">
@@ -507,7 +507,7 @@
 </Dialog>
 
 {#if guideDoc}
-  <Guide bind:open={howto} doc={guideDoc} at={helpAt} note={olderEdition ? 'This table began under an earlier edition and keeps its original rules to the end. See “Sets, variants and older rooms” in Detailed rules.' : ''} />
+  <Guide bind:open={howto} doc={guideDoc} at={helpAt} note={rules.edition ? `This table is playing trial rules, not the live game. ${rules.edition.name}: ${rules.edition.text} See “Staged Crown Projects” in Detailed rules.` : olderEdition ? 'This table began under an earlier edition and keeps its original rules to the end. See “Sets, variants and older rooms” in Detailed rules.' : ''} />
 {:else}
 <Dialog bind:open={howto} title="How a turn works">
   <ol class="how">

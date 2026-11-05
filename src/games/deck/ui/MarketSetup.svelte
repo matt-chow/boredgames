@@ -70,6 +70,9 @@
     send({ projects: on ? projects.filter((k) => k !== key) : [...projects, key] });
   }
 
+  const edition = $derived((room.config.edition as string | undefined) ?? '');
+  const chosen = $derived(room.editions?.find((e) => e.code === edition));
+
   const toggleBan = (key: string) => send({ bans: bans.includes(key) ? bans.filter((k) => k !== key) : [...bans, key] });
 
   function applyCode(e: SubmitEvent) {
@@ -101,6 +104,17 @@
   </h2>
   {#if !canEdit}
     <p class="note">{host?.name ?? 'The host'} chooses the market.</p>
+  {/if}
+
+  {#if room.editions?.length}
+    <label class="edition">
+      <span class="nm">Rules for this room (testing only)</span>
+      <select data-edition value={edition} disabled={!canEdit || conn.busy} onchange={(e) => send({ edition: e.currentTarget.value || null })}>
+        <option value="">Live rules</option>
+        {#each room.editions as e (e.code)}<option value={e.code}>{e.name}</option>{/each}
+      </select>
+      <span class="ds">{chosen?.text ?? 'The rules everyone plays today.'}</span>
+    </label>
   {/if}
 
   {#if rules.sets?.length}
@@ -223,6 +237,21 @@
   }
   .works {
     max-height: 220px;
+  }
+  .edition {
+    display: grid;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+  .edition select {
+    min-height: 40px;
+    padding: 0 8px;
+    border: 1px solid var(--rim-hi);
+    border-radius: var(--r-sm);
+    font: inherit;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--ground-0);
   }
   .sets {
     list-style: none;
