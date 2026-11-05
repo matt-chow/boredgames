@@ -12,6 +12,8 @@ export interface GameMeta {
   maxPlayers: number;
   /** Bumped when the persisted state shape changes; see `migrate`. */
   stateVersion: number;
+  /** How many of a player's consecutive undoable actions can be taken back. One if not set. */
+  undoSteps?: number;
 }
 
 /** A toggleable option shown in the room setup UI. */

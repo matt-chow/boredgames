@@ -151,6 +151,17 @@ describe('H3 undo', () => {
     expect(core.view(a, all(3)).canUndo).toBe(false);
   });
 
+  it('Bohnanza takes back one step only: a second plant leaves nothing to undo after one undo', () => {
+    const { core } = room();
+    send(core, 0, { t: 'start' });
+    const a = (core.view(0, all(3)).game as BView).active;
+    expect(send(core, a, { t: 'act', a: { type: 'plant', field: 0 } }).ack!.ok).toBe(true);
+    expect(send(core, a, { t: 'act', a: { type: 'plant', field: 1 } }).ack!.ok).toBe(true);
+    expect(send(core, a, { t: 'undo' }).ack!.ok).toBe(true);
+    expect(core.view(a, all(3)).canUndo).toBe(false);
+    expect(send(core, a, { t: 'undo' }).ack).toMatchObject({ ok: false, code: 'no-undo' });
+  });
+
   it('revealing actions (turning over cards) can never be undone', () => {
     const { core } = room();
     send(core, 0, { t: 'start' });

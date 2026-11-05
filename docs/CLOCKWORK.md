@@ -77,6 +77,14 @@ in `state.rulesVersion`, so **rooms never silently change rules**.
 - Migration happens on first load and is written back. **After a v3 deployment has opened a room, v2 code refuses that room**,
   because it can't read state version 2. The data is intact, and the way out is to roll forward: see DEPLOYMENT.md.
 
+## Undo (KC3-UNDO)
+
+A player can take back their undoable actions one at a time, most recent first, up to 8 in a row. So two conversions undo separately,
+and Coins, Influence and the 0/2 count all come back with the saved state (KC3-UNDO-1, 2). The room keeps the states, so nothing is
+recalculated. An action that showed hidden information or touched another player ends the chain. Only steps after it can be undone
+(KC3-UNDO-3, 4). This is for every edition, because it changes what undo can reach and not how a game is played. Rooms
+saved mid-turn by an earlier build undo the one step they saved (KC3-UNDO-6). The engine's rule for what counts as undoable is unchanged.
+
 ## Permanent supply (KC3-BASIC)
 
 Six basics are always on the table, separate from the 10 market piles, and buyable in any game. Their ids are the old ones.

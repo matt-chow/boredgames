@@ -147,7 +147,7 @@ The client (`RoomConnection`) keeps a single socket per room:
 |---|---|
 | `meta` | room config, status, version, timestamps, schema and state versions, the game seed (never sent to clients) |
 | `seats` | seat order, display name, token **hash**, join time |
-| `blobs` | game state, the single undo snapshot |
+| `blobs` | game state, the undo snapshot and any steps linked to it |
 | `actions` | dedupe outcomes for the last 256 action IDs |
 | `history` | every committed change: version, seat, kind, public data, time |
 
@@ -166,10 +166,15 @@ The client (`RoomConnection`) keeps a single socket per room:
 
 ## Undo
 
-The engine marks an action `undoable` only when it revealed nothing and affected only the actor: planting from hand,
-planting a pending card, or harvesting. The room keeps one undo snapshot, owned by that action's author. Any later
+The engine marks an action `undoable` only when it revealed nothing and affected only the actor: in Bohnanza, planting from
+hand, planting a pending card, or harvesting. The room keeps an undo snapshot, owned by that action's author. Any later
 commit bumps the version and invalidates it, so an undo can never rewind someone else's move or expose what a
 reveal showed.
+
+A game can set `meta.undoSteps`. The snapshot then links back to that player's previous undoable action, up to that many
+steps, so they can be taken back one at a time. An action that isn't undoable clears the links. Bohnanza leaves it unset and
+keeps one step. Deck games use 8, which is about 230 KB in a late 6-player game, well below a Durable Object row's limit.
+Rows saved before this have no links and undo one step.
 
 ## Client rendering and motion
 

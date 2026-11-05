@@ -85,7 +85,7 @@ Each ID below has a test with that name.
 | DB-DUR-1…4 | Durations and their replayers stay in play until the delayed effect has fired |
 | DB-TRIG-1…7 | Triggers from cards in play, in hand and on the event's own card; temporary triggers; one-shot triggers |
 | DB-END-1…6 | The game ends after the turn on which a condition is met; scoring, including points that count one kind of card; ties |
-| DB-UNDO-1…6 | Undo is offered only when nothing new was learned and nobody else was affected |
+| DB-UNDO-1…6 | Undo is offered only when nothing new was learned and nobody else was affected. KC3-UNDO-1…8 cover several steps through the room |
 | DB-ROBUST-1…3 | Input is never mutated; malformed input is refused; endless resolution is stopped |
 | DB-PRIV-1…9 | Projection and rejected-action privacy; cards shown to a deciding player reach only that player and their owner; a card passed between hands is named only to those two players; a gain of a hidden card is named only to its owner |
 | DB-SIM-2…9 | Full games for 2–6 players, random play across all fixture cards, a hostile-player test, replay from the action log |

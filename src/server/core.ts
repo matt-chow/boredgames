@@ -54,6 +54,8 @@ export interface UndoRow {
   /** Room version produced by the undoable action. */
   version: number;
   state: unknown;
+  /** The same player's undoable action before this one, in a game with `meta.undoSteps`. Rows saved earlier have none. */
+  prior?: UndoRow;
 }
 
 export interface ActionRecord {
@@ -217,7 +219,7 @@ export class RoomCore {
         s = this.game.migrate(s, this.meta.stateVersion);
         // An outstanding undo holds a whole older state, so it has to come forward with the one it replaces.
         const undo = this.store.getUndo();
-        if (undo) undo.state = this.game.migrate(undo.state, this.meta.stateVersion);
+        for (let u = undo; u; u = u.prior ?? null) u.state = this.game.migrate(u.state, this.meta.stateVersion);
         this.meta.stateVersion = this.game.meta.stateVersion;
         this.store.transaction(() => {
           this.store.putState(s);
@@ -365,7 +367,7 @@ export class RoomCore {
         if (this.meta.status !== 'playing' || !u || u.seat !== seat || u.version !== this.meta.version)
           throw new RoomError('no-undo', 'There is nothing you can undo right now.');
         this.state = u.state;
-        this.commit('undo', seat, {}, { state: true, undo: null });
+        this.commit('undo', seat, {}, { state: true, undo: u.prior ? { ...u.prior, version: this.meta.version + 1 } : null });
         return [];
       }
       case 'config': {
@@ -435,11 +437,23 @@ export class RoomCore {
     const r = this.game.apply(this.getState(), seat, a);
     if (!r.ok) throw new RoomError(r.code, r.error);
     const prev = this.state;
+    const before = this.undoChain(seat);
     this.state = r.state;
     const over = this.game.isOver(r.state);
     if (over) this.meta.status = 'over';
     const undoable = r.undoable && !over && !this.isBotSeat(seat);
-    this.commit('act', seat, a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev } : null });
+    this.commit('act', seat, a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev, ...(before ? { prior: before } : {}) } : null });
+  }
+
+  /** What this player's next undoable action builds on: their still-valid steps, cut to the game's limit. */
+  private undoChain(seat: number): UndoRow | null {
+    const steps = this.game.meta.undoSteps ?? 1;
+    const last = steps > 1 ? this.store.getUndo() : null;
+    if (!last || last.seat !== seat || last.version !== this.meta.version) return null;
+    let u = last;
+    for (let i = 2; i < steps && u.prior; i++) u = u.prior;
+    delete u.prior;
+    return last;
   }
 
   /** A quitter's seat goes to a bot only when the game has bots and someone else is seated in person. */

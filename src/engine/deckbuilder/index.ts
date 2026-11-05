@@ -388,7 +388,7 @@ export function createDeckGame(rules: Ruleset, older: Ruleset[] = []): DeckGame 
   return {
     rules,
     rulesFor: (version) => libFor(version).rules,
-    meta: { id: rules.id, name: rules.name, minPlayers: rules.minPlayers, maxPlayers: rules.maxPlayers, stateVersion: STATE_VERSION },
+    meta: { id: rules.id, name: rules.name, minPlayers: rules.minPlayers, maxPlayers: rules.maxPlayers, stateVersion: STATE_VERSION, undoSteps: 8 },
     options: [],
     defaultConfig: () => ({ market: [], bans: [], ...(rules.projects ? { projects: [] } : {}), ...(rules.sets ? { sets: rules.defaultSets ?? rules.sets.map((x) => x.key) } : {}) }),
     validateConfig(config, n) {
