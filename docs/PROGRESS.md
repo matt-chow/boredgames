@@ -214,3 +214,7 @@ Edition 4 (F2 and finishing the round), planning bots and all 110 illustrations 
 ### CP11: final terminology cleanup for release
 
 Bot reports now print Influence Engine, Crown Project Development and Establishment Engine; the internal profile names stay because they seed the benchmark. Active docs use current names, and dated experiments are labelled historical. Removed code with no consumers: `beanOf`, `BActionType`, `isLive`, `typesOf`, `PROTOCOL_VERSION`, and unused locals and parameters in five places. No files were deleted, because the audit found no unreferenced modules, assets, docs or tracked outputs. The owner confirmed CC-FINAL-5 and CC-FINAL-6 (D43), and the CC-FINAL-5 test now covers unused Buys and Actions. Added HUMAN_PLAYTEST.md.
+
+### CP12: edition 4 in production (2026-11-05)
+
+Version `9ed87712` from `7e5956d` (tag `release-e4`) is live, and `main` and `feat/v3` were fast-forwarded. Human playtesting is next: see HUMAN_PLAYTEST.md. No saved room that predates the release has been opened on production; compatibility rests on unit tests.

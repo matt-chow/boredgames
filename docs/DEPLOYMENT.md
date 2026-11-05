@@ -105,9 +105,10 @@ that a code rollback reverses it. The git tag `pre-hub-v2` marks the code before
 
 ## Releasing v3.0 to production
 
-The owner approved this release, including rules edition 4. It is the first release that changes a saved format, so read
-"Rollback" below before deploying. The current production version before this release was
-`dc6aade2-31b8-4ee7-a3f1-8aa79f579a60`, and the tag `pre-release-e4` marks the code before the final cleanup.
+**Released on 2026-11-05** with the owner's approval, including rules edition 4: version
+`9ed87712-d994-4497-820d-a409d0c2a1a5`, built from `7e5956d` (tag `release-e4`). The version before it was
+`dc6aade2-31b8-4ee7-a3f1-8aa79f579a60`, and the tag `pre-release-e4` marks the code before the final cleanup. This is the first
+release that changes a saved format, so read "Rollback" below before deploying again. The steps used:
 
 ```sh
 git switch feat/v3 && git status                    # clean, and on the commit staging was built from

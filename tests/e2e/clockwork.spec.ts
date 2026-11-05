@@ -220,6 +220,17 @@ test.describe('Kingdom & Commerce', () => {
     await expect(host.page.locator('[data-stage]').first()).toBeHidden();
   });
 
+  test('CC-F2-UI: a new room shows five Projects staged 1, 2, 2, 3, 3', async ({ browser }) => {
+    const host = await newPlayer(browser, 'Ada');
+    await table(host, 1);
+    await start(host);
+    await expect(host.page.locator('.work')).toHaveCount(5);
+    await expect(host.page.locator('[data-progress="0/2"]')).toHaveCount(2);
+    await expect(host.page.locator('[data-progress="0/3"]')).toHaveCount(2);
+    // A single-stage Project draws no pips, so 2 + 2 + 3 + 3.
+    await expect(host.page.locator('.pip')).toHaveCount(10);
+  });
+
   test('CC-E2E-2: a game shows art, Influence and Crown Projects, and inspection reads a card', async ({ browser }) => {
     const host = await newPlayer(browser, 'Ada');
     await table(host, 1);

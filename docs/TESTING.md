@@ -82,6 +82,12 @@ were added, and both faults are now caught.
 
 **Latest results.**
 
+- **Edition 4 production release** (`7e5956d`, 2026-11-05): `npm run check` 0 errors; 690 unit tests in 27 files, one file at a time.
+  Staging, one worker: guide 5, home 7 (7 skipped, dev-server fixture), lobby 2, theme 1, resilience 5, clockwork 14. Local: home 14,
+  play 5, deck 7, bots 2, complete 4, perf 1. Production smoke: guide, home, lobby and theme 15 (7 skipped), plus six Kingdom &
+  Commerce tests, CC-F2-UI, two resilience tests and two Bohnanza tests. CC-E2E-7 failed once on production with about 260 MB free, when
+  its driver ran out of steps, then passed alone with 2.4 GB free. The cause wasn't proven. Saved older-edition rooms are checked by
+  unit tests only.
 - **Clockwork Commons release** (2026-11-03): `npm run check` 0 errors; `npm test` 459 / 459. Full browser suite on one
   worker, local: 27 passed, 1 skipped (a random-deal skip in `play.spec.ts`), 1 failed and 1 not run. The failure was
   `CC-E2E-4`: a staging run started at the same time cleared the shared `test-results/` folder and removed its trace
