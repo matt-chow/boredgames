@@ -1,0 +1,785 @@
+{
+  "generated": "npm run experiment:crown-end",
+  "gamesPerRuleAndCount": 80,
+  "totalGames": 1200,
+  "seconds": 409,
+  "variants": [
+    {
+      "id": "A",
+      "name": "Current: ends at 4 of 5 Projects",
+      "overall": {
+        "games": 400,
+        "roundsMean": 18.2,
+        "roundsMedian": 15,
+        "roundsMax": 75,
+        "stepsMean": 374.6,
+        "unfinished": 0,
+        "overLong": 15,
+        "ended": {
+          "grandDuchy": 25.3,
+          "piles": 0,
+          "projects": 74.8
+        },
+        "projectsClaimed": 3.4,
+        "allFiveClaimedPct": 0,
+        "atLeastFourPct": 74.8,
+        "renownBySource": {
+          "estates": 18.2,
+          "special": 0.2,
+          "projects": 5.2,
+          "conditional": 1.3,
+          "negative": 0
+        },
+        "winnerScore": 37.2,
+        "margin": 9.5,
+        "coinCardsPerPlayer": 5.8,
+        "goldPerPlayer": 1.8,
+        "estatesPerPlayer": 5.5,
+        "grandDuchyPerPlayer": 1.4,
+        "firstSeatWinPct": 29.9
+      },
+      "strategy": {
+        "Balanced": {
+          "seats": 140,
+          "winPct": 19.6,
+          "fairPct": 25
+        },
+        "Works": {
+          "seats": 135,
+          "winPct": 43.3,
+          "fairPct": 24.9
+        },
+        "Interaction": {
+          "seats": 140,
+          "winPct": 29.6,
+          "fairPct": 25
+        },
+        "Cycling": {
+          "seats": 140,
+          "winPct": 7.9,
+          "fairPct": 25
+        },
+        "Scoring": {
+          "seats": 139,
+          "winPct": 20.5,
+          "fairPct": 25.1
+        },
+        "Spark": {
+          "seats": 137,
+          "winPct": 40.9,
+          "fairPct": 25.2
+        },
+        "Thinning": {
+          "seats": 134,
+          "winPct": 9.7,
+          "fairPct": 25.3
+        },
+        "Devices": {
+          "seats": 130,
+          "winPct": 46.5,
+          "fairPct": 25.3
+        },
+        "Economy": {
+          "seats": 126,
+          "winPct": 13.9,
+          "fairPct": 25.1
+        },
+        "Defence": {
+          "seats": 123,
+          "winPct": 26.8,
+          "fairPct": 24.8
+        },
+        "Combo": {
+          "seats": 126,
+          "winPct": 13.1,
+          "fairPct": 24.7
+        },
+        "Risk": {
+          "seats": 130,
+          "winPct": 28.1,
+          "fairPct": 24.7
+        }
+      },
+      "tables": [
+        {
+          "players": 2,
+          "games": 80,
+          "roundsMean": 24.9,
+          "roundsMedian": 23,
+          "roundsMax": 75,
+          "stepsMean": 268.2,
+          "unfinished": 0,
+          "overLong": 8,
+          "ended": {
+            "grandDuchy": 42.5,
+            "piles": 0,
+            "projects": 57.5
+          },
+          "projectsClaimed": 3,
+          "allFiveClaimedPct": 0,
+          "atLeastFourPct": 57.5,
+          "renownBySource": {
+            "estates": 28,
+            "special": 0.2,
+            "projects": 9,
+            "conditional": 1.7,
+            "negative": 0
+          },
+          "winnerScore": 48.9,
+          "margin": 20.1,
+          "coinCardsPerPlayer": 8.3,
+          "goldPerPlayer": 2.3,
+          "estatesPerPlayer": 8,
+          "grandDuchyPerPlayer": 2.2,
+          "firstSeatWinPct": 55
+        },
+        {
+          "players": 3,
+          "games": 80,
+          "roundsMean": 20.5,
+          "roundsMedian": 16,
+          "roundsMax": 50,
+          "stepsMean": 330.8,
+          "unfinished": 0,
+          "overLong": 5,
+          "ended": {
+            "grandDuchy": 28.8,
+            "piles": 0,
+            "projects": 71.3
+          },
+          "projectsClaimed": 3.3,
+          "allFiveClaimedPct": 0,
+          "atLeastFourPct": 71.3,
+          "renownBySource": {
+            "estates": 24,
+            "special": 0.3,
+            "projects": 6.8,
+            "conditional": 2.7,
+            "negative": 0
+          },
+          "winnerScore": 42.5,
+          "margin": 7.9,
+          "coinCardsPerPlayer": 6.8,
+          "goldPerPlayer": 2.2,
+          "estatesPerPlayer": 6.7,
+          "grandDuchyPerPlayer": 1.8,
+          "firstSeatWinPct": 32.5
+        },
+        {
+          "players": 4,
+          "games": 80,
+          "roundsMean": 15.7,
+          "roundsMedian": 13,
+          "roundsMax": 37,
+          "stepsMean": 350.9,
+          "unfinished": 0,
+          "overLong": 0,
+          "ended": {
+            "grandDuchy": 20,
+            "piles": 0,
+            "projects": 80
+          },
+          "projectsClaimed": 3.5,
+          "allFiveClaimedPct": 0,
+          "atLeastFourPct": 80,
+          "renownBySource": {
+            "estates": 16.2,
+            "special": 0.2,
+            "projects": 5.3,
+            "conditional": 1,
+            "negative": 0
+          },
+          "winnerScore": 32.9,
+          "margin": 8,
+          "coinCardsPerPlayer": 5,
+          "goldPerPlayer": 1.6,
+          "estatesPerPlayer": 4.4,
+          "grandDuchyPerPlayer": 1.1,
+          "firstSeatWinPct": 21.9
+        },
+        {
+          "players": 5,
+          "games": 80,
+          "roundsMean": 15.4,
+          "roundsMedian": 12,
+          "roundsMax": 54,
+          "stepsMean": 426.7,
+          "unfinished": 0,
+          "overLong": 1,
+          "ended": {
+            "grandDuchy": 16.3,
+            "piles": 0,
+            "projects": 83.8
+          },
+          "projectsClaimed": 3.6,
+          "allFiveClaimedPct": 0,
+          "atLeastFourPct": 83.8,
+          "renownBySource": {
+            "estates": 15.2,
+            "special": 0.3,
+            "projects": 4.5,
+            "conditional": 1.2,
+            "negative": 0
+          },
+          "winnerScore": 31.1,
+          "margin": 6,
+          "coinCardsPerPlayer": 4.6,
+          "goldPerPlayer": 1.5,
+          "estatesPerPlayer": 4,
+          "grandDuchyPerPlayer": 1,
+          "firstSeatWinPct": 20
+        },
+        {
+          "players": 6,
+          "games": 80,
+          "roundsMean": 14.8,
+          "roundsMedian": 13,
+          "roundsMax": 42,
+          "stepsMean": 496.3,
+          "unfinished": 0,
+          "overLong": 1,
+          "ended": {
+            "grandDuchy": 18.8,
+            "piles": 0,
+            "projects": 81.3
+          },
+          "projectsClaimed": 3.6,
+          "allFiveClaimedPct": 0,
+          "atLeastFourPct": 81.3,
+          "renownBySource": {
+            "estates": 15.9,
+            "special": 0.2,
+            "projects": 3.6,
+            "conditional": 0.7,
+            "negative": 0
+          },
+          "winnerScore": 30.7,
+          "margin": 5.6,
+          "coinCardsPerPlayer": 4.1,
+          "goldPerPlayer": 1.3,
+          "estatesPerPlayer": 4.3,
+          "grandDuchyPerPlayer": 1,
+          "firstSeatWinPct": 20
+        }
+      ]
+    },
+    {
+      "id": "B",
+      "name": "Projects never end the game",
+      "overall": {
+        "games": 400,
+        "roundsMean": 33.2,
+        "roundsMedian": 32,
+        "roundsMax": 83,
+        "stepsMean": 709.6,
+        "unfinished": 0,
+        "overLong": 78,
+        "ended": {
+          "grandDuchy": 100,
+          "piles": 0,
+          "projects": 0
+        },
+        "projectsClaimed": 4,
+        "allFiveClaimedPct": 57.5,
+        "atLeastFourPct": 74.8,
+        "renownBySource": {
+          "estates": 35.2,
+          "special": 0.2,
+          "projects": 6.6,
+          "conditional": 4.6,
+          "negative": -0.1
+        },
+        "winnerScore": 65.8,
+        "margin": 14.6,
+        "coinCardsPerPlayer": 12.1,
+        "goldPerPlayer": 4,
+        "estatesPerPlayer": 9.9,
+        "grandDuchyPerPlayer": 3.4,
+        "firstSeatWinPct": 30.9
+      },
+      "strategy": {
+        "Balanced": {
+          "seats": 140,
+          "winPct": 31.4,
+          "fairPct": 25
+        },
+        "Works": {
+          "seats": 135,
+          "winPct": 16.3,
+          "fairPct": 24.9
+        },
+        "Interaction": {
+          "seats": 140,
+          "winPct": 37.1,
+          "fairPct": 25
+        },
+        "Cycling": {
+          "seats": 140,
+          "winPct": 11.4,
+          "fairPct": 25
+        },
+        "Scoring": {
+          "seats": 139,
+          "winPct": 17.3,
+          "fairPct": 25.1
+        },
+        "Spark": {
+          "seats": 137,
+          "winPct": 40.5,
+          "fairPct": 25.2
+        },
+        "Thinning": {
+          "seats": 134,
+          "winPct": 9,
+          "fairPct": 25.3
+        },
+        "Devices": {
+          "seats": 130,
+          "winPct": 50.8,
+          "fairPct": 25.3
+        },
+        "Economy": {
+          "seats": 126,
+          "winPct": 13.1,
+          "fairPct": 25.1
+        },
+        "Defence": {
+          "seats": 123,
+          "winPct": 28,
+          "fairPct": 24.8
+        },
+        "Combo": {
+          "seats": 126,
+          "winPct": 15.9,
+          "fairPct": 24.7
+        },
+        "Risk": {
+          "seats": 130,
+          "winPct": 28.8,
+          "fairPct": 24.7
+        }
+      },
+      "tables": [
+        {
+          "players": 2,
+          "games": 80,
+          "roundsMean": 39.1,
+          "roundsMedian": 36,
+          "roundsMax": 83,
+          "stepsMean": 419.3,
+          "unfinished": 0,
+          "overLong": 29,
+          "ended": {
+            "grandDuchy": 100,
+            "piles": 0,
+            "projects": 0
+          },
+          "projectsClaimed": 3.4,
+          "allFiveClaimedPct": 42.5,
+          "atLeastFourPct": 57.5,
+          "renownBySource": {
+            "estates": 42.6,
+            "special": 0.2,
+            "projects": 11.3,
+            "conditional": 6.5,
+            "negative": 0
+          },
+          "winnerScore": 74.9,
+          "margin": 28.6,
+          "coinCardsPerPlayer": 15.1,
+          "goldPerPlayer": 4.2,
+          "estatesPerPlayer": 11.6,
+          "grandDuchyPerPlayer": 4,
+          "firstSeatWinPct": 56.3
+        },
+        {
+          "players": 3,
+          "games": 80,
+          "roundsMean": 36.6,
+          "roundsMedian": 38,
+          "roundsMax": 53,
+          "stepsMean": 587.7,
+          "unfinished": 0,
+          "overLong": 30,
+          "ended": {
+            "grandDuchy": 100,
+            "piles": 0,
+            "projects": 0
+          },
+          "projectsClaimed": 3.8,
+          "allFiveClaimedPct": 48.8,
+          "atLeastFourPct": 71.3,
+          "renownBySource": {
+            "estates": 42.7,
+            "special": 0.3,
+            "projects": 8.5,
+            "conditional": 7.3,
+            "negative": 0
+          },
+          "winnerScore": 73.8,
+          "margin": 13.1,
+          "coinCardsPerPlayer": 14,
+          "goldPerPlayer": 4.5,
+          "estatesPerPlayer": 11.7,
+          "grandDuchyPerPlayer": 4,
+          "firstSeatWinPct": 30.6
+        },
+        {
+          "players": 4,
+          "games": 80,
+          "roundsMean": 29.5,
+          "roundsMedian": 29,
+          "roundsMax": 62,
+          "stepsMean": 667.5,
+          "unfinished": 0,
+          "overLong": 4,
+          "ended": {
+            "grandDuchy": 100,
+            "piles": 0,
+            "projects": 0
+          },
+          "projectsClaimed": 4.2,
+          "allFiveClaimedPct": 67.5,
+          "atLeastFourPct": 80,
+          "renownBySource": {
+            "estates": 32.6,
+            "special": 0.2,
+            "projects": 7,
+            "conditional": 3.8,
+            "negative": 0
+          },
+          "winnerScore": 60.4,
+          "margin": 12.2,
+          "coinCardsPerPlayer": 11.5,
+          "goldPerPlayer": 3.7,
+          "estatesPerPlayer": 8.7,
+          "grandDuchyPerPlayer": 3,
+          "firstSeatWinPct": 20
+        },
+        {
+          "players": 5,
+          "games": 80,
+          "roundsMean": 30.7,
+          "roundsMedian": 29,
+          "roundsMax": 63,
+          "stepsMean": 863.4,
+          "unfinished": 0,
+          "overLong": 9,
+          "ended": {
+            "grandDuchy": 100,
+            "piles": 0,
+            "projects": 0
+          },
+          "projectsClaimed": 4.3,
+          "allFiveClaimedPct": 65,
+          "atLeastFourPct": 83.8,
+          "renownBySource": {
+            "estates": 32.7,
+            "special": 0.3,
+            "projects": 5.8,
+            "conditional": 3.9,
+            "negative": -0.1
+          },
+          "winnerScore": 60.9,
+          "margin": 10,
+          "coinCardsPerPlayer": 10.4,
+          "goldPerPlayer": 3.8,
+          "estatesPerPlayer": 8.8,
+          "grandDuchyPerPlayer": 3,
+          "firstSeatWinPct": 25
+        },
+        {
+          "players": 6,
+          "games": 80,
+          "roundsMean": 30.1,
+          "roundsMedian": 29,
+          "roundsMax": 46,
+          "stepsMean": 1010.1,
+          "unfinished": 0,
+          "overLong": 6,
+          "ended": {
+            "grandDuchy": 100,
+            "piles": 0,
+            "projects": 0
+          },
+          "projectsClaimed": 4.2,
+          "allFiveClaimedPct": 63.8,
+          "atLeastFourPct": 81.3,
+          "renownBySource": {
+            "estates": 32.7,
+            "special": 0.2,
+            "projects": 4.6,
+            "conditional": 3.8,
+            "negative": -0.1
+          },
+          "winnerScore": 58.9,
+          "margin": 9.1,
+          "coinCardsPerPlayer": 9.5,
+          "goldPerPlayer": 3.6,
+          "estatesPerPlayer": 8.8,
+          "grandDuchyPerPlayer": 3,
+          "firstSeatWinPct": 22.5
+        }
+      ]
+    },
+    {
+      "id": "C",
+      "name": "Ends when all 5 are claimed",
+      "overall": {
+        "games": 400,
+        "roundsMean": 24.7,
+        "roundsMedian": 23,
+        "roundsMax": 83,
+        "stepsMean": 516,
+        "unfinished": 0,
+        "overLong": 36,
+        "ended": {
+          "grandDuchy": 42.5,
+          "piles": 0,
+          "projects": 57.5
+        },
+        "projectsClaimed": 4,
+        "allFiveClaimedPct": 57.5,
+        "atLeastFourPct": 74.8,
+        "renownBySource": {
+          "estates": 25.4,
+          "special": 0.2,
+          "projects": 6.6,
+          "conditional": 2.6,
+          "negative": 0
+        },
+        "winnerScore": 50.9,
+        "margin": 12.3,
+        "coinCardsPerPlayer": 8.1,
+        "goldPerPlayer": 2.4,
+        "estatesPerPlayer": 7.8,
+        "grandDuchyPerPlayer": 2.1,
+        "firstSeatWinPct": 31.5
+      },
+      "strategy": {
+        "Balanced": {
+          "seats": 140,
+          "winPct": 26.8,
+          "fairPct": 25
+        },
+        "Works": {
+          "seats": 135,
+          "winPct": 33,
+          "fairPct": 24.9
+        },
+        "Interaction": {
+          "seats": 140,
+          "winPct": 32.9,
+          "fairPct": 25
+        },
+        "Cycling": {
+          "seats": 140,
+          "winPct": 12.1,
+          "fairPct": 25
+        },
+        "Scoring": {
+          "seats": 139,
+          "winPct": 18.3,
+          "fairPct": 25.1
+        },
+        "Spark": {
+          "seats": 137,
+          "winPct": 43.4,
+          "fairPct": 25.2
+        },
+        "Thinning": {
+          "seats": 134,
+          "winPct": 9.7,
+          "fairPct": 25.3
+        },
+        "Devices": {
+          "seats": 130,
+          "winPct": 47.3,
+          "fairPct": 25.3
+        },
+        "Economy": {
+          "seats": 126,
+          "winPct": 9.9,
+          "fairPct": 25.1
+        },
+        "Defence": {
+          "seats": 123,
+          "winPct": 30.5,
+          "fairPct": 24.8
+        },
+        "Combo": {
+          "seats": 126,
+          "winPct": 12.3,
+          "fairPct": 24.7
+        },
+        "Risk": {
+          "seats": 130,
+          "winPct": 23.1,
+          "fairPct": 24.7
+        }
+      },
+      "tables": [
+        {
+          "players": 2,
+          "games": 80,
+          "roundsMean": 32.5,
+          "roundsMedian": 30,
+          "roundsMax": 83,
+          "stepsMean": 352.7,
+          "unfinished": 0,
+          "overLong": 17,
+          "ended": {
+            "grandDuchy": 57.5,
+            "piles": 0,
+            "projects": 42.5
+          },
+          "projectsClaimed": 3.4,
+          "allFiveClaimedPct": 42.5,
+          "atLeastFourPct": 57.5,
+          "renownBySource": {
+            "estates": 34.8,
+            "special": 0.2,
+            "projects": 11.3,
+            "conditional": 4.2,
+            "negative": 0
+          },
+          "winnerScore": 63.7,
+          "margin": 26.5,
+          "coinCardsPerPlayer": 11.5,
+          "goldPerPlayer": 3.1,
+          "estatesPerPlayer": 10,
+          "grandDuchyPerPlayer": 2.9,
+          "firstSeatWinPct": 55
+        },
+        {
+          "players": 3,
+          "games": 80,
+          "roundsMean": 28.1,
+          "roundsMedian": 28.5,
+          "roundsMax": 52,
+          "stepsMean": 454,
+          "unfinished": 0,
+          "overLong": 13,
+          "ended": {
+            "grandDuchy": 51.3,
+            "piles": 0,
+            "projects": 48.8
+          },
+          "projectsClaimed": 3.8,
+          "allFiveClaimedPct": 48.8,
+          "atLeastFourPct": 71.3,
+          "renownBySource": {
+            "estates": 33.5,
+            "special": 0.3,
+            "projects": 8.5,
+            "conditional": 5,
+            "negative": 0
+          },
+          "winnerScore": 59.1,
+          "margin": 10.5,
+          "coinCardsPerPlayer": 9.6,
+          "goldPerPlayer": 3,
+          "estatesPerPlayer": 9.7,
+          "grandDuchyPerPlayer": 2.7,
+          "firstSeatWinPct": 33.8
+        },
+        {
+          "players": 4,
+          "games": 80,
+          "roundsMean": 20.8,
+          "roundsMedian": 19.5,
+          "roundsMax": 44,
+          "stepsMean": 468.7,
+          "unfinished": 0,
+          "overLong": 1,
+          "ended": {
+            "grandDuchy": 32.5,
+            "piles": 0,
+            "projects": 67.5
+          },
+          "projectsClaimed": 4.2,
+          "allFiveClaimedPct": 67.5,
+          "atLeastFourPct": 80,
+          "renownBySource": {
+            "estates": 22.2,
+            "special": 0.2,
+            "projects": 7,
+            "conditional": 2.2,
+            "negative": 0
+          },
+          "winnerScore": 44.2,
+          "margin": 9,
+          "coinCardsPerPlayer": 7,
+          "goldPerPlayer": 2.1,
+          "estatesPerPlayer": 6.5,
+          "grandDuchyPerPlayer": 1.6,
+          "firstSeatWinPct": 28.1
+        },
+        {
+          "players": 5,
+          "games": 80,
+          "roundsMean": 21.4,
+          "roundsMedian": 20,
+          "roundsMax": 54,
+          "stepsMean": 603.4,
+          "unfinished": 0,
+          "overLong": 4,
+          "ended": {
+            "grandDuchy": 35,
+            "piles": 0,
+            "projects": 65
+          },
+          "projectsClaimed": 4.3,
+          "allFiveClaimedPct": 65,
+          "atLeastFourPct": 83.8,
+          "renownBySource": {
+            "estates": 22.6,
+            "special": 0.3,
+            "projects": 5.8,
+            "conditional": 2,
+            "negative": 0
+          },
+          "winnerScore": 44.4,
+          "margin": 8.3,
+          "coinCardsPerPlayer": 6.5,
+          "goldPerPlayer": 2.1,
+          "estatesPerPlayer": 6.5,
+          "grandDuchyPerPlayer": 1.6,
+          "firstSeatWinPct": 20.6
+        },
+        {
+          "players": 6,
+          "games": 80,
+          "roundsMean": 20.6,
+          "roundsMedian": 20.5,
+          "roundsMax": 42,
+          "stepsMean": 701.3,
+          "unfinished": 0,
+          "overLong": 1,
+          "ended": {
+            "grandDuchy": 36.3,
+            "piles": 0,
+            "projects": 63.8
+          },
+          "projectsClaimed": 4.2,
+          "allFiveClaimedPct": 63.8,
+          "atLeastFourPct": 81.3,
+          "renownBySource": {
+            "estates": 22.5,
+            "special": 0.2,
+            "projects": 4.6,
+            "conditional": 1.8,
+            "negative": 0
+          },
+          "winnerScore": 43.1,
+          "margin": 7.4,
+          "coinCardsPerPlayer": 6.1,
+          "goldPerPlayer": 1.9,
+          "estatesPerPlayer": 6.5,
+          "grandDuchyPerPlayer": 1.6,
+          "firstSeatWinPct": 20
+        }
+      ]
+    }
+  ]
+}

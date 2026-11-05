@@ -230,3 +230,26 @@ check the scenarios, not every sentence: prose can still drift.
 The v3 bot stops trashing its own Renown only when the game's `rulesVersion` is 3 or higher. Bots are part of how a room plays, so
 fixing them everywhere would have changed rooms already in progress and the golden games that prove v2 hasn't drifted. The cost is
 that v2 rooms keep the weaker bot until they end.
+
+### D35. The Crown Project end rule stays at 4 of 5, pending the owner's decision
+`npm run experiment:crown-end` compared three rules on the same 1,200 seeded bot games: 80 per rule and player count, Standard game.
+CROWN_END_EXPERIMENT.md has the tables.
+
+| | A: 4 of 5 (current) | B: never | C: all 5 |
+|---|---|---|---|
+| Mean / median rounds | 18.2 / 15 | 33.2 / 32 | 24.7 / 23 |
+| Games over 40 rounds | 15 | 78 | 36 |
+| Ended by Projects / Grand Duchy % | 74.8 / 25.3 | 0 / 100 | 57.5 / 42.5 |
+| Currency / Renown cards bought per player | 5.8 / 5.5 | 12.1 / 9.9 | 8.1 / 7.8 |
+| Works style win % (fair 25) | 43.3 | 16.3 | 33 |
+
+No rule deadlocked: every game finished, and the 3-empty-piles ending never fired under any of them, so Grand Duchy is the only
+other ending in practice. **B is out:** it nearly doubles the length and turns the Crown Project strategy from one of the best to
+one of the weakest. **C is the only real alternative:** it splits endings more evenly and brings the Works style closer to fair, at about 36% more
+rounds. **A stays,** because nothing here shows a fault in it, and at 5 and 6 players C adds about 6 rounds to every game.
+C is worth trying with real people, mainly at 2 to 4 players.
+
+Limits: these are heuristic bots, not people. They didn't adapt to the rule: their "it's late" test includes "2 or fewer Projects
+open", which was written for A and so makes them buy Renown early under B and C. That likely exaggerates how much B and C reward Renown cards,
+and it may understate how short C could be. Each style's win rate has a margin of about ±8 points at these seat counts, so
+small gaps between styles mean nothing. One market family only. Time per turn and fun aren't measured.
