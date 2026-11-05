@@ -151,6 +151,9 @@ function keepScore(key: string): number {
   return d.cost / 2 + 1;
 }
 
+const MONEY_FLOOR = 6;
+const moneyOwned = (v: DeckView) => Object.entries(v.owned).reduce((a, [k, n]) => a + (DEFS[k]?.coins ?? 0) * n, 0);
+
 function chooseCards(q: PendingView, v: DeckView): number[] {
   const offered = q.cards ?? [];
   const keep = q.hint === 'keep';
@@ -158,6 +161,19 @@ function chooseCards(q: PendingView, v: DeckView): number[] {
   const trashing = !keep && (v.rulesVersion ?? 0) >= 3 && /trash/i.test(q.prompt);
   const score = (key: string) => (trashing && types(key).includes('victory') ? 9 : keepScore(key));
   const sorted = [...offered].sort((a: CardRefView, b: CardRefView) => (keep ? score(b.key) - score(a.key) : score(a.key) - score(b.key)) || a.id - b.id);
+  // Trashing all its money strands a bot, and an empty deck can never end the game (CC-BOT-9).
+  if (trashing && plans(v)) {
+    let money = moneyOwned(v);
+    const spare = sorted.filter((c) => {
+      const coins = DEFS[c.key]?.coins ?? 0;
+      if (coins && money - coins < MONEY_FLOOR) return false;
+      money -= coins;
+      return true;
+    });
+    const wanted = spare.filter((c) => score(c.key) <= 1).length;
+    const n = q.kind === 'react' ? 1 : Math.max(q.min, Math.min(q.max, wanted));
+    return [...spare.slice(0, wanted), ...sorted.filter((c) => !spare.slice(0, wanted).includes(c))].slice(0, n).map((c) => c.id);
+  }
   let n = q.min;
   if (q.kind !== 'react' && q.max > q.min) {
     const wanted = sorted.filter((c) => (keep ? score(c.key) > 0 : score(c.key) <= 1)).length;
@@ -294,7 +310,8 @@ function plannedBasic(key: string, v: DeckView, r: number): number {
   const pays = Math.min(1, r / 3);
   if (key === 'dynamo') return 7 * pays;
   if (key === 'cog') return 3.5 * pays;
-  return -1;
+  // A free Bronze is how a deck with no money starts earning again (CC-BOT-9).
+  return moneyOwned(v) < MONEY_FLOOR ? 1 : -1;
 }
 
 /** Late in the game, once any end condition is near. Based only on public counts. */

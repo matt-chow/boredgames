@@ -141,4 +141,28 @@ describe('CC-BOT: edition 4 bots', () => {
       expect(new Set(s.players.map((p) => p.turns)).size).toBe(1);
     });
   }, 120_000);
+
+  it('CC-BOT-9: a bot keeps enough money to play on, buys Bronze when it has none, and a Thinning table finishes', () => {
+    const t = new Table([], { players: 2 });
+    const v = view(t);
+    const hand = [{ id: 1, key: 'scrap' }, { id: 2, key: 'scrap' }, { id: 3, key: 'rust' }] as DeckView['hand'];
+    const q = { id: 9, seat: v.you, kind: 'cards', prompt: 'You may trash up to 3 cards.', min: 0, max: 3, cards: hand } as DeckView['pending'];
+    const decide = (owned: Record<string, number>) => botMove({ ...v, owned, pending: q }, BALANCED, 0)!.actions[0] as { cards: number[] };
+    expect(decide({ scrap: 6, rust: 1 }).cards).toEqual([3]);
+    expect(decide({ scrap: 8, rust: 1 }).cards).toEqual([3, 1, 2]);
+    t.s.turn.phase = 'buy';
+    t.s.turn.coins = 0;
+    t.s.turn.buys = 1;
+    const broke = { ...view(t), hand: [], owned: { burden_relief: 3 } };
+    expect(botMove(broke, BALANCED, 0)!.actions[0]).toEqual({ type: 'buy', pile: 'scrap' });
+    expect((botMove({ ...broke, owned: { scrap: 7 } }, BALANCED, 0)!.actions[0] as DeckAction).type).toBe('end-phase');
+    const thinning = PROFILES.find((p) => p.name === 'Thinning')!;
+    let s = game.setup({ playerCount: 2, seed: 'st-2-crown-2', config: { market: [], bans: [], projects: [], sets: ['core', 'crown'] } }) as DeckState;
+    for (let step = 0; step < 8000 && !s.over; step++) {
+      const [seat] = game.actors(s);
+      const r = ((botMove(game.project(s, seat) as DeckView, thinning, 0)!.actions) as DeckAction[]).map((a) => game.apply(s, seat, a)).find((x) => x.ok);
+      s = (r as { state: DeckState }).state;
+    }
+    expect(s.over).toBe(true);
+  });
 });
