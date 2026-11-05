@@ -302,6 +302,17 @@ What it can't show:
 Bots in rooms already in play keep the trashing they started with, so the golden games in `compat.test.ts` still match their
 baseline. New games get the corrected bot, which is still not a good judge of when to stop thinning.
 
+### Edition 4 benchmark: what is left (reported, not changed)
+
+From [BOT_BENCHMARK.md](BOT_BENCHMARK.md): 10 games per strategy and player count, 120 mixed tables per count, seats rotated. The planning bot wins 73.1% at 2 players (fair 50%) and 42.1% at 4 (fair 25%) among the
+old logic, and no game got stuck. These rank bots. They don't prove a card is too strong, and nothing below was changed.
+
+- **Spark and Works lead.** At mixed tables they win 2.10 and 1.71 times a fair share, and their mirrors end in about 12 rounds where others take 16 to 23. Rushing Projects is the strongest thing the bots found.
+- **Money, Scoring and Cycling trail** at about 0.6 times fair. Money funds 0.6 of 11 stages and always ends on Grand Duchy, so it barely touches Projects.
+- **Triggering usually wins:** 83.1% at 2 players, falling to 59.2% at 6.
+- **Projects end most large games:** 87.5% of mixed tables at 6 players and 50.8% at 2. F2 did not stop the shorter games at 5 and 6.
+- **Seats:** mostly within noise for 120 to 130 games. The largest gaps are the fourth seat's 17.3% in 4-player mirrors, and the last seat's 10.8% at mixed 6-player tables. Sample sizes are too small to call either a real seat effect.
+
 ## Art
 
 Every card and Crown Project has its own illustration in `public/cards/<key>.svg`, drawn from code in the approved clear-line

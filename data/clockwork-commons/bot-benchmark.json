@@ -1,0 +1,500 @@
+{
+ "games": {
+  "perCell": 10,
+  "mixedPerCount": 120
+ },
+ "seconds": 801,
+ "byCount": [
+  {
+   "players": 2,
+   "games": 130,
+   "rounds": 18.5,
+   "seats": [
+    "46.9%",
+    "53.1%"
+   ],
+   "triggerWon": "83.1%",
+   "duchy": "50.8%",
+   "projects": "49.2%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 3,
+   "games": 130,
+   "rounds": 19.333333333333332,
+   "seats": [
+    "38.1%",
+    "32.7%",
+    "29.2%"
+   ],
+   "triggerWon": "71.5%",
+   "duchy": "50.0%",
+   "projects": "50.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 4,
+   "games": 130,
+   "rounds": 18.25,
+   "seats": [
+    "23.8%",
+    "24.2%",
+    "34.6%",
+    "17.3%"
+   ],
+   "triggerWon": "69.2%",
+   "duchy": "39.2%",
+   "projects": "60.8%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 5,
+   "games": 130,
+   "rounds": 16.2,
+   "seats": [
+    "20.4%",
+    "16.4%",
+    "19.5%",
+    "19.2%",
+    "24.5%"
+   ],
+   "triggerWon": "67.7%",
+   "duchy": "24.6%",
+   "projects": "75.4%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 6,
+   "games": 130,
+   "rounds": 16.166666666666668,
+   "seats": [
+    "19.4%",
+    "21.7%",
+    "18.1%",
+    "13.1%",
+    "11.0%",
+    "16.6%"
+   ],
+   "triggerWon": "59.2%",
+   "duchy": "33.1%",
+   "projects": "66.9%",
+   "piles": "0.0%",
+   "stuck": 0
+  }
+ ],
+ "mirror": [
+  {
+   "name": "Money",
+   "games": 50,
+   "rounds": 17.416666666666664,
+   "score": 32.07,
+   "stages": 0.58,
+   "complete": 0,
+   "projectShare": 0.005321096549211573,
+   "duchy": "100.0%",
+   "projects": "0.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Balanced",
+   "games": 50,
+   "rounds": 16.266666666666666,
+   "score": 28.91,
+   "stages": 10.32,
+   "complete": 4.48,
+   "projectShare": 0.3752823252621142,
+   "duchy": "30.0%",
+   "projects": "70.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Economy",
+   "games": 50,
+   "rounds": 18.416666666666664,
+   "score": 30.31,
+   "stages": 9.66,
+   "complete": 4.18,
+   "projectShare": 0.3088760562257596,
+   "duchy": "32.0%",
+   "projects": "68.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Cycling",
+   "games": 50,
+   "rounds": 18.416666666666664,
+   "score": 34.83,
+   "stages": 7.86,
+   "complete": 3.18,
+   "projectShare": 0.22089282346655853,
+   "duchy": "58.0%",
+   "projects": "42.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Combo",
+   "games": 50,
+   "rounds": 21.333333333333332,
+   "score": 33.895,
+   "stages": 9.24,
+   "complete": 3.92,
+   "projectShare": 0.2597679100395064,
+   "duchy": "44.0%",
+   "projects": "56.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Spark",
+   "games": 50,
+   "rounds": 11.85,
+   "score": 22.91,
+   "stages": 10.72,
+   "complete": 4.78,
+   "projectShare": 0.44916733853937,
+   "duchy": "10.0%",
+   "projects": "90.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Works",
+   "games": 50,
+   "rounds": 12.75,
+   "score": 21.43,
+   "stages": 10.8,
+   "complete": 4.86,
+   "projectShare": 0.49700262810347523,
+   "duchy": "6.0%",
+   "projects": "94.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Devices",
+   "games": 50,
+   "rounds": 17.266666666666666,
+   "score": 31.35,
+   "stages": 8.42,
+   "complete": 3.48,
+   "projectShare": 0.26071925067552487,
+   "duchy": "52.0%",
+   "projects": "48.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Interaction",
+   "games": 50,
+   "rounds": 17.225,
+   "score": 28.905,
+   "stages": 9.62,
+   "complete": 4.16,
+   "projectShare": 0.31766044871425886,
+   "duchy": "22.0%",
+   "projects": "78.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Defence",
+   "games": 50,
+   "rounds": 18.75,
+   "score": 31.865,
+   "stages": 9.24,
+   "complete": 3.94,
+   "projectShare": 0.2646559370961048,
+   "duchy": "44.0%",
+   "projects": "56.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Scoring",
+   "games": 50,
+   "rounds": 22.75,
+   "score": 36.45,
+   "stages": 9.56,
+   "complete": 4.02,
+   "projectShare": 0.2523961750082141,
+   "duchy": "42.0%",
+   "projects": "58.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Risk",
+   "games": 50,
+   "rounds": 19.75,
+   "score": 31.895,
+   "stages": 9.82,
+   "complete": 4.22,
+   "projectShare": 0.2903504162548058,
+   "duchy": "32.0%",
+   "projects": "68.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "name": "Thinning",
+   "games": 50,
+   "rounds": 21.333333333333336,
+   "score": 32.795,
+   "stages": 9.16,
+   "complete": 3.84,
+   "projectShare": 0.2776342257658847,
+   "duchy": "42.0%",
+   "projects": "58.0%",
+   "piles": "0.0%",
+   "stuck": 0
+  }
+ ],
+ "mixedByCount": [
+  {
+   "players": 2,
+   "games": 120,
+   "rounds": 22.5,
+   "stages": 8.941666666666666,
+   "seats": [
+    "54.2%",
+    "45.8%"
+   ],
+   "duchy": "49.2%",
+   "projects": "50.8%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 3,
+   "games": 120,
+   "rounds": 21.333333333333332,
+   "stages": 9.65,
+   "seats": [
+    "34.2%",
+    "31.7%",
+    "34.2%"
+   ],
+   "duchy": "38.3%",
+   "projects": "61.7%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 4,
+   "games": 120,
+   "rounds": 17.25,
+   "stages": 10.383333333333333,
+   "seats": [
+    "21.7%",
+    "25.8%",
+    "25.8%",
+    "26.7%"
+   ],
+   "duchy": "20.8%",
+   "projects": "79.2%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 5,
+   "games": 120,
+   "rounds": 16.2,
+   "stages": 10.625,
+   "seats": [
+    "18.8%",
+    "20.0%",
+    "17.9%",
+    "23.3%",
+    "20.0%"
+   ],
+   "duchy": "17.5%",
+   "projects": "82.5%",
+   "piles": "0.0%",
+   "stuck": 0
+  },
+  {
+   "players": 6,
+   "games": 120,
+   "rounds": 15.166666666666666,
+   "stages": 10.783333333333333,
+   "seats": [
+    "18.2%",
+    "22.1%",
+    "12.8%",
+    "15.3%",
+    "20.8%",
+    "10.8%"
+   ],
+   "duchy": "12.5%",
+   "projects": "87.5%",
+   "piles": "0.0%",
+   "stuck": 0
+  }
+ ],
+ "mixed": [
+  {
+   "name": "Spark",
+   "seats": 183,
+   "winRate": 0.5245901639344263,
+   "ci": [
+    0.4524744754470119,
+    0.5956946688977166
+   ],
+   "vsFair": 2.098743961352657
+  },
+  {
+   "name": "Works",
+   "seats": 184,
+   "winRate": 0.4284420289855073,
+   "ci": [
+    0.35912244228901347,
+    0.500688519003196
+   ],
+   "vsFair": 1.7140330025112633
+  },
+  {
+   "name": "Devices",
+   "seats": 184,
+   "winRate": 0.3179347826086957,
+   "ci": [
+    0.2549591546872004,
+    0.38835734176512976
+   ],
+   "vsFair": 1.272646991994818
+  },
+  {
+   "name": "Balanced",
+   "seats": 185,
+   "winRate": 0.26216216216216215,
+   "ci": [
+    0.2040845516213722,
+    0.3299164312129186
+   ],
+   "vsFair": 1.0446707905861223
+  },
+  {
+   "name": "Risk",
+   "seats": 183,
+   "winRate": 0.2459016393442623,
+   "ci": [
+    0.18915872478442047,
+    0.31309345032005315
+   ],
+   "vsFair": 0.9880383149948366
+  },
+  {
+   "name": "Interaction",
+   "seats": 186,
+   "winRate": 0.23118279569892472,
+   "ci": [
+    0.17640417449724785,
+    0.29684088875548503
+   ],
+   "vsFair": 0.923226323741198
+  },
+  {
+   "name": "Defence",
+   "seats": 186,
+   "winRate": 0.22043010752688172,
+   "ci": [
+    0.16684773421771656,
+    0.28532713156512557
+   ],
+   "vsFair": 0.8781064735870228
+  },
+  {
+   "name": "Thinning",
+   "seats": 183,
+   "winRate": 0.19581056466302366,
+   "ci": [
+    0.14482166504521532,
+    0.25930817898666336
+   ],
+   "vsFair": 0.7876062623888711
+  },
+  {
+   "name": "Combo",
+   "seats": 182,
+   "winRate": 0.1886446886446886,
+   "ci": [
+    0.1384651120434442,
+    0.2516965453393305
+   ],
+   "vsFair": 0.7563768115942029
+  },
+  {
+   "name": "Economy",
+   "seats": 186,
+   "winRate": 0.1774193548387097,
+   "ci": [
+    0.12921258052885928,
+    0.23868149537442016
+   ],
+   "vsFair": 0.7065292490921781
+  },
+  {
+   "name": "Money",
+   "seats": 184,
+   "winRate": 0.15760869565217392,
+   "ci": [
+    0.11203431432792439,
+    0.21718775362720377
+   ],
+   "vsFair": 0.6310517038777907
+  },
+  {
+   "name": "Scoring",
+   "seats": 187,
+   "winRate": 0.15775401069518716,
+   "ci": [
+    0.11246997762672653,
+    0.21681671877489658
+   ],
+   "vsFair": 0.6296057495665559
+  },
+  {
+   "name": "Cycling",
+   "seats": 187,
+   "winRate": 0.14705882352941177,
+   "ci": [
+    0.10341500173142362,
+    0.20491190393275024
+   ],
+   "vsFair": 0.5860961705586566
+  }
+ ],
+ "versus": [
+  {
+   "players": 2,
+   "fair": 0.5,
+   "newAgainstOld": {
+    "games": 260,
+    "rate": 0.7307692307692307
+   },
+   "oldAgainstNew": {
+    "games": 260,
+    "rate": 0.21923076923076923
+   }
+  },
+  {
+   "players": 4,
+   "fair": 0.25,
+   "newAgainstOld": {
+    "games": 260,
+    "rate": 0.42115384615384616
+   },
+   "oldAgainstNew": {
+    "games": 260,
+    "rate": 0.19230769230769232
+   }
+  }
+ ]
+}
