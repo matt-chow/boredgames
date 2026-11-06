@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-03.
+Last updated 2026-11-06.
 
 ## Milestones
 
@@ -15,6 +15,16 @@ Last updated 2026-11-03.
 | M7 Simulations, browser tests, security, performance | Done, with gaps | See TESTING.md: Bean Coin dialog not exercised in a browser; 60 FPS not fully met in headless measurement; no 12-user load test |
 | M8 Deployment, smoke test, docs, handoff | Done | Live at https://boredgames.mchowcl.workers.dev, Workers Free plan; full browser suite passed against it |
 | M9 Clockwork Commons | Live | Second game, with a separate staging Worker. See the section below |
+| M10 Dead Drop | On staging | Third game: two people, secret orders, statements and challenges. See DEADDROP.md and DEADDROP_BALANCE.md |
+
+## Dead Drop (2026-11-06, on `feat/v3`, staging only)
+
+- **Rules:** `src/games/deaddrop/rules`, pure and seeded. Every approved rule has a DD-* test; eleven interpretations are recorded in DEADDROP.md for the owner to review.
+- **Hub:** listed, with a `noBots` catalog flag; two optional engine hooks (`meta.simultaneous` for actions that can't invalidate each other, `meta.readyCheck` for lobby ready states), the clock passed to `setup` and `apply`, `historyAction` to redact history rows.
+- **Screens:** lobby overview and ready; board, private missions, briefing with chat, statements and challenges; secret orders with Cover; report; intelligence journal; results with rematch. Desktop and phone.
+- **Art:** all original SVG from `scripts/art/deaddrop.mjs` (ASSETS.md).
+- **Still to run:** four Kingdom & Commerce browser tests and `perf.spec.ts`, stopped by low memory. CC-E2E-7's retry path also needs a `start`. See TESTING.md.
+- **Open for the owner:** the interpretations in DEADDROP.md, and DEADDROP_BALANCE.md's finding that delivering outperforms everything in scripted play. No threshold was changed.
 
 ## Since the handoff
 

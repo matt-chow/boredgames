@@ -1,8 +1,8 @@
 # Bored Games
 
 A private board game hub for a small group of friends. It has a complete online **Bohnanza** for 3–5 players, with the
-official AMIGO anniversary variants that work at those player counts, and **Kingdom & Commerce**, an original medieval
-deck-builder for 2–6.
+official AMIGO anniversary variants that work at those player counts, **Kingdom & Commerce**, an original medieval
+deck-builder for 2–6, and **Dead Drop**, an original Cold War game of secret orders and bluffing for exactly 2.
 
 - Live: https://boredgames.mchowcl.workers.dev
 - Stack: Svelte 5 + TypeScript + Vite on the client; Cloudflare Workers + SQLite-backed Durable Objects on the
@@ -61,6 +61,8 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 | [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) | Cloudflare deployment, free-tier budget, retention |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Design and engineering decisions with reasons |
 | [docs/CLOCKWORK.md](docs/CLOCKWORK.md) | Kingdom & Commerce: rules, old and new names, art, theme |
+| [docs/DEADDROP.md](docs/DEADDROP.md) | Dead Drop: rules, rule IDs, interpretations |
+| [docs/DEADDROP_BALANCE.md](docs/DEADDROP_BALANCE.md) | Dead Drop: strategy simulation findings and proposals |
 | [docs/ASSETS.md](docs/ASSETS.md) | Asset manifest and how to drop in licensed artwork |
 | [docs/PROGRESS.md](docs/PROGRESS.md) | Milestone status and known gaps |
 | [HUMAN_PLAYTEST.md](HUMAN_PLAYTEST.md) | How to play the current release and what feedback to send |

@@ -27,6 +27,8 @@ export interface CatalogEntry {
   guide?: () => Promise<{ guide: GuideDoc; guideFor?: (edition?: string | null) => GuideDoc }>;
   /** What the host can set in the room before starting. */
   settings: string[];
+  /** Only people can play it: no practising with bots. Matches a module without a `bot`. */
+  noBots?: boolean;
 }
 
 export const CATALOG: CatalogEntry[] = [
@@ -70,6 +72,27 @@ export const CATALOG: CatalogEntry[] = [
       'Influence carries between turns. When an end condition is met the round finishes, so everyone has equal turns. Most Renown wins, and it stays private until then.',
     ],
     settings: ['Which card sets are in play', 'A random or hand-picked market of 10', 'Banned cards', 'Crown Project selection', 'Market codes to share a setup'],
+  },
+  {
+    id: 'deaddrop',
+    name: 'Dead Drop',
+    status: 'available',
+    minPlayers: 2,
+    maxPlayers: 2,
+    minutes: '8-12',
+    pitch: 'Two rival agents, four locations, one city. Talk, lie and watch the signals: deliver your packages or catch your rival in the act.',
+    cover: '/art/covers/dead-drop.svg',
+    fan: () => import('../games/deaddrop/ui/Fan.svelte'),
+    guide: () => import('../games/deaddrop/ui/guide'),
+    accent: '#6f2334',
+    howTo: [
+      'Each of you has two secret mission locations. Each round you both choose in secret: Deliver, Investigate, Intercept or Decoy.',
+      'Before orders, talk freely and file at least one formal statement. Either can be a lie. You have one Challenge token to call one out.',
+      'Every order sends the same public signal, so nobody can tell a delivery from a decoy. Intercept a real delivery to block and score it.',
+      'Three deliveries covering both your locations wins. So do two interceptions. After seven rounds, deliveries, then interceptions, then Challenge Points decide it.',
+    ],
+    settings: ['Nothing to set: both players press Ready and the host starts'],
+    noBots: true,
   },
   {
     id: 'next',

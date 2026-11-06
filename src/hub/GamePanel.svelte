@@ -70,7 +70,7 @@
 
     <div class="info">
       <ul class="facts">
-        <li><Icon name="users" size={16} /><span class="num">{game.minPlayers}–{game.maxPlayers}</span> players</li>
+        <li><Icon name="users" size={16} /><span class="num">{game.minPlayers === game.maxPlayers ? game.minPlayers : `${game.minPlayers}–${game.maxPlayers}`}</span> players</li>
         <li><Icon name="clock" size={16} /><span class="num">{game.minutes}</span> min</li>
       </ul>
       <p class="pitch">{game.pitch}</p>
@@ -94,12 +94,18 @@
             {busy === 'friends' ? 'Creating…' : 'Create room'}
             <Icon name="arrowRight" />
           </button>
-          <button class="btn" disabled={!!busy} onclick={() => create(true)}>
-            <Icon name="bot" size={18} />
-            {busy === 'bots' ? 'Seating bots…' : 'Practise with bots'}
-          </button>
+          {#if !game.noBots}
+            <button class="btn" disabled={!!busy} onclick={() => create(true)}>
+              <Icon name="bot" size={18} />
+              {busy === 'bots' ? 'Seating bots…' : 'Practise with bots'}
+            </button>
+          {/if}
         </div>
-        <p class="hint">With bots you play {game.minPlayers - 1} simple computer {game.minPlayers === 2 ? 'player' : 'players'}. You can add friends from the room.</p>
+        {#if game.noBots}
+          <p class="hint">Played by two people. Share the room code with your rival.</p>
+        {:else}
+          <p class="hint">With bots you play {game.minPlayers - 1} simple computer {game.minPlayers === 2 ? 'player' : 'players'}. You can add friends from the room.</p>
+        {/if}
     </div>
   </div>
 

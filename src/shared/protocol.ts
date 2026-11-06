@@ -22,17 +22,19 @@ export function normalizeCode(raw: string): string | null {
 const isInvisible = (c: number) =>
   c < 0x20 || (c >= 0x7f && c <= 0x9f) || (c >= 0x200b && c <= 0x200f) || (c >= 0x2028 && c <= 0x202e) || (c >= 0x2066 && c <= 0x2069) || c === 0xfeff;
 
-/** Trim, collapse whitespace, strip control characters. Returns null if empty/too long. */
-export function normalizeName(raw: unknown): string | null {
+/** Trim, collapse whitespace, strip control characters. Returns null if empty or longer than `max`. */
+export function normalizeText(raw: unknown, max: number): string | null {
   if (typeof raw !== 'string') return null;
   const n = [...raw]
     .filter((ch) => !isInvisible(ch.codePointAt(0)!))
     .join('')
     .replace(/\s+/g, ' ')
     .trim();
-  if (!n || [...n].length > MAX_NAME) return null;
+  if (!n || [...n].length > max) return null;
   return n;
 }
+
+export const normalizeName = (raw: unknown) => normalizeText(raw, MAX_NAME);
 
 export type RoomStatus = 'lobby' | 'playing' | 'over';
 
@@ -71,6 +73,8 @@ export interface RoomView {
   canConfigure: boolean;
   /** The caller may seat a computer player now. */
   canAddBot: boolean;
+  /** Seats marked ready, in a game with a ready check. */
+  ready?: number[];
   canUndo: boolean;
   actors: number[];
   game: unknown;
@@ -84,6 +88,7 @@ export type ClientMsg =
   | { t: 'start'; id: string; v: number }
   | { t: 'kick'; id: string; v: number; seat: number }
   | { t: 'addBot'; id: string; v: number }
+  | { t: 'ready'; id: string; v: number; on: boolean }
   | { t: 'leave'; id: string; v: number }
   | { t: 'rematch'; id: string; v: number }
   | { t: 'ping' };

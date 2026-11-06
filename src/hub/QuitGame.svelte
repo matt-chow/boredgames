@@ -3,6 +3,7 @@
   import { forgetRoom } from '../client/lib/recent';
   import { router } from '../client/lib/router.svelte';
   import { toasts } from '../client/lib/toast.svelte';
+  import { GAMES } from '../games/registry';
   import type { RoomView } from '../shared/protocol';
   import Dialog from './Dialog.svelte';
 
@@ -10,6 +11,7 @@
 
   // With other people seated, the server hands the seat to a bot; otherwise the game ends and the table is deleted.
   const othersHere = $derived(room.seats.some((s) => s.seat !== room.you && !s.bot));
+  const hasBots = $derived(!!GAMES[room.gameId]?.bot);
   let busy = $state(false);
 
   async function quit() {
@@ -25,7 +27,9 @@
 
 <Dialog bind:open title="Quit this game?">
   <p>
-    {#if othersHere}
+    {#if !hasBots}
+      This game needs both players, so quitting ends it for everyone and the table closes. It can’t be resumed.
+    {:else if othersHere}
       A bot takes over your seat, with your hand and fields, so everyone else can finish the game. You can’t come back
       to this game.
     {:else}

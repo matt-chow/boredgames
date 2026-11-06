@@ -106,6 +106,7 @@
               <span class="dot" class:on={s.connected} title={s.connected ? 'Online' : 'Offline'}></span>
             {/if}
             <span class="sname">{s.name}{s.seat === room.you ? ' (you)' : ''}</span>
+            {#if room.ready}<span class="rdy" class:on={room.ready.includes(s.seat)}>{room.ready.includes(s.seat) ? 'Ready' : 'Not ready'}</span>{/if}
             {#if s.host}<span class="host"><Icon name="crown" size={14} /> Host</span>{/if}
             {#if room.canConfigure && s.seat !== room.you}
               <button class="btn ghost small" onclick={() => send({ t: 'kick', seat: s.seat })} aria-label="Remove {s.name}">Remove</button>
@@ -116,6 +117,12 @@
           <li class="empty"><span class="dot"></span><span class="sname">Waiting for a player…</span></li>
         {/each}
       </ol>
+      {#if room.ready}
+        {@const on = room.ready.includes(room.you)}
+        <button class="btn small rdybtn" class:primary={!on} disabled={conn.busy} aria-pressed={on} onclick={() => send({ t: 'ready', on: !on })}>
+          <Icon name="check" size={16} /> {on ? 'Not ready after all' : 'I’m ready'}
+        </button>
+      {/if}
       {#if room.canAddBot}
         <button class="btn small addbot" disabled={conn.busy} onclick={() => send({ t: 'addBot' })}>
           <Icon name="bot" size={16} /> Add a bot
@@ -280,6 +287,18 @@
     gap: 4px;
     font-size: 12px;
     color: var(--coin);
+  }
+  .rdy {
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+  .rdy.on {
+    color: var(--sprout);
+    font-weight: 600;
+  }
+  .rdybtn {
+    margin-top: 12px;
+    min-height: 44px;
   }
   .leave {
     margin-top: 16px;

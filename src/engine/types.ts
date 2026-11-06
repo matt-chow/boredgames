@@ -14,6 +14,10 @@ export interface GameMeta {
   stateVersion: number;
   /** How many of a player's consecutive undoable actions can be taken back. One if not set. */
   undoSteps?: number;
+  /** Everyone acts at once and `apply` guards each action itself, so an action is never refused for a stale room version. */
+  simultaneous?: boolean;
+  /** Every seat must mark itself ready in the lobby before the game can start. */
+  readyCheck?: boolean;
 }
 
 /** A toggleable option shown in the room setup UI. */
@@ -31,6 +35,8 @@ export interface SetupContext<Config> {
   playerCount: number;
   seed: string;
   config: Config;
+  /** The server's clock, for a game with timestamps or phase clocks. */
+  now?: number;
 }
 
 export type ApplyResult<State> =
@@ -69,8 +75,11 @@ export interface GameModule<Config = unknown, State = unknown, Action = unknown,
    * Validate and apply an action by `seat`. Must not mutate `state`.
    * `undoable` tells the host whether this action may later be reverted by
    * its author (only when it revealed no hidden information).
+   * `now` is the server's clock; rules must not read any other.
    */
-  apply(state: State, seat: number, action: Action): ApplyResult<State>;
+  apply(state: State, seat: number, action: Action, now?: number): ApplyResult<State>;
+  /** What may be written to the room's history for this action, where the action itself holds a secret. */
+  historyAction?(action: Action): unknown;
   /** Seats that currently have something they may or must do. */
   actors(state: State): number[];
   /** The authorized view for a seat (or `null` for an unseated observer). */

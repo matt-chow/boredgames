@@ -16,6 +16,10 @@ describe('hub catalog', () => {
     for (const g of CATALOG.filter((x) => x.status === 'soon')) expect(LISTED_GAMES).not.toContain(g.id);
   });
 
+  it('offers bots only for games that have them', () => {
+    for (const g of CATALOG.filter((x) => x.status === 'available')) expect(!!g.noBots).toBe(!GAMES[g.id].bot);
+  });
+
   it('keeps ids unique and gives every box a colour to fall back on', () => {
     expect(new Set(CATALOG.map((g) => g.id)).size).toBe(CATALOG.length);
     for (const g of CATALOG) expect(g.accent).toMatch(/^#[0-9a-f]{6}$/i);

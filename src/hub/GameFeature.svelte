@@ -15,7 +15,7 @@
       <p class="pill">Coming soon</p>
     {:else}
       <ul class="facts">
-        <li><Icon name="users" size={16} /><span class="num">{game.minPlayers}–{game.maxPlayers}</span> players</li>
+        <li><Icon name="users" size={16} /><span class="num">{game.minPlayers === game.maxPlayers ? game.minPlayers : `${game.minPlayers}–${game.maxPlayers}`}</span> players</li>
         <li><Icon name="clock" size={16} /><span class="num">{game.minutes}</span> min</li>
       </ul>
       <button class="btn primary open" aria-haspopup="dialog" aria-label="Open Table: {game.name}" onclick={onopen}>Open Table <Icon name="arrowRight" /></button>

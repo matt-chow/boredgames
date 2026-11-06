@@ -28,6 +28,17 @@ The placeholders are fully functional:
 No asset is fetched from a third-party origin at runtime. The Content-Security-Policy in `public/_headers` allows only
 `'self'` (plus `data:` images).
 
+## Dead Drop
+
+All original, drawn in SVG by `scripts/art/deaddrop.mjs` (run it with `node` to regenerate), with no third-party material and no image service. Stamps and the report letterhead are SVG text in the system Courier stack, so no font file ships.
+
+| Files | What |
+|---|---|
+| `public/art/covers/dead-drop.svg` | Game cover: two rival agents in a European city at night |
+| `public/art/deaddrop/{embassy,station,hotel,harbour}.svg` | The four locations |
+| `public/art/deaddrop/icon-{deliver,investigate,intercept,decoy,cover,challenge}.svg` | Order, Cover and challenge icons |
+| `public/art/deaddrop/{dossier,report,paper}.svg` | Mission folder, report letterhead, paper texture |
+
 ## Using licensed artwork
 
 If you obtain permission from the rights holders:

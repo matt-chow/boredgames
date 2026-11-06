@@ -1,0 +1,36 @@
+/*
+ * Dead Drop's look: a 1950s field office at night. Navy is the table, parchment carries what is read, burgundy stamps.
+ * Amber takes the role of the signal colour inside this game only ("legal, your move"), as D26 allows.
+ * Teal marks what is verified; a dashed burgundy edge marks what nobody has checked.
+ */
+[data-game-theme='deaddrop'] {
+  --ground-0: #0e1626;
+  --ground-1: #16233a;
+  --ground-2: #1f2e49;
+  --ground-3: #2a3b59;
+  --rim: #3a4c6b;
+  --rim-hi: #5c7091;
+  --ink: #f4ecd9;
+  --ink-2: #d5ccb7;
+  --ink-3: #aeb0a8;
+  --sprout: #e2ab4a;
+  --sprout-ink: #16233a;
+  --sprout-dim: rgb(226 171 74 / 0.18);
+  --warn: #ef9d8b;
+  --coin: #f3cd7c;
+  --coin-ink: #16233a;
+
+  --dd-paper: #efe5cd;
+  --dd-paper-2: #e2d5b6;
+  --dd-paper-rim: #b5a47f;
+  --dd-paper-ink: #23272e;
+  --dd-paper-ink-2: #4c4a42;
+  --dd-wine: #7a2438;
+  --dd-teal: #235356;
+  --dd-teal-hi: #8fbab5;
+  --dd-type: 'Courier New', Courier, monospace;
+}
+
+body:has([data-game-theme='deaddrop']:not([data-fan])) {
+  background: #16233a;
+}

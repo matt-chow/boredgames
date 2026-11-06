@@ -306,3 +306,18 @@ given its own subject and composition to avoid looking templated. Inline scenes 
 
 ### D43. Edition 4 is the final release ruleset
 The owner confirmed edition 4 for release, including both D40 interpretations: unused turns and Buys don't carry into the final round, and equal Renown shares the place. Older rooms keep their editions. Internal names such as the game id `clockwork`, card keys and bot profile names stay, because saves, replays and benchmark seeds depend on them. Only what people read changed.
+
+### D44. Dead Drop goes through the hub's room, with two small hooks
+Simultaneous orders don't fit the room's "one version at a time" check, since two players submitting against the same version are not in conflict. `meta.simultaneous` skips that check for a game, and each Dead Drop action carries its round (acknowledgements a count, calls a phase), so what is stale is decided by the rules. `meta.readyCheck` adds lobby ready states. No other game changes behaviour, and `src/server` still knows nothing about Dead Drop.
+
+### D45. Deliveries are private until the match ends
+The brief asks for public scores and also that spending Cover not reveal a delivery's location. Public delivery counts would turn every signal into a yes-or-no on delivery and let the rival subtract, so the public score is interceptions, Cover, tokens and opened Challenge Points. Recorded as interpretation I-2 for the owner. Spending Cover is still public, as the brief requires, which shows a delivery was attempted (I-3).
+
+### D46. Sealing a challenge depends only on the claim's kind
+Opening a "delivered" or "did not deliver" challenge mid-match can confirm a delivery the rival can't otherwise see. Sealing only those that would reveal something would make the seal itself an answer. So those two kinds always stay sealed until the end and the other two always open at once (I-4, DD-CH5).
+
+### D47. No bots, and a quit ends the match
+The brief excludes AI players. The hub's quit normally gives the seat to a bot, so a game without a `bot` hook now closes for both instead, and the lobby and panel drop their bot controls (`noBots`, tested against the module).
+
+### D48. Dead Drop's art is SVG from a script
+`scripts/art/deaddrop.mjs` writes every scene, icon and paper in the approved palette, following D42. No image service was available or wanted, the files stay small and editable, and no third-party rights are involved. Amber takes `--sprout`'s role inside this game (D26).

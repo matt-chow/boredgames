@@ -46,6 +46,8 @@ export interface RoomMeta {
   away?: Record<number, number>;
   /** Seats a bot plays until the person comes back. Unlike a quit, the seat keeps its session. */
   standIn?: number[];
+  /** Seats marked ready, in a game with a ready check. Any change of seats clears it. */
+  ready?: number[];
 }
 
 export interface SeatRow {
@@ -308,6 +310,7 @@ export class RoomCore {
       canStart: this.meta.status === 'lobby' && !configError && this.mayManage(seat, connected),
       canConfigure: this.meta.status === 'lobby' && this.mayManage(seat, connected),
       canAddBot: this.meta.status === 'lobby' && !!g.bot && n < g.meta.maxPlayers && this.mayManage(seat, connected),
+      ...(g.meta.readyCheck ? { ready: this.meta.ready ?? [] } : {}),
       canUndo:
         this.meta.status === 'playing' && !!undo && undo.seat === seat && undo.version === this.meta.version,
       actors: state ? g.actors(state) : [],
@@ -327,6 +330,8 @@ export class RoomCore {
     const n = this.seats.length;
     if (n < g.meta.minPlayers) return `Waiting for players: ${g.meta.name} needs at least ${g.meta.minPlayers}.`;
     if (n > g.meta.maxPlayers) return `${g.meta.name} allows at most ${g.meta.maxPlayers} players.`;
+    const unready = g.meta.readyCheck ? this.seats.filter((_, i) => !this.meta.ready?.includes(i)) : [];
+    if (unready.length) return `Waiting for ${unready.map((s) => s.name).join(' and ')} to get ready.`;
     return g.validateConfig(this.meta.config, n);
   }
 
@@ -355,7 +360,8 @@ export class RoomCore {
     let result: Ack;
     try {
       const v = (msg as { v?: unknown }).v;
-      if (!quitting && (typeof v !== 'number' || v !== this.meta.version))
+      const anyVersion = msg.t === 'ready' || (msg.t === 'act' && this.game.meta.simultaneous);
+      if (!quitting && !anyVersion && (typeof v !== 'number' || v !== this.meta.version))
         throw new RoomError('stale', 'The table changed before your move arrived. Check the table and try again.');
       evict = this.dispatch(seat, msg, connected);
       result = { ok: true };
@@ -374,6 +380,13 @@ export class RoomCore {
       case 'act':
         this.act(seat, msg.a);
         return [];
+      case 'ready': {
+        if (this.meta.status !== 'lobby' || !this.game.meta.readyCheck) throw new RoomError('bad-request', 'There is nothing to get ready for.');
+        const others = (this.meta.ready ?? []).filter((s) => s !== seat);
+        this.meta.ready = msg.on ? [...others, seat] : others;
+        this.commit('ready', seat, {}, {});
+        return [];
+      }
       case 'addBot': {
         if (this.meta.status !== 'lobby') throw new RoomError('started', 'Bots can only join before the game starts.');
         this.requireManage(seat, connected);
@@ -411,7 +424,7 @@ export class RoomCore {
         const problem = this.startProblem();
         if (problem) throw new RoomError('cannot-start', problem);
         const seed = this.opts.seed();
-        this.state = this.game.setup({ playerCount: this.seats.length, seed, config: this.meta.config });
+        this.state = this.game.setup({ playerCount: this.seats.length, seed, config: this.meta.config, now: this.opts.now() });
         this.loadedState = true;
         this.meta.seed = seed;
         this.meta.status = 'playing';
@@ -424,6 +437,7 @@ export class RoomCore {
         this.state = null;
         this.meta.status = 'lobby';
         this.meta.seed = null;
+        delete this.meta.ready;
         this.commit('rematch', seat, {}, { state: true, undo: null });
         return [];
       }
@@ -453,7 +467,7 @@ export class RoomCore {
 
   private act(seat: number, a: unknown) {
     if (this.meta.status !== 'playing') throw new RoomError('not-playing', 'The game is not in progress.');
-    const r = this.game.apply(this.getState(), seat, a);
+    const r = this.game.apply(this.getState(), seat, a, this.opts.now());
     if (!r.ok) throw new RoomError(r.code, r.error);
     const prev = this.state;
     const before = this.undoChain(seat);
@@ -465,7 +479,7 @@ export class RoomCore {
       delete this.meta.standIn;
     }
     const undoable = r.undoable && !over && !this.isBotSeat(seat);
-    this.commit('act', seat, a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev, ...(before ? { prior: before } : {}) } : null });
+    this.commit('act', seat, this.game.historyAction ? this.game.historyAction(a) : a, { state: true, undo: undoable ? { seat, version: this.meta.version + 1, state: prev, ...(before ? { prior: before } : {}) } : null });
   }
 
   /** What this player's next undoable action builds on: their still-valid steps, cut to the game's limit. */
@@ -605,6 +619,7 @@ export class RoomCore {
   private commit(kind: string, seat: number, data: unknown, what: { seats?: boolean; state?: boolean; undo?: UndoRow | null }) {
     this.meta.version++;
     this.meta.updatedAt = this.opts.now();
+    if (what.seats) delete this.meta.ready;
     this.store.transaction(() => {
       this.store.putMeta(this.meta);
       if (what.seats) this.store.putSeats(this.seats);

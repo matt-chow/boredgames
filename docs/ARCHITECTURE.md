@@ -198,3 +198,8 @@ Rows saved before this have no links and undo one step.
 - **Settings:** reduced motion, low-performance mode and sound live in `settings.svelte.ts`.
 - **Camera:** a fixed isometric tilt (`rotateX(20deg)`) with zoom, pan and reset, but no rotation. Nothing runs
   per frame when the table is idle.
+
+## Dead Drop
+
+Dead Drop (`src/games/deaddrop`) is a plain `GameModule` with no bot. It uses two optional `GameMeta` flags: `simultaneous`, under which the
+room doesn't reject an action for an old version, because the rules refuse what is really stale by its round; and `readyCheck`, which adds lobby ready states. `apply` and `setup` receive the room's clock for timestamps and inactivity limits, and `historyAction` redacts secrets from history rows. See DEADDROP.md, D44 to D48.

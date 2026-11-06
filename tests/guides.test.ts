@@ -7,6 +7,7 @@ import { assignStages, splitProject } from '../src/engine/deckbuilder';
 import { EDITIONS, STAGE_NAMES } from '../src/games/clockwork/rules/editions';
 import { RULES } from '../src/games/clockwork/rules/ruleset';
 import { guide as kingdom, guideFor } from '../src/games/clockwork/ui/guide';
+import { guide as deadDrop } from '../src/games/deaddrop/ui/guide';
 import { GRACE_MS, MemoryStore, RoomCore } from '../src/server/core';
 import { blockText, searchGuide, type GuideDoc } from '../src/hub/guide';
 import { make, ok } from './bohnanza/helpers';
@@ -16,7 +17,7 @@ const textOf = (doc: GuideDoc) => doc.levels.flatMap((l) => l.sections.flatMap((
 const defOf = (key: string) => RULES.cards.find((c) => c.key === key)!;
 
 describe('guide structure', () => {
-  for (const doc of [beans, kingdom]) {
+  for (const doc of [beans, kingdom, deadDrop]) {
     it(`GUIDE-1: ${doc.title} has the three levels, unique ids and no empty sections`, () => {
       expect(doc.levels.map((l) => l.id)).toEqual(['quick', 'full', 'rules']);
       const ids = doc.levels.flatMap((l) => l.sections.map((s) => s.id));
