@@ -88,10 +88,11 @@ were added, and both faults are now caught.
 **Latest results.**
 
 - **Dead Drop on `feat/v3`** (2026-11-06): `npm run check` 0 errors; `npm test` 809 / 809 in 32 files. Local, one worker, spec groups run
-  separately on a machine short of memory: bots 2, guide 5, home 14, lobby 2, theme 1, play 5, resilience 5, complete 4, deaddrop 2, deck 7, all passed;
-  clockwork 10 passed, 5 failed. **Not verified:** three KC3-TREASURY-4 tests and CC-E2E-6 died with their worker (0xC0000142) when the system ran
-  low on memory, and `perf.spec.ts` was not run. CC-E2E-7 failed with "the game did not finish": when the first game shows no final round (CC-FINAL-2), the test's
-  "Play again" returns to the lobby and it never starts the next game, so the driver runs out of steps. The failure snapshot shows the lobby. That is a bug in the test, in its retry path, and likely explains the production failure noted below.
+  separately because the machine was short of memory: bots 2, guide 5, home 14, lobby 2, theme 1, play 5, resilience 5, complete 4, deaddrop 2, deck 7,
+  clockwork 15, perf 1, all passed, though not in one single run. In clockwork, three KC3-TREASURY-4 tests and CC-E2E-6 first died with their worker (0xC0000142) when
+  memory ran out, then passed alone. CC-E2E-7 failed twice with "the game did not finish": when the first game shows no final round (CC-FINAL-2), "Play again"
+  returned to the lobby and the test never started the next game. It now does, and passes. That likely explains the production failure noted below. Staging got a
+  home page, art and room-creation check by direct requests; no browser test has run against staging.
 
 - **Edition 4 production release** (`7e5956d`, 2026-11-05): `npm run check` 0 errors; 690 unit tests in 27 files, one file at a time.
   Staging, one worker: guide 5, home 7 (7 skipped, dev-server fixture), lobby 2, theme 1, resilience 5, clockwork 14. Local: home 14,

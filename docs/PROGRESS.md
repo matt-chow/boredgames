@@ -23,7 +23,7 @@ Last updated 2026-11-06.
 - **Hub:** listed, with a `noBots` catalog flag; two optional engine hooks (`meta.simultaneous` for actions that can't invalidate each other, `meta.readyCheck` for lobby ready states), the clock passed to `setup` and `apply`, `historyAction` to redact history rows.
 - **Screens:** lobby overview and ready; board, private missions, briefing with chat, statements and challenges; secret orders with Cover; report; intelligence journal; results with rematch. Desktop and phone.
 - **Art:** all original SVG from `scripts/art/deaddrop.mjs` (ASSETS.md).
-- **Still to run:** four Kingdom & Commerce browser tests and `perf.spec.ts`, stopped by low memory. CC-E2E-7's retry path also needs a `start`. See TESTING.md.
+- **Still to run:** browser tests against staging, and a match played by real people. Every local browser test has passed. See TESTING.md.
 - **Open for the owner:** the interpretations in DEADDROP.md, and DEADDROP_BALANCE.md's finding that delivering outperforms everything in scripted play. No threshold was changed.
 
 ## Since the handoff

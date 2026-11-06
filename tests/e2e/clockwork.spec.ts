@@ -345,6 +345,7 @@ test.describe('Kingdom & Commerce', () => {
       if (game) {
         await host.page.getByRole('button', { name: 'Play again' }).click();
         await expect(host.page.locator('.sum h2')).toBeHidden({ timeout: 15_000 });
+        await start(host); // A rematch returns to the lobby.
       }
       await playOut([host], 2500);
     }
