@@ -166,6 +166,38 @@ The registry in `cards.ts` is the single source for the rules, the encyclopedia,
   - Card ids follow shuffled order, so they say nothing about the card.
   - Unreached destinations stay hidden, even after the round.
 
+## Presentation (MS-LOG*, MS-FX*)
+
+The table is animated only from confirmed public lines. The client never guesses.
+
+- **MS-LOG1.** Log lines and chat share one rising id, and each line carries the server's time. Every move ends with a
+  public draw line: how many cards the mover drew (a count, never the card) and whose turn it is now.
+- **MS-LOG2.** A saved game from before ids (state version 1) gets ids on its log lines, numbered after its chat.
+- **MS-FX1.** A view presents only lines with an id above the last view's highest. A resent or reconnected view
+  presents nothing twice, and a first view (a join, a reload) replays nothing. Chat is never a board event.
+- **MS-FX2.** "Next" comes from public counts: the next seat in order, skipping empty hands once the deck is gone.
+- **MS-FX3.** Presentation lines carry no hand, card list, role or deck order.
+
+**How lines become effects** (`ui/events.ts` picks them, `ui/fx.ts` draws them, `ui/Table.svelte` sequences them):
+
+| Line | On the table |
+|---|---|
+| Laid a tunnel | Your card flies from your hand; an opponent's flies face-down from their fan and turns face up as it lands. Dust and chips when it settles (about 460 ms of flight) |
+| Action on a player | The card flies to their avatar. A break shakes it with sparks; a repair, freeing or guard swells it with a warm glow |
+| Cave-in | The tunnel shakes, falls away with rocks and dust, and the board shakes (about 800 ms) |
+| Survey | The card flies to the destination, which swells; only the surveyor sees the face, in their own panel |
+| Discard or clear | Face-down cards fly to the discard pile |
+| Draw | Card backs fly from the deck to the hand or fan, staggered |
+| Reveal | The destination turns over (about 900 ms): a gold shimmer, or a quiet coal puff |
+| Round, pick, theft | A note by the place or avatar |
+
+- Notes are short bubbles by the place or the avatar: at most three, gone after 2.8 s, stacked so they never overlap.
+- More than eight new lines at once (a reconnect after a long gap) shows notes only, with no replay.
+- Any new view, any press, or Escape lands every animation at once. Animations never block a move.
+- Fast animations (a setting) and low-performance mode shorten everything to about half. Reduced motion turns it off.
+- Sounds are synthesized with Web Audio (no files). They start only after a gesture and follow the master mute.
+  Ambience is off by default. The mine's sound settings live in the browser (`mines.prefs`).
+
 ## Rules audit: decisions on unclear cases
 
 The modes are specified in the project brief. Where the brief is silent, the interpretation below was chosen and

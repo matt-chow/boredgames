@@ -7,7 +7,7 @@ import { settings } from './settings.svelte';
 let ctx: AudioContext | null = null;
 let master: GainNode | null = null;
 
-function audio(): AudioContext | null {
+export function audio(): AudioContext | null {
   if (settings.muted || typeof AudioContext === 'undefined') return null;
   if (!ctx) {
     ctx = new AudioContext();
@@ -19,7 +19,7 @@ function audio(): AudioContext | null {
   return ctx;
 }
 
-function tone(freq: number, dur: number, opts: { type?: OscillatorType; gain?: number; delay?: number; slide?: number } = {}) {
+export function tone(freq: number, dur: number, opts: { type?: OscillatorType; gain?: number; delay?: number; slide?: number } = {}) {
   const a = audio();
   if (!a) return;
   const t = a.currentTime + (opts.delay ?? 0);
@@ -36,7 +36,7 @@ function tone(freq: number, dur: number, opts: { type?: OscillatorType; gain?: n
   o.stop(t + dur + 0.02);
 }
 
-function noise(dur: number, opts: { gain?: number; delay?: number; freq?: number } = {}) {
+export function noise(dur: number, opts: { gain?: number; delay?: number; freq?: number } = {}) {
   const a = audio();
   if (!a) return;
   const t = a.currentTime + (opts.delay ?? 0);
@@ -55,6 +55,9 @@ function noise(dur: number, opts: { gain?: number; delay?: number; freq?: number
   src.connect(f).connect(g).connect(master!);
   src.start(t);
 }
+
+/** The gain node every sound ends in, so a game can add its own long-running sources (ambience). */
+export const mixer = () => (audio() ? master : null);
 
 export const sfx = {
   card: () => noise(0.09, { gain: 0.22, freq: 3200 }),

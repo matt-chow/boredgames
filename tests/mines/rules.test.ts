@@ -162,7 +162,7 @@ describe('MS-GEO: tunnels', () => {
     // Coal with east and south openings is turned to west and north to meet a tunnel from the west.
     expect(g.s.cells['8,0']).toEqual({ kind: 'coalR', rot: 1 });
     expect(g.s.phase).toBe('play');
-    expect(g.view(1).log.at(-1)).toEqual({ t: 'reveal', goal: 1, kind: 'coalR' });
+    expect(g.view(1).log.find((e) => e.t === 'reveal')).toMatchObject({ t: 'reveal', goal: 1, kind: 'coalR' });
   });
 
   it('MS-X-LAD1: a ladder is joined to the entrance wherever it touches the mine, but never beside a destination', () => {
@@ -245,7 +245,7 @@ describe('MS-TURN: turns', () => {
     g.now += 30_000;
     g.do(0, { type: 'timeout', turn: g.turn });
     expect(g.s.seats[1].hand.some((c) => c.id === first)).toBe(false);
-    expect(g.s.log.at(-1)).toEqual({ t: 'pass', seat: 1, n: 1, auto: true });
+    expect(g.s.log.at(-2)).toMatchObject({ t: 'pass', seat: 1, n: 1, auto: true });
     const none = new Game(3);
     none.now += 10 ** 9;
     expect(none.code(0, { type: 'timeout', turn: none.turn })).toBe('early');
@@ -523,6 +523,35 @@ describe('MS-END: the end', () => {
     expect(g.code(1, { type: 'chat', text: '   ' })).toBe('bad-chat');
     expect(g.view(0).chat.map((c) => c.text ?? c.react)).toEqual(['hello', 'gg']);
     expect(g.turn).toBe(0);
+  });
+
+  it('MS-LOG1: log lines and chat share one rising id; every move ends with a public draw count and whose turn it is', () => {
+    const g = upNext(new Game(3, { mode: 'expanded' }), 0);
+    g.do(2, { type: 'chat', text: 'hi' });
+    g.now += 5_000;
+    const [s] = g.give(0, 'swapHands');
+    g.do(0, { type: 'act', turn: g.turn, card: s.id, on: 1 });
+    const v = g.view(2);
+    const ids = [...v.log.map((e) => e.id), ...v.chat.map((c) => c.id)].sort((a, b) => a - b);
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(v.chat[0].id).toBeLessThan(v.log.at(-1)!.id);
+    // Trade Satchels: the other player draws one, the player who played it none, then it is seat 1's turn.
+    expect(v.log.slice(-3).map(({ id: _i, at, ...e }) => ({ ...e, at: at === g.now }))).toEqual([
+      { t: 'act', seat: 0, kind: 'swapHands', on: 1, at: true },
+      { t: 'draw', seat: 1, n: 1, next: null, at: true },
+      { t: 'draw', seat: 0, n: 0, next: 1, at: true },
+    ]);
+  });
+
+  it('MS-LOG2: a saved v1 game gets ids on its log lines, numbered after its chat', () => {
+    const g = new Game(3);
+    g.do(1, { type: 'chat', text: 'old' });
+    const { nextId, ...rest } = structuredClone(g.s);
+    const v1 = { ...rest, nextChat: nextId, log: rest.log.map(({ id: _i, at: _a, ...e }) => e) };
+    const s = mines.migrate!(v1, 1);
+    expect(s.log.map((e) => e.id)).toEqual(s.log.map((_, i) => nextId + i));
+    expect(s.nextId).toBe(nextId + s.log.length);
+    expect('nextChat' in s).toBe(false);
   });
 });
 

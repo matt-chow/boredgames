@@ -29,6 +29,11 @@ export function logText(e: LogEntry, who: (seat: number) => string): string {
       return e.auto ? `A gold card was picked for ${who(e.seat)}.` : `${who(e.seat)} took a gold card.`;
     case 'steal':
       return e.from === null ? `${who(e.seat)} stole nothing.` : `${who(e.seat)} stole 1 gold from ${who(e.from)}.`;
+    case 'draw': {
+      const drew = e.n ? `${who(e.seat)} drew ${e.n === 1 ? 'a card' : `${e.n} cards`}.` : '';
+      const next = e.next === null ? '' : `Turn: ${who(e.next)}.`;
+      return [drew, next].filter(Boolean).join(' ');
+    }
     case 'act': {
       const name = ACTION[e.kind].name;
       const on = e.on === undefined ? '' : ` on ${who(e.on)}`;

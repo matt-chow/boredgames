@@ -38,6 +38,9 @@ class SettingsStore {
   get volume() {
     return this.#s.volume;
   }
+  set volume(v: number) {
+    this.#s.volume = Math.min(1, Math.max(0, v));
+  }
   /** User choice, else the OS preference. */
   get reducedMotion() {
     return this.#s.reducedMotion ?? prefersReduced();

@@ -123,3 +123,92 @@ test('MS-E2E-2: two players see Expanded and the Duel offered alike, play the Du
     expect(p.errors).toEqual([]);
   }
 });
+
+/** The feed's rows as text, oldest first. */
+const feed = (p: Player) => p.page.locator('.activity .feed li:not(.empty)').allInnerTexts();
+
+test('MS-E2E-3: the tabletop in Expanded: fans, deck, turn, activity and chat, drag to discard, and a reload without repeats', async ({ browser }) => {
+  test.setTimeout(150_000);
+  const a = await newPlayer(browser, 'Dot', DESKTOP);
+  const b = await newPlayer(browser, 'Eli', PHONE);
+  const code = await openTable(a);
+  await b.page.goto(`/r/${code}`);
+  await b.page.fill('#jname', b.name);
+  await b.page.getByRole('button', { name: 'Take a seat' }).click();
+  await expect(b.page.getByText(`${b.name} (you)`)).toBeVisible({ timeout: 15_000 });
+  await a.page.getByRole('button', { name: 'Add a bot' }).click();
+  await a.page.getByRole('radio', { name: /Expanded Mining/ }).click();
+  await a.page.getByRole('button', { name: 'Start the game' }).click();
+  for (const p of [a, b]) await expect(p.page.locator('.meta .mode')).toHaveText('Expanded Mining');
+
+  // Opponents' hands are face-down fans with the true count; the deck says how many cards are left.
+  const hand = await a.page.locator('.hand .card').count();
+  await expect(b.page.getByRole('img', { name: `${hand} cards in hand` }).first()).toBeVisible();
+  await expect(a.page.locator('.seats .fan')).toHaveCount(2);
+  const deck = Number((await a.page.locator('.meta').innerText()).match(/Deck (\d+)/)![1]);
+  await expect(a.page.locator('.piles .count').first()).toHaveText(`${deck} cards remaining`);
+
+  // Whose turn it is, in words; the next player is named too.
+  await expect(a.page.locator('.seat.up .state')).toContainText('Playing');
+  await expect(a.page.locator('.seats .state', { hasText: /^(Next|You're next)$/ })).toHaveCount(1);
+
+  // Chat lands in Mine Activity for everyone, the filters split it from the log, and a hidden feed counts it unread.
+  await expect(b.page.getByRole('button', { name: /Role & activity/ })).toBeVisible();
+  await a.page.getByLabel('Chat message').fill('lanterns up');
+  await a.page.getByRole('button', { name: 'Send' }).click();
+  await expect(b.page.locator('.tabs .badge')).toHaveText('1');
+  await b.page.getByRole('button', { name: /Role & activity/ }).click();
+  await expect(b.page.locator('.tabs .badge')).toHaveCount(0);
+  await expect(b.page.locator('.activity .chat', { hasText: 'lanterns up' })).toBeVisible();
+  await a.page.getByRole('radio', { name: 'Log' }).click();
+  await expect(a.page.locator('.activity .chat')).toHaveCount(0);
+  await a.page.getByRole('radio', { name: 'Chat' }).click();
+  await expect(a.page.locator('.activity .line')).toHaveCount(0);
+  await expect(a.page.locator('.activity .chat')).toHaveCount(1);
+  await a.page.getByRole('radio', { name: 'All' }).click();
+  await b.page.getByRole('button', { name: /^Mine$/ }).click();
+
+  // Play until Dot has dragged a card onto the discard pile, then a few more moves.
+  let dragged = false;
+  const end = Date.now() + 60_000;
+  let moves = 0;
+  while (Date.now() < end && (!dragged || moves < 6)) {
+    const mine = /^Your turn/.test((await a.page.locator('.status').innerText()).trim());
+    if (mine && !dragged && !(await a.page.locator('dialog[open]').count())) {
+      const before = Number((await a.page.locator('.piles .count').nth(1).innerText()).match(/\d+/)![0]);
+      const card = a.page.locator('.hand .cards li').first();
+      const pile = a.page.locator('.piles .discard');
+      const from = (await card.boundingBox())!;
+      const to = (await pile.boundingBox())!;
+      await a.page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+      await a.page.mouse.down();
+      await a.page.mouse.move(from.x + from.width / 2, from.y - 40, { steps: 4 });
+      await a.page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, { steps: 8 });
+      await a.page.mouse.up();
+      await expect(a.page.locator('.piles .count').nth(1)).toHaveText(`Discards ${before + 1}`);
+      dragged = true;
+      continue;
+    }
+    const did = (await step(a)) ?? (await step(b));
+    if (did) moves++;
+    await a.page.waitForTimeout(did ? 150 : 300);
+  }
+  expect(dragged).toBe(true);
+
+  // The other player sees the same feed; a reload shows it again with every earlier line once, in the same order.
+  await expect(a.page.locator('.activity .line', { hasText: /discarded/ }).first()).toBeVisible();
+  await a.page.waitForTimeout(500);
+  const rows = await feed(a);
+  await a.page.reload();
+  await expect(a.page.getByText('Only you can see this')).toBeVisible();
+  await expect.poll(async () => (await feed(a)).length).toBeGreaterThanOrEqual(rows.length);
+  const after = await feed(a);
+  expect(after.slice(0, rows.length)).toEqual(rows);
+  await shot(a, 'expanded-tabletop');
+  await shot(b, 'expanded-phone');
+
+  for (const p of [a, b]) {
+    expect(leaks(p)).toEqual([]);
+    expect(p.errors).toEqual([]);
+  }
+});

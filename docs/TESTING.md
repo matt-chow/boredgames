@@ -42,9 +42,10 @@ that ID, so `npx vitest -t "R4.3"` runs one rule.
 | `tests/deaddrop/projection.test.ts` | DD-VIEW | Public and private separation through real matches |
 | `tests/deaddrop/room.test.ts` | DD-ROOM | Through the room: reconnection, duplicates, concurrent orders, redacted history, immutable results |
 | `tests/deaddrop/simulate.test.ts` | DD-SIM | Adversarial strategies; `DD_SIM=<file>` writes the tables in [DEADDROP_BALANCE.md](DEADDROP_BALANCE.md) |
-| `tests/mines/rules.test.ts` | MS-C, MS-X, MS-D, MS-GEO, MS-TURN, MS-TIME, MS-SEC, MS-CFG, MS-END, MS-AWAY | Every Miners & Saboteurs rule in all three modes, including the rules-audit cases |
+| `tests/mines/rules.test.ts` | MS-C, MS-X, MS-D, MS-GEO, MS-TURN, MS-TIME, MS-SEC, MS-CFG, MS-END, MS-AWAY, MS-LOG | Every Miners & Saboteurs rule in all three modes, including the rules-audit cases |
 | `tests/mines/room.test.ts` | MS-ROOM | Through the room: settings lock, duplicates, stale moves, away policy, timer, redacted history, no leaks |
 | `tests/mines/simulate.test.ts` | MS-SIM | Seeded bot games in every mode and player count with invariants and leak checks; `MS_SIM=<file>` writes [MINES_BALANCE.md](MINES_BALANCE.md) |
+| `tests/mines/fx.test.ts` | MS-FX | Which log lines a view presents (once, never on a first view), who is next, and no secrets in presentation lines |
 | `tests/mines/art.test.ts` | MS-ART1 | Every registered card kind has its art in both views |
 | `tests/deaddrop/text.test.ts` | | On-screen wording: claims, private outcomes, journal, mission note |
 
@@ -87,6 +88,7 @@ were added, and both faults are now caught.
 | | panning the table selects no text, and an offer started from a card asks who it is for | A leftover selection on the table does not block the next pan; tapping a hand card opens a slip with no recipient and Send disabled until one is picked |
 | `mines.spec.ts` | MS-E2E-1: a classic round with two bots plays to the results | Lobby mode and rounds, the private role panel, laying and discarding through the server, round summary, results, and no other seat's hand or role in any frame |
 | | MS-E2E-2: two players on desktop and phone play the Duel | Expanded and Duel offered alike at 2, Classic marked as not for 2, host-only settings, the deep mine view, the tutorial and encyclopedia, no leaks |
+| | MS-E2E-3: the tabletop in Expanded, desktop and phone | Opponent fans with true counts, "N cards remaining", whose turn and who is next in words, chat in Mine Activity with filters and an unread badge, dragging a card to the discard pile, a reload that keeps the feed without repeats, no leaks |
 | `perf.spec.ts` | action round-trip, idle CPU, frame pacing, transfer size | See Performance below |
 | `clockwork.spec.ts` | CC-E2E-1 to CC-E2E-6 | Hub listing and lobby sets/market/Crown Projects; art, Influence and inspection; full game with rematch; two people in sync with reload and frame privacy; 6-seat game; phone layout |
 | `deck.spec.ts` | DB-UI-1 to DB-UI-7, on the bench | Lobby market and bans; random market honours bans; a full game against a bot with rematch; two players with reload mid-decision, raw wrong-turn and stale rejection, and frame privacy; inspection and pile listing; phone layout with long-press inspection; card animations |

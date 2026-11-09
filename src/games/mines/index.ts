@@ -7,7 +7,7 @@ import { ROUND_CHOICES, TARGET_CHOICES, TIMER_CHOICES, type MAction, type MConfi
 const MODES = { classic: [3, 10], expanded: [2, 10], duel: [2, 2] } as const;
 
 export const mines: GameModule<MConfig, MState, MAction, MView> = {
-  meta: { id: 'mines', name: 'Miners & Saboteurs', minPlayers: 2, maxPlayers: 10, stateVersion: 1, simultaneous: true },
+  meta: { id: 'mines', name: 'Miners & Saboteurs', minPlayers: 2, maxPlayers: 10, stateVersion: 2, simultaneous: true },
   options: [],
   defaultConfig: () => ({ mode: 'classic', rounds: 3, target: 0, timer: 0, away: 'pause' }),
   validateConfig(c, n) {
@@ -40,6 +40,16 @@ export const mines: GameModule<MConfig, MState, MAction, MView> = {
   historyAction: (a) => ({ type: (a as MAction).type }),
   actors,
   project,
+  // v2: log lines carry an id from the chat sequence and a time. Older lines are numbered after the chat, timed at the turn start.
+  migrate(raw, from) {
+    const s = raw as MState & { nextChat?: number };
+    if (from < 2) {
+      s.nextId = s.nextChat ?? 1;
+      delete s.nextChat;
+      for (const e of s.log) Object.assign(e, { id: s.nextId++, at: s.since });
+    }
+    return s;
+  },
   isOver: (s) => s.phase === 'over',
   results,
   bot: botMove,

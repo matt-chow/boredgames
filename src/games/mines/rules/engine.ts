@@ -7,7 +7,7 @@ import {
   ACTION, CLASSIC_DECK, CLASSIC_POOL, classicHand, EXPANDED_ROLES, EXPANSION_DECK, expandedPay, isTunnel, REWARD_CARDS, SABOTEUR_PAY,
   type GoalKind, type Role, type Tool,
 } from './cards';
-import { REACTIONS, type Card, type LogEntry, type MAction, type MConfig, type MState, type MView, type RoundRecord, type Seat } from './types';
+import { REACTIONS, type Card, type LogLine, type MAction, type MConfig, type MState, type MView, type RoundRecord, type Seat } from './types';
 
 export const CHAT_MAX = 300;
 export const CHAT_KEEP = 200;
@@ -35,10 +35,11 @@ export function setup(n: number, seed: string, config: MConfig, now = 0): MState
     deck: [], removed: [], discards: 0, cells: {}, goals: [],
     seats: Array.from({ length: n }, (): Seat => ({ hand: [], role: null, broken: [], theft: false, trap: false, gold: 0, rewards: [], seen: [] })),
     spareRoles: [], rewardDeck: config.mode === 'classic' ? shuffle(rng, rewardCards()) : [],
-    draft: null, thieves: [], theftOrder: [], lastActor: 0, pending: null, log: [], rounds: [], chat: [], nextChat: 1,
+    draft: null, thieves: [], theftOrder: [], lastActor: 0, pending: null, log: [], rounds: [], chat: [], nextId: 1,
   };
   // MS-TURN1: who opens the first round is drawn by lot.
   startRound(s, randInt(rng, n), now);
+  stamp(s, 0, now);
   return s;
 }
 
@@ -82,8 +83,8 @@ function startRound(s: MState, first: number, now: number) {
   pushLog(s, { t: 'round', round: s.round, start: first });
 }
 
-const pushLog = (s: MState, e: LogEntry) => {
-  s.log.push(e);
+const pushLog = (s: MState, e: LogLine) => {
+  s.log.push({ ...e, id: s.nextId++, at: 0 });
   if (s.log.length > LOG_KEEP) s.log.splice(0, s.log.length - LOG_KEEP);
 };
 
@@ -99,20 +100,32 @@ const takeCards = (x: Seat, ids: number[]): Card[] | null => {
   return out;
 };
 
+/** Time every log line written since id `from`; the rules below the turn loop never see the clock. */
+const stamp = (s: MState, from: number, now: number) => {
+  for (const e of s.log) if (e.id >= from) e.at = now;
+};
+
+/** Returns how many were drawn: fewer than asked once the deck runs out. */
 const draw = (s: MState, x: Seat, n: number) => {
-  for (let i = 0; i < n && s.deck.length; i++) x.hand.push(s.deck.shift()!);
+  let got = 0;
+  for (; got < n && s.deck.length; got++) x.hand.push(s.deck.shift()!);
+  return got;
 };
 
 const isSeat = (s: MState, v: unknown): v is number => Number.isInteger(v) && (v as number) >= 0 && (v as number) < s.n;
 
 /** The move is done: draw, then pass to the next seat that still holds cards, or end a round with nothing left (MS-TURN2/3). */
 function endTurn(s: MState, seat: number, draws: number, now: number) {
-  draw(s, s.seats[seat], draws);
+  const n = draw(s, s.seats[seat], draws);
   s.lastActor = seat;
-  if (!s.deck.length && s.seats.every((x) => !x.hand.length)) return endRound(s, 'dry', null, now);
+  if (!s.deck.length && s.seats.every((x) => !x.hand.length)) {
+    pushLog(s, { t: 'draw', seat, n, next: null });
+    return endRound(s, 'dry', null, now);
+  }
   let next = seat;
   do next = (next + 1) % s.n;
   while (!s.seats[next].hand.length);
+  pushLog(s, { t: 'draw', seat, n, next });
   s.current = next;
   s.since = now;
 }
@@ -126,10 +139,15 @@ export function apply(state: MState, seat: number, action: MAction, now = 0): Ap
   if (action.turn !== s.turn) return refuse('stale', 'The table has moved on since then.');
   if (action.type === 'timeout') {
     if (!s.config.timer || now < s.since + s.config.timer * 1000) return refuse('early', 'There is still time on the clock.');
-    return autoMove(s, now);
+    const first = s.nextId;
+    const r = autoMove(s, now);
+    if (r.ok) stamp(s, first, now);
+    return r;
   }
+  const first = s.nextId;
   const r =
     s.phase === 'draft' ? pick(s, seat, action, now) : s.phase === 'theft' ? steal(s, seat, action, now) : play(s, seat, action, now);
+  if (r.ok) stamp(s, first, now);
   return r;
 }
 
@@ -137,10 +155,10 @@ function talk(s: MState, seat: number, a: Extract<MAction, { type: 'chat' | 'rea
   if (a.type === 'chat') {
     const text = normalizeText(a.text, CHAT_MAX);
     if (!text) return refuse('bad-chat', 'Say something first.');
-    s.chat.push({ id: s.nextChat++, seat, text, at: now });
+    s.chat.push({ id: s.nextId++, seat, text, at: now });
   } else {
     if (!REACTIONS.includes(a.key as (typeof REACTIONS)[number])) return refuse('bad-react', 'Unknown reaction.');
-    s.chat.push({ id: s.nextChat++, seat, react: a.key, at: now });
+    s.chat.push({ id: s.nextId++, seat, react: a.key, at: now });
   }
   if (s.chat.length > CHAT_KEEP) s.chat.splice(0, s.chat.length - CHAT_KEEP);
   return { ok: true, state: s, undoable: false };
@@ -237,7 +255,7 @@ function playAction(s: MState, seat: number, card: Card, a: Extract<MAction, { t
   const me = s.seats[seat];
   const on = a.on;
   const target = isSeat(s, on) ? s.seats[on] : null;
-  const log: LogEntry = { t: 'act', seat, kind: def.kind };
+  const log: LogLine = { t: 'act', seat, kind: def.kind };
   if (def.target === 'otherPlayer' && (!target || on === seat)) return 'Choose another player.';
   if (def.target === 'anyPlayer' && !target) return 'Choose a player.';
   switch (def.kind) {
@@ -294,10 +312,11 @@ function playAction(s: MState, seat: number, card: Card, a: Extract<MAction, { t
     case 'swapHands': {
       takeCards(me, [card.id]);
       [me.hand, target!.hand] = [target!.hand, me.hand];
-      draw(s, target!, 1);
+      const got = draw(s, target!, 1);
       s.discards++;
       log.on = on;
       pushLog(s, log);
+      pushLog(s, { t: 'draw', seat: on!, n: got, next: null });
       return null;
     }
     case 'inspect':
@@ -466,7 +485,7 @@ function steal(s: MState, seat: number, a: MAction, now: number, auto = false): 
     s.seats[seat].gold++;
   }
   s.pending!.steals.push({ seat, from: a.from });
-  pushLog(s, { t: 'steal', seat, from: a.from, ...(auto ? { auto } : {}) } as LogEntry);
+  pushLog(s, { t: 'steal', seat, from: a.from, ...(auto ? { auto } : {}) } as LogLine);
   s.thieves.shift();
   s.turn++;
   nextThief(s, now);

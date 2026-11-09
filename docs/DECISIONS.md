@@ -338,3 +338,9 @@ under "pause" a stand-in waits, and under "autopass" it discards. Other games ig
 editable, and no third-party rights are involved. Inside this game, lantern yellow takes `--sprout`'s role (D26). The
 deep mine view is an optional second rendering of the same board. Its flicker disappears under low effects, low
 performance or reduced motion.
+
+### D52. The mine's table animates from its log, not from diffing views
+Diffing two views can't tell a laid tunnel from a cave-in followed by a lay, or say who drew. The log already says it
+in public words, so each line got an id, a timestamp and, after every move, a public draw count. A client presents
+lines above the last id it saw; a first view presents nothing. Sounds are synthesized, as for the other games, so
+no audio files and no streaming are needed.

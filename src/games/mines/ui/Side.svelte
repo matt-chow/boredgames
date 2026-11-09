@@ -1,50 +1,24 @@
 <script lang="ts">
-  import type { RoomView } from '../../../shared/protocol';
   import { ROLE, artOf } from '../rules/cards';
-  import { REACTIONS, type MAction, type MView } from '../rules/types';
-  import { REACTION_TEXT, TOOL_ART, TOOL_NAMES, logText, seenText } from './text';
+  import type { MAction, MView } from '../rules/types';
+  import Activity from './Activity.svelte';
+  import { seenText } from './text';
 
-  let { view, room, act, who, busy }: { view: MView; room: RoomView; act: (a: MAction) => unknown; who: (seat: number) => string; busy: boolean } = $props();
+  /** The private panel and the Mine Activity feed. The players sit around the board (Seats). */
+  let {
+    view,
+    act,
+    who,
+    busy,
+    shown = true,
+    unread = $bindable(0),
+  }: { view: MView; act: (a: MAction) => unknown; who: (seat: number) => string; busy: boolean; shown?: boolean; unread?: number } = $props();
 
   const me = $derived(view.me);
-  let tab = $state<'log' | 'chat'>('log');
-  let text = $state('');
-  async function say(e: SubmitEvent) {
-    e.preventDefault();
-    const t = text.trim();
-    if (!t) return;
-    text = '';
-    await act({ type: 'chat', text: t });
-  }
-  const log = $derived([...view.log].reverse());
-  const chat = $derived([...view.chat].reverse());
   const seen = $derived([...(me?.seen ?? [])].reverse());
 </script>
 
 <div class="side">
-  <section aria-labelledby="ms-players">
-    <h2 id="ms-players" class="h">Players</h2>
-    <ul class="players">
-      {#each view.players as p (p.seat)}
-        {@const s = room.seats[p.seat]}
-        <li class:up={view.phase === 'play' && view.current === p.seat} class:you={p.seat === me?.seat}>
-          <span class="who">
-            <span class="dot" class:on={s?.connected || s?.bot} title={s?.connected || s?.bot ? 'Online' : 'Away'}></span>
-            <span class="nm">{who(p.seat)}</span>
-            {#if s?.standIn}<span class="tag">stand-in</span>{/if}
-          </span>
-          <span class="marks">
-            <span class="cardsn" title="Cards in hand">{p.hand} cards</span>
-            {#each p.broken as t (t)}<img src={artOf(`${TOOL_ART[t]}Broken`)} alt="Broken {TOOL_NAMES[t]}" title="Broken {TOOL_NAMES[t]}" width="22" height="22" />{/each}
-            {#if p.theft}<img src={artOf('theft')} alt="Pickpocket laid" title="Pickpocket laid" width="16" height="24" />{/if}
-            {#if p.trap}<img src={artOf('trap')} alt="Locked in" title="Locked in" width="16" height="24" />{/if}
-            {#if p.hasGold}<img src={artOf('nugget')} alt="Has gold" title="Has gold" width="20" height="20" />{/if}
-          </span>
-        </li>
-      {/each}
-    </ul>
-  </section>
-
   {#if me}
     <section class="private" aria-labelledby="ms-private">
       <h2 id="ms-private" class="h">Only you can see this</h2>
@@ -69,28 +43,7 @@
     </section>
   {/if}
 
-  <section class="talk">
-    <div class="tabs" role="tablist">
-      <button role="tab" aria-selected={tab === 'log'} class:on={tab === 'log'} onclick={() => (tab = 'log')}>Log</button>
-      <button role="tab" aria-selected={tab === 'chat'} class:on={tab === 'chat'} onclick={() => (tab = 'chat')}>Chat</button>
-    </div>
-    {#if tab === 'log'}
-      <ol class="lines">{#each log as e, i (i)}<li>{logText(e, who)}</li>{/each}</ol>
-    {:else}
-      {#if me}
-        <div class="reacts">
-          {#each REACTIONS as r (r)}<button class="btn small ghost" disabled={busy} onclick={() => act({ type: 'react', key: r })}>{REACTION_TEXT[r]}</button>{/each}
-        </div>
-        <form onsubmit={say}>
-          <input bind:value={text} maxlength="300" placeholder="Say something" aria-label="Chat message" />
-          <button class="btn small" disabled={!text.trim()}>Send</button>
-        </form>
-      {/if}
-      <ol class="lines">
-        {#each chat as c (c.id)}<li><strong>{who(c.seat)}:</strong> {c.react ? REACTION_TEXT[c.react] : c.text}</li>{/each}
-      </ol>
-    {/if}
-  </section>
+  <Activity {view} {act} {who} {busy} {shown} bind:unread />
 </div>
 
 <style>
@@ -113,47 +66,6 @@
     font-size: 13px;
     color: var(--ink-3);
   }
-  .players {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .players li {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2px 8px;
-    padding: 4px 6px;
-    border-left: 3px solid transparent;
-    border-bottom: 1px solid var(--rim);
-  }
-  .players li.up {
-    border-left-color: var(--sprout);
-    background: var(--sprout-dim);
-  }
-  .players li.you .nm {
-    font-weight: 700;
-  }
-  .who,
-  .marks {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    min-width: 0;
-  }
-  .dot {
-    width: 8px;
-    height: 8px;
-    flex: none;
-    border-radius: 50%;
-    background: var(--rim-hi);
-  }
-  .dot.on {
-    background: var(--ms-lamp);
-  }
-  .tag,
-  .cardsn,
   .muted {
     font-size: 12px;
     color: var(--ink-3);
@@ -193,59 +105,5 @@
     margin: 0;
     padding-left: 16px;
     font-size: 13px;
-  }
-  .tabs {
-    display: flex;
-    gap: 4px;
-    margin-bottom: 6px;
-  }
-  .tabs button {
-    font: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 4px 10px;
-    min-height: 32px;
-    border: 0;
-    border-bottom: 2px solid transparent;
-    background: none;
-    color: var(--ink-2);
-    cursor: pointer;
-  }
-  .tabs button.on {
-    color: var(--ink);
-    border-bottom-color: var(--sprout);
-  }
-  .lines {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    font-size: 13px;
-    max-height: 320px;
-    overflow-y: auto;
-  }
-  .lines li {
-    padding: 3px 0;
-    border-bottom: 1px solid var(--rim);
-  }
-  .reacts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-    margin-bottom: 6px;
-  }
-  form {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 6px;
-  }
-  input {
-    flex: 1;
-    min-width: 0;
-    font: inherit;
-    padding: 6px 8px;
-    color: var(--ink);
-    background: var(--ground-0);
-    border: 1px solid var(--rim);
-    border-radius: var(--r-sm, 4px);
   }
 </style>

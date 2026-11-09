@@ -258,3 +258,44 @@ Version `9ed87712` from `7e5956d` (tag `release-e4`) is live, and `main` and `fe
   - Staging version `0a1d0215-634c-4302-8958-7bc1715c91ff`: `mines.spec.ts` and `home.spec.ts` pass against it (9 passed; 7 run only on the local test server).
   - Production version `bf14b187-01ea-4550-9021-c8bc90c792c8`: both `mines.spec.ts` tests pass against it.
   - To roll back, return to the previous production version, `9ed87712-d994-4497-820d-a409d0c2a1a5`.
+
+### Miners & Saboteurs v1.1: the immersive tabletop (2026-11-09)
+
+**What was added**
+
+- **Mine Activity.** One feed for the public log and chat, in the server's order, with All, Chat and Log filters, icons,
+  names and times. It follows new lines only when you are at the bottom, and offers "Latest" when you are not. It has an
+  unread badge (on the Role & activity tab on phones) and can be collapsed.
+- **On-board notes.** A short bubble by the place or avatar for each confirmed move. At most three; they stack and fade.
+- **Your hand is a fan.** Cards rise and grow on hover or focus, and a chosen card comes forward with its actions. Legal
+  cards get a lantern edge. Cards can be dragged to a board square, a player or the discard pile, or used by tap or
+  click and keyboard as before. Arrow keys move between cards.
+- **Players strip.** Every seat in table order from you, with avatar, online dot, "Playing · Ns", "Next" or "You're
+  next", "Away", marks, and each opponent's face-down fan with its exact count.
+- **Turn awareness.** A "Your turn!" banner and chime when the turn becomes yours (also after a reload), the hand lifts,
+  and the status line adds "You're next".
+- **Deck and discards.** A deck stack that thins as it empties, "N cards remaining" or "Deck empty", and a discard pile.
+- **Effects** for laying, actions, cave-ins, surveys, discards, draws and reveals. Opponents' plays fly face-down and
+  turn over as they land. See MINES.md, Presentation.
+- **Sound.** Synthesized cues for each event, an optional cave ambience (off by default), and mine settings in the
+  shared menu: master, effects and ambience volume, and toggles for sounds, ambience, the turn alert, chat sound and
+  fast animations. Stored in the browser.
+
+**How**
+
+- The log gained ids, server times and a public draw line per move (MS-LOG1). `stateVersion` 2 migrates saved games
+  (MS-LOG2). The client presents only lines it has not seen (MS-FX1); a join or reload replays nothing.
+- Reused from Bohnanza: `motion.ts` snapshots with `data-card` and `data-anchor` for the hand and pile flights,
+  `drag.ts` with `data-drop` targets, `conn.onRoom` to measure before each view renders, and `sound.ts`'s synth.
+- Shared changes: `SettingsMenu` takes optional extra content; `sound.ts` exports its synth helpers; the global settings
+  gained a volume setter. Other games are unchanged.
+
+**Verified**
+
+- `npm run check` reports 0 errors. `npm test` passes: 37 files, 881 tests, 1 skipped.
+- The full `npx playwright test` suite passes: 65 tests, 1 skipped. Two Kingdom & Commerce tests first failed on missing Playwright trace files and passed on rerun. `mines.spec.ts` covers Classic with bots, the Duel for two, and MS-E2E-3 (Expanded on desktop and phone together).
+
+**Known limits**
+
+- Effects were checked in headless Chromium screenshots, not on a phone or in Safari. The particle cap is a fixed count.
+- A note can sit over the "Your turn!" banner for a moment.

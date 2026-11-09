@@ -1,9 +1,11 @@
 <script lang="ts">
   import { settings } from '../client/lib/settings.svelte';
   import { sfx } from '../client/lib/sound';
+  import type { Snippet } from 'svelte';
   import Icon from './Icon.svelte';
 
-  let { onhelp = undefined, onquit = undefined }: { onhelp?: () => void; onquit?: () => void } = $props();
+  /** `children`: a game's own settings, shown above Quit. */
+  let { onhelp = undefined, onquit = undefined, children = undefined }: { onhelp?: () => void; onquit?: () => void; children?: Snippet } = $props();
   let open = $state(false);
   let root: HTMLElement;
 
@@ -32,6 +34,7 @@
         <button role="radio" aria-checked={settings.layout === 'spatial'} class:on={settings.layout === 'spatial'} onclick={() => (settings.layout = 'spatial')}>Table</button>
         <button role="radio" aria-checked={settings.layout === 'compact'} class:on={settings.layout === 'compact'} onclick={() => (settings.layout = 'compact')}>Compact</button>
       </div>
+      {@render children?.()}
       {#if onquit}
         <button class="quit" onclick={() => ((open = false), onquit())}><Icon name="leave" size={16} /> Quit game…</button>
       {/if}

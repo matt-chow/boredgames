@@ -57,7 +57,7 @@ export interface Seat {
 }
 
 /** One public line of what happened. Never carries a hand, a deck card, a role or a secret result. */
-export type LogEntry =
+export type LogLine =
   | { t: 'path'; seat: number; kind: string; x: number; y: number; rot: Rot }
   | { t: 'act'; seat: number; kind: ActionKind; on?: number; tool?: Tool; goal?: number; x?: number; y?: number }
   | { t: 'pass'; seat: number; n: number; auto?: boolean }
@@ -65,7 +65,12 @@ export type LogEntry =
   | { t: 'reveal'; goal: number; kind: GoalKind }
   | { t: 'pick'; seat: number; auto?: boolean }
   | { t: 'steal'; seat: number; from: number | null }
-  | { t: 'round'; round: number; start: number };
+  | { t: 'round'; round: number; start: number }
+  /** A move is over: how many cards its player drew (a public count) and whose turn it is now, if the round goes on. */
+  | { t: 'draw'; seat: number; n: number; next: number | null };
+
+/** A log line as kept: `id` is shared with chat, so the two merge in the server's order; `at` is the server's time. */
+export type LogEntry = LogLine & { id: number; at: number };
 
 export interface Payout {
   seat: number;
@@ -133,7 +138,8 @@ export interface MState {
   log: LogEntry[];
   rounds: RoundRecord[];
   chat: MChat[];
-  nextChat: number;
+  /** The next id for a log line or a chat message (one sequence for both). */
+  nextId: number;
 }
 
 export type MAction =

@@ -157,20 +157,20 @@
     <div class="board" style:width="{width}px" style:height="{height}px" style:transform="translate({tx}px, {ty}px) scale({scale})">
       {#each view.cells as c (`${c.x},${c.y},${c.kind}`)}
         {@const caveable = target === 'tunnel' && !!TUNNEL[c.kind]}
-        <div class="tile" class:fresh={!settings.instant && lastPath === `${c.x},${c.y}`} class:last={lastPath === `${c.x},${c.y}`} style:left="{left(c.x)}px" style:top="{top(c.y)}px">
+        <div class="tile" class:last={lastPath === `${c.x},${c.y}`} data-anchor="cell-{c.x},{c.y}" style:left="{left(c.x)}px" style:top="{top(c.y)}px">
           <img src={tileArt(c.kind, deep)} alt={nameOf(c.kind)} draggable="false" class:rot={c.rot} />
           {#if caveable}
-            <button class="pick" aria-label="Bring down {nameOf(c.kind)} at column {c.x}, row {c.y}" onclick={tap(() => ontunnel?.(c.x, c.y))}></button>
+            <button class="pick" data-drop="cell:{c.x},{c.y}" aria-label="Bring down {nameOf(c.kind)} at column {c.x}, row {c.y}" onclick={tap(() => ontunnel?.(c.x, c.y))}></button>
           {/if}
         </div>
       {/each}
       {#each view.goals as g, i (i)}
         {#if !g.revealed}
-          <div class="tile goal" style:left="{left(g.x)}px" style:top="{top(g.y)}px">
+          <div class="tile goal" data-anchor="goal-{i}" style:left="{left(g.x)}px" style:top="{top(g.y)}px">
             <img src={tileArt('goalBack', deep)} alt="Face-down destination ({GOAL_NAMES[i]})" draggable="false" />
             {#if peeked.has(i)}<span class="peek" class:gold={peeked.get(i) === 'gold'}>You saw: {goalWord(peeked.get(i))}</span>{/if}
             {#if target === 'goal'}
-              <button class="pick" aria-label="Survey the {GOAL_NAMES[i]} destination" onclick={tap(() => ongoal?.(i))}></button>
+              <button class="pick" data-drop="goal:{i}" aria-label="Survey the {GOAL_NAMES[i]} destination" onclick={tap(() => ongoal?.(i))}></button>
             {/if}
           </div>
         {/if}
@@ -179,6 +179,7 @@
         {@const k = `${s.x},${s.y}`}
         <button
           class="spot"
+          data-drop="spot:{s.x},{s.y},{s.rot}"
           class:turned={s.rot !== rot}
           style:left="{left(s.x)}px"
           style:top="{top(s.y)}px"
@@ -251,15 +252,6 @@
     outline-offset: -1px;
     z-index: 1;
   }
-  .fresh {
-    animation: settle 320ms ease-out;
-  }
-  @keyframes settle {
-    from {
-      opacity: 0;
-      transform: scale(1.15);
-    }
-  }
   .peek {
     position: absolute;
     left: 2px;
@@ -293,6 +285,8 @@
   .spot img {
     opacity: 0.7;
   }
+  .pick:global(.drop-over),
+  .spot:global(.drop-over),
   .pick:hover,
   .pick:focus-visible,
   .spot:hover,
@@ -332,7 +326,6 @@
     gap: 4px;
   }
   @media (prefers-reduced-motion: reduce) {
-    .fresh,
     .lamp {
       animation: none;
     }

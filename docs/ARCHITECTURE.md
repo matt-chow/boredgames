@@ -214,4 +214,9 @@ stale one. Two shared changes came with it, both harmless to other games:
 - `bot(view, standIn)` tells a bot whether it is covering for an absent person, so the away policy can choose between
   waiting and passing.
 
-See MINES.md and D49 to D51.
+v1.1 animates the table from its public log. Log lines and chat share a rising id, so a client presents only the lines
+it has not seen and a reload replays nothing (MINES.md, Presentation). The effects layer (`ui/fx.ts`) is a fixed
+overlay of transform and opacity animations that every new view finishes at once. `SettingsMenu` gained an optional
+`children` snippet for a game's own settings, and `sound.ts` exports its synth helpers. Other games are unchanged.
+
+See MINES.md and D49 to D52.

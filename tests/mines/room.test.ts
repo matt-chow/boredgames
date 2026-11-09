@@ -83,7 +83,7 @@ describe('MS-ROOM', () => {
       else {
         expect(move!.actions).toHaveLength(1);
         expect(core.playBot()).toBe(true);
-        expect(state(core).log.at(-1)).toMatchObject({ t: 'pass', seat: up });
+        expect(state(core).log.at(-2)).toMatchObject({ t: 'pass', seat: up });
       }
       // They come back and have their seat again.
       core.presence(all);
