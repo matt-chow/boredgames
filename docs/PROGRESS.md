@@ -322,3 +322,8 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
   none does, they may go beyond. The server applies it to both the legal squares it sends and the move it accepts
   (refusal code `outside`), so bots follow it too. No direction rule. The board draws the area's outline; the hand
   bar says when a card only fits outside it, or when you may build beyond.
+- Verified: `npm run check` 0 errors; `npm test` 37 files, 890 passed, 1 skipped; full `npx playwright test` 66 passed.
+- Released 2026-11-09 from `8452f04`:
+  - Staging `cc3d3a64-08fe-4ae2-8142-19137c542ef3`: `mines.spec.ts` and `home.spec.ts` pass against it (10 passed).
+  - Production `0c44c073-41a6-46e6-83ac-24fb49cf796e`: all three `mines.spec.ts` tests pass; Dead Drop is still absent.
+  - To roll back, return to `0564a063-b84d-4bd1-916a-281f3be87179`.
