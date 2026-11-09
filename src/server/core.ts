@@ -402,6 +402,7 @@ export class RoomCore {
         return [];
       }
       case 'config': {
+        if (this.meta.status !== 'lobby') throw new RoomError('started', 'Settings are fixed once the game starts.');
         this.requireManage(seat, connected);
         const c = msg.config;
         if (!c || typeof c !== 'object' || Array.isArray(c)) throw new RoomError('bad-request', 'Invalid options.');
@@ -589,7 +590,7 @@ export class RoomCore {
     let next: { seat: number; actions: unknown[]; delayMs: number } | null = null;
     for (const seat of this.game.actors(state)) {
       if (!this.isBotSeat(seat)) continue;
-      const move = bot(this.game.project(state, seat));
+      const move = bot(this.game.project(state, seat), !!this.meta.standIn?.includes(seat));
       if (move?.actions.length && (!next || move.delayMs < next.delayMs)) next = { seat, ...move };
     }
     return next;

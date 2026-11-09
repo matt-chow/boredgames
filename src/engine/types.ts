@@ -89,9 +89,9 @@ export interface GameModule<Config = unknown, State = unknown, Action = unknown,
   /**
    * Optional simple computer player for a seat. It receives only that seat's
    * projection, so a bot never sees more than a person would. Returns null
-   * when the seat has nothing to do.
+   * when the seat has nothing to do. `standIn` is set when the bot is covering for an absent person.
    */
-  bot?(view: View): BotMove<Action> | null;
+  bot?(view: View, standIn?: boolean): BotMove<Action> | null;
   /** Upgrade persisted state from an older `stateVersion`. */
   migrate?(state: unknown, fromVersion: number): State;
 }

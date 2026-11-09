@@ -39,6 +39,18 @@ All original, drawn in SVG by `scripts/art/deaddrop.mjs` (run it with `node` to 
 | `public/art/deaddrop/icon-{deliver,investigate,intercept,decoy,cover,challenge}.svg` | Order, Cover and challenge icons |
 | `public/art/deaddrop/{dossier,report,paper}.svg` | Mission folder, report letterhead, paper texture |
 
+## Miners & Saboteurs
+
+All original, drawn in SVG by `scripts/art/mines.mjs` (run it with `node` to regenerate). The script reads the card
+registry in `src/games/mines/rules/cards.ts`, so each tunnel is drawn from its own openings. It uses no third-party
+material, no image service and no text. MS-ART1 checks that every registered kind has its file.
+
+| Files | What |
+|---|---|
+| `public/art/covers/mines.svg` | Game cover: a lantern-lit timbered shaft and a cart of gold |
+| `public/art/mines/*.svg` (78) | Tabletop view: every tunnel, action, role, destination, card back, reward and tool badge |
+| `public/art/mines/deep/*.svg` (40) | Deep mine view: tunnels, entrance and destinations by lamplight |
+
 ## Using licensed artwork
 
 If you obtain permission from the rights holders:

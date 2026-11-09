@@ -228,3 +228,29 @@ Bot reports now print Influence Engine, Crown Project Development and Establishm
 ### CP12: edition 4 in production (2026-11-05)
 
 Version `9ed87712` from `7e5956d` (tag `release-e4`) is live, and `main` and `feat/v3` were fast-forwarded. Human playtesting is next: see HUMAN_PLAYTEST.md. No saved room that predates the release has been opened on production; compatibility rests on unit tests.
+
+### Miners & Saboteurs (2026-11-09)
+
+**What was added**
+
+- A new original game for 2 to 10 players, in `src/games/mines`, with three modes:
+  - Classic Mining (3–10)
+  - Expanded Mining (2–10, 118 cards, 15 roles)
+  - Prospector Duel (2)
+- Lobby settings: rounds, gold target, turn timer and away policy. They lock at start.
+- Two board views, tabletop and deep mine. Both have zoom, pan, legal-square highlights and a turned-card preview.
+- Chat and reactions, a card encyclopedia, a three-level guide, and a ten-step local tutorial that sends nothing.
+- A results screen with rematch.
+- Bots, which also act as stand-ins for absent players.
+- 118 original SVGs from `scripts/art/mines.mjs`.
+- Rules and the rules audit are in MINES.md, and balance is in MINES_BALANCE.md.
+
+**Shared code**
+
+- The room refuses `config` after the game starts.
+- `bot(view, standIn)` (D50).
+
+**Verified**
+
+- `npm run check` reports 0 errors. `npm test` passes: 36 files, 876 tests, 1 skipped.
+- The full `npx playwright test` suite passes: 64 tests, 1 skipped, including both `mines.spec.ts` tests.

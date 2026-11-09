@@ -60,7 +60,7 @@ are unit-tested without a Workers runtime.
 - **projection:** `project(state, viewer)` builds the only data a seat ever receives.
 - **terminal state and scoring:** `isOver`, `results`.
 - **persistence upgrades:** optional `migrate(state, fromVersion)`.
-- **computer players:** optional `bot(view)`. It returns candidate actions, best first, and a delay; it
+- **computer players:** optional `bot(view, standIn?)`; `standIn` is true when the bot covers an absent person. It returns candidate actions, best first, and a delay; it
   receives only the bot seat's projection, so it cannot see hidden cards.
 - **UI registration:** one lazy entry in `GAME_UI`. Each table receives `{ conn, room }`. The hub lists games from
   `src/hub/catalog.ts`, which a unit test keeps in step with `LISTED_GAMES`.
@@ -203,3 +203,15 @@ Rows saved before this have no links and undo one step.
 
 Dead Drop (`src/games/deaddrop`) is a plain `GameModule` with no bot. It uses two optional `GameMeta` flags: `simultaneous`, under which the
 room doesn't reject an action for an old version, because the rules refuse what is really stale by its round; and `readyCheck`, which adds lobby ready states. `apply` and `setup` receive the room's clock for timestamps and inactivity limits, and `historyAction` redacts secrets from history rows. See DEADDROP.md, D44 to D48.
+
+## Miners & Saboteurs
+
+Miners & Saboteurs (`src/games/mines`) is a plain `GameModule` with a bot. It sets `simultaneous`, because chat and
+reactions are actions any seat may send at any time, and every turn action carries its turn number so the rules refuse a
+stale one. Two shared changes came with it, both harmless to other games:
+
+- The room refuses `config` once the game has started (`started`).
+- `bot(view, standIn)` tells a bot whether it is covering for an absent person, so the away policy can choose between
+  waiting and passing.
+
+See MINES.md and D49 to D51.

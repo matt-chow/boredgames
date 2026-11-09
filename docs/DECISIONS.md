@@ -321,3 +321,20 @@ The brief excludes AI players. The hub's quit normally gives the seat to a bot, 
 
 ### D48. Dead Drop's art is SVG from a script
 `scripts/art/deaddrop.mjs` writes every scene, icon and paper in the approved palette, following D42. No image service was available or wanted, the files stay small and editable, and no third-party rights are involved. Amber takes `--sprout`'s role inside this game (D26).
+
+### D49. Miners & Saboteurs is original in every visible part
+The brief rules out any existing game's title, branding, illustrations and rulebook text. The name, card names, role
+names, card wording, art, board views and guide are therefore all written for this project. Card counts and mechanics
+follow the brief, and nothing was invented for its gaps. Each unclear case is decided in MINES.md's rules audit and has
+a test.
+
+### D50. Two small hooks in shared code
+The room now refuses settings changes once a game has started, so no game can be reconfigured mid-play. Bots now learn
+whether they are standing in for a person (`bot(view, standIn)`). Miners & Saboteurs needs that for its away policy:
+under "pause" a stand-in waits, and under "autopass" it discards. Other games ignore the flag.
+
+### D51. Miners & Saboteurs' art is SVG from a script, and lantern yellow is its signal
+`scripts/art/mines.mjs` draws every card from the registry, as D48 did for Dead Drop: the files are small and
+editable, and no third-party rights are involved. Inside this game, lantern yellow takes `--sprout`'s role (D26). The
+deep mine view is an optional second rendering of the same board. Its flicker disappears under low effects, low
+performance or reduced motion.

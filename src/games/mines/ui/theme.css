@@ -1,0 +1,27 @@
+/*
+ * Miners & Saboteurs' look: a timbered mine by lamplight. Dark earth is the table, warm parchment carries the cards.
+ * Lantern yellow takes the role of the signal colour inside this game only ("legal, your move"), as D26 allows.
+ */
+[data-game-theme='mines'] {
+  --ground-0: #120d09;
+  --ground-1: #1b140e;
+  --ground-2: #261c14;
+  --ground-3: #33261b;
+  --rim: #4a3826;
+  --rim-hi: #6e563c;
+  --ink: #f3e7d0;
+  --ink-2: #d6c6a8;
+  --ink-3: #ad9c80;
+  --sprout: #f0c050;
+  --sprout-ink: #1b140e;
+  --sprout-dim: rgb(240 192 80 / 0.18);
+  --warn: #ec8f74;
+  --coin: #f3cd7c;
+  --coin-ink: #1b140e;
+
+  --ms-lamp: #ffd77a;
+}
+
+body:has([data-game-theme='mines']:not([data-fan])) {
+  background: #1b140e;
+}
