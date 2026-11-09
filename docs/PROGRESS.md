@@ -295,6 +295,11 @@ Version `9ed87712` from `7e5956d` (tag `release-e4`) is live, and `main` and `fe
 - `npm run check` reports 0 errors. `npm test` passes: 37 files, 881 tests, 1 skipped.
 - The full `npx playwright test` suite passes: 65 tests, 1 skipped. Two Kingdom & Commerce tests first failed on missing Playwright trace files and passed on rerun. `mines.spec.ts` covers Classic with bots, the Duel for two, and MS-E2E-3 (Expanded on desktop and phone together).
 
+- Released 2026-11-09 from `3da7bd0`:
+  - Staging version `81796397-ffee-4c61-8d20-baee7274e79f`: `mines.spec.ts` and `home.spec.ts` pass against it (10 passed; 7 run only on the local test server).
+  - Production version `5998ffbe-c34e-41dc-8803-8684a3e9a6ae`: all three `mines.spec.ts` tests pass against it.
+  - To roll back, return to `bf14b187-01ea-4550-9021-c8bc90c792c8`.
+
 **Known limits**
 
 - Effects were checked in headless Chromium screenshots, not on a phone or in Safari. The particle cap is a fixed count.
