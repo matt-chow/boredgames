@@ -34,6 +34,10 @@ E2E_BASE_URL=https://boredgames-staging.mchowcl.workers.dev npx playwright test 
 The staging script builds for staging and stops if the build is for anything else. `npm run deploy` always builds again,
 for production, so its output can't carry over from staging.
 
+**One branch.** Since 2026-11-09 all work lives on `main`; staging and production are both deployed from it. Dead Drop
+is in the code on `main` but built only for staging and the dev server (`__DEAD_DROP__`, D53), so a production deploy
+from `main` leaves it out. The release sections below name the feature branches they were deployed from at the time.
+
 `wrangler.jsonc` holds the whole configuration: the Durable Object binding `ROOMS`, the migration tag `v1` declaring
 `RoomDO` as a SQLite class, SPA fallback for assets, and `run_worker_first` for `/api/*` and `/ws/*`. If you rename or
 delete the class later, add a new migration entry. Never edit `v1`.
