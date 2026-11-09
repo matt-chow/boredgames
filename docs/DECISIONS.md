@@ -344,3 +344,8 @@ Diffing two views can't tell a laid tunnel from a cave-in followed by a lay, or 
 in public words, so each line got an id, a timestamp and, after every move, a public draw count. A client presents
 lines above the last id it saw; a first view presents nothing. Sounds are synthesized, as for the other games, so
 no audio files and no streaming are needed.
+
+### D53. Dead Drop is offered in staging only
+Production builds leave Dead Drop out of the hub and out of the games the server will host. The dev server, the tests
+and staging builds keep it. The switch is a build flag, `__DEAD_DROP__` (vite.config.ts), because the hub's catalog is
+built into the client. Its rules stay registered, so a Dead Drop room that already exists in production still opens.

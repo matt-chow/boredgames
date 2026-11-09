@@ -304,3 +304,8 @@ Version `9ed87712` from `7e5956d` (tag `release-e4`) is live, and `main` and `fe
 
 - Effects were checked in headless Chromium screenshots, not on a phone or in Safari. The particle cap is a fixed count.
 - A note can sit over the "Your turn!" banner for a moment.
+
+### Dead Drop withdrawn from production (2026-11-09)
+
+Production no longer offers Dead Drop: it is missing from the hub and `/api/games`, and creating a room for it is
+refused. Staging, the dev server and the tests still have it (D53). Checked on a local preview of the production build.

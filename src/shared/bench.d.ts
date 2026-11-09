@@ -4,3 +4,9 @@
  * `scripts/no-bench.mjs` checks that nothing of the bench is left in the bundles.
  */
 declare const __DECK_BENCH__: boolean;
+
+/**
+ * True on a dev server and in a staging build; false in a production build. Decides whether Dead Drop is listed and
+ * can be hosted. Its rules stay registered either way, so a room that already exists still loads.
+ */
+declare const __DEAD_DROP__: boolean;

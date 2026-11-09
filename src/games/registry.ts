@@ -17,7 +17,7 @@ export const GAMES: Record<string, AnyGameModule> = {
 };
 
 /** Games offered in the hub UI (the tally module is a test fixture). */
-export const LISTED_GAMES = ['bohnanza', 'clockwork', 'deaddrop', 'mines'];
+export const LISTED_GAMES = ['bohnanza', 'clockwork', ...(__DEAD_DROP__ ? ['deaddrop'] : []), 'mines'];
 
 /** Games a new room may be created for: the listed ones, plus the deck bench on a bench dev server. */
 export const HOSTABLE_GAMES = __DECK_BENCH__ ? [...LISTED_GAMES, deckbench.meta.id] : LISTED_GAMES;

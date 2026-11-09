@@ -31,7 +31,7 @@ export interface CatalogEntry {
   noBots?: boolean;
 }
 
-export const CATALOG: CatalogEntry[] = [
+export const CATALOG: CatalogEntry[] = ([
   {
     id: 'bohnanza',
     name: 'Bohnanza',
@@ -126,4 +126,4 @@ export const CATALOG: CatalogEntry[] = [
     howTo: [],
     settings: [],
   },
-];
+] satisfies CatalogEntry[]).filter((g) => __DEAD_DROP__ || g.id !== 'deaddrop');
