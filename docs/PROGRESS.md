@@ -254,3 +254,7 @@ Version `9ed87712` from `7e5956d` (tag `release-e4`) is live, and `main` and `fe
 
 - `npm run check` reports 0 errors. `npm test` passes: 36 files, 876 tests, 1 skipped.
 - The full `npx playwright test` suite passes: 64 tests, 1 skipped, including both `mines.spec.ts` tests.
+- Released 2026-11-09:
+  - Staging version `0a1d0215-634c-4302-8958-7bc1715c91ff`: `mines.spec.ts` and `home.spec.ts` pass against it (9 passed; 7 run only on the local test server).
+  - Production version `bf14b187-01ea-4550-9021-c8bc90c792c8`: both `mines.spec.ts` tests pass against it.
+  - To roll back, return to the previous production version, `9ed87712-d994-4497-820d-a409d0c2a1a5`.
