@@ -125,4 +125,16 @@ describe('MS-ROOM', () => {
     expect(view(core, 0).me!.role).toBe(s.seats[0].role);
     expect(JSON.stringify({ ...view(core, 0), me: null })).not.toMatch(/"role"/);
   });
+
+  it('MS-ATTR2: every player sees who laid a tunnel, and still does after the room reloads', () => {
+    const { store, core } = playing();
+    const s = state(core);
+    const seat = s.current;
+    // Stage a tunnel in the seat's hand through the stored state, as a reconnecting client would find it.
+    s.seats[seat].hand[0] = { id: 999, kind: 'straightH' };
+    expect(act(core, seat, { type: 'path', turn: s.turn, card: 999, x: 1, y: 0, rot: 0 }).ok).toBe(true);
+    const fresh = new RoomCore(store, opts);
+    for (const c of [core, fresh])
+      for (const p of [0, 1, 2]) expect(view(c, p).cells.find((x) => x.x === 1 && x.y === 0)).toMatchObject({ kind: 'straightH', by: seat });
+  });
 });

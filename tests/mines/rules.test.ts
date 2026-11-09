@@ -566,3 +566,92 @@ describe('MS-AWAY: stand-ins', () => {
     expect(CLOCK).toBeGreaterThan(0);
   });
 });
+
+describe('MS-ROLE2: someone is always a saboteur', () => {
+  const tally = (l: (Role | null)[]) => l.reduce<Record<string, number>>((a, r) => ((a[r ?? '-'] = (a[r ?? '-'] ?? 0) + 1), a), {});
+
+  it('MS-C-ROLE2, MS-X-ROLE2: every classic and expanded deal seats a saboteur, and the pool keeps its make-up', () => {
+    for (const [mode, from] of [['classic', 3], ['expanded', 2]] as const)
+      for (let n = from; n <= 10; n++)
+        for (let i = 0; i < 60; i++) {
+          const g = new Game(n, { mode }, `role-${mode}-${n}-${i}`);
+          const dealt = g.s.seats.map((x) => x.role);
+          expect(dealt).toContain('saboteur');
+          const pool = mode === 'classic' ? { miner: CLASSIC_POOL[n][0], saboteur: CLASSIC_POOL[n][1] } : Object.fromEntries(EXPANDED_ROLES);
+          expect(tally([...dealt, ...g.s.spareRoles])).toEqual(pool);
+        }
+  });
+
+  it('MS-D-ROLE: the duel still deals no roles', () => {
+    const g = new Game(2, { mode: 'duel' });
+    expect(g.s.seats.map((x) => x.role)).toEqual([null, null]);
+  });
+
+  it('MS-C-ROLE2: hidden roles stay hidden, saboteur or not', () => {
+    const g = new Game(5, {}, 'role-hidden');
+    const v = g.view(0);
+    for (const p of v.players) if (p.seat !== 0) expect(JSON.stringify(p)).not.toMatch(/saboteur|miner/);
+    expect(JSON.stringify(v)).not.toMatch(/spareRoles/);
+  });
+});
+
+describe('MS-ATTR: who laid each tunnel', () => {
+  it('MS-ATTR1: a laid tunnel names its seat in every view; setup cards name nobody', () => {
+    const g = new Game(3);
+    const [c] = g.give(0, 'straightH');
+    upNext(g, 0).do(0, { type: 'path', turn: g.turn, card: c.id, x: 1, y: 0, rot: 0 });
+    for (const seat of [0, 1, 2, null]) {
+      const cells = g.view(seat).cells;
+      expect(cells.find((x) => x.x === 1 && x.y === 0)).toMatchObject({ kind: 'straightH', by: 0 });
+      expect(cells.find((x) => x.x === 0 && x.y === 0)).not.toHaveProperty('by');
+    }
+  });
+
+  it('MS-ATTR1: a laid tunnel keeps its maker after the maker’s role changes', () => {
+    const g = new Game(3, { mode: 'expanded' });
+    const [c] = g.give(1, 'straightH');
+    upNext(g, 1).do(1, { type: 'path', turn: g.turn, card: c.id, x: 1, y: 0, rot: 0 });
+    g.s.seats[1].role = g.s.seats[1].role === 'saboteur' ? 'green' : 'saboteur';
+    expect(g.view(2).cells.find((x) => x.x === 1)).toMatchObject({ by: 1 });
+  });
+});
+
+describe('MS-GEO7: the starting area', () => {
+  const at = (x: number, y: number) => (p: { x: number; y: number }) => p.x === x && p.y === y;
+
+  it('MS-GEO7: while a tunnel fits inside the starting area, nothing may go outside it', () => {
+    const g = upNext(new Game(3), 0);
+    g.s.seats[0].hand = [{ id: 901, kind: 'straightH' }];
+    const mine = g.view(0).me!.spots[901];
+    expect(mine.some(at(1, 0))).toBe(true);
+    // West of the entrance fits the tunnels, but lies outside the starting area.
+    expect(misfit(g.s.cells, g.s.goals, reach(g.s.cells), 'straightH', -1, 0, 0)).toBeNull();
+    expect(mine.some(at(-1, 0))).toBe(false);
+    expect(g.code(0, { type: 'path', turn: g.turn, card: 901, x: -1, y: 0, rot: 0 })).toBe('outside');
+  });
+
+  it('MS-GEO7: building back toward the entrance is fine inside the area', () => {
+    const g = upNext(new Game(3), 0);
+    g.place('straightH', 1, 0).place('straightH', 2, 0).place('cross', 3, 0).place('cross', 3, 1);
+    g.s.seats[0].hand = [{ id: 901, kind: 'straightH' }, { id: 902, kind: 'straightH' }];
+    expect(g.view(0).me!.spots[901].some(at(2, 1))).toBe(true);
+    g.do(0, { type: 'path', turn: g.turn, card: 901, x: 2, y: 1, rot: 0 });
+    upNext(g, 0);
+    g.do(0, { type: 'path', turn: g.turn, card: 902, x: 1, y: 1, rot: 0 });
+    expect(g.s.cells['1,1']).toMatchObject({ kind: 'straightH', by: 0 });
+  });
+
+  it('MS-GEO7: when no tunnel in hand fits inside, the player may build beyond it', () => {
+    const g = upNext(new Game(3), 0);
+    // A shaft runs south out of the area; east of the entrance is walled off.
+    g.place('straightV', 0, 1).place('straightV', 0, 2).place('straightV', 0, 3).place('straightV', 1, 0);
+    g.s.seats[0].hand = [{ id: 901, kind: 'straightV' }];
+    // The way north is still open, so the shaft may not go deeper yet.
+    expect(g.view(0).me!.spots[901]).toEqual([{ x: 0, y: -1, rot: 0 }]);
+    expect(g.code(0, { type: 'path', turn: g.turn, card: 901, x: 0, y: 4, rot: 0 })).toBe('outside');
+    g.place('straightH', 0, -1);
+    expect(g.view(0).me!.spots[901]).toEqual([{ x: 0, y: 4, rot: 0 }]);
+    g.do(0, { type: 'path', turn: g.turn, card: 901, x: 0, y: 4, rot: 0 });
+    expect(g.s.cells['0,4']).toMatchObject({ kind: 'straightV', by: 0 });
+  });
+});

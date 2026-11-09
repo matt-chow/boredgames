@@ -64,11 +64,23 @@ test('MS-E2E-1: a classic round with two bots plays to the results, with nothing
 
   const final = page.getByRole('heading', { name: 'Final gold' });
   const end = Date.now() + 150_000;
+  // Tapping a card on the board says where it came from (MS-ATTR1).
+  await page.locator('[data-anchor="cell-0,0"] .info').click();
+  await expect(page.locator('.card-info')).toContainText('Setup card');
+  await page.locator('.card-info').getByRole('button', { name: 'Close' }).click();
+  let named = false;
   while (Date.now() < end && !(await final.count())) {
     const did = await step(host);
+    if (!named && did === 'lay') {
+      await page.locator('.tile.last .info').click();
+      await expect(page.locator('.card-info .by')).toHaveText(/^Laid by \S/);
+      await page.locator('.card-info').getByRole('button', { name: 'Close' }).click();
+      named = true;
+    }
     await page.waitForTimeout(did ? 120 : 300);
   }
   await expect(final).toBeVisible();
+  expect(named).toBe(true);
   await shot(host, 'classic-results');
   await expect(page.getByRole('button', { name: 'Rematch' })).toBeVisible();
   expect(leaks(host)).toEqual([]);

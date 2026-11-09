@@ -181,7 +181,8 @@ export interface MView {
   since: number;
   deck: number;
   discards: number;
-  cells: { x: number; y: number; kind: string; rot: Rot }[];
+  /** `by` is the seat that laid a tunnel; setup cards (the entrance, turned destinations) have none. */
+  cells: { x: number; y: number; kind: string; rot: Rot; by?: number }[];
   goals: { x: number; y: number; revealed: boolean; kind?: GoalKind }[];
   players: PlayerView[];
   draft: { picker: number; left: number } | null;

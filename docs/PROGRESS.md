@@ -309,3 +309,16 @@ Version `9ed87712` from `7e5956d` (tag `release-e4`) is live, and `main` and `fe
 
 Production no longer offers Dead Drop: it is missing from the hub and `/api/games`, and creating a room for it is
 refused. Staging, the dev server and the tests still have it (D53). Checked on a local preview of the production build.
+
+### Miners & Saboteurs v1.2: roles, card makers and the starting area (2026-11-09)
+
+- **A saboteur every round (MS-C-ROLE2, MS-X-ROLE2).** If the shuffle seats no saboteur, one dealt role trades places
+  with a set-aside saboteur. The pool's make-up is unchanged and the leftovers stay hidden. The Duel still has no
+  roles, and Expanded role swaps are untouched.
+- **Who laid it (MS-ATTR1/2).** Tap or click any card on the board for its picture, text and "Laid by …", or "Setup
+  card" for the entrance and turned destinations. The view now carries each cell's `by` seat, which the state already
+  stored, so there is no state change.
+- **The starting area (MS-GEO7).** Tunnels go inside x 0..8, y −2..2 while any tunnel card in hand fits there; once
+  none does, they may go beyond. The server applies it to both the legal squares it sends and the move it accepts
+  (refusal code `outside`), so bots follow it too. No direction rule. The board draws the area's outline; the hand
+  bar says when a card only fits outside it, or when you may build beyond.

@@ -13,6 +13,7 @@
   import QuitGame from '../../../hub/QuitGame.svelte';
   import SettingsMenu from '../../../hub/SettingsMenu.svelte';
   import type { GameUiProps } from '../../ui';
+  import { inArea } from '../rules/board';
   import { ACTION, ROLE, TUNNEL, artOf, type ActionKind, type Tool } from '../rules/cards';
   import type { Card, LogEntry, MAction, MView, Rot, Spot } from '../rules/types';
   import { ambience, prefs, sounds, stopAmbience } from './audio.svelte';
@@ -35,6 +36,11 @@
   const myTurn = $derived(view.phase === 'play' && view.current === seat);
   const mine = $derived(seat >= 0 ? view.players[seat] : null);
   const canDig = $derived(!!mine && !mine.trap && !mine.broken.length);
+  /** Whether the server let your tunnels out of the starting area (none fit inside it), or null when none fit at all (MS-GEO7). */
+  const beyond = $derived.by(() => {
+    const all = Object.values(view.me?.spots ?? {}).flat();
+    return all.length ? all.some((p) => !inArea(p.x, p.y)) : null;
+  });
   const upNext = $derived(nextUp(view));
 
   /** Refusals become a toast; the screen only ever changes when the server's view does. */
@@ -517,7 +523,7 @@
       <div class="pane play" class:hide={!wide.current && tab !== 'mine'}>
         <Seats {view} {room} {who} next={upNext} {left} {drops} />
         <div class="boardwrap">
-          <Board {view} {deep} card={myTurn && canDig ? tunnel : null} {rot} target={myTurn && action?.target === 'tunnel' ? 'tunnel' : myTurn && action?.target === 'goal' ? 'goal' : null} onplace={place} ontunnel={(x, y) => play({ x, y })} ongoal={(goal) => play({ goal })} />
+          <Board {view} {deep} {who} card={myTurn && canDig ? tunnel : null} {rot} target={myTurn && action?.target === 'tunnel' ? 'tunnel' : myTurn && action?.target === 'goal' ? 'goal' : null} onplace={place} ontunnel={(x, y) => play({ x, y })} ongoal={(goal) => play({ goal })} />
           <div class="piles">
             <div class="pile">
               <div class="deck" class:empty={!view.deck} data-anchor="deck" aria-hidden="true">
@@ -554,7 +560,7 @@
                 <div class="acts">
                   {#if tunnel}
                     <button class="btn small" onclick={turnRound}><Icon name="reset" size={16} /> Turn round (R)</button>
-                    {#if !canDig}<span class="note">You cannot dig while {mine?.trap ? 'locked in' : 'a tool is broken'}.</span>{:else if !me.spots[tunnel.id]?.length}<span class="note">It fits nowhere right now.</span>{:else}<span class="note">Choose or drag to a glowing square.</span>{/if}
+                    {#if !canDig}<span class="note">You cannot dig while {mine?.trap ? 'locked in' : 'a tool is broken'}.</span>{:else if !me.spots[tunnel.id]?.length}<span class="note">{beyond === false ? 'It fits nowhere in the starting area right now.' : 'It fits nowhere right now.'}</span>{:else if beyond}<span class="note">None of your tunnels fit in the starting area, so you may build beyond it.</span>{:else}<span class="note">Choose or drag to a glowing square.</span>{/if}
                   {:else if action}
                     {#if action.target === 'self'}
                       <button class="btn small primary" disabled={conn.busy} onclick={() => play({})}>Lay it before you</button>

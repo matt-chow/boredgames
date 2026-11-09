@@ -2,7 +2,7 @@
 import { randInt, seedRng, shuffle } from '../../../engine/rng';
 import type { ApplyResult, PlayerResult } from '../../../engine/types';
 import { normalizeText } from '../../../shared/protocol';
-import { crystalsShowing, GOAL_SPOTS, goldJoined, key, misfit, reach, revealReached, spots } from './board';
+import { crystalsShowing, GOAL_SPOTS, goldJoined, handSpots, key, misfit, reach, revealReached } from './board';
 import {
   ACTION, CLASSIC_DECK, CLASSIC_POOL, classicHand, EXPANDED_ROLES, EXPANSION_DECK, expandedPay, isTunnel, REWARD_CARDS, SABOTEUR_PAY,
   type GoalKind, type Role, type Tool,
@@ -62,6 +62,13 @@ function startRound(s: MState, first: number, now: number) {
     shuffle(s.rng, pool);
     roles = pool.slice(0, s.n);
     s.spareRoles = pool.slice(s.n);
+    // MS-C-ROLE2, MS-X-ROLE2: someone at the table is always a saboteur. If none was dealt, one dealt role trades places
+    // with a set-aside saboteur, so the pool and its hidden leftovers keep their make-up.
+    if (!roles.includes('saboteur')) {
+      const i = randInt(s.rng, s.n);
+      const j = s.spareRoles.indexOf('saboteur');
+      [roles[i], s.spareRoles[j]] = [s.spareRoles[j], roles[i]!];
+    }
   }
   const size = handSize(s.config, s.n);
   s.seats.forEach((x, i) => {
@@ -196,6 +203,8 @@ function play(s: MState, seat: number, a: MAction, now: number, auto = false): A
       if (!Number.isInteger(a.x) || !Number.isInteger(a.y) || (a.rot !== 0 && a.rot !== 1)) return refuse('bad-spot', 'Choose a square and a turn.');
       const why = misfit(s.cells, s.goals, reach(s.cells), card.kind, a.x, a.y, a.rot);
       if (why) return refuse('misfit', why);
+      const fits = handSpots(s.cells, s.goals, me.hand.filter((c) => isTunnel(c.kind)))[card.id];
+      if (!fits.some((p) => p.x === a.x && p.y === a.y && p.rot === a.rot)) return refuse('outside', 'Build inside the starting area while one of your tunnels fits there.');
       takeCards(me, [card.id]);
       s.cells[key(a.x, a.y)] = { kind: card.kind, rot: a.rot, by: seat };
       pushLog(s, { t: 'path', seat, kind: card.kind, x: a.x, y: a.y, rot: a.rot });
@@ -517,11 +526,7 @@ export function project(s: MState, viewer: number | null): MView {
   const me = viewer !== null && isSeat(s, viewer) ? s.seats[viewer] : null;
   const over = s.phase === 'over';
   const myTurn = me && s.phase === 'play' && s.current === viewer;
-  const mySpots: Record<number, ReturnType<typeof spots>> = {};
-  if (myTurn && !cannotDig(me)) {
-    const joined = reach(s.cells);
-    for (const c of me.hand) if (isTunnel(c.kind)) mySpots[c.id] = spots(s.cells, s.goals, c.kind, joined);
-  }
+  const mySpots = myTurn && !cannotDig(me) ? handSpots(s.cells, s.goals, me.hand.filter((c) => isTunnel(c.kind))) : {};
   return {
     config: s.config,
     n: s.n,
@@ -534,7 +539,8 @@ export function project(s: MState, viewer: number | null): MView {
     discards: s.discards,
     cells: Object.entries(s.cells).map(([k, c]) => {
       const [x, y] = k.split(',').map(Number);
-      return { x, y, kind: c.kind, rot: c.rot };
+      // Who laid it is public (the log says so too); setup cards have no `by` (MS-ATTR1).
+      return { x, y, kind: c.kind, rot: c.rot, ...(c.by !== undefined ? { by: c.by } : {}) };
     }),
     goals: s.goals.map((g) => (g.revealed ? { x: g.x, y: g.y, revealed: true, kind: g.kind } : { x: g.x, y: g.y, revealed: false })),
     players: s.seats.map((x, seat) => ({

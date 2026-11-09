@@ -10,6 +10,10 @@ export const GOAL_SPOTS = [{ x: 8, y: -2 }, { x: 8, y: 0 }, { x: 8, y: 2 }];
 /** shortcut: a fixed board edge, roomy for every card in the deck; widen if a long game ever presses against it. */
 export const BOUNDS = { minX: -9, maxX: 17, minY: -9, maxY: 9 };
 
+/** The starting area: nine columns from the entrance to the destinations, five rows (MS-GEO7). */
+export const AREA = { minX: 0, maxX: 8, minY: -2, maxY: 2 };
+export const inArea = (x: number, y: number) => x >= AREA.minX && x <= AREA.maxX && y >= AREA.minY && y <= AREA.maxY;
+
 const STEP: Record<Edge, [number, number]> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 export const key = (x: number, y: number) => `${x},${y}`;
 export const parse = (k: string) => k.split(',').map(Number) as [number, number];
@@ -94,6 +98,18 @@ export function spots(cells: Record<string, Cell>, goals: Goal[], kind: string, 
     for (const rot of symmetric ? [0 as Rot] : [0 as Rot, 1 as Rot]) if (!misfit(cells, goals, joined, kind, x, y, rot)) out.push({ x, y, rot });
   }
   return out;
+}
+
+/**
+ * Where each tunnel card in a hand may go: inside the starting area while any of them fits there, anywhere they fit
+ * once none does (MS-GEO7). Direction is never restricted.
+ */
+export function handSpots(cells: Record<string, Cell>, goals: Goal[], cards: { id: number; kind: string }[]): Record<number, Spot[]> {
+  const joined = reach(cells);
+  const all: Record<number, Spot[]> = {};
+  for (const c of cards) all[c.id] = spots(cells, goals, c.kind, joined);
+  if (Object.values(all).some((l) => l.some((p) => inArea(p.x, p.y)))) for (const id in all) all[id] = all[id].filter((p) => inArea(p.x, p.y));
+  return all;
 }
 
 /** A card that looks and joins the same both ways round needs only one entry. */

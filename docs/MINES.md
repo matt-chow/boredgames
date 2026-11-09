@@ -49,6 +49,11 @@ The registry in `cards.ts` is the single source for the rules, the encyclopedia,
 - **MS-GEO6.** The two tunnels of an overpass never join.
 - **MS-X-LAD1.** A ladder counts as joined to the entrance wherever it touches the mine, but never beside a destination.
 - **MS-X-DOOR1.** A gate lets only its own crew through. To the other crew it is a wall.
+- **MS-GEO7.** Tunnels are built inside the starting area: the 9 × 5 block from the entrance column to the
+  destination column (x 0..8, y −2..2). A tunnel may go outside it only when none of the tunnel cards in the mover's
+  hand fits anywhere inside it. All the other placement rules still apply out there. There is no direction rule:
+  building west, back toward the entrance, is fine. The board draws the area's outline, and the hand bar says when
+  the area is full for you.
 - **Layout.** The entrance is at (0,0). The destinations are at (8,−2), (8,0) and (8,2). The board edge is fixed at
   x −9..17 and y −9..9. That edge is a shortcut, noted in the code.
 
@@ -77,6 +82,8 @@ The registry in `cards.ts` is the single source for the rules, the encyclopedia,
 ## Classic pay (MS-C-ROLE1, MS-C-HAND1, MS-C-DRAFT\*, MS-C-PAY\*)
 
 - **MS-C-ROLE1.** The role pool holds one more card than there are players. The one left over stays hidden.
+- **MS-C-ROLE2.** Every round deals at least one saboteur. If the shuffle seats none, one dealt role (chosen at
+  random) trades places with a set-aside saboteur. The pool keeps its make-up, and the leftover stays hidden.
 
   | Players | Miners | Saboteurs |
   |---|---|---|
@@ -102,6 +109,8 @@ The registry in `cards.ts` is the single source for the rules, the encyclopedia,
 
 - **MS-X-SETUP1.** Each round, 10 cards are set aside unseen and every player is dealt 6.
 - **MS-X-ROLE1.** Roles are dealt from 15: green 4, blue 4, saboteur 3, foreman 1, opportunist 1, seeker 2.
+- **MS-X-ROLE2.** The deal seats at least one saboteur, as MS-C-ROLE2. This is the deal only: a role swap later in
+  the round may leave the table with none.
 
 **Who wins**
 
@@ -177,6 +186,10 @@ The table is animated only from confirmed public lines. The client never guesses
   presents nothing twice, and a first view (a join, a reload) replays nothing. Chat is never a board event.
 - **MS-FX2.** "Next" comes from public counts: the next seat in order, skipping empty hands once the deck is gone.
 - **MS-FX3.** Presentation lines carry no hand, card list, role or deck order.
+- **MS-ATTR1.** Tap or click a card on the board to see its picture, its text and who laid it. The entrance and
+  turned destinations say "Setup card". The seat is public (the log names it too), stored with the card, and
+  survives reloads, role changes and the board view switch.
+- **MS-ATTR2.** Every player in the room sees the same maker for a card, before and after the room reloads.
 
 **How lines become effects** (`ui/events.ts` picks them, `ui/fx.ts` draws them, `ui/Table.svelte` sequences them):
 
@@ -209,7 +222,9 @@ tested. Nothing was added that the brief does not imply.
 | Discarding two cards to clear a card in front of you | Expanded only | MS-X-THEFT2 |
 | A destination is reached while other neighbours do not match it | The destination is placed turned to meet the tunnel that reached it. Other neighbours are ignored. | MS-GEO5 |
 | Unreached destinations at round end | They stay face down and are never sent to clients. | MS-ROOM8 |
-| Classic dry round with no saboteur dealt | Nobody is paid. | MS-C-PAY3 |
+| Classic dry round with no saboteur dealt | Nobody is paid. Since MS-C-ROLE2 a deal always seats a saboteur, so this only covers staged games. | MS-C-PAY3 |
+| A round deals no saboteur | One dealt role trades places with a set-aside saboteur, at random | MS-C-ROLE2, MS-X-ROLE2 |
+| Placing outside the starting area | Allowed only when no tunnel card in hand fits inside. Action cards don't count. | MS-GEO7 |
 | Classic reward cards run out in a long game | A fresh set is shuffled in. This is a shortcut, noted in the code. | — |
 | Who opens later rounds, in every mode including the Duel | The player after whoever played last | MS-TURN4 |
 | A thief with nobody to rob | Steals nothing, and play goes on. | MS-X-THEFT1 |

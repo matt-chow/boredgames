@@ -8,7 +8,7 @@ export const REACTION_TEXT: Record<string, string> = { nice: 'Nice dig!', oops: 
 export const GOAL_NAMES = ['top', 'middle', 'bottom'];
 
 export const nameOf = (kind: string) => TUNNEL[kind]?.name ?? ACTION[kind as ActionKind]?.name ?? GOALS[kind as keyof typeof GOALS]?.name ?? (kind === 'entrance' ? ENTRANCE.name : kind);
-export const textOf = (kind: string) => TUNNEL[kind]?.text ?? ACTION[kind as ActionKind]?.text ?? '';
+export const textOf = (kind: string) => TUNNEL[kind]?.text ?? ACTION[kind as ActionKind]?.text ?? GOALS[kind as keyof typeof GOALS]?.text ?? (kind === 'entrance' ? ENTRANCE.text : '');
 export const tileArt = (kind: string, deep: boolean) => (deep ? deepArtOf(kind) : artOf(kind));
 export const goalWord = (kind?: string) => (kind === 'gold' ? 'gold' : kind ? 'coal' : 'unknown');
 

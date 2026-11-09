@@ -1,9 +1,10 @@
 <script lang="ts">
   import { settings } from '../../../client/lib/settings.svelte';
   import Icon from '../../../hub/Icon.svelte';
+  import { AREA } from '../rules/board';
   import { TUNNEL } from '../rules/cards';
   import type { MView, Rot, Spot } from '../rules/types';
-  import { GOAL_NAMES, goalWord, nameOf, tileArt } from './text';
+  import { GOAL_NAMES, goalWord, nameOf, textOf, tileArt } from './text';
 
   /**
    * The mine. Pure rendering of the confirmed view: legal squares come from the server's `me.spots`, so the board never
@@ -19,6 +20,7 @@
     onplace,
     ontunnel,
     ongoal,
+    who = (s: number) => `Seat ${s + 1}`,
   }: {
     view: MView;
     deep?: boolean;
@@ -31,6 +33,8 @@
     onplace?: (s: Spot) => void;
     ontunnel?: (x: number, y: number) => void;
     ongoal?: (i: number) => void;
+    /** A seat's display name, for who laid a tunnel. */
+    who?: (seat: number) => string;
   } = $props();
 
   const TW = 56;
@@ -150,17 +154,26 @@
   };
 
   let hover = $state<string | null>(null);
+
+  // The card you tapped to read about (MS-ATTR1). Gone when its tunnel is brought down.
+  let about = $state<string | null>(null);
+  const shown = $derived(about ? view.cells.find((c) => `${c.x},${c.y}` === about) : undefined);
 </script>
+
+<svelte:window onkeydown={(e) => e.key === 'Escape' && (about = null)} />
 
 <div class="mine" class:deep class:low={low || settings.lowPerf}>
   <div class="port" bind:this={port} onpointerdown={down} onpointermove={move} onpointerup={up} onpointercancel={up} onwheel={wheel} role="region" aria-label="The mine">
     <div class="board" style:width="{width}px" style:height="{height}px" style:transform="translate({tx}px, {ty}px) scale({scale})">
+      <div class="area" aria-hidden="true" style:left="{left(AREA.minX)}px" style:top="{top(AREA.minY)}px" style:width="{(AREA.maxX - AREA.minX + 1) * TW}px" style:height="{(AREA.maxY - AREA.minY + 1) * TH}px"></div>
       {#each view.cells as c (`${c.x},${c.y},${c.kind}`)}
         {@const caveable = target === 'tunnel' && !!TUNNEL[c.kind]}
-        <div class="tile" class:last={lastPath === `${c.x},${c.y}`} data-anchor="cell-{c.x},{c.y}" style:left="{left(c.x)}px" style:top="{top(c.y)}px">
+        <div class="tile" class:last={lastPath === `${c.x},${c.y}`} class:about={about === `${c.x},${c.y}`} data-anchor="cell-{c.x},{c.y}" style:left="{left(c.x)}px" style:top="{top(c.y)}px">
           <img src={tileArt(c.kind, deep)} alt={nameOf(c.kind)} draggable="false" class:rot={c.rot} />
           {#if caveable}
             <button class="pick" data-drop="cell:{c.x},{c.y}" aria-label="Bring down {nameOf(c.kind)} at column {c.x}, row {c.y}" onclick={tap(() => ontunnel?.(c.x, c.y))}></button>
+          {:else}
+            <button class="info" aria-label="About {nameOf(c.kind)} at column {c.x}, row {c.y}" aria-pressed={about === `${c.x},${c.y}`} onclick={tap(() => (about = about === `${c.x},${c.y}` ? null : `${c.x},${c.y}`))}></button>
           {/if}
         </div>
       {/each}
@@ -197,6 +210,17 @@
     </div>
     {#if deep && !(low || settings.lowPerf)}<div class="lamp" class:still={settings.instant} aria-hidden="true"></div>{/if}
   </div>
+  {#if shown}
+    <div class="card-info" role="dialog" aria-label={nameOf(shown.kind)}>
+      <img src={tileArt(shown.kind, deep)} alt="" class:rot={shown.rot} draggable="false" />
+      <div>
+        <strong>{nameOf(shown.kind)}</strong>
+        <p class="by">{shown.by === undefined ? 'Setup card' : `Laid by ${who(shown.by)}`}</p>
+        {#if textOf(shown.kind)}<p>{textOf(shown.kind)}</p>{/if}
+      </div>
+      <button class="btn icon small" aria-label="Close" onclick={() => (about = null)}><Icon name="close" size={14} /></button>
+    </div>
+  {/if}
   <div class="zoom">
     <button class="btn icon small" aria-label="Zoom in" onclick={() => zoom(1.25)}><Icon name="zoomIn" size={16} /></button>
     <button class="btn icon small" aria-label="Zoom out" onclick={() => zoom(0.8)}><Icon name="zoomOut" size={16} /></button>
@@ -278,6 +302,64 @@
   .pick {
     position: absolute;
     inset: 0;
+  }
+  .info {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+  }
+  .info:focus-visible {
+    outline: 2px solid var(--ink-2);
+    outline-offset: -2px;
+  }
+  .tile.about {
+    outline: 2px solid var(--ink);
+    outline-offset: -1px;
+    z-index: 2;
+  }
+  .area {
+    position: absolute;
+    border: 1px dashed rgb(255 255 255 / 0.14);
+    border-radius: 8px;
+    pointer-events: none;
+  }
+  .card-info {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    right: 8px;
+    max-width: 340px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px;
+    font-size: 13px;
+    color: var(--ink);
+    background: var(--ground-1);
+    border: 1px solid var(--rim);
+    border-radius: var(--r-sm, 4px);
+    box-shadow: 0 8px 20px rgb(0 0 0 / 0.45);
+    z-index: 3;
+  }
+  .card-info img {
+    width: 48px;
+    height: 72px;
+    flex: none;
+  }
+  .card-info div {
+    flex: 1;
+    min-width: 0;
+  }
+  .card-info p {
+    margin: 2px 0 0;
+    color: var(--ink-2);
+  }
+  .card-info .by {
+    color: var(--ink);
+    font-weight: 600;
   }
   .spot.turned {
     border-style: dotted;
