@@ -349,3 +349,16 @@ no audio files and no streaming are needed.
 Production builds leave Dead Drop out of the hub and out of the games the server will host. The dev server, the tests
 and staging builds keep it. The switch is a build flag, `__DEAD_DROP__` (vite.config.ts), because the hub's catalog is
 built into the client. Its rules stay registered, so a Dead Drop room that already exists in production still opens.
+
+### D54. Sealed Correspondence has original names, waits for people and never plays for them
+The cast has its own names and art: Heir, Dowager, Ambassador, Archivist, Magistrate, Confessor, Duelist, Scribe,
+Censor, Informant. The mechanics are kept, but no character is borrowed. The game has no bot. A dropped player gets
+the 90 second grace period (`meta.graceMs`, a new optional field that other games leave unset). After that the table
+simply waits, and quitting is how an abandoned game ends: with no winner. The optional turn timer only warns, so no
+one ever loses a card to the clock.
+
+### D55. Sealed Correspondence's portraits are generated on a free volunteer network
+Portraits need painted faces, which SVG from a script can't give. The machine can't run a diffusion model locally, so
+the images come from an openly licensed model (Deliberate, CreativeML OpenRAIL-M) on AI Horde's free anonymous tier,
+which adds no watermark. Every prompt, seed and pick is in `scripts/art/sealed.mjs`. Inside this game brass takes
+`--sprout`'s role (D26); wine red marks values and secrets but never signals a legal move.

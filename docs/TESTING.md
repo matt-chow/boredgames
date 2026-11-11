@@ -47,6 +47,10 @@ that ID, so `npx vitest -t "R4.3"` runs one rule.
 | `tests/mines/simulate.test.ts` | MS-SIM | Seeded bot games in every mode and player count with invariants and leak checks; `MS_SIM=<file>` writes [MINES_BALANCE.md](MINES_BALANCE.md) |
 | `tests/mines/fx.test.ts` | MS-FX | Which log lines a view presents (once, never on a first view), who is next, and no secrets in presentation lines |
 | `tests/mines/art.test.ts` | MS-ART1 | Every registered card kind has its art in both views |
+| `tests/sealed/rules.test.ts` | SC-DECK, SC-SET, SC-TURN, SC-TGT, SC-CON, SC-HEIR … SC-INF, SC-END, SC-WIN, SC-NET, SC-CHAT1 | Every Sealed Correspondence rule in both rulesets, from scripted decks |
+| `tests/sealed/room.test.ts` | SC-SET6, SC-NET1, SC-NET3, SC-NET6, SC-TIME1, SC-SEC1 | Through the room: switch prompt and lock, duplicates and stale turns, the 90 s grace and waiting, quitting, a timer that never moves the game, redacted history, no leaks |
+| `tests/sealed/simulate.test.ts` | SC-SIM | Random legal players over both rulesets and every player count: card conservation, refusals for non-actors, favor accounting, leak checks for every seat and spectators |
+| `tests/sealed/art.test.ts` | SC-ART1 | Every character, the back, the seal and the cover have their files |
 | `tests/deaddrop/text.test.ts` | | On-screen wording: claims, private outcomes, journal, mission note |
 
 **Simulations.** The configurations are base 3/4/5, Magpie 4, Bean Coin 3 and 5, Three New Bean Types 3, Three New +
@@ -89,6 +93,8 @@ were added, and both faults are now caught.
 | `mines.spec.ts` | MS-E2E-1: a classic round with two bots plays to the results | Lobby mode and rounds, the private role panel, laying and discarding through the server, tapping a card for "Setup card" or "Laid by", round summary, results, and no other seat's hand or role in any frame |
 | | MS-E2E-2: two players on desktop and phone play the Duel | Expanded and Duel offered alike at 2, Classic marked as not for 2, host-only settings, the deep mine view, the tutorial and encyclopedia, no leaks |
 | | MS-E2E-3: the tabletop in Expanded, desktop and phone | Opponent fans with true counts, "N cards remaining", whose turn and who is next in words, chat in Mine Activity with filters and an unread badge, dragging a card to the discard pile, a reload that keeps the feed without repeats, no leaks |
+| `sealed.spec.ts` | two desktops play a game to one favor | Tutorial on first visit, host sets the target, rules guide, chat, a reload mid-game, every move through the real UI to the result, rematch, no other hand, deck or reserve in any frame |
+| | three phones on Expanded | Ruleset choice, the interactive tutorial, chat and history tabs, a player dropping shows "the game waits", no side scroll, no leaks |
 | `perf.spec.ts` | action round-trip, idle CPU, frame pacing, transfer size | See Performance below |
 | `clockwork.spec.ts` | CC-E2E-1 to CC-E2E-6 | Hub listing and lobby sets/market/Crown Projects; art, Influence and inspection; full game with rematch; two people in sync with reload and frame privacy; 6-seat game; phone layout |
 | `deck.spec.ts` | DB-UI-1 to DB-UI-7, on the bench | Lobby market and bans; random market honours bans; a full game against a bot with rematch; two players with reload mid-decision, raw wrong-turn and stale rejection, and frame privacy; inspection and pile listing; phone layout with long-press inspection; card animations |

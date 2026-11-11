@@ -28,7 +28,7 @@
 <Dialog bind:open title="Quit this game?">
   <p>
     {#if !hasBots}
-      This game needs both players, so quitting ends it for everyone and the table closes. It can’t be resumed.
+      Nobody can take your seat in this game, so quitting ends it for everyone and the table closes. It can’t be resumed.
     {:else if othersHere}
       A bot takes over your seat, with your hand and fields, so everyone else can finish the game. You can’t come back
       to this game.

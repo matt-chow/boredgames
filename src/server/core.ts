@@ -518,7 +518,7 @@ export class RoomCore {
         if (standIn.has(i)) back.push(i);
       } else if (!standIn.has(i)) {
         if (!(i in away)) {
-          away[i] = now + GRACE_MS;
+          away[i] = now + (this.game.meta.graceMs ?? GRACE_MS);
           graceChanged = true;
         } else if (now >= away[i] && this.game.bot) gone.push(i); // Without bots the seat just waits for its player.
       }

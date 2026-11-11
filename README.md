@@ -66,6 +66,8 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
 | [docs/DEADDROP_BALANCE.md](docs/DEADDROP_BALANCE.md) | Dead Drop: strategy simulation findings and proposals |
 | [docs/MINES.md](docs/MINES.md) | Miners & Saboteurs: rules, rule IDs, rules audit |
 | [docs/MINES_BALANCE.md](docs/MINES_BALANCE.md) | Miners & Saboteurs: seeded simulation results |
+| [docs/SEALED.md](docs/SEALED.md) | Sealed Correspondence: rules, rule IDs, interpretations |
+| [docs/SEALED_ART.md](docs/SEALED_ART.md) | Sealed Correspondence: art bible and how to regenerate the portraits |
 | [docs/ASSETS.md](docs/ASSETS.md) | Asset manifest and how to drop in licensed artwork |
 | [docs/PROGRESS.md](docs/PROGRESS.md) | Milestone status and known gaps |
 | [HUMAN_PLAYTEST.md](HUMAN_PLAYTEST.md) | How to play the current release and what feedback to send |

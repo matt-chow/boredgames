@@ -204,6 +204,16 @@ Rows saved before this have no links and undo one step.
 Dead Drop (`src/games/deaddrop`) is a plain `GameModule` with no bot. It uses two optional `GameMeta` flags: `simultaneous`, under which the
 room doesn't reject an action for an old version, because the rules refuse what is really stale by its round; and `readyCheck`, which adds lobby ready states. `apply` and `setup` receive the room's clock for timestamps and inactivity limits, and `historyAction` redacts secrets from history rows. See DEADDROP.md, D44 to D48.
 
+## Sealed Correspondence
+
+Sealed Correspondence (`src/games/sealed`) is a plain `GameModule` without a bot. Like Miners & Saboteurs it sets
+`simultaneous`: chat and reactions may come from any seat, and every turn action carries its turn number, so a stale one
+is refused. It adds one optional field to `GameMeta`, `graceMs`, the presence grace before a seat counts as away (90 s
+here; other games keep the room default). With no bot to step in, an away seat just waits. Leaving mid-game ends the
+room for everyone, with no winner. The table animates from snapshots of confirmed views (`client/lib/motion`). Cards
+carry stable `data-card` ids, so a card can be followed from the deck or a seat into a hand or pile. See SEALED.md and
+D54–D55.
+
 ## Miners & Saboteurs
 
 Miners & Saboteurs (`src/games/mines`) is a plain `GameModule` with a bot. It sets `simultaneous`, because chat and

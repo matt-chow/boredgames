@@ -27,7 +27,7 @@ test.describe('the home page', () => {
       await page.setViewportSize(size);
       await page.goto('/?games=24');
       const cards = page.locator('.games .feature');
-      await expect(cards).toHaveCount(30); // four games, the coming-soon entry, the bench, 24 samples
+      await expect(cards).toHaveCount(31); // five games, the coming-soon entry, the bench, 24 samples
       await noSideScroll(page);
       for (const card of await cards.all()) {
         await card.scrollIntoViewIfNeeded();

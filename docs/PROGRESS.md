@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-06.
+Last updated 2026-11-11.
 
 ## Milestones
 
@@ -16,6 +16,15 @@ Last updated 2026-11-06.
 | M8 Deployment, smoke test, docs, handoff | Done | Live at https://boredgames.mchowcl.workers.dev, Workers Free plan; full browser suite passed against it |
 | M9 Clockwork Commons | Live | Second game, with a separate staging Worker. See the section below |
 | M10 Dead Drop | On staging | Third game: two people, secret orders, statements and challenges. See DEADDROP.md and DEADDROP_BALANCE.md |
+| M11 Sealed Correspondence v1.0 | Done | Court deduction card game, Classic (16 cards, 2–4) and Expanded (21 cards, 2–6). See SEALED.md |
+
+## Sealed Correspondence v1.0 (2026-11-11)
+
+- **Rules:** `src/games/sealed/rules`, pure and seeded. Every rule has an SC-* ID in SEALED.md and a test named with it. Interpretations recorded there: automatic draw, a "Deal" step between rounds, a timer that only warns, quitting as the way to end an abandoned game.
+- **Multiplayer:** no bots. A 90 s grace (`meta.graceMs`) and then the table waits. Turn numbers on every action, duplicates counted once, history redacted to action types.
+- **Screens:** lobby setup with the Classic→Expanded prompt; table with opponents round the top (a strip on phones), deck, reserve and face-up cards, a bottom-anchored hand, target and guess pickers, the Archivist's keep-and-order step, private notes, round and game results, chat with reactions, history, interactive tutorial, ruleset-aware guide, sound and ambience settings.
+- **Art:** ten generated portraits, a back, a seal and a cover (SEALED_ART.md, ASSETS.md). The original characters were renamed.
+- **Gaps:** no human playtest yet. The shuffle is a seeded sfc32 stream from a `crypto.getRandomValues` seed, not a fresh CSPRNG draw per shuffle.
 
 ## Dead Drop (2026-11-06, on `feat/v3`, staging only)
 

@@ -1,0 +1,34 @@
+/*
+ * Sealed Correspondence's look: a walnut writing table at a Renaissance court. Charcoal and walnut are the table,
+ * ivory carries the cards, burgundy is wax and danger. Brass takes the role of the signal colour inside this game only
+ * ("legal, your move"), as D26 allows.
+ */
+[data-game-theme='sealed'] {
+  --ground-0: #141110;
+  --ground-1: #1c1816;
+  --ground-2: #26201c;
+  --ground-3: #322a24;
+  --rim: #4a3e35;
+  --rim-hi: #6d5c4e;
+  --ink: #f3ebda;
+  --ink-2: #d4c8b4;
+  --ink-3: #a89a87;
+  --sprout: #d2aa5a;
+  --sprout-ink: #1c1816;
+  --sprout-dim: rgb(210 170 90 / 0.18);
+  --warn: #e98b7c;
+  --coin: #e0bd6e;
+  --coin-ink: #1c1816;
+
+  --sc-ivory: #f3ebda;
+  --sc-paper-ink: #2a221d;
+  --sc-paper-ink-2: #5a4b40;
+  --sc-wine: #7c2233;
+  --sc-wine-hi: #a8394d;
+  --sc-brass: #c9a25a;
+  --sc-serif: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+}
+
+body:has([data-game-theme='sealed']:not([data-fan])) {
+  background: #1c1816;
+}

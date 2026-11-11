@@ -16,6 +16,8 @@ export interface GameMeta {
   undoSteps?: number;
   /** Everyone acts at once and `apply` guards each action itself, so an action is never refused for a stale room version. */
   simultaneous?: boolean;
+  /** How long a dropped player has before their seat counts as gone (default `GRACE_MS` in the room core). */
+  graceMs?: number;
   /** Every seat must mark itself ready in the lobby before the game can start. */
   readyCheck?: boolean;
 }
