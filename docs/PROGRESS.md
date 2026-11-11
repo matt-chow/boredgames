@@ -25,6 +25,7 @@ Last updated 2026-11-11.
 - **Screens:** lobby setup with the Classic→Expanded prompt; table with opponents round the top (a strip on phones), deck, reserve and face-up cards, a bottom-anchored hand, target and guess pickers, the Archivist's keep-and-order step, private notes, round and game results, chat with reactions, history, interactive tutorial, ruleset-aware guide, sound and ambience settings.
 - **Art:** ten generated portraits, a back, a seal and a cover (SEALED_ART.md, ASSETS.md). The original characters were renamed.
 - **Gaps:** no human playtest yet. The shuffle is a seeded sfc32 stream from a `crypto.getRandomValues` seed, not a fresh CSPRNG draw per shuffle.
+- **Release:** commit 0c644c1. Staging version 9b48eef1 and production version dcecb1c4 (rollback: 0c44c073); sealed e2e passed on both.
 
 ## Dead Drop (2026-11-06, on `feat/v3`, staging only)
 
