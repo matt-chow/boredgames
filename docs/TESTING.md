@@ -46,7 +46,7 @@ that ID, so `npx vitest -t "R4.3"` runs one rule.
 | `tests/mines/room.test.ts` | MS-ROOM, MS-ATTR2 | Through the room: card makers seen alike before and after a reload, settings lock, duplicates, stale moves, away policy, timer, redacted history, no leaks |
 | `tests/mines/simulate.test.ts` | MS-SIM | Seeded bot games in every mode and player count with invariants and leak checks; `MS_SIM=<file>` writes [MINES_BALANCE.md](MINES_BALANCE.md) |
 | `tests/mines/fx.test.ts` | MS-FX | Which log lines a view presents (once, never on a first view), who is next, and no secrets in presentation lines |
-| `tests/mines/art.test.ts` | MS-ART1 | Every registered card kind has its art in both views |
+| `tests/mines/art.test.ts` | MS-ART1–3 | Every registered card kind has its art in both views; each painted tunnel opens on exactly its links; every face is painted, in the manifest and small enough |
 | `tests/sealed/rules.test.ts` | SC-DECK, SC-SET, SC-TURN, SC-TGT, SC-CON, SC-HEIR … SC-INF, SC-END, SC-WIN, SC-NET, SC-CHAT1 | Every Sealed Correspondence rule in both rulesets, from scripted decks |
 | `tests/sealed/room.test.ts` | SC-SET6, SC-NET1, SC-NET3, SC-NET6, SC-TIME1, SC-SEC1 | Through the room: switch prompt and lock, duplicates and stale turns, the 90 s grace and waiting, quitting, a timer that never moves the game, redacted history, no leaks |
 | `tests/sealed/simulate.test.ts` | SC-SIM | Random legal players over both rulesets and every player count: card conservation, refusals for non-actors, favor accounting, leak checks for every seat and spectators |

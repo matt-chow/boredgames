@@ -41,15 +41,23 @@ All original, drawn in SVG by `scripts/art/deaddrop.mjs` (run it with `node` to 
 
 ## Miners & Saboteurs
 
-All original, drawn in SVG by `scripts/art/mines.mjs` (run it with `node` to regenerate). The script reads the card
-registry in `src/games/mines/rules/cards.ts`, so each tunnel is drawn from its own openings. It uses no third-party
-material, no image service and no text. MS-ART1 checks that every registered kind has its file.
+The card faces are original paintings made for this project in v1.3. They were generated from text prompts plus a
+layout guide that `scripts/art/mines-paint.mjs` draws from each card's own metadata. No reference images, artist
+names or third-party pictures were used. The script holds every prompt, seed and pick and can regenerate the set. It
+also checks each tunnel's painted openings against its links (MS-ART2). The look is described in
+[MINES_ART.md](MINES_ART.md). The model, host, licence and caveat are the same as for Sealed Correspondence (below):
+Deliberate on AI Horde's free anonymous tier.
+
+The small badges, the deep mine view and the cover are original SVG, drawn by `scripts/art/mines.mjs` from the same
+card registry with no third-party material. MS-ART1 checks that every registered kind has its file.
 
 | Files | What |
 |---|---|
-| `public/art/covers/mines.svg` | Game cover: a lantern-lit timbered shaft and a cart of gold |
-| `public/art/mines/*.svg` (78) | Tabletop view: every tunnel, action, role, destination, card back, reward and tool badge |
+| `public/art/mines/*.webp` (70) | Tabletop faces, 240×360: 35 tunnels, entrance, gold and two coal destinations; 7 roles; 18 actions; deck, role and destination backs; 3 rewards |
+| `data/mines-art-manifest.json` | One row per painted face: asset, card, category, rulesets, file, size, variant, source, fallback |
+| `public/art/mines/{nugget,crystal,tool*}.svg` (8) | Round badges for gold, crystals and tools, intact and broken |
 | `public/art/mines/deep/*.svg` (40) | Deep mine view: tunnels, entrance and destinations by lamplight |
+| `public/art/covers/mines.svg` | Game cover: a lantern-lit timbered shaft and a cart of gold |
 
 ## Using licensed artwork
 

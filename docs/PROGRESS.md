@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-11.
+Last updated 2026-11-13.
 
 ## Milestones
 
@@ -337,3 +337,18 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
   - Staging `cc3d3a64-08fe-4ae2-8142-19137c542ef3`: `mines.spec.ts` and `home.spec.ts` pass against it (10 passed).
   - Production `0c44c073-41a6-46e6-83ac-24fb49cf796e`: all three `mines.spec.ts` tests pass; Dead Drop is still absent.
   - To roll back, return to `0564a063-b84d-4bd1-916a-281f3be87179`.
+
+### Miners & Saboteurs v1.3: painted card faces (2026-11-13)
+
+- **Art only.** No card, count, link, rule, score or state shape changed. The 70 tabletop faces are now painted WebP
+  at 240×360: 35 tunnels, the entrance, gold and both coal destinations, 7 full-body roles, 18 action scenes, the deck,
+  role and destination backs, and the three rewards. The 8 round badges, the deep mine view and the cover stay SVG.
+  The style and method are in MINES_ART.md, the licensing in ASSETS.md.
+- **Geometry from the metadata.** `scripts/art/mines-paint.mjs` draws each tunnel's layout from its `links` and has it
+  repainted by img2img at moderate strength (Deliberate on AI Horde's free tier). The build and MS-ART2 measure every
+  edge of the shipped file and fail if the openings differ from the links. MS-ART3 checks that every face is painted,
+  in `data/mines-art-manifest.json` and between 2 and 60 KB. The set is 0.8 MB.
+- **Loading.** The table warms the cache with its mode's faces 2 s after it settles; `/art/*` is cached for a day.
+  Every `<img>` already had fixed dimensions, so nothing shifts while a face loads.
+- **Gaps.** The pictures are generated: some action scenes (Broken Pick, Cave-in) are loose readings, and the tool
+  badges carry the exact meaning. No human playtest of legibility on a real phone yet.

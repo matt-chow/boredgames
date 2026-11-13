@@ -1,0 +1,1050 @@
+[
+ {
+  "asset": "mines/cross",
+  "card": "cross",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/cross.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/teeV",
+  "card": "teeV",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/teeV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/teeH",
+  "card": "teeH",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/teeH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/straightV",
+  "card": "straightV",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/straightV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/straightH",
+  "card": "straightH",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/straightH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/bendL",
+  "card": "bendL",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/bendL.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/bendR",
+  "card": "bendR",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/bendR.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadCross",
+  "card": "deadCross",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadCross.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 59",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadTeeV",
+  "card": "deadTeeV",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadTeeV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadTeeH",
+  "card": "deadTeeH",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadTeeH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadV",
+  "card": "deadV",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadH",
+  "card": "deadH",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadL",
+  "card": "deadL",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadL.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadR",
+  "card": "deadR",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadR.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadN",
+  "card": "deadN",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadN.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/deadW",
+  "card": "deadW",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/deadW.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/gateGreenH",
+  "card": "gateGreenH",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/gateGreenH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/gateGreenR",
+  "card": "gateGreenR",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/gateGreenR.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/gateGreenV",
+  "card": "gateGreenV",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/gateGreenV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/gateBlueH",
+  "card": "gateBlueH",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/gateBlueH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/gateBlueL",
+  "card": "gateBlueL",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/gateBlueL.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/gateBlueV",
+  "card": "gateBlueV",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/gateBlueV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/ladderH",
+  "card": "ladderH",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/ladderH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/ladderL",
+  "card": "ladderL",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/ladderL.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/ladderR",
+  "card": "ladderR",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/ladderR.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/ladderV",
+  "card": "ladderV",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/ladderV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/overpass",
+  "card": "overpass",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/overpass.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/twinA",
+  "card": "twinA",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/twinA.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/twinB",
+  "card": "twinB",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/twinB.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/crystalCross",
+  "card": "crystalCross",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/crystalCross.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/crystalTeeH",
+  "card": "crystalTeeH",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/crystalTeeH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/crystalH",
+  "card": "crystalH",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/crystalH.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/crystalTeeV",
+  "card": "crystalTeeV",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/crystalTeeV.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/crystalW",
+  "card": "crystalW",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/crystalW.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/crystalN",
+  "card": "crystalN",
+  "category": "tunnel",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/crystalN.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 41",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.4",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/entrance",
+  "card": "entrance",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/entrance.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/gold",
+  "card": "gold",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/gold.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/coalL",
+  "card": "coalL",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/coalL.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/coalR",
+  "card": "coalR",
+  "category": "tunnel",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/coalR.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, img2img from the card's link layout at strength 0.5",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/miner",
+  "card": "miner",
+  "category": "role",
+  "rulesets": [
+   "classic"
+  ],
+  "file": "/art/mines/miner.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 59",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/saboteur",
+  "card": "saboteur",
+  "category": "role",
+  "rulesets": [
+   "classic",
+   "expanded"
+  ],
+  "file": "/art/mines/saboteur.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 83",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/green",
+  "card": "green",
+  "category": "role",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/green.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 41",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/blue",
+  "card": "blue",
+  "category": "role",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/blue.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 41",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/foreman",
+  "card": "foreman",
+  "category": "role",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/foreman.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 131",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/opportunist",
+  "card": "opportunist",
+  "category": "role",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/opportunist.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 59",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/seeker",
+  "card": "seeker",
+  "category": "role",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/seeker.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 83",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/breakPick",
+  "card": "breakPick",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/breakPick.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/breakLamp",
+  "card": "breakLamp",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/breakLamp.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/breakCart",
+  "card": "breakCart",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/breakCart.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/fixPick",
+  "card": "fixPick",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/fixPick.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/fixLamp",
+  "card": "fixLamp",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/fixLamp.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/fixCart",
+  "card": "fixCart",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/fixCart.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/fixPickLamp",
+  "card": "fixPickLamp",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/fixPickLamp.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 167",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/fixPickCart",
+  "card": "fixPickCart",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/fixPickCart.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 131",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/fixLampCart",
+  "card": "fixLampCart",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/fixLampCart.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/survey",
+  "card": "survey",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/survey.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 7",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/caveIn",
+  "card": "caveIn",
+  "category": "action",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/caveIn.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/theft",
+  "card": "theft",
+  "category": "action",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/theft.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/guard",
+  "card": "guard",
+  "category": "action",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/guard.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/swapHands",
+  "card": "swapHands",
+  "category": "action",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/swapHands.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/inspect",
+  "card": "inspect",
+  "category": "action",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/inspect.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 167",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/swapRole",
+  "card": "swapRole",
+  "category": "action",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/swapRole.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/trap",
+  "card": "trap",
+  "category": "action",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/trap.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 131",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/free",
+  "card": "free",
+  "category": "action",
+  "rulesets": [
+   "expanded"
+  ],
+  "file": "/art/mines/free.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/cardBack",
+  "card": "cardBack",
+  "category": "back",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/cardBack.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 83",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/roleBack",
+  "card": "roleBack",
+  "category": "back",
+  "rulesets": [
+   "classic",
+   "expanded"
+  ],
+  "file": "/art/mines/roleBack.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 59",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/goalBack",
+  "card": "goalBack",
+  "category": "back",
+  "rulesets": [
+   "classic",
+   "expanded",
+   "duel"
+  ],
+  "file": "/art/mines/goalBack.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/reward1",
+  "card": "reward1",
+  "category": "reward",
+  "rulesets": [
+   "classic"
+  ],
+  "file": "/art/mines/reward1.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 23",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/reward2",
+  "card": "reward2",
+  "category": "reward",
+  "rulesets": [
+   "classic"
+  ],
+  "file": "/art/mines/reward2.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 41",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ },
+ {
+  "asset": "mines/reward3",
+  "card": "reward3",
+  "category": "reward",
+  "rulesets": [
+   "classic"
+  ],
+  "file": "/art/mines/reward3.webp",
+  "width": 240,
+  "height": 360,
+  "variant": "seed 101",
+  "source": "AI Horde, Deliberate, text prompt only",
+  "fallback": "none: MS-ART1 fails the build if the file is missing"
+ }
+]

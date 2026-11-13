@@ -2,6 +2,7 @@
   import { toasts } from '../../../client/lib/toast.svelte';
   import type { GameUiProps } from '../../ui';
   import { ROUND_CHOICES, TARGET_CHOICES, TIMER_CHOICES, type MConfig } from '../rules/types';
+  import { artOf } from '../rules/cards';
   import { MODE_NAMES } from './text';
 
   let { conn, room }: GameUiProps = $props();
@@ -29,7 +30,7 @@
   <div class="modes" role="radiogroup" aria-label="Game mode">
     {#each MODES as m (m.id)}
       <button role="radio" class="mode" class:on={c.mode === m.id} class:off={!fits(m.players)} aria-checked={c.mode === m.id} disabled={!can} onclick={() => send({ mode: m.id })}>
-        <img src="/art/mines/{m.art}.svg" alt="" width="48" height={m.art.startsWith('tool') ? 48 : 72} />
+        <img src={artOf(m.art)} alt="" width="48" height={m.art.startsWith('tool') ? 48 : 72} />
         <span class="mtext">
           <span class="mname">{MODE_NAMES[m.id]}</span>
           <span class="mplayers">{m.players[0] === m.players[1] ? `${m.players[0]} players` : `${m.players[0]}–${m.players[1]} players`}{fits(m.players) ? '' : ` · not for ${n}`}</span>

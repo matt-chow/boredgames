@@ -12,3 +12,6 @@
 
 /cards/*
   Cache-Control: public, max-age=86400
+
+/art/*
+  Cache-Control: public, max-age=86400

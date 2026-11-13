@@ -186,8 +186,11 @@ export const expandedPay = (winners: number) => (winners <= 0 ? 0 : [5, 4, 3, 2]
 /** The 32 gold tokens of the expanded ruleset are value-1 pieces: gold is counted as a whole number (MS-X-GOLD1). */
 export const EXPANDED_TOKENS = 32;
 
+/** Small badges stay crisp vector icons; every card face is a painting (scripts/art/mines-paint.mjs). */
+const BADGES = new Set(['nugget', 'crystal', 'toolPick', 'toolLamp', 'toolCart', 'toolPickBroken', 'toolLampBroken', 'toolCartBroken']);
+
 /** Card art lives here, one file per kind: classic tabletop and the immersive mine. */
-export const artOf = (kind: string) => `/art/mines/${kind}.svg`;
+export const artOf = (kind: string) => `/art/mines/${kind}.${BADGES.has(kind) ? 'svg' : 'webp'}`;
 export const deepArtOf = (kind: string) => `/art/mines/deep/${kind}.svg`;
 
 /** Every kind with art, for the art script and the asset test. */

@@ -14,6 +14,7 @@
   import SettingsMenu from '../../../hub/SettingsMenu.svelte';
   import type { GameUiProps } from '../../ui';
   import { inArea } from '../rules/board';
+  import { deckKinds } from '../rules/engine';
   import { ACTION, ROLE, TUNNEL, artOf, type ActionKind, type Tool } from '../rules/cards';
   import type { Card, LogEntry, MAction, MView, Rot, Spot } from '../rules/types';
   import { ambience, prefs, sounds, stopAmbience } from './audio.svelte';
@@ -415,6 +416,14 @@
   });
   const lastRound = $derived(view.rounds.at(-1));
   $effect(() => ambience(prefs.ambience && !settings.muted && prefs.ambVol >= 0));
+
+  // Warm the cache with this mode's card faces once the table has settled, so a rival's card is painted when it flips.
+  onMount(() => {
+    const id = setTimeout(() => {
+      for (const kind of new Set(deckKinds(view.config.mode))) new Image().src = TUNNEL[kind] ? tileArt(kind, deep) : artOf(kind);
+    }, 2000);
+    return () => clearTimeout(id);
+  });
 
   // ---- Views and menus ------------------------------------------------------------------------------------------------
   const VIEW_KEY = 'mines.view';

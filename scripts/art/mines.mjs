@@ -4,7 +4,7 @@
  * Run: node scripts/art/mines.mjs   (Node 24 loads the .ts registry directly)
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
-import { ACTION, ART_KINDS, DEEP_KINDS, ENTRANCE, GOALS, ROLE, TUNNEL } from '../../src/games/mines/rules/cards.ts';
+import { ACTION, ART_KINDS, DEEP_KINDS, ENTRANCE, GOALS, ROLE, TUNNEL, artOf } from '../../src/games/mines/rules/cards.ts';
 
 const W = 120;
 const H = 180;
@@ -293,7 +293,8 @@ function draw(kind, P, deep) {
   throw new Error(`No art for ${kind}`);
 }
 
-for (const kind of ART_KINDS) writeFileSync(`${out}/${kind}.svg`, draw(kind, TABLE, false));
+// Tabletop card faces are paintings now (scripts/art/mines-paint.mjs); this draws the badges, the deep mine and the cover.
+for (const kind of ART_KINDS.filter((k) => artOf(k).endsWith('.svg'))) writeFileSync(`${out}/${kind}.svg`, draw(kind, TABLE, false));
 for (const kind of DEEP_KINDS) writeFileSync(`${out}/deep/${kind}.svg`, kind === 'goalBack' ? back(kind, C.crystal, 'A face-down destination', at(CX, CY, 1, `<circle r="30" fill="#0e1218" stroke="${C.crystal}" stroke-width="3"/>` + nuggets(0, 2, 1, 1))) : draw(kind, DEEP, true));
 writeFileSync('public/art/covers/mines.svg', cover());
-console.log(`Wrote ${ART_KINDS.length} cards, ${DEEP_KINDS.length} deep tiles and the cover.`);
+console.log(`Wrote the badges, ${DEEP_KINDS.length} deep tiles and the cover.`);
