@@ -39,6 +39,8 @@ export interface SetupContext<Config> {
   config: Config;
   /** The server's clock, for a game with timestamps or phase clocks. */
   now?: number;
+  /** Seats that won the previous game in this room and are still seated (a rematch), for a game that lets them start. */
+  winners?: number[];
 }
 
 export type ApplyResult<State> =
@@ -94,6 +96,14 @@ export interface GameModule<Config = unknown, State = unknown, Action = unknown,
    * when the seat has nothing to do. `standIn` is set when the bot is covering for an absent person.
    */
   bot?(view: View, standIn?: boolean): BotMove<Action> | null;
+  /**
+   * Optional server clock for a game with timed windows or one that reacts to who is connected. The room calls it after
+   * every change, on every connect and disconnect, and when `wakeAt` comes due. `online[i]` is whether seat i is
+   * connected. Returns the next state, or null when nothing changed. Must not mutate `state`.
+   */
+  tick?(state: State, now: number, online: boolean[]): State | null;
+  /** When `tick` next has something to do (a window closing), so the room can wake for it. */
+  wakeAt?(state: State): number | null;
   /** Upgrade persisted state from an older `stateVersion`. */
   migrate?(state: unknown, fromVersion: number): State;
 }

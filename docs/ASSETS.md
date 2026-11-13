@@ -97,3 +97,19 @@ every prompt, seed and pick and can regenerate the set. The look is described in
 
 The card frame, value medallion and name plate are CSS in `src/games/sealed/ui/Card.svelte`. The sounds are
 synthesized at runtime in `src/games/sealed/ui/audio.svelte.ts`; no audio file ships.
+
+## Palazzo
+
+The five role portraits, the card back and the cover are original images made for this project, generated the same
+way as Sealed Correspondence's: from text prompts only, with no reference images, artist names or third-party
+pictures, using Deliberate (CreativeML OpenRAIL-M) on AI Horde's free anonymous tier. The same licence and caveat
+apply. `scripts/art/palazzo.mjs` holds every prompt, seed and pick and can regenerate the set.
+
+| Files | What |
+|---|---|
+| `public/art/palazzo/{chancellor,magistrate,bravo,envoy,sentinel}.webp` | The five role portraits, 360×504 |
+| `public/art/palazzo/back.webp` | Card back |
+| `public/art/covers/palazzo.webp` | Game cover, 600×840 |
+
+The engraved frame and name plate are CSS in `src/games/palazzo/ui/Card.svelte`. The sounds are synthesized at run
+time, so there are no audio files.

@@ -362,3 +362,11 @@ Portraits need painted faces, which SVG from a script can't give. The machine ca
 the images come from an openly licensed model (Deliberate, CreativeML OpenRAIL-M) on AI Horde's free anonymous tier,
 which adds no watermark. Every prompt, seed and pick is in `scripts/art/sealed.mjs`. Inside this game brass takes
 `--sprout`'s role (D26); wine red marks values and secrets but never signals a legal move.
+
+### D56. Palazzo is an original game, and its windows close on the server's clock
+A recreation of an existing hidden-role bluffing game was asked for and declined. Palazzo keeps the general
+mechanics of the genre (hidden influence, claims, challenges, blocks) with its own title, five roles, rules text, art
+and interface. Its response windows must close even when nobody sends anything, and can't trust a client's clock. So
+`GameModule` gained `tick` and `wakeAt`, and the Durable Object's alarm wakes the room at the next deadline. Mandatory
+choices have no clock, because nothing is ever chosen for a player. Inside this game, gilt gold takes `--sprout`'s
+role (D26).

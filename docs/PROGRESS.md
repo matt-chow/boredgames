@@ -17,6 +17,15 @@ Last updated 2026-11-13.
 | M9 Clockwork Commons | Live | Second game, with a separate staging Worker. See the section below |
 | M10 Dead Drop | On staging | Third game: two people, secret orders, statements and challenges. See DEADDROP.md and DEADDROP_BALANCE.md |
 | M11 Sealed Correspondence v1.0 | Done | Court deduction card game, Classic (16 cards, 2–4) and Expanded (21 cards, 2–6). See SEALED.md |
+| M12 Palazzo v1.0 | Done | Original hidden-influence bluffing game for 2–6 people, five roles, server-timed response windows. See PALAZZO.md |
+
+## Palazzo v1.0 (2026-11-12)
+
+- **Rules:** `src/games/palazzo/rules`, pure and seeded. Every rule has a PZ-* ID in PALAZZO.md and a test named with it. The interpretations are recorded there.
+- **Multiplayer:** no bots. Response windows run on the server's clock through the new `tick`/`wakeAt` hooks and the room's alarm. Every game action carries its step id. A disconnect either pauses the table or lets it carry on, as the host chose. Mandatory choices have no clock and are never made for anyone. In a rematch the last winner opens (`RoomMeta.lastWinners`).
+- **Screens:** lobby settings (timer, disconnect policy, two-player draft); the table with opponent tiles, the claim in play, an answer panel with a server-synced countdown, action buttons that explain why they are disabled, a bluff warning, a reveal picker, Parley and draft pickers, a private Inspect note that goes out of date, a reference card (pinned beside the chat on a desk, a sheet on a phone), a guide, chat and reactions with ghost chat for players who are out, a history log, and sound that is off by default.
+- **Art:** five generated engraved portraits, a back and a cover (ASSETS.md).
+- **Gaps:** no human playtest yet. A silent network drop is noticed only at the next presence check. As with Sealed, the shuffle is a seeded stream from a `crypto.getRandomValues` seed.
 
 ## Sealed Correspondence v1.0 (2026-11-11)
 

@@ -18,6 +18,7 @@ export const GAME_UI: Record<string, () => Promise<{ default: Component<GameUiPr
   deaddrop: () => import('./deaddrop/ui/Table.svelte'),
   mines: () => import('./mines/ui/Table.svelte'),
   sealed: () => import('./sealed/ui/Table.svelte'),
+  palazzo: () => import('./palazzo/ui/Table.svelte'),
   tally: () => import('./tally/TallyTable.svelte'),
   ...(__DECK_BENCH__ ? { fixture: () => import('./deck/ui/DeckTable.svelte') } : {}),
 };
@@ -28,6 +29,7 @@ export const GAME_THEME: Record<string, () => Promise<unknown>> = {
   deaddrop: () => import('./deaddrop/ui/theme.css'),
   mines: () => import('./mines/ui/theme.css'),
   sealed: () => import('./sealed/ui/theme.css'),
+  palazzo: () => import('./palazzo/ui/theme.css'),
 };
 
 /** Optional game-specific section of the lobby, for settings a list of switches can't express. */
@@ -36,5 +38,6 @@ export const GAME_SETUP: Record<string, () => Promise<{ default: Component<GameU
   deaddrop: () => import('./deaddrop/ui/Setup.svelte'),
   mines: () => import('./mines/ui/Setup.svelte'),
   sealed: () => import('./sealed/ui/Setup.svelte'),
+  palazzo: () => import('./palazzo/ui/Setup.svelte'),
   ...(__DECK_BENCH__ ? { fixture: () => import('./deck/ui/MarketSetup.svelte') } : {}),
 };

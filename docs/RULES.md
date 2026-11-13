@@ -6,6 +6,9 @@
 - **Variants and the anniversary bean types:** the AMIGO 25th-anniversary rulebook is authoritative
   (see [VARIANTS.md](VARIANTS.md)).
 
+Palazzo's rules are in [PALAZZO.md](PALAZZO.md), with their own PZ-* IDs. The other games each have their own file
+too (SEALED.md, MINES.md, DEADDROP.md).
+
 Rule IDs (R1.1, R4.6, …) are the names of tests in `tests/bohnanza/base-rules.test.ts`, so every rule here traces to
 at least one test. Lines marked **Interpretation** cover a point the rulebook leaves open. Each records what we chose
 and why. Tests cover their consequences.

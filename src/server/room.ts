@@ -315,6 +315,7 @@ export class RoomDO extends DurableObject<Env> {
     const times = [room.expiresAt];
     if (bot) times.push(Math.max(now, room.updatedAt + bot.delayMs));
     if (room.graceEndsAt) times.push(room.graceEndsAt);
+    if (room.wakeAt) times.push(Math.max(now, room.wakeAt));
     if (room.status === 'playing' && this.ctx.getWebSockets().length) times.push(Math.max(now + STALL_REPEAT_MS, room.updatedAt + STALL_MS));
     await this.ctx.storage.setAlarm(Math.min(...times));
   }

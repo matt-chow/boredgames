@@ -214,6 +214,23 @@ room for everyone, with no winner. The table animates from snapshots of confirme
 carry stable `data-card` ids, so a card can be followed from the deck or a seat into a hand or pile. See SEALED.md and
 D54–D55.
 
+## Palazzo
+
+Palazzo (`src/games/palazzo`) is a plain `GameModule` without a bot. It sets `simultaneous`: challenge, block and
+counter windows take answers from several seats at once, and every game action carries the step id of the decision it
+answers, so a stale or repeated one is refused. Its response windows run on the server's clock, so it added three
+optional hooks, which other games leave unset:
+
+- `tick(state, now, online)` lets the game act on time passing and on presence. RoomCore calls it whenever presence
+  changes or the room's alarm fires. Palazzo uses it to close expired windows and to pause or resume for a disconnect.
+- `wakeAt(state)` gives the next time the game needs a `tick`. RoomDO schedules its alarm for the earliest of this and
+  its own retention deadlines.
+- `SetupContext.winners` passes the previous game's winners, recorded at rematch in `RoomMeta.lastWinners`, so a
+  rematch can open with the last winner.
+
+The client works out the countdown as `deadline - view.at - (Date.now() - received)`, which only measures elapsed time
+on the device and never compares the two clocks. See PALAZZO.md and D56.
+
 ## Miners & Saboteurs
 
 Miners & Saboteurs (`src/games/mines`) is a plain `GameModule` with a bot. It sets `simultaneous`, because chat and

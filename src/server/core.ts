@@ -48,6 +48,8 @@ export interface RoomMeta {
   standIn?: number[];
   /** Seats marked ready, in a game with a ready check. Any change of seats clears it. */
   ready?: number[];
+  /** Token hashes of the last game's winners, kept through a rematch so the game can let them start. */
+  lastWinners?: string[];
 }
 
 export interface SeatRow {
@@ -425,7 +427,8 @@ export class RoomCore {
         const problem = this.startProblem();
         if (problem) throw new RoomError('cannot-start', problem);
         const seed = this.opts.seed();
-        this.state = this.game.setup({ playerCount: this.seats.length, seed, config: this.meta.config, now: this.opts.now() });
+        const winners = (this.meta.lastWinners ?? []).map((th) => this.seatOf(th)).filter((i) => i >= 0);
+        this.state = this.game.setup({ playerCount: this.seats.length, seed, config: this.meta.config, now: this.opts.now(), winners });
         this.loadedState = true;
         this.meta.seed = seed;
         this.meta.status = 'playing';
@@ -435,6 +438,10 @@ export class RoomCore {
       }
       case 'rematch': {
         if (this.meta.status !== 'over') throw new RoomError('not-over', 'The game is still in progress.');
+        this.meta.lastWinners = (this.game.results(this.getState()) ?? [])
+          .filter((r) => r.winner)
+          .map((r) => this.seats[r.seat]?.th)
+          .filter((th): th is string => !!th && !isBot(th));
         this.state = null;
         this.meta.status = 'lobby';
         this.meta.seed = null;
@@ -501,6 +508,27 @@ export class RoomCore {
    * left, and the room must be deleted.
    */
   presence(connected: Set<number>): 'same' | 'changed' | 'closed' {
+    const was = this.seatPresence(connected);
+    if (was === 'closed' || this.meta.status !== 'playing' || !this.game.tick) return was;
+    const next = this.game.tick(this.getState(), this.opts.now(), this.seats.map((s, i) => isBot(s.th) || connected.has(i)));
+    if (!next) return was;
+    this.state = next;
+    if (this.game.isOver(next)) {
+      this.meta.status = 'over';
+      delete this.meta.away;
+      delete this.meta.standIn;
+    }
+    // Nobody acted, so the history row has no seat. The version bump still invalidates any undo.
+    this.commit('tick', -1, {}, { state: true });
+    return 'changed';
+  }
+
+  /** When the game's own clock next needs a `presence` call, for a game with `tick`. */
+  get wakeAt(): number | null {
+    return this.meta.status === 'playing' && this.game.wakeAt ? this.game.wakeAt(this.getState()) : null;
+  }
+
+  private seatPresence(connected: Set<number>): 'same' | 'changed' | 'closed' {
     if (this.meta.status !== 'playing') return 'same';
     const now = this.opts.now();
     const away = { ...this.meta.away };

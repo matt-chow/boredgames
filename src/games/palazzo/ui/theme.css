@@ -1,0 +1,35 @@
+/*
+ * Palazzo's look: a palace corridor at night. Ink-teal and stone are the room, laid paper carries the engraved
+ * portraits, oxblood is danger and loss. Gold leaf takes the role of the signal colour inside this game only
+ * ("legal, your move"), as D26 allows.
+ */
+[data-game-theme='palazzo'] {
+  --ground-0: #0e1415;
+  --ground-1: #141c1d;
+  --ground-2: #1c2627;
+  --ground-3: #253133;
+  --rim: #374647;
+  --rim-hi: #56696a;
+  --ink: #efe6d2;
+  --ink-2: #cfc4ad;
+  --ink-3: #a19a86;
+  --sprout: #d8b261;
+  --sprout-ink: #141c1d;
+  --sprout-dim: rgb(216 178 97 / 0.18);
+  --warn: #e7907f;
+  --coin: #e2bf6a;
+  --coin-ink: #141c1d;
+
+  --pz-paper: #efe4cb;
+  --pz-paper-ink: #2b2219;
+  --pz-paper-ink-2: #5c4c3b;
+  --pz-sepia: #6b4f33;
+  --pz-blood: #7a2626;
+  --pz-blood-hi: #a73a35;
+  --pz-gilt: #c7a052;
+  --pz-serif: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, serif;
+}
+
+body:has([data-game-theme='palazzo']:not([data-fan])) {
+  background: #141c1d;
+}
