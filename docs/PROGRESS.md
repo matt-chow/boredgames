@@ -352,3 +352,6 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
   Every `<img>` already had fixed dimensions, so nothing shifts while a face loads.
 - **Gaps.** The pictures are generated: some action scenes (Broken Pick, Cave-in) are loose readings, and the tool
   badges carry the exact meaning. No human playtest of legibility on a real phone yet.
+- **Released to staging, 2026-11-13.** Commit `858e0e0`, staging `199284b2-4472-4ab4-a307-5578c30cc92a`. The faces serve
+  as `image/webp` with a one-day cache, and all three `mines.spec.ts` tests pass against it. Production is not yet
+  deployed; deploy it from a clean checkout of `main` so no uncommitted work goes with it.
