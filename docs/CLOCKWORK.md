@@ -217,7 +217,7 @@ Code: `src/engine/deckbuilder/stages.ts`, `src/games/clockwork/rules/editions.ts
   remainder on the latest. Totals are preserved. A 2-stage Project uses the first and last stage names. City Walls in 3: 3 Coins + 1 Influence for 4 Renown, 3 + 2 for 4, 2 + 2 for 5.
   Known weak spots at original prices: River Quay's first of 3 stages is 1 Coin for 1 Renown, and Exchange Hall's last of 3 is 2 Influence with no Coins for 3 Renown. No stage is free.
 - **CC-STAGE-4, S2 and F2.** One more Coin in the Project's total, not per stage, divided the same way. One-stage Projects don't change. C1 adds 1 Coin to every Project. No card or market cost changes.
-- **CC-STAGE-5, contributing.** In the Market phase, for one Buy, the player to move may pay the next unfunded stage of a Project and takes that stage's Renown. Only one stage of
+- **CC-STAGE-5, contributing.** In the Market phase, for one Buy (from the same Buys as card purchases), the player to move may pay the next unfunded stage of a Project and takes that stage's Renown. Only one stage of
   each Project per turn, but different Projects in one turn as Buys and funds allow. No refunds or transfers. Everyone sees who funded what. Stages are funded in order.
 - **CC-STAGE-6, Renown and reward.** Renown is earned stage by stage and counts at the end even if the Project is never finished. The Project's listed reward (Draw 2 and so on) happens once,
   for whoever funds the last stage. A one-stage Project works as a claim always has.

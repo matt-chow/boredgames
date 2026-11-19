@@ -187,6 +187,21 @@ describe('CC-STAGE contributions', () => {
     expect(t.refused(me, { type: 'claim', project: 'canal_lights' })).toBe('illegal-claim');
   });
 
+  it('CC-STAGE-5: on the live rules cards and stages share the turn’s Buys, and a +Buy can go to either', () => {
+    const t = new Table([]);
+    flush(t, 40, 2);
+    const me = t.s.turn.seat;
+    const [a, b] = t.s.projects.map((p) => p.key);
+    t.apply(me, { type: 'buy', pile: 'scrap' });
+    fund(t, a);
+    expect(t.buys).toBe(0);
+    expect(t.view(me).legal).toMatchObject({ buy: [], claim: [] });
+    expect(t.refused(me, { type: 'buy', pile: 'scrap' })).toBe('illegal-buy');
+    expect(t.refused(me, { type: 'claim', project: b })).toBe('illegal-claim');
+    // A bot with no Buys left ends its turn rather than reaching for a Project.
+    for (const profile of PROFILES) expect(botMove(t.view(me), profile, 0)!.actions).toEqual([{ type: 'end-phase' }]);
+  });
+
   it('CC-STAGE-5: another player continues the same Project, and each holds their own Renown', () => {
     const t = site({ city_illumination: 3 });
     const a = t.s.turn.seat;

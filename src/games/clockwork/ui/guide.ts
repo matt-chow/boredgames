@@ -136,7 +136,7 @@ export const guide: GuideDoc = {
           title: 'The Market phase',
           body: [
             'Tap Currency cards one at a time, or press **Play all Currency cards**. The Coins add to your total. Some Currency in the market has extra effects, so play those singly if you want to choose the order.',
-            'Then spend Coins. Each purchase uses 1 Buy. You can still play more Currency after a purchase. Press **End turn** when you’re done.',
+            'Then spend Coins. Each purchase and each Crown Project stage uses 1 Buy. You can still play more Currency after a purchase. Press **End turn** when you’re done.',
           ],
         },
         {
@@ -450,6 +450,7 @@ export const guide: GuideDoc = {
                 'Each stage has its own price in Coins and Influence, and its own Renown. Each tile shows the next stage. The eye button on a tile lists them all.',
                 'In the Market phase, for 1 Buy, you may pay the next unfunded stage of any Project and keep that stage’s Renown. Stages are funded in order, by anyone. Different players can fund different stages.',
                 'You can fund only one stage of a Project per turn, but stages of different Projects if you have the Buys and the price.',
+                'Buying a card and funding a stage use the same Buys. You start each turn with 1. A card that gives +1 Buy lets you buy another card or fund another stage. With no Buys left you can do neither.',
                 'Renown from a stage counts at the end **even if the Project is never finished**.',
                 'A Project is complete when its last stage is funded. Its reward happens once, for whoever funds that stage. A one-stage Project is complete as soon as it’s funded.',
                 'Who funded what is public. Your Renown total stays private.',
