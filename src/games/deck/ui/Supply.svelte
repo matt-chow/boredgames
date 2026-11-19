@@ -55,6 +55,7 @@
     class:out={p.count === 0}
     data-key={p.key}
     data-anchor="pile-{p.key}"
+    data-deal={bank ? undefined : 'market'}
     aria-label="{def.name}. Costs {p.cost} {p.cost === 1 ? 'Coin' : 'Coins'}. {p.count} left. {def.text}"
     title={def.text}
     style="--spine:{spine(def.types)}"
@@ -82,7 +83,7 @@
   </svelte:element>
 {/snippet}
 
-<section class="supply" aria-label="Supply">
+<section class="supply" aria-label="Supply" data-deal-from>
   <div class="group treasury">
     <div class="head">
       <h3 class="title label">{words?.basics ?? 'Always available'}</h3>

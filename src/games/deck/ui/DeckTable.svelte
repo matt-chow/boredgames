@@ -23,6 +23,7 @@
   import PublicWorks from './PublicWorks.svelte';
   import Supply from './Supply.svelte';
   import { defsOf, logLine, typeLabel } from './text';
+  import { deal } from './deal';
 
   let { conn, room }: GameUiProps = $props();
 
@@ -119,13 +120,15 @@
     if (!isActive) return { text: g.turn.phase === 'action' ? `${A} is in the ${(words?.actionPhase ?? 'action').toLowerCase()} phase.` : `${A} is in the ${(words?.buyPhase ?? 'buy').toLowerCase()} phase.`, mine: false };
     if (g.turn.phase === 'action') return g.legal.play.length ? { text: `Play an action, or move on to ${buyStep}.`, mine: true } : { text: `No actions to play. Move on to ${buyStep}.`, mine: true };
     if (g.legal.play.length) return { text: `Play your ${(words?.treasures ?? 'treasures').toLowerCase()}, then buy.`, mine: true };
+    if (g.turn.buys <= 0) return { text: 'No Buys left. End your turn.', mine: true };
+    if (g.legal.claim.length) return { text: `${g.legal.buy.length ? 'Buy a card or fund' : 'Fund'} a ${words?.project ?? 'project'} (each uses a Buy), or end your turn.`, mine: true };
     return g.legal.buy.length ? { text: 'Buy a card, or end your turn.', mine: true } : { text: 'Nothing more to buy. End your turn.', mine: true };
   });
   const turnLabel = $derived(over ? 'Game over' : asked ? 'Your decision' : isActive ? 'Your turn' : `${name(g.turn.seat)}’s turn`);
 
   const canTreasures = $derived(!asked && isActive && g.turn.phase === 'buy' && g.legal.play.length > 0);
   const phaseLabel = $derived(g.turn.phase === 'action' ? `Move on to ${words?.buyPhase ?? 'buying'}` : 'End turn');
-  const phaseIsPrimary = $derived(g.turn.phase === 'action' ? g.legal.play.length === 0 : !canTreasures && !g.legal.buy.length);
+  const phaseIsPrimary = $derived(g.turn.phase === 'action' ? g.legal.play.length === 0 : !canTreasures && !g.legal.buy.length && !g.legal.claim.length);
 
   const matNames = $derived(Object.entries(mine.mats).filter(([, m]) => m.count));
   const myTokens = $derived(Object.entries(mine.tokens).filter(([t, n]) => n && rules.tokenCaps?.[t] === undefined));
@@ -159,6 +162,22 @@
     }),
   );
   onDestroy(finishAll);
+
+  // ── the opening deal: a fresh table only, once per device, never in reduced motion ──
+  const dealOn = getContext<boolean | undefined>('deck-deal');
+  let dealing = $state<Animation[]>([]);
+  onMount(() => {
+    if (!dealOn || settings.instant || over || g.turn.number !== 1) return;
+    tick().then(() => {
+      const anims = deal(root, `${room.code}:${marketCode}`);
+      dealing = anims;
+      Promise.all(anims.map((a) => a.finished)).then(() => (dealing = []), () => (dealing = []));
+    });
+  });
+  function skipDeal() {
+    for (const a of dealing) a.finish();
+    dealing = [];
+  }
 
   function sounds(fresh: LogEntry[], n: DeckView, p: DeckView) {
     const kinds = new Set(fresh.map((e) => e.kind));
@@ -391,6 +410,10 @@
         </button>
       </section>
     </Camera>
+
+    {#if dealing.length}
+      <button type="button" class="btn skip-deal" data-skip-deal onclick={skipDeal}>Skip</button>
+    {/if}
 
     {#if lastLog && !over}
       <p class="ticker" aria-hidden="true">{lastLog}</p>
@@ -706,6 +729,14 @@
   .tok {
     font-size: 13px;
     color: var(--ink-2);
+  }
+  .skip-deal {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 15;
+    min-height: 44px;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
   }
   .prompt-wrap {
     position: absolute;
