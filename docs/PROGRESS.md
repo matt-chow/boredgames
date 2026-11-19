@@ -385,3 +385,7 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
   Buy-consuming stages against stages that need a Buy but keep it. Results in docs/PROJECT_BUYS_RESULTS.md: every
   measure differs by no more than sampling noise, because bots seldom hold a second Buy. No costs, Renown or stages
   were changed.
+- Verified: `npm run check` 0 errors; `npm test` 44 files, 1015 passed, 1 skipped; `clockwork.spec.ts` 16 passed on a
+  local dev server (CC-E2E-7 failed once on a missing Playwright trace file and passed on rerun).
+- **Released to staging, 2026-11-19.** Commit `7cc048e`, staging `cc9efb97-bc9a-435e-9550-a7a590c6bdd3`. CC-DEAL-UI,
+  CC-STAGE-UI, CC-F2-UI, CC-E2E-2, CC-E2E-4 and CC-E2E-6 pass against it. Production is not deployed.
