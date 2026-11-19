@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-13.
+Last updated 2026-11-19.
 
 ## Milestones
 
@@ -389,3 +389,30 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
   local dev server (CC-E2E-7 failed once on a missing Playwright trace file and passed on rerun).
 - **Released to staging, 2026-11-19.** Commit `7cc048e`, staging `cc9efb97-bc9a-435e-9550-a7a590c6bdd3`. CC-DEAL-UI,
   CC-STAGE-UI, CC-F2-UI, CC-E2E-2, CC-E2E-4 and CC-E2E-6 pass against it. Production is not deployed.
+
+### Kingdom & Commerce: five-expansion catalog design (2026-11-19, design only)
+
+- **Documents only. No card, rule, art or deploy changed.** They are in `docs/expansions/`:
+  - EXISTING_CATALOG_AUDIT.md: 88 market cards, 15 Projects, a mechanics inventory and naming findings.
+  - DOMINION_COMPARISON.md: a per-card similarity matrix, from memory, not source-checked.
+  - FIVE_EXPANSION_MANIFEST.md: the authoritative specification for 69 cards in five sets.
+  - EXPANSION_BALANCE_REVIEW.md
+  - EXPANSION_IMPLEMENTATION_PLAN.md
+- **The five sets:**
+
+  | Set | Key | Cards |
+  |---|---|---|
+  | The Merchant Republics | `republics` | 14 |
+  | Houses of Influence | `houses` | 13 |
+  | Masters & Apprentices | `masters` | 15 |
+  | Ports & Provinces | `ports` | 14 |
+  | Glory of the Realm | `glory` | 13 |
+
+- **Design properties:**
+  - No card references Crown Projects.
+  - No card gives Royal Debt.
+  - The design is net Influence-negative.
+  - One new engine value is proposed, `pileLeft`, for Royal Jubilee. It is optional and has a fallback.
+- **Next steps:** the owner answers the questions in the plan's section 9, then phase 0 runs the engine VERIFY tests.
+- **Found along the way:** CLOCKWORK.md gives Artisans' Row 10 cards and Rival Houses 10. The code has 11 and 9.
+  This is not fixed yet.
