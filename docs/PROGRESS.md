@@ -365,3 +365,23 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
 - **Released to staging, 2026-11-13.** Commit `858e0e0`, staging `199284b2-4472-4ab4-a307-5578c30cc92a`. The faces serve
   as `image/webp` with a one-day cache, and all three `mines.spec.ts` tests pass against it. Production is not yet
   deployed; deploy it from a clean checkout of `main` so no uncommitted work goes with it.
+
+### Kingdom & Commerce: opening deal, Project Buys audit, tidier Crown Projects (2026-11-19)
+
+- **Opening deal (CC-DEAL-UI).** A new table (still on its first turn) deals its 10 Kingdom Market cards and then its 5 Crown Projects
+  from the top of the supply, one every 70 ms, each a 420 ms transform-and-opacity flight (about 1.4 s in all). The
+  cards stay clickable while they move. A **Skip** button lands them at once. Skipped in reduced motion, on a table
+  past its first turn (someone opening a running game), and on a device that already saw that room and setup
+  (`deal:<code>:<market code>` in localStorage), so a refresh or reconnect doesn't replay it. Client only: no server,
+  state or randomness change. `src/games/deck/ui/deal.ts`; Kingdom & Commerce opts in through the `deck-deal` context.
+- **Project contributions use Buys (CC-STAGE-5).** Audit: the engine already took one Buy per stage, refused a stage
+  at 0 Buys, and shared the turn's Buys with card purchases; bots read the same legal moves. No rule change. Added a
+  test on the live rules (a card plus a stage on 2 Buys, then both refused, and every bot profile ends its turn). The
+  step line now says "Buy a card or fund a Crown Project (each uses a Buy)" and "No Buys left. End your turn.", and
+  End turn is only the main button once nothing is left to buy or fund. The detailed rules say so too.
+- **Crown Projects section.** Removed the "n/5 complete to end the game" line. A trial room still shows its edition's
+  name. Stage pips, costs, rewards, the ending rules in the guide and the final-round banner are unchanged.
+- **Balance comparison.** `scripts/project-buys-experiment.test.ts` plays 100 paired games per player count with
+  Buy-consuming stages against stages that need a Buy but keep it. Results in docs/PROJECT_BUYS_RESULTS.md: every
+  measure differs by no more than sampling noise, because bots seldom hold a second Buy. No costs, Renown or stages
+  were changed.
