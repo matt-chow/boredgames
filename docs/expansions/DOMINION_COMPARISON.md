@@ -16,6 +16,29 @@ mechanics the game already covers.
 - **The owner should spot-check before relying on it.** Any row marked "exact" or "partial" is worth confirming
   before it drives a rename or a redesign.
 
+### Verification in the final review (2026-11-19)
+
+The final review checked the 69 new cards' analogues against two secondary sources. Both are community card lists,
+not Rio Grande Games or Donald X. Vaccarino originals:
+
+- [rspeer's Dominion card list](https://gist.github.com/rspeer/f3ed3c0070a2a78d84b2): card text by set.
+- [dominionstrategy.com card list](https://dominionstrategy.com/card-lists/dominion-card-list/): card names, sets
+  and costs.
+
+Two primary sources could not be read: [the Dominion Strategy wiki](https://wiki.dominionstrategy.com/index.php/List_of_cards)
+was behind a bot check, and [the Intrigue second edition rulebook](https://www.riograndegames.com/wp-content/uploads/2016/09/Dominion-Intrigue-2nd-Edition-Rules.pdf)
+returned HTTP 403. Second-edition-only cards, such as Patrol, are therefore **from memory**.
+
+In the new-card matrix at the end, **V** means the analogue's effect was checked against those sources and **M**
+means it is from memory. Nothing was copied from them: rows describe the mechanic in a few words. The 88-card
+matrix for the existing catalog was not re-checked and stays as it was written.
+
+For the new cards, a fifth class is used:
+
+| Class | Meaning |
+|---|---|
+| **Close** | The same core effect and role as one published card, with one or two changed numbers or riders. Each is kept only with a stated difference and is listed for the owner. |
+
 ### Classifications
 
 | Class | Meaning |
@@ -216,3 +239,108 @@ applied:
   names.
 - **No Dominion text.** No card text was copied. Rules text follows the existing K&C phrasing ("+1 Action. Gain 1
   Influence.").
+
+## Matrix: the 69 proposed cards (final review)
+
+Classes as above, plus **Close**. **V** means checked against the secondary sources, and **M** means from memory.
+The analogues are for the revised card texts in the manifest.
+
+| # | Proposed card | Closest Dominion analogue | Class | Check |
+|---|---|---|---|---|
+| A1 | Coin Clipper | Moneylender (Base) | Partial | V |
+| A2 | Promissory Note | one-shot Treasure family | Shared | M |
+| A3 | Florin Table | Baron (Intrigue) | Partial | V |
+| A4 | Fondaco | Worker's Village (Prosperity) | **Close** | V |
+| A5 | Underwriter | Fool's Gold (Hinterlands) | Partial | V |
+| A6 | Lending House | none | None | |
+| A7 | Wholesaler | Bridge (Intrigue) | Partial | V |
+| A8 | Bookkeeper | Adventurer (Base, first edition) | Partial | V |
+| A9 | Partnership | none | None | |
+| A10 | Gilder | Explorer (Seaside) | Partial | V |
+| A11 | Ledger Hall | Feodum (Dark Ages); Gardens (Base) | Partial | V |
+| A12 | Compound Interest | Merchant Ship (Seaside) | Shared | V |
+| A13 | Bourse | Woodcutter (Base, first edition) | Shared | V |
+| A14 | Gold Florin | none | None | |
+| B1 | Household Guard | Secret Chamber (Intrigue, first edition), reaction | Partial | V |
+| B2 | Antechamber | Village (Base) | Partial | V |
+| B3 | Bribed Magistrate | Militia (Base) | Partial | V |
+| B4 | Counter-Intrigue | none | None | |
+| B5 | Whispered Promise | duration family | Shared | M |
+| B6 | Signoria | Envoy (Promo) | Shared | V |
+| B7 | Hollow Title | junking-attack family | Shared | M |
+| B8 | Purchased Office | Workshop (Base) | Shared | V |
+| B9 | Court Purge | Chapel (Base) | Shared | V |
+| B10 | Family Crest | none | None | |
+| B11 | Marriage Pact | Great Hall (Intrigue) + Council Room (Base) | Shared | V |
+| B12 | Majordomo | Pawn (Intrigue) | Partial | V |
+| B13 | Palace Intrigue | Council Room (Base) | Partial | V |
+| C1 | Sweeper | Sentry (Base, second edition); Lookout (Seaside) | Partial | V |
+| C2 | Sketchbook | Inn / Oasis (Hinterlands) | Shared | M |
+| C3 | Bottega | Village + Conspirator's condition (Intrigue) | Partial | V |
+| C4 | Guild Diploma | Action-Victory family | Shared | V |
+| C5 | Woodcarver | Workshop (Base) | Partial | V |
+| C6 | Promotion | Remodel (Base); Upgrade (Intrigue) shared | Partial | V |
+| C7 | Master's Hand | Throne Room (Base) | Partial | V |
+| C8 | Open Studio | Laboratory + Council Room (Base) | Partial | V |
+| C9 | Study Hall | Scrying Pool (Alchemy) V; Patrol (Intrigue, second edition) M | Partial | V / M |
+| C10 | Patternmaker | none | None | |
+| C11 | Atelier | Upgrade (Intrigue); Remodel (Base) | Partial | V |
+| C12 | Schoolroom | Junk Dealer (Dark Ages) | **Close** | V |
+| C13 | Lecture Hall | Smithy (Base) | Partial | V |
+| C14 | Master's Fee | Conspirator (Intrigue) | **Close** | V |
+| C15 | Maestro | free-play family | Shared | M |
+| D1 | Harbour Pilot | Caravan (Seaside) | Partial | V |
+| D2 | Dockhand | Harbinger (Base, second edition) | Partial | V |
+| D3 | Barter Post | Remodel family | Shared | V |
+| D4 | Quayside Sale | Secret Chamber (Intrigue, first edition) | **Close** | V |
+| D5 | Ferry Landing | Fishing Village (Seaside) | **Close** | V |
+| D6 | Chandler | Workshop (Base); Artisan (Base, second edition) | Partial | V |
+| D7 | Bonded Store | Gear (Adventures); Haven (Seaside) partial | **Close** | V |
+| D8 | Trade Agreement | none | None | |
+| D9 | Cargo Manifest | none | None | |
+| D10 | Grain Hoy | duration family | Shared | M |
+| D11 | Hiring Day | none | None | |
+| D12 | Customs Cutter | Bandit (Base, second edition) | Partial | V |
+| D13 | Landing Rights | Goons (Prosperity) | Partial | V |
+| D14 | Galleass | Wharf (Seaside) | Partial | V |
+| E1 | Tenant Farmer | Baron (Intrigue) | Shared | V |
+| E2 | Manor Court | Monument (Prosperity) | Partial | V |
+| E3 | Votive Offering | when-trashed family; Feodum's trash clause | Shared | V |
+| E4 | Banner Bearer | Village (Base) | Partial | V |
+| E5 | Laurel Wreath | none | None | |
+| E6 | Land Grant | none | None | |
+| E7 | Grand Muster | Crossroads (Hinterlands) | Partial | V |
+| E8 | Memorial Statue | none | None | |
+| E9 | Point of Honour | Bureaucrat (Base) | Partial | V |
+| E10 | Honour Guard | Fool's Gold (Hinterlands), reaction | Partial | V |
+| E11 | Victory Parade | Bridge (Intrigue) | Shared | V |
+| E12 | Chivalric Order | Silk Road (Hinterlands) | Partial | V |
+| E13 | Royal Jubilee | none | None | |
+
+### Totals for the 69 proposed cards
+
+| Class | Cards |
+|---|---|
+| Exact | 0 |
+| Close | 6 |
+| Partial | 33 |
+| Shared | 17 |
+| None | 13 |
+
+Of the 56 cards with an analogue, 50 are verified (Study Hall counted once, by Scrying Pool) and 6 are from memory:
+Promissory Note, Whispered Promise, Hollow Title, Sketchbook, Maestro and Grain Hoy. All six are family-level
+"Shared" rows, where no single card was named.
+
+### Close analogues for the owner
+
+These six are kept, each with a stated difference. Keeping them is the first open question in the implementation
+plan. None copies a card's full set of numbers, name or text.
+
+| Card | Analogue | What is the same | What differs | If redesigned |
+|---|---|---|---|---|
+| Schoolroom | Junk Dealer | the trashing cantrip | no +1 Coin; costs less | the closest pair; it is also one of the genre's most generic designs |
+| Fondaco | Worker's Village | +1 Card, +2 Actions and a Buy | the Buy is conditional; costs 3 | make the condition the card's identity |
+| Master's Fee | Conspirator | the "third Action played" condition | terminal; draws 2 and +1 Buy instead of a cantrip | change the threshold or the counted thing |
+| Quayside Sale | Secret Chamber | discard for +1 Coin each | non-terminal, capped at 3, no reaction | |
+| Ferry Landing | Fishing Village | a duration village | a card next turn instead of Coins both turns | |
+| Bonded Store | Gear | set aside up to 2 cards for next turn | +1 Coin instead of +2 Cards | |

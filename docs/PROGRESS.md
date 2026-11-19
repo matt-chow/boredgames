@@ -416,3 +416,37 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
 - **Next steps:** the owner answers the questions in the plan's section 9, then phase 0 runs the engine VERIFY tests.
 - **Found along the way:** CLOCKWORK.md gives Artisans' Row 10 cards and Rival Houses 10. The code has 11 and 9.
   This is not fixed yet.
+
+### Kingdom & Commerce: final expansion design review (2026-11-19, design only)
+
+- **Documents only. No card, rule, art or deploy changed.** All four expansion documents are revised.
+  EXISTING_CATALOG_AUDIT.md is unchanged.
+- **Owner decisions recorded:**
+  - The set sizes stay 14/13/15/14/13, 69 cards in total.
+  - Core and Crown stay the defaults. The five new sets are opt-in.
+  - Market Square keeps its name.
+  - A future "Enable Crown Projects" setting is approved, on by default.
+- **Eight cards revised:**
+  - Royal Jubilee: its threshold is now half of the starting pile.
+  - Hollow Title: targets one chosen opponent.
+  - Ledger Hall: per 3 Currency cards, not counting Bronze.
+  - Master's Hand: at most +1 Influence from its two plays.
+  - Trade Agreement: your discard is mandatory, and its complexity drops from high to medium.
+  - Votive Offering: +1 Renown on trash.
+  - Memorial Statue: counts piles with 2 or fewer cards left, capped at +3.
+  - Victory Parade: discounts Homesteads and Noble Estates only.
+- **Underwriter and Purchased Office** are kept unchanged, with reasons.
+- **The manifest** gains edge-case rulings for all 69 cards and a Projects-off section.
+- **The balance review** gains hand-calculated checks and a 69-card audit. No simulations were run.
+- **The Dominion comparison** gains a 69-card matrix checked against secondary sources:
+  - 6 close, 33 partial, 17 shared and 13 none;
+  - 50 analogues verified, 6 from memory;
+  - Patrol is unverified.
+- **Engine needs:** four small public-information items (`pile` Num, `emptyPiles atMost`, `CardMatch.notKey`,
+  `attack.player`) and several VERIFY tests. The Projects setting needs `STATE_VERSION` 5 with a migrate step
+  (plan section 3b).
+- **Bonded Store:** the projection already hides other seats' mat contents.
+- **Open questions:**
+  - the six close analogues;
+  - finish-the-round with Projects off;
+  - when to ship the Projects setting.

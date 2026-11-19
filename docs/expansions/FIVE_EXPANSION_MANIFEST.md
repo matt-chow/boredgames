@@ -1,7 +1,8 @@
 # Five-expansion manifest
 
-**Status: design proposal for owner review. Nothing is implemented.** This file is the authoritative specification
-for a later implementation. The implementation steps are in
+**Status: final design, reviewed 2026-11-19. Nothing is implemented.** This file is the authoritative specification
+for a later implementation. The final review revised eight cards (see "Revisions in this review") and added the
+edge-case rulings at the end. The implementation steps are in
 [EXPANSION_IMPLEMENTATION_PLAN.md](EXPANSION_IMPLEMENTATION_PLAN.md), and the analysis is in
 [EXPANSION_BALANCE_REVIEW.md](EXPANSION_BALANCE_REVIEW.md).
 
@@ -32,6 +33,49 @@ for a later implementation. The implementation steps are in
 | `ports` | Ports & Provinces | 14 | Trading, gaining, discard and deck manipulation, ordinary Establishments, flexible buying |
 | `glory` | Glory of the Realm | 13 | Renown, Homestead play, alternative scoring, endgame timing |
 | | **Total** | **69** | |
+
+## Approved configuration decisions
+
+Recorded in the final design review (2026-11-19). These are owner decisions, not proposals.
+
+| Decision | Detail |
+|---|---|
+| Set sizes | All five sets are kept at 14 / 13 / 15 / 14 / 13, 69 cards in total. Any later change keeps every set between 13 and 15. |
+| Default sets | Core and Crown Decrees stay on by default (`defaultSets: ['core', 'crown']`). All five new sets are **opt-in**. |
+| **Enable Crown Projects** setting | A future setup option, **on by default**. When it is off, no Projects are dealt, Project stages and every Project mechanic are gone (stage purchases, discounts, surcharges, claims, Project Renown), and the five-Project ending does not apply. The Grand Duchy ending and the empty-pile ending (3 market piles, 4 at 5+ players) stay. Market cards that only work with Projects are left out of a Projects-off market. See the implementation plan, section 3b. |
+| Projects on | The F2 construction rules and finish-the-round stay exactly as they are in edition 4. |
+| Market Square | The name stays. The key `relay_junction` is unchanged. |
+
+## Revisions in this review
+
+Ten high-risk cards were re-examined. Eight changed and two were kept as they were. No cost changed, so the cost
+curve is unchanged. Each revision keeps the card's role. None of them exists just to add a new mechanic.
+
+| Card | Original effect | Revised effect | Reason | Expected consequences |
+|---|---|---|---|---|
+| E13 Royal Jubilee | +1 Buy. +3 Coins. If 4 or fewer cards remain in the Grand Duchy pile, +1 Buy and +1 Renown. | +1 Buy. +3 Coins. If the Grand Duchy pile has half of its starting cards or fewer left (rounded down), +1 Buy and +1 Renown. | A fixed 4 is half the pile at 2 players but only 22% of the pile at 6 players, so it rarely fired at big tables. | The threshold is 4 / 6 / 6 / 7 / 9 cards at 2 / 3 / 4 / 5 / 6 players. 2-player play is unchanged. It needs one small public Num, `{ pile, start? }`. With Projects on, many games end on Projects before the pile reaches half, so this is mainly a Projects-off and Grand Duchy-race card. |
+| B7 Hollow Title | +2 Coins. Each opponent gains a Homestead onto their deck. | +2 Coins. Choose an opponent. They gain a Homestead onto their deck. | The original scaled with table size: at 6 players one play handed out 5 Renown and took 5 cards off a Homestead pile of 18. It also fed every rival's Noble Council at once. | One Homestead per play at every player count. The attacker chooses who to burden, for example avoiding a Noble Council holder. It stays an Attack. It needs `attack` to take an optional single target, so that immunity still applies. |
+| A11 Ledger Hall | Worth 1 Renown per 4 Currency cards you own. | Worth 1 Renown per 3 Currency cards you own other than Bronze. | Bronze costs 0 and its pile holds 60 cards, so every spare Buy was a free step towards points: a Bronze rush with three Ledger Halls could add about 15 Renown for no Coins. | Points now come from Currency bought with real Coins, about 9 Coins of Currency per Renown for each Ledger Hall. A typical Money deck of 9–12 non-Bronze Currencies makes each copy worth 3–4, about the same as a Noble Estate. Coin Clipper no longer works against it. It needs `notKey` in `CardMatch`. |
+| C7 Master's Hand | You may play an Action costing 4 or less from your hand twice. If you don't, +1 Action and draw 1. | Unchanged, plus: "The cards played this way gain you at most 1 Influence in total; any more is lost." | Doubling Petitioner or Alms House (+2 each) gave +4 Influence from two cards costing 4 or less. That made a cheap card double the strongest resource in the benchmarks. | It still doubles draw, Coins, Buys, gains and attacks, so the play-twice role is kept. Influence cards are still worth doubling for their other effects. It uses existing ops (section C7). |
+| D8 Trade Agreement | +1 Action. Choose an opponent. You may discard a card; then they may discard a card. If you both did, you each draw 2. If only you did, you draw 1. | +1 Action. Discard a card. Choose an opponent: they may discard a card. If they do, you each draw 2. Otherwise, you draw 1. | Two optional decisions in sequence, three outcomes, and a branch where declining left a dead card. It was the only high-complexity card. | There is one real decision, the opponent's, and two outcomes. Complexity drops from **high** to **medium**. The worst case is a one-card sift with +1 Action. |
+| E3 Votive Offering | +1 Action. +1 Coin. When you trash this, +2 Renown. | +1 Action. +1 Coin. When you trash this, +1 Renown. | Salvage Office trashes it (it costs 3) for +3 Coins and +1 Buy, refunding its whole price. Reclamation Guild adds a Coin, and Atelier, Promotion and Barter Post turn it into a better card. At +2, each copy was 2 free Renown. | It still rewards trashing and keeps its "pays when trashed" identity. With Salvage Office it works like a Homestead that refunds its cost and leaves your deck. |
+| E8 Memorial Statue | Worth 1 Renown. When you gain this, +1 Renown per empty supply pile. | Worth 1 Renown. When you gain this, +1 Renown per supply pile with 2 or fewer cards left, up to +3. | Piles ran out in 0% of benched games, so the gain bonus almost never fired. | It reads an end-of-game state that does happen: the Grand Duchy pile at 2 or fewer, or a contested market pile. The value is usually 1–2 Renown late and is capped at 4. It needs `emptyPiles` to take `atMost`. |
+| E11 Victory Parade | +1 Buy. +2 Coins. This turn, Renown cards cost 1 Coin less. | +1 Buy. +2 Coins. This turn, Homesteads and Noble Estates cost 1 Coin less, but not less than 0. | Two Parades brought the Grand Duchy down to 6, and the discount also covered Kingdom Renown and Action · Renown cards. That shortened the game clock in an uncontrolled way. | It keeps the greening role without discounting the Grand Duchy. Noble Estate costs 4, or 3 with two Parades. Homesteads cost 1, or 0 with two. Two existing `cost-mod`s, no engine change. |
+| B8 Purchased Office | — | **Unchanged.** | Crown Treasury already turns 3 Influence into 6 Coins, which is a better rate. Purchased Office turns 3 Influence into one card costing 4 or less. It is a sink at a worse rate, and the Influence cap of 8 limits it to 2 uses per turn. | It stays the Houses sink most likely to help the Influence Engine. The bench check stays: if Influence goes above 2.1×, the price goes to 4 Influence. |
+| A5 Underwriter | — | **Unchanged.** | At 6 players the Silver pile holds 40 cards. A Silver pile-out does not end the game, because only market piles count. Each copy reacts at most once per buy, and only to buys costing 6 or more, which happen a few times per player per game. | It is a mild catch-up card. Rulings for several copies and an empty Silver pile are listed below. |
+
+## Projects-off compatibility
+
+All 69 new cards work with Crown Projects off: none of them reads, discounts or reacts to a Project. Turning Projects
+off changes how much some of them are worth:
+
+- **+Buy cards lose a use.** About a third of the new cards give +Buy, and Hiring Day gives +2 Buys. With Projects
+  on, a spare Buy can complete a stage (CC-STAGE-5). With Projects off, it only buys cards.
+- **Endgame cards get stronger.** Royal Jubilee reads the Grand Duchy clock and Victory Parade speeds up greening; the Grand Duchy
+  pile becomes the main ending. Memorial Statue reads low piles, which are more likely when no Project ending cuts the
+  game short.
+- **No new card replaces Project scoring.** Builder's Honour, Civic Tribute and the other 8 Project-linked existing
+  cards are left out of a Projects-off market. The new sets don't need them.
 
 ## Card index
 
@@ -130,7 +174,7 @@ benefits, and a reaction to an opponent's expensive buy.
 - **How it differs:** It is non-terminal, only takes Bronze, and adds a Buy instead of Influence or a surplus.
 - **Engine:** existing. `actions`, `choose-cards` (hand, filter key `scrap`, 0–1), `if has`, `move` to trash,
   `coins`, `buys`.
-- **Balance:** Low power, a good opener. Fewer Bronzes slightly weakens Ledger Hall, which is an intended tension.
+- **Balance:** Low power, a good opener. Ledger Hall ignores Bronze, so trashing it costs nothing there.
 - **Strategic note:** Opening with Coin Clipper and Silver means trashing Bronze through the first shuffles.
 
 ### A2 · Promissory Note
@@ -168,7 +212,9 @@ benefits, and a reaction to an opponent's expensive buy.
 - **Effect:** Draw 1. +2 Actions. If you have a Currency costing 3 or more in your hand, +1 Buy.
 - **Timing:** The check happens after the draw.
 - **Purpose:** The set's village. It rewards a deck that has bought Silver or better.
-- **Dominion reference:** Village (Base) and Worker's Village (Prosperity), partial.
+- **Dominion reference:** Worker's Village (Prosperity), **close**, *verified*: +1 Card, +2 Actions and an
+  unconditional +Buy at cost 4. Fondaco makes the Buy conditional and costs 3. See the close-analogue list in
+  DOMINION_COMPARISON.md.
 - **Closest K&C:** Morning Bell (village with an Influence rider) and Antechamber (B2).
 - **How it differs:** Its rider is a conditional Buy, not Influence or extra draw.
 - **Engine:** existing. `draw`, `actions`, `if inHand { type: treasure, minCost: 3 }`, `buys`.
@@ -191,6 +237,9 @@ benefits, and a reaction to an opponent's expensive buy.
   type does not make the attack-reaction prompt offer it, because it has no `reaction` field.
 - **Balance:** At 6 players with several copies in hand, the Silver pile could run low. This has a small effect on
   the end of the game because basic piles count toward `emptyPiles` but not toward the three-pile ending.
+  **Kept unchanged in the final review.** The pile has 40 Silvers. Each copy reacts at most once per buy, and only
+  to buys costing 6 or more. Other Silver gainers (Gilder, Bourse, Partnership and Customs Cutter) share the pile,
+  and an empty Silver pile never ends the game.
 
 ### A6 · Lending House
 
@@ -276,16 +325,19 @@ benefits, and a reaction to an opponent's expensive buy.
 
 `ledger_hall` · Renown · cost 5 · complexity **low**
 
-- **Effect:** Worth 1 Renown per 4 Currency cards you own.
-- **Timing:** End of game.
-- **Purpose:** A scoring target for Money. Twenty Currencies make it worth 5 Renown.
-- **Dominion reference:** Feodum (Dark Ages), partial. That card counts Silvers only. Gardens (Base) is shared.
+- **Effect:** Worth 1 Renown per 3 Currency cards you own other than Bronze. *(Revised: was per 4 Currency cards,
+  Bronze included.)*
+- **Timing:** End of game. It counts every card you own, including cards in play and on a mat.
+- **Purpose:** A scoring target for Money. Twelve non-Bronze Currencies make it worth 4 Renown.
+- **Dominion reference:** Feodum (Dark Ages), partial, *verified*: 1 VP per 3 Silvers, and gains Silvers when
+  trashed. Gardens (Base) is shared. Ledger Hall counts every non-Bronze Currency and has no trash clause.
 - **Closest K&C:** Guild Register (1 per 2 Establishments) and Noble Council (1 per Homestead).
-- **How it differs:** It counts every Currency, Bronze included.
-- **Engine:** existing. `vp: { per: 4, each: 1, of: { type: 'treasure' } }`.
-- **Balance:** **Watch the free-Bronze line.** Bronze costs 0, so every spare Buy can add a Bronze. That is the same
-  Gardens-and-Copper pattern. It is limited by the Bronze pile size and by diluting the deck. Bench test it against
-  a Wholesaler and +Buy rush. If it is too strong, per 5 is the knob.
+- **How it differs:** It counts Silver, Gold and every Kingdom Currency, but not Bronze.
+- **Engine:** **NEW (small).** `vp: { per: 3, each: 1, of: { type: 'treasure', notKey: 'scrap' } }`. `CardMatch`
+  needs `notKey?: string`, both in the type and in `matches` in runtime.ts.
+- **Balance:** The free-Bronze line is closed. Every counted card costs at least 2 (Promissory Note) and usually 3
+  or more. A Wholesaler turn can still buy cheap Silvers, which is the intended Money synergy. The Silver pile of
+  40 bounds it.
 
 ### A12 · Compound Interest
 
@@ -349,7 +401,8 @@ is worth 1 Renown.
 - **Timing:** The reaction happens before the Attack resolves. Each copy can be revealed once per Attack.
 - **Purpose:** A defence that improves your hand instead of cancelling the Attack. You can draw into a Reaction you
   need, or put the card an attack would cost you on top of your deck.
-- **Dominion reference:** Moat family, shared. Its reveal does not block.
+- **Dominion reference:** Secret Chamber (Intrigue, first edition), partial, *verified*: its reaction draws 2 and
+  puts 2 back. Household Guard draws 1 and puts 1 back, and its play effect is different.
 - **Closest K&C:** Royal Runner (reveals for Influence) and Night Watch (discards to cancel).
 - **How it differs:** It changes the hand, does not cancel the Attack, and gives no Influence.
 - **Engine:** existing. A `reactionCard` with `once: true` and effects `draw 1`, then `choose-cards` hand 1–1, then
@@ -421,7 +474,8 @@ is worth 1 Renown.
 - **Timing:** Immediate.
 - **Purpose:** The council decides. You get the option your rival considers less dangerous. Engines want the cards;
   Influence decks want the Influence.
-- **Dominion reference:** Envoy (Promo), partial. There the left neighbour picks which of your cards you lose.
+- **Dominion reference:** Envoy (Promo), shared, *verified*. Envoy shares only the "an opponent chooses for you"
+  mechanic: the left neighbour picks which revealed card you discard.
 - **Closest K&C:** Royal Architect (you choose between modes) and Licensing Hall.
 - **How it differs:** The opponent chooses between two different rewards.
 - **Engine:** existing. `choose-player`, then `choose { by: { var: opp } }` with options that run for you.
@@ -433,21 +487,25 @@ is worth 1 Renown.
 
 `hollow_title` · Action · Attack · cost 4 · complexity **low**
 
-- **Effect:** +2 Coins. Each opponent gains a Homestead onto their deck.
-- **Timing:** Opponents can reveal Reactions first.
-- **Purpose:** The court grants empty honours. Each opponent gets a dead card in their next hand, but also +1 Renown
-  each. It is a political trade.
-- **Dominion reference:** junking-attack family, shared.
+- **Effect:** +2 Coins. Choose an opponent. They gain a Homestead onto their deck. *(Revised: was each opponent.)*
+- **Timing:** Like any Attack, every opponent may reveal Reactions when it is played, before the target is chosen.
+  Then you choose the target. An immune target gains nothing, and you do not choose again.
+- **Purpose:** The court grants an empty honour to one rival. That rival gets a dead card in their next hand, and
+  +1 Renown. Choosing who gets it is a political decision.
+- **Dominion reference:** junking-attack family, shared (from memory). Tax Arrears, the nearest K&C card, is already
+  Torturer-like, so the review rejected an alternative that let the victim choose "discard or gain a Homestead",
+  because it duplicated Tax Arrears.
 - **Closest K&C:** Tax Farmer and Tax Arrears, which give Royal Debt.
-- **How it differs:** The junk is a Homestead worth +1 Renown, not −1. It needs no Debt pile and leaves
-  `RUST_MAKERS` alone.
-- **Engine:** existing. `attack [ gain notebook to deck ]`.
+- **How it differs:** The junk is a Homestead worth +1 Renown, not −1, and it targets one chosen opponent. It needs
+  no Debt pile and leaves `RUST_MAKERS` alone.
+- **Engine:** **NEW (small).** `choose-player as opp`, then `attack { player: { var: opp } } [ gain notebook to
+  deck ]`. The `attack` op takes an optional `player` so that immunity (`ctx.immune`) is still checked. `on-player`
+  ignores immunity and must not be used here.
 - **Balance:**
-  - **Feeds Noble Council and Glory players.** Each Homestead raises a Noble Council owner's score, and also
-    Laurel Wreath, Grand Muster and Manor Court. That is a deliberate tension.
-  - **Weaker at large tables.** At 6 players it hands out 5 Renown.
-  - **Can empty the Homestead pile,** which has 8–18 cards. An empty basic pile counts toward `emptyPiles` but not
-    toward the three-pile ending.
+  - **The same strength at every table size.** One Homestead and one Renown per play.
+  - **Noble Council tension is a choice now.** The attacker can avoid feeding a Noble Council or Glory player.
+  - **Homestead pile.** At most one card per play leaves the pile, which has 8–18 cards. An empty basic pile does
+    not end the game.
 
 ### B8 · Purchased Office
 
@@ -462,7 +520,8 @@ is worth 1 Renown.
 - **Engine:** existing. `actions`, `if hasSpark(3)`, then `may` `spark(-3)`, `choose-pile maxCost 4`, `gain to hand`.
 - **Balance:** **This is the Houses card most likely to help the Influence Engine.** It is bounded by the Influence
   cap of 8: at most 2 uses per turn. If the bench shows Influence going above about 2.1×, raise the price to 4
-  Influence.
+  Influence. **Kept unchanged in the final review:** Crown Treasury already turns 3 Influence into 6 Coins, so this
+  card does not open a better outlet. A Master's Hand on it pays 3 Influence for each play.
 
 ### B9 · Court Purge
 
@@ -619,7 +678,8 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
   Coins more than it to your hand.
 - **Timing:** The gained Action is playable if you have Actions left.
 - **Purpose:** An apprentice becomes a master: it upgrades opening Actions into late-game ones mid-chain.
-- **Dominion reference:** Remodel (Base), shared. Upgrade (Intrigue) is partial.
+- **Dominion reference:** Remodel (Base), partial, *verified*: it is terminal, trashes any card, gains up to 2 more
+  and sends the gain to the discard pile. Upgrade (Intrigue, exactly 1 more) is shared.
 - **Closest K&C:** Noble Resettlement (Renown → an Action costing up to 4 more, to hand).
 - **How it differs:** It starts from an Action instead of a Renown card, and the step is +2.
 - **Engine:** existing. `choose-cards filter action`, `move` to trash, `choose-pile { type: action, maxCost:
@@ -631,22 +691,33 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
 
 `masters_hand` · Action · cost 4 · complexity **medium**
 
-- **Effect:** You may play an Action card costing 4 Coins or less from your hand twice. If you don't, +1 Action and
-  draw 1.
-- **Timing:** The second play resolves fully after the first.
+- **Effect:** You may play an Action card costing 4 Coins or less from your hand twice. The cards played this way
+  gain you at most 1 Influence in total; any more is lost. If you don't play a card, +1 Action and draw 1.
+  *(Revised: the Influence limit is new.)*
+- **Timing:** The second play resolves fully after the first. The Influence limit is applied once, after both plays.
+  It counts the net change in your Influence over the two plays, so Influence spent during them is not refunded.
 - **Purpose:** The game's first play-twice card. The cost cap keeps 5 and 6-cost payoffs out, and the fallback means
   it is never a dead card.
-- **Dominion reference:** Throne Room (Base), partial. That card has no cost cap and no fallback.
+- **Dominion reference:** Throne Room (Base), partial, *verified*. That card has no cost cap and no fallback.
 - **Closest K&C:** Royal Commission (plays an Action next turn).
-- **How it differs:** It plays twice this turn, with a cap and a fallback.
-- **Engine:** existing. `choose-cards 0–1 filter { type: action, maxCost: 4 }`, `if has`, then
-  `play-card times 2`, else `actions` and `draw`. **VERIFY** what happens to an Establishment played twice: both
-  `delay`s should fire and it should stay in play once.
+- **How it differs:** It plays twice this turn, with a cap, a fallback and an Influence limit.
+- **Engine:** existing ops.
+  1. `choose-cards 0–1 filter { type: action, maxCost: 4 } as x`, then `if has x`.
+  2. `set before = { token: 'spark' }`, then `play-card x times 2`.
+  3. `set gained = add [ { token: 'spark' }, mul [ { value: before }, -1 ] ]`.
+  4. `token spark n = mul [ add [ { value: gained }, mul [ min [ { value: gained }, 1 ], -1 ] ], -1 ]`. That is 0
+     whenever 1 or less was gained.
+  5. Otherwise, `actions` and `draw`.
+
+  **VERIFY** that the effects after `play-card` run only once both pushed play frames have resolved. **VERIFY**
+  what happens to an Establishment played twice: both `delay`s should fire and it should stay in play once.
 - **Balance:**
   - **Chaining.** Master's Hand on Master's Hand plays two cards twice each. That is bounded by the hand, so there is
-    no loop.
+    no loop. The outer card's limit applies to everything inside it.
   - **Doubled attacks.** Doubling Bribed Magistrate or Tax Assessors only matters when hands are 6 or more cards.
-  - **Doubled Influence.** Doubling Lady-in-Waiting or Petitioner doubles Influence. Watch this in Spark benches.
+    A doubled Bribed Magistrate needs 2 Influence for each paid play.
+  - **Doubled Influence is capped.** Petitioner (+2) doubled gives +1, not +4. Lady-in-Waiting doubled still gives
+    its draw twice.
 
 ### C8 · Open Studio
 
@@ -669,7 +740,9 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
   on top in any order.
 - **Timing:** It is terminal, so the Actions it finds need Actions left to play.
 - **Purpose:** Pulls an engine together, and the cards it puts back set up the next draw.
-- **Dominion reference:** Patrol (Intrigue), partial. That card reveals 4 and takes Victory cards.
+- **Dominion reference:** Scrying Pool (Alchemy), partial, *verified*: it reveals until a non-Action and takes the
+  Actions. Patrol (Intrigue, second edition) is partial *from memory only*: it draws 3, then reveals 4 and takes the
+  Victory cards. Its text could not be checked.
 - **Closest K&C:** Hall of Archives and Town Plans.
 - **How it differs:** It takes every Action in a fixed window of 4 and puts the rest back on top, not discarded.
 - **Engine:** existing. `look 4 as r`, `select filter action as a`, `move a` to hand, then the existing
@@ -697,7 +770,9 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
 - **Effect:** Trash a card from your hand. Gain a card costing exactly 2 Coins more than it.
 - **Timing:** The trash is mandatory if you have a card. If no pile has that exact cost, you gain nothing.
 - **Purpose:** Exact upgrades: Bronze to a 2-cost, Silver to a 5-cost, Gold to Grand Duchy, Homestead to a 4-cost.
-- **Dominion reference:** Remodel (Base), partial. That card gains *up to* 2 more.
+- **Dominion reference:** Remodel (Base), partial, *verified*: it gains *up to* 2 more. Upgrade (Intrigue), partial,
+  *verified*: it is a cantrip that gains a card costing *exactly* 1 more. Atelier has the exact-cost rule of one and
+  the +2 step of the other.
 - **Closest K&C:** Estate Surveyor (Renown cards, up to 3 more).
 - **How it differs:** The cost must be exact, and it works on any card.
 - **Engine:** existing. `choose-cards 1–1`, `move` to trash, `choose-pile { exactCost: { costOf: x, plus: 2 } }`,
@@ -711,7 +786,8 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
 - **Effect:** Draw 1. +1 Action. Trash a card from your hand.
 - **Timing:** The trash is mandatory.
 - **Purpose:** A thinning cantrip that is forced, so late in the game it can cost you a good card.
-- **Dominion reference:** Junk Dealer (Dark Ages), partial. That card also gives +1 Coin.
+- **Dominion reference:** Junk Dealer (Dark Ages), **close**, *verified*: the same trashing cantrip plus +1 Coin, at
+  cost 5. The trashing cantrip is one of the genre's most generic designs. See the close-analogue list.
 - **Closest K&C:** Royal Scrivener (trashes from the discard pile) and Purification House.
 - **How it differs:** It is a cantrip that trashes from hand.
 - **Engine:** existing. `draw`, `actions`, `choose-cards 1–1`, `move` to trash.
@@ -737,7 +813,8 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
 - **Effect:** +1 Buy. +2 Coins. If this is your third or later Action this turn, draw 2.
 - **Timing:** It counts Actions played including itself.
 - **Purpose:** A terminal that ends a chain, refilling the hand for the buy phase.
-- **Dominion reference:** Conspirator (Intrigue), partial.
+- **Dominion reference:** Conspirator (Intrigue), **close**, *verified*: +2 Coins, and +1 Card +1 Action from the
+  third Action played. Master's Fee shares the condition, but stays terminal, draws 2 and adds +1 Buy.
 - **Closest K&C:** Guild Procession (cantrip) and Guild Banquet.
 - **How it differs:** It is terminal, and its payoff is draw rather than Influence.
 - **Engine:** existing. `buys`, `coins`, `if gte [actionsPlayed, 3]`, `draw 2`.
@@ -816,7 +893,9 @@ Influence.
 - **Effect:** +1 Action. Discard up to 3 cards. +1 Coin per card discarded.
 - **Timing:** Action phase.
 - **Purpose:** Turns dead Renown cards and surplus Actions into Coins.
-- **Dominion reference:** Secret Chamber (Intrigue, first edition) and Vault (Prosperity), partial.
+- **Dominion reference:** Secret Chamber (Intrigue, first edition), **close**, *verified*: it is terminal, discards
+  any number for +1 Coin each, and is a Reaction. Quayside Sale is non-terminal, capped at 3 and has no reaction.
+  Vault (Prosperity) is partial.
 - **Closest K&C:** Favour Broker (discards 2 for Influence).
 - **How it differs:** It is non-terminal with a cap of 3, and pays Coins only.
 - **Engine:** existing. `choose-cards 0–3 as d`, `move` to discard, `coins { len: d }`.
@@ -829,7 +908,8 @@ Influence.
 - **Effect:** +2 Actions. At the start of your next turn, +1 Action and draw 1.
 - **Timing:** It is a duration.
 - **Purpose:** A duration village.
-- **Dominion reference:** Fishing Village (Seaside), partial. That card gives Coins rather than draw.
+- **Dominion reference:** Fishing Village (Seaside), **close**, *verified*: +2 Actions and +1 Coin now, then +1
+  Action and +1 Coin next turn. Ferry Landing gives no Coin now and draws a card next turn instead of a Coin.
 - **Closest K&C:** Morning Bell and Fondaco (A4).
 - **How it differs:** It draws next turn and gives no Coins.
 - **Engine:** existing. `actions`, `delay [ actions, draw ]`.
@@ -856,34 +936,47 @@ Influence.
 
 - **Effect:** +1 Coin. Set aside up to 2 cards from your hand. At the start of your next turn, put them into your
   hand.
-- **Timing:** The set-aside cards are hidden from opponents.
+- **Timing:** The set-aside cards are hidden from opponents. Only their number is public. They come back to your
+  hand at the start of your next turn, as part of resolving Establishments.
 - **Purpose:** Saves a strong pair for a bigger turn.
-- **Dominion reference:** Haven (Seaside), partial (one card) and Gear (Adventures), partial (draws as well).
+- **Dominion reference:** Gear (Adventures), **close**, *verified*: +2 Cards, then sets aside up to 2 cards for next
+  turn, at cost 3. Bonded Store gives +1 Coin instead of +2 Cards. Haven (Seaside), partial, sets aside one card.
 - **Closest K&C:** Royal Commission (sets aside an Action and plays it).
 - **How it differs:** It holds any 2 cards, and gives a Coin instead of a play.
-- **Engine:** existing mat zone: `move` to `{ mat: 'bonded' }`, then `delay [ move mat to hand ]`.
-  **VERIFY hidden information:** `project(state, seat)` must hide mat contents from other seats. If mats are public,
-  this card needs projection work first. That counts as a hidden-information change under AGENTS.md.
+- **Engine:** existing mat zone: `move` to `{ mat: 'bonded' }`, then `delay [ move mat to hand ]`. **Hidden
+  information is already enforced (checked in this review):**
+  - `project(state, seat)` in `src/engine/deckbuilder/index.ts` shows the owner `{ count, cards }` for a mat and
+    other seats only `{ count }`.
+  - `moveAll` in `runtime.ts` logs a move to a mat with a public count only. Card keys go only to the owner's log.
+  - The move from the mat back to the hand is private in the same way.
+  - The server alone stores and moves the cards. The client never sees another seat's mat.
+
+  Before shipping, add a Bonded Store case to the projection and leak tests.
+- **Scoring:** Cards on the mat are still yours. If the game ends while they are set aside, they count for scoring,
+  as the engine's owned-card list already includes mats.
 - **Balance:** Low to moderate.
 
 ### D8 · Trade Agreement
 
-`trade_agreement` · Action · cost 4 · complexity **high**
+`trade_agreement` · Action · cost 4 · complexity **medium** *(revised from high)*
 
-- **Effect:** +1 Action. Choose an opponent. You may discard a card; then they may discard a card. If you both did,
-  you each draw 2 cards. If only you did, you draw 1.
-- **Timing:** You decide first, in public, and then the opponent decides.
-- **Purpose:** A trust game. Both sides gain by cooperating, and the opponent can refuse to deny you the bigger
-  payoff.
+- **Effect:** +1 Action. Discard a card. Choose an opponent: they may discard a card. If they do, you each draw 2
+  cards. Otherwise, you draw 1. *(Revised: your discard is now mandatory, leaving one decision.)*
+- **Timing:** You discard first, in public. If your hand is empty, you skip the discard and the card continues.
+  Then the opponent decides. An opponent with no cards in hand cannot discard, so you draw 1.
+- **Purpose:** A trust game. Both sides gain if the opponent cooperates: they sift a card into their next hand and
+  you draw an extra card.
 - **Dominion reference:** no clear equivalent.
-- **Closest K&C:** Licensing Hall (the opponent chooses to discard).
-- **How it differs:** It rewards both players when both cooperate.
-- **Engine:** existing, with care. `may` discard (set `mine`), `on-player { var } [ may discard as theirs ]`,
-  `pass-up theirs`, then nested `if`s. **VERIFY** that `pass-up` works from `on-player`, not only from
-  `each-other`.
-- **Balance:** At worst it is a cantrip with +1 card net (you discard and draw 1). That is fine.
-- **Complexity:** This is the most complex card in the catalog. Cut it if the rules UI cannot present the two-step
-  choice clearly.
+- **Closest K&C:** Licensing Hall (the opponent chooses whether to discard).
+- **How it differs:** Cooperation rewards both players.
+- **Engine:** existing, with care. `choose-cards hand 1–1` then `move` to discard, then `choose-player as opp`, then
+  `on-player { var: opp } [ choose-cards 0–1 as theirs, move discard, pass-up theirs ]`. Then
+  `if has theirs`: `draw 2` and `on-player opp [ draw 2 ]`; else `draw 1`. **VERIFY** that `pass-up` works from
+  `on-player`, not only from `each-other`.
+- **Balance:** At worst it is a one-card sift with +1 Action. If the opponent cooperates, it works like a Laboratory
+  that also sifts a card, and the opponent gains a card net.
+- **Complexity:** Medium. If `pass-up` does not work from `on-player`, use a small `custom` handler rather than cut
+  the card.
 
 ### D9 · Cargo Manifest
 
@@ -975,7 +1068,7 @@ Influence.
 ## E. Glory of the Realm (`glory`)
 
 Pageantry, knighthood and the land. The set makes Homesteads and other Renown cards *do* something before scoring.
-It adds Renown-type cost reductions to speed up the end of the game, Renown that counts Renown cards, and on-gain and
+It adds cheaper basic Renown cards for mid-game greening, Renown that counts Renown cards, and on-gain and
 on-trash Renown. It has one attack. There are no Project references; the only endgame clock it reads is the Grand
 Duchy pile.
 
@@ -1010,17 +1103,18 @@ Duchy pile.
 
 `votive_offering` · Action · cost 3 · complexity **low**
 
-- **Effect:** +1 Action. +1 Coin. When you trash this, +2 Renown.
-- **Timing:** It triggers from any trash effect.
+- **Effect:** +1 Action. +1 Coin. When you trash this, +1 Renown. *(Revised: was +2 Renown.)*
+- **Timing:** It triggers from any trash effect that moves this card to the trash, from any zone (hand, play, or the
+  top of the deck through Sweeper). The Renown goes to the card's owner.
 - **Purpose:** It rewards trashing. Coin Striker, Salvage Office and the Masters trashers all turn it into points.
-- **Dominion reference:** no clear equivalent. It shares the "when trashed" mechanic.
+- **Dominion reference:** "when trashed" family, shared. Feodum's trash clause is the verified example.
 - **Closest K&C:** Reclamation Guild, which gives Coins when you trash.
 - **How it differs:** It is the card being trashed that pays.
-- **Engine:** existing. `triggers: [{ on: 'trash', where: 'self', effects: [vp 2] }]`. **VERIFY** that a self trash
+- **Engine:** existing. `triggers: [{ on: 'trash', where: 'self', effects: [vp 1] }]`. **VERIFY** that a self trash
   trigger fires after the card has left the hand.
-- **Balance:** **Watch the Coin Striker combo.** Trashing this with Coin Striker gives +2 Coins, +1 Influence and
-  +2 Renown. In practice that is 2 Renown for 3 Coins and one trash, which is close to a Homestead and a half.
-  Acceptable, but check it in the Scoring bench.
+- **Balance:** With Salvage Office it gives +3 Coins, +1 Buy and +1 Renown, which refunds its price and adds a point.
+  With Coin Striker it gives +2 Coins, +1 Influence and +1 Renown. Atelier, Promotion and Barter Post turn it into
+  a better card plus 1 Renown. At +2 those lines made each copy 2 free Renown.
 
 ### E4 · Banner Bearer
 
@@ -1061,7 +1155,7 @@ Duchy pile.
 - **Closest K&C:** Guild Banquet.
 - **How it differs:** It gains a Homestead instead of Influence.
 - **Engine:** existing. `buys`, `coins`, `gain notebook`.
-- **Balance:** The Homestead pile is limited, at 8–18 cards. Together with Hollow Title it can empty that pile, which
+- **Balance:** The Homestead pile is limited, at 8–18 cards. Together with Hollow Title it can run that pile low, which
   feeds Memorial Statue (E8).
 
 ### E7 · Grand Muster
@@ -1082,16 +1176,21 @@ Duchy pile.
 
 `memorial_statue` · Renown · cost 4 · complexity **low**
 
-- **Effect:** Worth 1 Renown. When you gain this, +1 Renown per empty supply pile.
-- **Timing:** On gain. "Supply pile" includes basic piles, which is how the existing `emptyPiles` value counts.
+- **Effect:** Worth 1 Renown. When you gain this, +1 Renown per supply pile with 2 or fewer cards left, up to +3.
+  *(Revised: was per empty supply pile, with no cap.)*
+- **Timing:** On gain, by any means, after the card has left its pile, so the Memorial Statue pile itself can count.
+  "Supply pile" means every pile in this game's supply: basic piles (Royal Debt only when it is in the game) and
+  market piles. Empty piles count.
 - **Purpose:** Rewards timing your gain late in the game.
 - **Dominion reference:** no clear equivalent.
 - **Closest K&C:** none.
-- **How it differs:** It is the only card that reads empty piles.
-- **Engine:** existing. `prestige(..., 1, { triggers: [{ on: 'gain', where: 'self', effects: [vp { emptyPiles }] }] })`.
-- **Balance:** **Usually weak.** Piles have run out in 0% of benched games. It works in combination: Land Grant and
-  Hollow Title can empty the Homestead pile, and Patternmaker can empty market piles. Owner question: is a card that
-  is often just "1 Renown for 4" acceptable?
+- **How it differs:** It is the only card that reads how low the piles are.
+- **Engine:** **NEW (small).** `prestige(..., 1, { triggers: [{ on: 'gain', where: 'self', effects:
+  [vp { min: [{ emptyPiles: true, atMost: 2 }, 3] }] }] })`. The existing `emptyPiles` Num takes an optional
+  `atMost` (default 0), so its current meaning is unchanged.
+- **Balance:** Usually 1–2 Renown late in the game, capped at 4 in total. Late in a game the Grand Duchy pile and
+  one or two contested market piles often reach 2, while running a pile out (0% in benches) almost never happens.
+  The cap bounds a deliberate pile drain with Patternmaker or Land Grant. This estimate is not benched.
 
 ### E9 · Point of Honour
 
@@ -1126,17 +1225,20 @@ Duchy pile.
 
 `victory_parade` · Action · cost 5 · complexity **low**
 
-- **Effect:** +1 Buy. +2 Coins. This turn, Renown cards cost 1 Coin less, but not less than 0.
+- **Effect:** +1 Buy. +2 Coins. This turn, Homesteads and Noble Estates cost 1 Coin less, but not less than 0.
+  *(Revised: was every Renown card, including Grand Duchy.)*
 - **Timing:** Until cleanup. Copies stack.
-- **Purpose:** Speeds up the end of the game. Grand Duchy costs 7, or 6 with two Parades, and Homestead costs 1.
-- **Dominion reference:** Bridge (Intrigue), partial.
+- **Purpose:** Greening for the middle of the game. Noble Estate costs 4 (3 with two Parades) and Homestead costs 1
+  (0 with two). The Grand Duchy and Kingdom Renown cards are not discounted.
+- **Dominion reference:** Bridge (Intrigue), shared, *verified*. Bridge reduces every card by 1.
 - **Closest K&C:** Wholesaler (A7, Currency only).
-- **How it differs:** It only reduces Renown cards, and it is terminal.
-- **Engine:** existing. `buys`, `coins`, `cost-mod { delta: -1, filter: { type: 'victory' } }`. Action · Renown cards
-  are reduced too.
+- **How it differs:** It only reduces the two cheaper basic Renown cards, and it is terminal.
+- **Engine:** existing. `buys`, `coins`, `cost-mod { delta: -1, filter: { key: 'notebook' } }` and
+  `cost-mod { delta: -1, filter: { key: 'blueprint' } }`.
 - **Balance:**
-  - **Grand Duchy at 6 shortens games.** Bench round counts with and without it.
-  - **Homestead at 1 with +Buy** feeds Noble Council.
+  - **The Grand Duchy clock is untouched.** The game length should not change.
+  - **Free Homesteads with two Parades and +Buy** feed Noble Council and can empty the Homestead pile. An empty
+    basic pile does not end the game.
 
 ### E12 · Chivalric Order
 
@@ -1155,14 +1257,111 @@ Duchy pile.
 
 `royal_jubilee` · Action · cost 6 · complexity **medium**
 
-- **Effect:** +1 Buy. +3 Coins. If 4 or fewer cards remain in the Grand Duchy pile, +1 Buy and +1 Renown.
-- **Timing:** Action phase.
+- **Effect:** +1 Buy. +3 Coins. If the Grand Duchy pile has half of its starting cards or fewer left (rounded
+  down), +1 Buy and +1 Renown. *(Revised: was a fixed 4 cards.)*
+- **Timing:** Action phase. The check is made when the card resolves. At cost 6 it cannot be played by Master's
+  Hand or Maestro.
 - **Purpose:** An endgame clock card: strong economy that gets better as the end approaches.
 - **Dominion reference:** no clear equivalent.
 - **Closest K&C:** Guild Banquet and Benefactors.
 - **How it differs:** It reads the size of the Grand Duchy pile.
-- **Engine:** **NEW.** It needs a `Num` `{ pileLeft: 'monument' }` that counts cards left in a supply pile. That is
-  public information and a small evaluator addition. **Existing-engine fallback:** "If any supply pile is empty". It
-  would rarely fire, so the owner should choose one of these two.
-- **Balance:** The threshold of 4 means different things at different player counts (pile sizes 8, 12, 15 and 18).
-  A proportional threshold, such as "a third or less of its starting size", would need a second new value.
+- **Thresholds:**
+
+  | Players | 2 | 3 | 4 | 5 | 6 |
+  |---|---|---|---|---|---|
+  | Starting Grand Duchies | 8 | 12 | 12 | 15 | 18 |
+  | Bonus at this many or fewer | 4 | 6 | 6 | 7 | 9 |
+
+- **Engine:** **NEW (small).** One `Num`: `{ pile: string; start?: true }`.
+  - Without `start`, it is the cards left in that supply pile (`state.supply[key]?.length ?? 0`).
+  - With `start`, it is the pile's starting size, from `rules.basicPiles(n)[key]`, or `rules.marketPileSize(key, n)` for
+    a market pile.
+  - Both values are public, so nothing hidden is read.
+  - The condition is `gte [ div [ { pile: 'monument', start: true }, 2 ], { pile: 'monument' } ]`.
+- **Balance:** With Projects on, many games end on Projects before the pile is half gone, so the bonus is mainly for
+  Projects-off games and Grand Duchy races.
+
+---
+
+## Edge-case rulings
+
+These rulings apply to all 69 cards. Each must become a rule ID in docs/CLOCKWORK.md with a test when its card is
+built (implementation plan, section 4). Four general rulings come first:
+
+- **Costs** are the current cost this turn, after `cost-mod` reductions, as every K&C cost check already does.
+- **An empty pile** means a gain does nothing. The card's other effects still happen.
+- **Too few cards.** A draw, look or reveal shuffles as usual. If there are still not enough cards, it uses the cards
+  there are.
+- **Reactions** work per copy. Each copy in hand can be revealed once per triggering event.
+
+| # | Card | Rulings |
+|---|---|---|
+| A1 | Coin Clipper | With no Bronze in hand, it gives +1 Action only. The trash triggers Reclamation Guild. |
+| A2 | Promissory Note | You choose whether to trash it as it is played. The +1 Coin and +1 Buy stay either way. It is a Currency, so Gold Florin's "no Actions" check ignores it. |
+| A3 | Florin Table | The discarded Currency is not played: its effects don't happen and it doesn't count as played. |
+| A4 | Fondaco | The check uses current cost after the draw. Wholesaler can bring Silver below 3, so it then no longer counts. |
+| A5 | Underwriter | It reacts to buys only, not gains, and never to Project stages. The cost is what the buyer paid. Several copies can each be revealed for the same buy. With the Silver pile empty, revealing gains nothing. |
+| A6 | Lending House | The Currency is placed on top of the deck face down. Opponents see that a card moved, but not which. If your deck is empty, it becomes the deck. |
+| A7 | Wholesaler | Copies stack, with a floor of 0. It applies to every Currency pile, basic or Kingdom. It never applies to Projects. |
+| A8 | Bookkeeper | The reveal is public. Revealed Currency goes to hand, and everything else is discarded, Actions included. |
+| A9 | Partnership | At 2 players the opponent is chosen automatically. If the Silver pile is empty, the chosen mode still gives its Coins. |
+| A10 | Gilder | If no Currency costs 4 or less, nothing is gained. The +1 Buy stays. |
+| A11 | Ledger Hall | It counts at the end of the game, including cards in play and on mats. Bronze never counts. It doesn't count itself, because it is not a Currency. |
+| A12 | Compound Interest | It counts the hand when its delay resolves. Cards returned by an earlier delay, such as Bonded Store's, count. Delays resolve in the order they were played. |
+| A13 | Bourse | You can't spend the Influence if the Silver pile is empty. |
+| A14 | Gold Florin | An Action counts if it was played this turn, by any means, including by Master's Hand or Maestro. Establishments from last turn that resolve their delay do not count as played. |
+| B1 | Household Guard | It is revealed before the Attack resolves. You must put a card back, and it can be the Guard itself. |
+| B2 | Antechamber | Spending 1 Influence is optional, and needs 1 Influence. |
+| B3 | Bribed Magistrate | Reactions are offered when it is played, paid or not. If it is played twice by Master's Hand, each play needs its own 2 Influence. Opponents with 4 or fewer cards are unaffected. |
+| B4 | Counter-Intrigue | The attacker's discarded top card is public. The attacker shuffles if their deck is empty. |
+| B5 | Whispered Promise | Influence above the cap of 8 is lost. Next turn's spend is optional. |
+| B6 | Signoria | The opponent must choose, even if one mode is useless to you. Influence above 8 is lost. |
+| B7 | Hollow Title | Reactions come before the target is chosen, so a non-target can still reveal one. An immune target gains nothing and you do not choose again. With the Homestead pile empty, there is no gain. |
+| B8 | Purchased Office | It needs 3 Influence. The gained card goes to hand. A gained Action needs an Action to play. |
+| B9 | Court Purge | Not an Attack, so no Reactions. Opponents choose in turn order, each trashing 0 or 1. |
+| B10 | Family Crest | It triggers on every gain, bought or not. If the chosen opponent is at 8 Influence, the gain is lost. |
+| B11 | Marriage Pact | The opponent draws into their current hand, which is the hand they play next turn. |
+| B12 | Majordomo | It must be two different options, and they resolve in the order listed. |
+| B13 | Palace Intrigue | Influence above the opponent's cap is lost. |
+| C1 | Sweeper | The look is private. Trashing or discarding the card makes it public; putting it back does not. |
+| C2 | Sketchbook | You must discard a card. It can be the card just drawn. |
+| C3 | Bottega | The count includes Bottega itself. |
+| C4 | Guild Diploma | It cannot trash itself, because it is in play. |
+| C5 | Woodcarver | An Action · Renown card is an Action, so it is placed on the deck. |
+| C6 | Promotion | "Up to 2 more" uses the trashed card's current cost. It may gain a copy of the trashed card. |
+| C7 | Master's Hand | The card is played twice, even if the first play moves it. An Establishment fires both delays and stays in play until they resolve. On another Master's Hand, each inner play chooses its own card. The Influence limit is net over both plays, and an outer Master's Hand's limit covers everything inside it. |
+| C8 | Open Studio | The chosen opponent draws into their current hand. |
+| C9 | Study Hall | The look is private. The Actions taken to hand are not revealed, and the log shows only a count. You choose the order of the rest. |
+| C10 | Patternmaker | It can copy any Action card you have in play, including itself and Establishments still in play from last turn, up to cost 5. |
+| C11 | Atelier | The trash is mandatory if your hand has a card. If no pile has exactly cost +2, nothing is gained. Bronze or Royal Debt (0) becomes a 2-cost, Gold (6) becomes a Grand Duchy (8). Royal Debt can never be gained. |
+| C12 | Schoolroom | The trash is mandatory if your hand has a card. |
+| C13 | Lecture Hall | The +1 Action needs an Action actually placed on the deck. |
+| C14 | Master's Fee | The count includes Master's Fee itself. |
+| C15 | Maestro | The free play does not use an Action. It cannot play a card costing more than 5, so it can't play another Maestro. |
+| D1 | Harbour Pilot | With 1 card in the deck, you choose to discard it or put it back. The next-turn draw always happens. |
+| D2 | Dockhand | The chosen card is public. |
+| D3 | Barter Post | Trashing Bronze gains nothing, because the only other 0-cost card is Royal Debt, which can't be gained. Trashing Royal Debt can gain a Bronze. |
+| D4 | Quayside Sale | You may discard 0 to 3 cards. |
+| D5 | Ferry Landing | No special rulings. |
+| D6 | Chandler | The +1 Action needs the gained card to be an Action; Action · Renown counts. |
+| D7 | Bonded Store | The cards are private, with only a public count, and still count for scoring. Played twice by Master's Hand, up to 4 cards return. |
+| D8 | Trade Agreement | If your hand is empty, skip your discard. An opponent with an empty hand cannot cooperate. The opponent draws into their current hand. |
+| D9 | Cargo Manifest | It counts Establishments in your play area now, including last turn's. The total draw is capped at 4. |
+| D10 | Grain Hoy | It uses as many cards as can be looked at, up to 3. |
+| D11 | Hiring Day | The refund triggers on buys after it is played, and never on Project stages. Several copies each refund. |
+| D12 | Customs Cutter | Immune opponents reveal nothing. You gain at most one Silver per play, and none if the pile is empty. |
+| D13 | Landing Rights | Each copy fires once, on your first Renown gain after it is played. Two copies can both fire on the same gain. |
+| D14 | Galleass | No special rulings. |
+| E1 | Tenant Farmer | Action · Renown cards count as Renown. |
+| E2 | Manor Court | The Homestead is revealed and stays in hand. |
+| E3 | Votive Offering | It triggers on a trash from any zone, and the Renown goes to the card's owner. |
+| E4 | Banner Bearer | The check happens after the draw. |
+| E5 | Laurel Wreath | It counts Renown cards in hand as it is played; Action · Renown counts. The total is capped at +3 Coins. |
+| E6 | Land Grant | With the Homestead pile empty, there is no gain. The +1 Buy and +2 Coins stay. |
+| E7 | Grand Muster | The reveal is public. Draws are capped at 3. |
+| E8 | Memorial Statue | It counts after its own gain, so its own pile can count. Every supply pile in this game counts, and empty piles count. The bonus is capped at +3. |
+| E9 | Point of Honour | A player with no Renown card reveals their hand, which is public. |
+| E10 | Honour Guard | It triggers on any Grand Duchy gain by another player. Each copy can be revealed once per gain. With the Homestead pile empty, it gains nothing. |
+| E11 | Victory Parade | It applies to Homestead and Noble Estate only, with a floor of 0. Copies stack. |
+| E12 | Chivalric Order | It counts every Renown card you own, including itself, Homesteads and Action · Renown cards. |
+| E13 | Royal Jubilee | The starting size is the basic pile size for this player count. The check is made when it resolves. |
