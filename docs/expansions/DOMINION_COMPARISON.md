@@ -250,7 +250,7 @@ The analogues are for the revised card texts in the manifest.
 | A1 | Coin Clipper | Moneylender (Base) | Partial | V |
 | A2 | Promissory Note | one-shot Treasure family | Shared | M |
 | A3 | Florin Table | Baron (Intrigue) | Partial | V |
-| A4 | Fondaco | Worker's Village (Prosperity) | **Close** | V |
+| A4 | Fondaco | Worker's Village (Prosperity) | Partial (was Close) | V |
 | A5 | Underwriter | Fool's Gold (Hinterlands) | Partial | V |
 | A6 | Lending House | none | None | |
 | A7 | Wholesaler | Bridge (Intrigue) | Partial | V |
@@ -285,17 +285,17 @@ The analogues are for the revised card texts in the manifest.
 | C9 | Study Hall | Scrying Pool (Alchemy) V; Patrol (Intrigue, second edition) M | Partial | V / M |
 | C10 | Patternmaker | none | None | |
 | C11 | Atelier | Upgrade (Intrigue); Remodel (Base) | Partial | V |
-| C12 | Schoolroom | Junk Dealer (Dark Ages) | **Close** | V |
+| C12 | Schoolroom | Junk Dealer (Dark Ages) | Partial (was Close) | V |
 | C13 | Lecture Hall | Smithy (Base) | Partial | V |
-| C14 | Master's Fee | Conspirator (Intrigue) | **Close** | V |
+| C14 | Master's Fee | Conspirator (Intrigue); Library (Base) shared | Partial (was Close) | V |
 | C15 | Maestro | free-play family | Shared | M |
 | D1 | Harbour Pilot | Caravan (Seaside) | Partial | V |
 | D2 | Dockhand | Harbinger (Base, second edition) | Partial | V |
 | D3 | Barter Post | Remodel family | Shared | V |
-| D4 | Quayside Sale | Secret Chamber (Intrigue, first edition) | **Close** | V |
-| D5 | Ferry Landing | Fishing Village (Seaside) | **Close** | V |
+| D4 | Quayside Sale | Secret Chamber (Intrigue, first edition) | Partial (was Close) | V |
+| D5 | Ferry Landing | Fishing Village (Seaside) | Partial (was Close) | V |
 | D6 | Chandler | Workshop (Base); Artisan (Base, second edition) | Partial | V |
-| D7 | Bonded Store | Gear (Adventures); Haven (Seaside) partial | **Close** | V |
+| D7 | Bonded Store | Gear (Adventures); Haven (Seaside) | Partial (was Close) | V |
 | D8 | Trade Agreement | none | None | |
 | D9 | Cargo Manifest | none | None | |
 | D10 | Grain Hoy | duration family | Shared | M |
@@ -322,8 +322,8 @@ The analogues are for the revised card texts in the manifest.
 | Class | Cards |
 |---|---|
 | Exact | 0 |
-| Close | 6 |
-| Partial | 33 |
+| Close | 0 (6 before the 2026-11-20 revisions) |
+| Partial | 39 |
 | Shared | 17 |
 | None | 13 |
 
@@ -331,7 +331,13 @@ Of the 56 cards with an analogue, 50 are verified (Study Hall counted once, by S
 Promissory Note, Whispered Promise, Hollow Title, Sketchbook, Maestro and Grain Hoy. All six are family-level
 "Shared" rows, where no single card was named.
 
-### Close analogues for the owner
+### Close analogues: revised 2026-11-20
+
+The owner kept all six cards' roles and asked for distinct effects. Each was revised before implementation (manifest,
+"Close-analogue revisions"). After the revisions none of the 69 is Close: each now differs from its analogue in
+mechanism, not only in numbers. The table below is the record of the earlier comparison.
+
+#### Before the revisions
 
 These six are kept, each with a stated difference. Keeping them is the first open question in the implementation
 plan. None copies a card's full set of numbers, name or text.

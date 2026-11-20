@@ -1,8 +1,9 @@
 # Five-expansion manifest
 
-**Status: final design, reviewed 2026-11-19. Nothing is implemented.** This file is the authoritative specification
-for a later implementation. The final review revised eight cards (see "Revisions in this review") and added the
-edge-case rulings at the end. The implementation steps are in
+**Status: final design, reviewed 2026-11-19, with the close-analogue revisions of 2026-11-20. Implemented in edition
+5.** This file is the authoritative specification. The final review revised eight cards (see "Revisions in this
+review"), the implementation review revised the six closest Dominion analogues (see "Close-analogue revisions"), and
+the edge-case rulings are at the end. The implementation steps are in
 [EXPANSION_IMPLEMENTATION_PLAN.md](EXPANSION_IMPLEMENTATION_PLAN.md), and the analysis is in
 [EXPANSION_BALANCE_REVIEW.md](EXPANSION_BALANCE_REVIEW.md).
 
@@ -63,6 +64,35 @@ curve is unchanged. Each revision keeps the card's role. None of them exists jus
 | E11 Victory Parade | +1 Buy. +2 Coins. This turn, Renown cards cost 1 Coin less. | +1 Buy. +2 Coins. This turn, Homesteads and Noble Estates cost 1 Coin less, but not less than 0. | Two Parades brought the Grand Duchy down to 6, and the discount also covered Kingdom Renown and Action · Renown cards. That shortened the game clock in an uncontrolled way. | It keeps the greening role without discounting the Grand Duchy. Noble Estate costs 4, or 3 with two Parades. Homesteads cost 1, or 0 with two. Two existing `cost-mod`s, no engine change. |
 | B8 Purchased Office | — | **Unchanged.** | Crown Treasury already turns 3 Influence into 6 Coins, which is a better rate. Purchased Office turns 3 Influence into one card costing 4 or less. It is a sink at a worse rate, and the Influence cap of 8 limits it to 2 uses per turn. | It stays the Houses sink most likely to help the Influence Engine. The bench check stays: if Influence goes above 2.1×, the price goes to 4 Influence. |
 | A5 Underwriter | — | **Unchanged.** | At 6 players the Silver pile holds 40 cards. A Silver pile-out does not end the game, because only market piles count. Each copy reacts at most once per buy, and only to buys costing 6 or more, which happen a few times per player per game. | It is a mild catch-up card. Rulings for several copies and an empty Silver pile are listed below. |
+
+## Close-analogue revisions
+
+Recorded 2026-11-20, before implementation. The owner asked to keep the strategic role of the six cards closest to a
+published Dominion card, but to make each exact effect meaningfully distinct. Every revision keeps the card's name,
+key, cost, type and role. Each one changes the *mechanism*, not only a number.
+
+| Card | Was | Now | Role kept | What makes it distinct |
+|---|---|---|---|---|
+| A4 Fondaco | Draw 1. +2 Actions. If you have a Currency costing 3 or more in your hand, +1 Buy. | +2 Actions. Draw 1 card per Currency costing 3 or more in your hand, up to 2. | The set's village, rewarding a deck that has bought Silver or better | It has no fixed draw and no Buy. The draw scales from 0 to 2 with the Currency already held. Worker's Village's fixed +1 Card and +1 Buy are gone. |
+| C12 Schoolroom | Draw 1. +1 Action. Trash a card from your hand. | +1 Action. Look at the top 2 cards of your deck. Put one into your hand and the other back on top. Then trash a card from your hand. | A forced-thinning cantrip | It picks the better of two cards before the forced trash, so it is a sifter that thins. Junk Dealer's blind draw and +1 Coin are gone. |
+| C14 Master's Fee | +1 Buy. +2 Coins. If this is your third or later Action this turn, draw 2. | +1 Buy. +2 Coins. Then draw until you have 4 cards in hand. | A terminal that ends a chain and refills the hand for the buy phase | It reads how many cards are left in hand at the end of the chain, not how many Actions were played. Conspirator's "third Action" condition is gone. |
+| D4 Quayside Sale | +1 Action. Discard up to 3 cards. +1 Coin per card discarded. | +1 Action. Discard up to 2 cards. +1 Coin per card discarded, and +1 Coin more for each Renown card among them. | Turns dead cards, especially Renown cards, into Coins without ending the chain | A smaller window that pays double for Renown cards. Secret Chamber's "any number at 1 each" is gone. |
+| D5 Ferry Landing | +2 Actions. At the start of your next turn, +1 Action and draw 1. | Draw 1. +1 Action. At the start of your next turn, +2 Actions. | A duration village | It is a cantrip now and the village arrives next turn, the reverse of Fishing Village's timing. It gives no Coins. |
+| D7 Bonded Store | +1 Coin. Set aside up to 2 cards from your hand. At the start of your next turn, put them into your hand. | +1 Coin. Set aside up to 2 Currency cards from your hand. At the start of your next turn, put them into your hand and +1 Buy. | Saves money for a bigger turn | Only Currency can be held, and the release adds a Buy. Gear's +2 Cards and any-card hold are gone. |
+
+Balance notes for the six, checked by hand and then in the edition 5 bench:
+
+- **Fondaco** works like a Village with one Silver or Gold in hand, and like a Village that draws an extra card with
+  two. In a deck with no Silver it is +2 Actions alone, so it stays a village for Currency decks.
+- **Schoolroom** is slightly stronger than before, because it never draws blind. As draw it is slightly weaker,
+  because its card comes from a window of 2 rather than a fresh draw. The trash is still mandatory.
+- **Master's Fee** draws 3 when played with 1 card left, the usual end of a chain, and 0 in a full Money hand. It is
+  terminal, so any Action it draws is dead this turn.
+- **Quayside Sale** gives at most +4 Coins (two Renown cards), against +3 before. Getting there uses three cards from
+  hand, so it pays about 1 Coin for each card used, as before.
+- **Ferry Landing** gives the same total of Actions and cards over the two turns. Only the timing moves.
+- **Bonded Store** can no longer hold Actions, so it cannot store a combo piece. That also removes its overlap with
+  Royal Commission.
 
 ## Projects-off compatibility
 
@@ -209,15 +239,16 @@ benefits, and a reaction to an opponent's expensive buy.
 
 `fondaco` · Action · cost 3 · complexity **low**
 
-- **Effect:** Draw 1. +2 Actions. If you have a Currency costing 3 or more in your hand, +1 Buy.
-- **Timing:** The check happens after the draw.
+- **Effect:** +2 Actions. Draw 1 card per Currency costing 3 or more in your hand, up to 2. *(Revised 2026-11-20:
+  was Draw 1, +2 Actions, and +1 Buy with a Currency costing 3 or more in hand.)*
+- **Timing:** The Currency is counted once, before the draw. Cards drawn by it are not counted.
 - **Purpose:** The set's village. It rewards a deck that has bought Silver or better.
-- **Dominion reference:** Worker's Village (Prosperity), **close**, *verified*: +1 Card, +2 Actions and an
-  unconditional +Buy at cost 4. Fondaco makes the Buy conditional and costs 3. See the close-analogue list in
-  DOMINION_COMPARISON.md.
+- **Dominion reference:** Worker's Village (Prosperity), partial after the revision. Worker's Village is +1 Card,
+  +2 Actions, +1 Buy. Fondaco has no fixed draw and no Buy, and its draw scales with the Currency held.
 - **Closest K&C:** Morning Bell (village with an Influence rider) and Antechamber (B2).
-- **How it differs:** Its rider is a conditional Buy, not Influence or extra draw.
-- **Engine:** existing. `draw`, `actions`, `if inHand { type: treasure, minCost: 3 }`, `buys`.
+- **How it differs:** Its draw depends on the Currency in hand, from 0 to 2.
+- **Engine:** existing. `actions`, `select hand filter { type: treasure, minCost: 3 } as t`,
+  `draw { min: [{ len: t }, 2] }`.
 - **Balance:** Neutral. A village that gives no Influence slightly favours non-Influence engines.
 
 ### A5 · Underwriter
@@ -783,14 +814,17 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
 
 `schoolroom` · Action · cost 4 · complexity **low**
 
-- **Effect:** Draw 1. +1 Action. Trash a card from your hand.
-- **Timing:** The trash is mandatory.
+- **Effect:** +1 Action. Look at the top 2 cards of your deck. Put one into your hand and the other back on top.
+  Then trash a card from your hand. *(Revised 2026-11-20: was Draw 1, +1 Action, trash a card from your hand.)*
+- **Timing:** The look is private. The trash is mandatory and comes after the pick, so the card just taken can be
+  trashed.
 - **Purpose:** A thinning cantrip that is forced, so late in the game it can cost you a good card.
-- **Dominion reference:** Junk Dealer (Dark Ages), **close**, *verified*: the same trashing cantrip plus +1 Coin, at
-  cost 5. The trashing cantrip is one of the genre's most generic designs. See the close-analogue list.
-- **Closest K&C:** Royal Scrivener (trashes from the discard pile) and Purification House.
-- **How it differs:** It is a cantrip that trashes from hand.
-- **Engine:** existing. `draw`, `actions`, `choose-cards 1–1`, `move` to trash.
+- **Dominion reference:** Junk Dealer (Dark Ages), partial after the revision. Junk Dealer draws blind and gives
+  +1 Coin. Schoolroom picks from two and gives no Coin.
+- **Closest K&C:** Royal Scrivener (trashes from the discard pile), Purification House and Sweeper (C1).
+- **How it differs:** It sifts 2 cards into 1 before a forced trash from hand.
+- **Engine:** existing. `actions`, `look 2 as seen`, `choose-cards { var: seen } 1–1 as kept`, `move` kept to
+  hand, `move { rest: seen }` to deck, `choose-cards 1–1`, `move` to trash.
 - **Balance:** Strong thinning. Its cost of 4 reflects that.
 
 ### C13 · Lecture Hall
@@ -810,14 +844,16 @@ supports Combo, Cycling and Thinning, which underperform, without strengthening 
 
 `masters_fee` · Action · cost 5 · complexity **low**
 
-- **Effect:** +1 Buy. +2 Coins. If this is your third or later Action this turn, draw 2.
-- **Timing:** It counts Actions played including itself.
+- **Effect:** +1 Buy. +2 Coins. Then draw until you have 4 cards in hand. *(Revised 2026-11-20: was "if this is your
+  third or later Action this turn, draw 2".)*
+- **Timing:** It stops early if your deck and discard pile run out.
 - **Purpose:** A terminal that ends a chain, refilling the hand for the buy phase.
-- **Dominion reference:** Conspirator (Intrigue), **close**, *verified*: +2 Coins, and +1 Card +1 Action from the
-  third Action played. Master's Fee shares the condition, but stays terminal, draws 2 and adds +1 Buy.
+- **Dominion reference:** Conspirator (Intrigue), partial after the revision, because it no longer counts Actions.
+  Library (Base) shares the draw-to-a-hand-size mechanic (shared). It draws to 7 and may skip Actions.
 - **Closest K&C:** Guild Procession (cantrip) and Guild Banquet.
-- **How it differs:** It is terminal, and its payoff is draw rather than Influence.
-- **Engine:** existing. `buys`, `coins`, `if gte [actionsPlayed, 3]`, `draw 2`.
+- **How it differs:** It is terminal, refills the hand to 4, and pays off in cards rather than Influence.
+- **Engine:** existing. `buys`, `coins`, `until { any: [gte [count hand, 4], not gte [count deck+discard, 1]] }
+  [ draw 1 ]`.
 - **Balance:** Neutral.
 
 ### C15 · Maestro
@@ -890,29 +926,31 @@ Influence.
 
 `quayside_sale` · Action · cost 3 · complexity **low**
 
-- **Effect:** +1 Action. Discard up to 3 cards. +1 Coin per card discarded.
-- **Timing:** Action phase.
+- **Effect:** +1 Action. Discard up to 2 cards. +1 Coin per card discarded, and +1 Coin more for each Renown card
+  among them. *(Revised 2026-11-20: was up to 3 cards at +1 Coin each.)*
+- **Timing:** Action phase. The discard is public.
 - **Purpose:** Turns dead Renown cards and surplus Actions into Coins.
-- **Dominion reference:** Secret Chamber (Intrigue, first edition), **close**, *verified*: it is terminal, discards
-  any number for +1 Coin each, and is a Reaction. Quayside Sale is non-terminal, capped at 3 and has no reaction.
-  Vault (Prosperity) is partial.
-- **Closest K&C:** Favour Broker (discards 2 for Influence).
-- **How it differs:** It is non-terminal with a cap of 3, and pays Coins only.
-- **Engine:** existing. `choose-cards 0–3 as d`, `move` to discard, `coins { len: d }`.
+- **Dominion reference:** Secret Chamber (Intrigue, first edition), partial after the revision. It discards any
+  number of cards for 1 each, is terminal, and has a Reaction. Vault (Prosperity) is partial.
+- **Closest K&C:** Favour Broker (discards 2 for Influence) and Tenant Farmer (E1).
+- **How it differs:** It is non-terminal, takes at most 2 cards, and pays double for Renown cards.
+- **Engine:** existing. `choose-cards 0–2 as d`, `move` to discard,
+  `coins { add: [{ len: d }, { countIn: d, filter: { type: victory } }] }`.
 - **Balance:** Pairs well with Glory's Renown-heavy decks.
 
 ### D5 · Ferry Landing
 
 `ferry_landing` · Establishment · cost 3 · complexity **low**
 
-- **Effect:** +2 Actions. At the start of your next turn, +1 Action and draw 1.
-- **Timing:** It is a duration.
+- **Effect:** Draw 1. +1 Action. At the start of your next turn, +2 Actions. *(Revised 2026-11-20: was +2 Actions
+  now, and +1 Action and draw 1 next turn.)*
+- **Timing:** It is a duration: a cantrip this turn and a village next turn.
 - **Purpose:** A duration village.
-- **Dominion reference:** Fishing Village (Seaside), **close**, *verified*: +2 Actions and +1 Coin now, then +1
-  Action and +1 Coin next turn. Ferry Landing gives no Coin now and draws a card next turn instead of a Coin.
+- **Dominion reference:** Fishing Village (Seaside), partial after the revision. Fishing Village gives +2 Actions and
+  a Coin now, then +1 Action and a Coin next turn. Ferry Landing reverses the timing and gives no Coins.
 - **Closest K&C:** Morning Bell and Fondaco (A4).
-- **How it differs:** It draws next turn and gives no Coins.
-- **Engine:** existing. `actions`, `delay [ actions, draw ]`.
+- **How it differs:** The Actions arrive next turn, and it gives no Coins.
+- **Engine:** existing. `draw`, `actions`, `delay [ actions 2 ]`.
 - **Balance:** Neutral.
 
 ### D6 · Chandler
@@ -934,16 +972,17 @@ Influence.
 
 `bonded_store` · Establishment · cost 4 · complexity **medium**
 
-- **Effect:** +1 Coin. Set aside up to 2 cards from your hand. At the start of your next turn, put them into your
-  hand.
+- **Effect:** +1 Coin. Set aside up to 2 Currency cards from your hand. At the start of your next turn, put them into
+  your hand and +1 Buy. *(Revised 2026-11-20: was any 2 cards, with no Buy.)*
 - **Timing:** The set-aside cards are hidden from opponents. Only their number is public. They come back to your
-  hand at the start of your next turn, as part of resolving Establishments.
-- **Purpose:** Saves a strong pair for a bigger turn.
-- **Dominion reference:** Gear (Adventures), **close**, *verified*: +2 Cards, then sets aside up to 2 cards for next
-  turn, at cost 3. Bonded Store gives +1 Coin instead of +2 Cards. Haven (Seaside), partial, sets aside one card.
+  hand at the start of your next turn, as part of resolving Establishments. The +1 Buy comes even if nothing was set
+  aside.
+- **Purpose:** Saves money for a bigger turn.
+- **Dominion reference:** Gear (Adventures), partial after the revision. Gear draws 2 and holds any 2 cards. Bonded
+  Store draws nothing, holds only Currency, and releases it with a Buy. Haven (Seaside), partial, sets aside one card.
 - **Closest K&C:** Royal Commission (sets aside an Action and plays it).
-- **How it differs:** It holds any 2 cards, and gives a Coin instead of a play.
-- **Engine:** existing mat zone: `move` to `{ mat: 'bonded' }`, then `delay [ move mat to hand ]`. **Hidden
+- **How it differs:** It holds Currency only, and gives a Coin now and a Buy when the cards come back.
+- **Engine:** existing mat zone: `choose-cards 0–2 filter treasure`, `move` to `{ mat: 'bonded' }`, then `delay [ move mat to hand ]`. **Hidden
   information is already enforced (checked in this review):**
   - `project(state, seat)` in `src/engine/deckbuilder/index.ts` shows the owner `{ count, cards }` for a mat and
     other seats only `{ count }`.
@@ -1299,7 +1338,7 @@ built (implementation plan, section 4). Four general rulings come first:
 | A1 | Coin Clipper | With no Bronze in hand, it gives +1 Action only. The trash triggers Reclamation Guild. |
 | A2 | Promissory Note | You choose whether to trash it as it is played. The +1 Coin and +1 Buy stay either way. It is a Currency, so Gold Florin's "no Actions" check ignores it. |
 | A3 | Florin Table | The discarded Currency is not played: its effects don't happen and it doesn't count as played. |
-| A4 | Fondaco | The check uses current cost after the draw. Wholesaler can bring Silver below 3, so it then no longer counts. |
+| A4 | Fondaco | It counts the Currency in hand before drawing, at current cost. Wholesaler can bring Silver below 3, so it then no longer counts. The draw is capped at 2. |
 | A5 | Underwriter | It reacts to buys only, not gains, and never to Project stages. The cost is what the buyer paid. Several copies can each be revealed for the same buy. With the Silver pile empty, revealing gains nothing. |
 | A6 | Lending House | The Currency is placed on top of the deck face down. Opponents see that a card moved, but not which. If your deck is empty, it becomes the deck. |
 | A7 | Wholesaler | Copies stack, with a floor of 0. It applies to every Currency pile, basic or Kingdom. It never applies to Projects. |
@@ -1334,17 +1373,17 @@ built (implementation plan, section 4). Four general rulings come first:
 | C9 | Study Hall | The look is private. The Actions taken to hand are not revealed, and the log shows only a count. You choose the order of the rest. |
 | C10 | Patternmaker | It can copy any Action card you have in play, including itself and Establishments still in play from last turn, up to cost 5. |
 | C11 | Atelier | The trash is mandatory if your hand has a card. If no pile has exactly cost +2, nothing is gained. Bronze or Royal Debt (0) becomes a 2-cost, Gold (6) becomes a Grand Duchy (8). Royal Debt can never be gained. |
-| C12 | Schoolroom | The trash is mandatory if your hand has a card. |
+| C12 | Schoolroom | The look is private. With only 1 card to look at, you take it. The trash is mandatory if your hand has a card, and it can be the card just taken. |
 | C13 | Lecture Hall | The +1 Action needs an Action actually placed on the deck. |
-| C14 | Master's Fee | The count includes Master's Fee itself. |
+| C14 | Master's Fee | With 4 or more cards in hand it draws nothing. It stops when the deck and discard pile are both empty. |
 | C15 | Maestro | The free play does not use an Action. It cannot play a card costing more than 5, so it can't play another Maestro. |
 | D1 | Harbour Pilot | With 1 card in the deck, you choose to discard it or put it back. The next-turn draw always happens. |
 | D2 | Dockhand | The chosen card is public. |
 | D3 | Barter Post | Trashing Bronze gains nothing, because the only other 0-cost card is Royal Debt, which can't be gained. Trashing Royal Debt can gain a Bronze. |
-| D4 | Quayside Sale | You may discard 0 to 3 cards. |
-| D5 | Ferry Landing | No special rulings. |
+| D4 | Quayside Sale | You may discard 0 to 2 cards. An Action · Renown card counts as a Renown card. |
+| D5 | Ferry Landing | Played twice by Master's Hand, it gives +4 Actions next turn. |
 | D6 | Chandler | The +1 Action needs the gained card to be an Action; Action · Renown counts. |
-| D7 | Bonded Store | The cards are private, with only a public count, and still count for scoring. Played twice by Master's Hand, up to 4 cards return. |
+| D7 | Bonded Store | Only Currency can be set aside. The cards are private, with only a public count, and still count for scoring. The +1 Buy comes next turn even with nothing set aside. Played twice by Master's Hand, up to 4 cards return, with +2 Buys. |
 | D8 | Trade Agreement | If your hand is empty, skip your discard. An opponent with an empty hand cannot cooperate. The opponent draws into their current hand. |
 | D9 | Cargo Manifest | It counts Establishments in your play area now, including last turn's. The total draw is capped at 4. |
 | D10 | Grain Hoy | It uses as many cards as can be looked at, up to 3. |
