@@ -881,6 +881,558 @@
       "brief": "A great timbered guildhall on a busy square with stalls before it.",
       "status": "final",
       "asset": "/cards/merchants_guildhall.svg"
+    },
+    {
+      "key": "coin_clipper",
+      "name": "Coin Clipper",
+      "oldName": "Coin Clipper",
+      "brief": "By one candle, shears biting the rim of a coin, the shavings gathered in a dish.",
+      "status": "final",
+      "asset": "/cards/coin_clipper.svg"
+    },
+    {
+      "key": "promissory_note",
+      "name": "Promissory Note",
+      "oldName": "Promissory Note",
+      "brief": "Across a table in the loggia, a sealed note passes from one hand to another.",
+      "status": "final",
+      "asset": "/cards/promissory_note.svg"
+    },
+    {
+      "key": "florin_table",
+      "name": "Florin Table",
+      "oldName": "Florin Table",
+      "brief": "The banker's bench in the open square, cloth spread, coin counted out on it.",
+      "status": "final",
+      "asset": "/cards/florin_table.svg"
+    },
+    {
+      "key": "fondaco",
+      "name": "Fondaco",
+      "oldName": "Fondaco",
+      "brief": "The foreign merchants' courtyard, bales swung up on a hoist to the gallery.",
+      "status": "final",
+      "asset": "/cards/fondaco.svg"
+    },
+    {
+      "key": "underwriter",
+      "name": "Underwriter",
+      "oldName": "Underwriter",
+      "brief": "At the counting-house window, the clerk's pen stops while a ship comes in below.",
+      "status": "final",
+      "asset": "/cards/underwriter.svg"
+    },
+    {
+      "key": "lending_house",
+      "name": "Lending House",
+      "oldName": "Lending House",
+      "brief": "Pledges on the shelves, a silver cup set on the counter, the lender weighing it.",
+      "status": "final",
+      "asset": "/cards/lending_house.svg"
+    },
+    {
+      "key": "wholesaler",
+      "name": "Wholesaler",
+      "oldName": "Wholesaler",
+      "brief": "Casks rolled out of the warehouse to a cart, the dealer notching his tally stick.",
+      "status": "final",
+      "asset": "/cards/wholesaler.svg"
+    },
+    {
+      "key": "bookkeeper",
+      "name": "Bookkeeper",
+      "oldName": "Bookkeeper",
+      "brief": "The counting cloth chequered for reckoning, counters pushed square by square, the ledger beside.",
+      "status": "final",
+      "asset": "/cards/bookkeeper.svg"
+    },
+    {
+      "key": "partnership",
+      "name": "Partnership",
+      "oldName": "Partnership",
+      "brief": "One strongbox, two keys turned at once by two merchants who don't quite trust each other.",
+      "status": "final",
+      "asset": "/cards/partnership.svg"
+    },
+    {
+      "key": "gilder",
+      "name": "Gilder",
+      "oldName": "Gilder",
+      "brief": "Gold leaf laid on a carved frame, the book of leaf open, a cup waiting its turn.",
+      "status": "final",
+      "asset": "/cards/gilder.svg"
+    },
+    {
+      "key": "ledger_hall",
+      "name": "Ledger Hall",
+      "oldName": "Ledger Hall",
+      "brief": "The counting house's front, rusticated below and grand above, a clerk on the steps.",
+      "status": "final",
+      "asset": "/cards/ledger_hall.svg"
+    },
+    {
+      "key": "compound_interest",
+      "name": "Compound Interest",
+      "oldName": "Compound Interest",
+      "brief": "Stacks of coin climbing step by step along a sill, the hourglass running beside them.",
+      "status": "final",
+      "asset": "/cards/compound_interest.svg"
+    },
+    {
+      "key": "bourse",
+      "name": "Bourse",
+      "oldName": "Bourse",
+      "brief": "An open court of merchants trading on their feet, notes waved, a messenger running in.",
+      "status": "final",
+      "asset": "/cards/bourse.svg"
+    },
+    {
+      "key": "gold_florin",
+      "name": "Gold Florin",
+      "oldName": "Gold Florin",
+      "brief": "One heavy coin on dark velvet, a rosette struck on its face.",
+      "status": "final",
+      "asset": "/cards/gold_florin.svg"
+    },
+    {
+      "key": "household_guard",
+      "name": "Household Guard",
+      "oldName": "Household Guard",
+      "brief": "A guard plants his halberd across the great door, a lantern above.",
+      "status": "final",
+      "asset": "/cards/household_guard.svg"
+    },
+    {
+      "key": "antechamber",
+      "name": "Antechamber",
+      "oldName": "Antechamber",
+      "brief": "Petitioners waiting on the long bench, the page at the closed door.",
+      "status": "final",
+      "asset": "/cards/antechamber.svg"
+    },
+    {
+      "key": "bribed_magistrate",
+      "name": "Bribed Magistrate",
+      "oldName": "Bribed Magistrate",
+      "brief": "On the bench he hears the case, and under it a purse finds his hand.",
+      "status": "final",
+      "asset": "/cards/bribed_magistrate.svg"
+    },
+    {
+      "key": "counter_intrigue",
+      "name": "Counter-Intrigue",
+      "oldName": "Counter-Intrigue",
+      "brief": "The intercepted letter held to a candle, its seal still whole.",
+      "status": "final",
+      "asset": "/cards/counter_intrigue.svg"
+    },
+    {
+      "key": "whispered_promise",
+      "name": "Whispered Promise",
+      "oldName": "Whispered Promise",
+      "brief": "Two courtiers in the clipped garden, one bent to the other's ear.",
+      "status": "final",
+      "asset": "/cards/whispered_promise.svg"
+    },
+    {
+      "key": "signoria",
+      "name": "Signoria",
+      "oldName": "Signoria",
+      "brief": "The council seated in a row beneath the hangings, a petitioner standing before them.",
+      "status": "final",
+      "asset": "/cards/signoria.svg"
+    },
+    {
+      "key": "hollow_title",
+      "name": "Hollow Title",
+      "oldName": "Hollow Title",
+      "brief": "A proud new lord holds up his deed before the house it grants him, half fallen in.",
+      "status": "final",
+      "asset": "/cards/hollow_title.svg"
+    },
+    {
+      "key": "purchased_office",
+      "name": "Purchased Office",
+      "oldName": "Purchased Office",
+      "brief": "The chain of office laid on the buyer's shoulders, the price stacked on the table.",
+      "status": "final",
+      "asset": "/cards/purchased_office.svg"
+    },
+    {
+      "key": "court_purge",
+      "name": "Court Purge",
+      "oldName": "Court Purge",
+      "brief": "A courtier marched out between guards, the others suddenly busy looking away.",
+      "status": "final",
+      "asset": "/cards/court_purge.svg"
+    },
+    {
+      "key": "family_crest",
+      "name": "Family Crest",
+      "oldName": "Family Crest",
+      "brief": "The house's arms carved over its door, garlands and helm, a page looking up.",
+      "status": "final",
+      "asset": "/cards/family_crest.svg"
+    },
+    {
+      "key": "marriage_pact",
+      "name": "Marriage Pact",
+      "oldName": "Marriage Pact",
+      "brief": "The two families meet at the chapel step, the couple's hands joined over the contract.",
+      "status": "final",
+      "asset": "/cards/marriage_pact.svg"
+    },
+    {
+      "key": "majordomo",
+      "name": "Majordomo",
+      "oldName": "Majordomo",
+      "brief": "Keys at his belt and staff raised, the steward sends the dishes out in order.",
+      "status": "final",
+      "asset": "/cards/majordomo.svg"
+    },
+    {
+      "key": "palace_intrigue",
+      "name": "Palace Intrigue",
+      "oldName": "Palace Intrigue",
+      "brief": "At night behind a column, two heads close together, while the watch walks by.",
+      "status": "final",
+      "asset": "/cards/palace_intrigue.svg"
+    },
+    {
+      "key": "sweeper",
+      "name": "Sweeper",
+      "oldName": "Sweeper",
+      "brief": "The apprentice's broom drives shavings across the workshop floor before the day starts.",
+      "status": "final",
+      "asset": "/cards/sweeper.svg"
+    },
+    {
+      "key": "sketchbook",
+      "name": "Sketchbook",
+      "oldName": "Sketchbook",
+      "brief": "On a step in the square, an apprentice draws the column in front of him.",
+      "status": "final",
+      "asset": "/cards/sketchbook.svg"
+    },
+    {
+      "key": "bottega",
+      "name": "Bottega",
+      "oldName": "Bottega",
+      "brief": "The master at the big panel, one apprentice grinding colour, another priming a board.",
+      "status": "final",
+      "asset": "/cards/bottega.svg"
+    },
+    {
+      "key": "guild_diploma",
+      "name": "Guild Diploma",
+      "oldName": "Guild Diploma",
+      "brief": "On one knee under the guild's banner, the new member takes his sealed letter.",
+      "status": "final",
+      "asset": "/cards/guild_diploma.svg"
+    },
+    {
+      "key": "woodcarver",
+      "name": "Woodcarver",
+      "oldName": "Woodcarver",
+      "brief": "The figure half free of the block, chisel and mallet at work, shavings at his feet.",
+      "status": "final",
+      "asset": "/cards/woodcarver.svg"
+    },
+    {
+      "key": "promotion",
+      "name": "Promotion",
+      "oldName": "Promotion",
+      "brief": "The master sets the journeyman's new cap on his head, the workshop applauding.",
+      "status": "final",
+      "asset": "/cards/promotion.svg"
+    },
+    {
+      "key": "masters_hand",
+      "name": "Master’s Hand",
+      "oldName": "Master’s Hand",
+      "brief": "Over the stone, the master's hand closes on the apprentice's and guides the chisel.",
+      "status": "final",
+      "asset": "/cards/masters_hand.svg"
+    },
+    {
+      "key": "open_studio",
+      "name": "Open Studio",
+      "oldName": "Open Studio",
+      "brief": "The shutters thrown open onto the street, panels on show, passers-by stopping to look.",
+      "status": "final",
+      "asset": "/cards/open_studio.svg"
+    },
+    {
+      "key": "study_hall",
+      "name": "Study Hall",
+      "oldName": "Study Hall",
+      "brief": "A long table of students heads down in their books, shelves to the ceiling behind.",
+      "status": "final",
+      "asset": "/cards/study_hall.svg"
+    },
+    {
+      "key": "patternmaker",
+      "name": "Patternmaker",
+      "oldName": "Patternmaker",
+      "brief": "Paper patterns pinned to the cloth, shears in hand, a finished sleeve on the stand.",
+      "status": "final",
+      "asset": "/cards/patternmaker.svg"
+    },
+    {
+      "key": "atelier",
+      "name": "Atelier",
+      "oldName": "Atelier",
+      "brief": "The great marble on its scaffold under the roof light, the sculptor up the ladder.",
+      "status": "final",
+      "asset": "/cards/atelier.svg"
+    },
+    {
+      "key": "schoolroom",
+      "name": "Schoolroom",
+      "oldName": "Schoolroom",
+      "brief": "Children on benches with their slates, the master's pointer at the board.",
+      "status": "final",
+      "asset": "/cards/schoolroom.svg"
+    },
+    {
+      "key": "lecture_hall",
+      "name": "Lecture Hall",
+      "oldName": "Lecture Hall",
+      "brief": "The lecturer high in his chair, benches of listeners, one asleep against the wall.",
+      "status": "final",
+      "asset": "/cards/lecture_hall.svg"
+    },
+    {
+      "key": "masters_fee",
+      "name": "Master’s Fee",
+      "oldName": "Master’s Fee",
+      "brief": "At the workshop door, a father counts the fee into the master's palm, the boy behind with his bundle.",
+      "status": "final",
+      "asset": "/cards/masters_fee.svg"
+    },
+    {
+      "key": "maestro",
+      "name": "Maestro",
+      "oldName": "Maestro",
+      "brief": "The finished altarpiece unveiled, the cloth pulled away, the patron's hand to his chest.",
+      "status": "final",
+      "asset": "/cards/maestro.svg"
+    },
+    {
+      "key": "harbour_pilot",
+      "name": "Harbour Pilot",
+      "oldName": "Harbour Pilot",
+      "brief": "A little boat ahead of the big ship, the pilot standing to wave her through the channel.",
+      "status": "final",
+      "asset": "/cards/harbour_pilot.svg"
+    },
+    {
+      "key": "dockhand",
+      "name": "Dockhand",
+      "oldName": "Dockhand",
+      "brief": "Down the gangplank under a sack, the next one already shouldered behind him.",
+      "status": "final",
+      "asset": "/cards/dockhand.svg"
+    },
+    {
+      "key": "barter_post",
+      "name": "Barter Post",
+      "oldName": "Barter Post",
+      "brief": "At the river post, a bale handed one way and a cask the other, no coin in sight.",
+      "status": "final",
+      "asset": "/cards/barter_post.svg"
+    },
+    {
+      "key": "quayside_sale",
+      "name": "Quayside Sale",
+      "oldName": "Quayside Sale",
+      "brief": "The stall right on the quay, fish and baskets set out, the ships moored behind.",
+      "status": "final",
+      "asset": "/cards/quayside_sale.svg"
+    },
+    {
+      "key": "ferry_landing",
+      "name": "Ferry Landing",
+      "oldName": "Ferry Landing",
+      "brief": "The flat ferry hauled across along its rope, a horse and three passengers aboard.",
+      "status": "final",
+      "asset": "/cards/ferry_landing.svg"
+    },
+    {
+      "key": "chandler",
+      "name": "Chandler",
+      "oldName": "Chandler",
+      "brief": "The ship's shop, rope coiled to the ceiling, lanterns hung, a sailor reckoning what he needs.",
+      "status": "final",
+      "asset": "/cards/chandler.svg"
+    },
+    {
+      "key": "bonded_store",
+      "name": "Bonded Store",
+      "oldName": "Bonded Store",
+      "brief": "The warehouse door under the customs seal, its key on the officer's belt.",
+      "status": "final",
+      "asset": "/cards/bonded_store.svg"
+    },
+    {
+      "key": "trade_agreement",
+      "name": "Trade Agreement",
+      "oldName": "Trade Agreement",
+      "brief": "Two captains shake hands on the pier between their ships, their clerks writing it down.",
+      "status": "final",
+      "asset": "/cards/trade_agreement.svg"
+    },
+    {
+      "key": "cargo_manifest",
+      "name": "Cargo Manifest",
+      "oldName": "Cargo Manifest",
+      "brief": "Crates swung ashore and called out, the clerk ticking each down a long sheet.",
+      "status": "final",
+      "asset": "/cards/cargo_manifest.svg"
+    },
+    {
+      "key": "grain_hoy",
+      "name": "Grain Hoy",
+      "oldName": "Grain Hoy",
+      "brief": "A low river barge riding deep with sacks, one square sail, the mill on the bank.",
+      "status": "final",
+      "asset": "/cards/grain_hoy.svg"
+    },
+    {
+      "key": "hiring_day",
+      "name": "Hiring Day",
+      "oldName": "Hiring Day",
+      "brief": "In the square at dawn, men lined up with their tools, the foreman pointing at the next.",
+      "status": "final",
+      "asset": "/cards/hiring_day.svg"
+    },
+    {
+      "key": "customs_cutter",
+      "name": "Customs Cutter",
+      "oldName": "Customs Cutter",
+      "brief": "The low fast boat alongside the merchantman, oars up, the officer climbing aboard.",
+      "status": "final",
+      "asset": "/cards/customs_cutter.svg"
+    },
+    {
+      "key": "landing_rights",
+      "name": "Landing Rights",
+      "oldName": "Landing Rights",
+      "brief": "Under the harbour castle, the herald reads the grant aloud as the captain steps ashore.",
+      "status": "final",
+      "asset": "/cards/landing_rights.svg"
+    },
+    {
+      "key": "galleass",
+      "name": "Galleass",
+      "oldName": "Galleass",
+      "brief": "The big oared ship heavy in the sea, sails set and both banks of oars pulling.",
+      "status": "final",
+      "asset": "/cards/galleass.svg"
+    },
+    {
+      "key": "tenant_farmer",
+      "name": "Tenant Farmer",
+      "oldName": "Tenant Farmer",
+      "brief": "Behind the plough and the horse, the furrows running back towards the manor.",
+      "status": "final",
+      "asset": "/cards/tenant_farmer.svg"
+    },
+    {
+      "key": "manor_court",
+      "name": "Manor Court",
+      "oldName": "Manor Court",
+      "brief": "The lord in his chair under the great tree, a villager speaking, the steward writing.",
+      "status": "final",
+      "asset": "/cards/manor_court.svg"
+    },
+    {
+      "key": "votive_offering",
+      "name": "Votive Offering",
+      "oldName": "Votive Offering",
+      "brief": "A candle set at the wayside shrine, the traveller on one knee before it.",
+      "status": "final",
+      "asset": "/cards/votive_offering.svg"
+    },
+    {
+      "key": "banner_bearer",
+      "name": "Banner Bearer",
+      "oldName": "Banner Bearer",
+      "brief": "Out in front of the column, the standard held high and stepping out.",
+      "status": "final",
+      "asset": "/cards/banner_bearer.svg"
+    },
+    {
+      "key": "laurel_wreath",
+      "name": "Laurel Wreath",
+      "oldName": "Laurel Wreath",
+      "brief": "The wreath alone on its cushion, set on the stone in the empty hall.",
+      "status": "final",
+      "asset": "/cards/laurel_wreath.svg"
+    },
+    {
+      "key": "land_grant",
+      "name": "Land Grant",
+      "oldName": "Land Grant",
+      "brief": "On the dais the monarch hands down the charter to the kneeling knight.",
+      "status": "final",
+      "asset": "/cards/land_grant.svg"
+    },
+    {
+      "key": "grand_muster",
+      "name": "Grand Muster",
+      "oldName": "Grand Muster",
+      "brief": "Rank on rank of pikes in the field, the captain riding the line.",
+      "status": "final",
+      "asset": "/cards/grand_muster.svg"
+    },
+    {
+      "key": "memorial_statue",
+      "name": "Memorial Statue",
+      "oldName": "Memorial Statue",
+      "brief": "The bronze horseman on his plinth in the middle of the square, a child pointing up.",
+      "status": "final",
+      "asset": "/cards/memorial_statue.svg"
+    },
+    {
+      "key": "point_of_honour",
+      "name": "Point of Honour",
+      "oldName": "Point of Honour",
+      "brief": "In the grey of morning, two duellists face off, a second on each side.",
+      "status": "final",
+      "asset": "/cards/point_of_honour.svg"
+    },
+    {
+      "key": "honour_guard",
+      "name": "Honour Guard",
+      "oldName": "Honour Guard",
+      "brief": "Two lines of guards cross their pikes and the honoured guest walks through.",
+      "status": "final",
+      "asset": "/cards/honour_guard.svg"
+    },
+    {
+      "key": "victory_parade",
+      "name": "Victory Parade",
+      "oldName": "Victory Parade",
+      "brief": "Through the triumphal arch, the returning captain on horseback, the crowd cheering.",
+      "status": "final",
+      "asset": "/cards/victory_parade.svg"
+    },
+    {
+      "key": "chivalric_order",
+      "name": "Chivalric Order",
+      "oldName": "Chivalric Order",
+      "brief": "Knights kneeling in a row in the chapel, swords laid point-down before them.",
+      "status": "final",
+      "asset": "/cards/chivalric_order.svg"
+    },
+    {
+      "key": "royal_jubilee",
+      "name": "Royal Jubilee",
+      "oldName": "Royal Jubilee",
+      "brief": "The bonfire on the green, pennants strung, the dancers turning hand in hand.",
+      "status": "final",
+      "asset": "/cards/royal_jubilee.svg"
     }
   ]
 }

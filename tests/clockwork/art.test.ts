@@ -1,15 +1,18 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { CARDS, WORKS } from '../../src/games/clockwork/rules/ruleset';
+import { CARDS, RULES, WORKS } from '../../src/games/clockwork/rules/ruleset';
 import { artFor, artKeys, artParts, knownPart, sceneOf } from '../../src/games/clockwork/ui/art';
 
 const everything = [...CARDS.map((c) => c.key), ...WORKS.map((w) => w.key)];
+// The five later expansions only ship as drawn files; they have no inline fallback scene.
+const later = RULES.cards.filter((c) => !CARDS.includes(c));
+const catalog = [...everything, ...later.map((c) => c.key)];
 const manifest = JSON.parse(readFileSync('data/clockwork-commons/art-manifest.json', 'utf8')) as { entries: { key: string; name: string; brief: string; status: string; asset: string | null }[] };
 
 describe('coverage report', () => {
   it('CC-COVER-1: every card and Public Work is defined and has its own named test', () => {
     const report = JSON.parse(readFileSync('data/clockwork-commons/coverage-report.json', 'utf8')) as { entries: { key: string; definedIn: string | null; dedicatedTest: string | null }[] };
-    expect(report.entries.map((e) => e.key).sort()).toEqual([...everything].sort());
+    expect(report.entries.map((e) => e.key).sort()).toEqual([...catalog].sort());
     for (const e of report.entries) {
       expect(e.definedIn, e.key).toBeTruthy();
       expect(e.dedicatedTest, e.key).toBeTruthy();
@@ -30,12 +33,21 @@ describe('card art', () => {
     expect(artFor('not-a-card')).toBeNull();
   });
   it('CC-ART-3: the manifest lists everything, under its current name, and only claims the art that exists', () => {
-    expect(manifest.entries.map((e) => e.key).sort()).toEqual([...everything].sort());
-    const names = new Map([...CARDS, ...WORKS].map((c) => [c.key, c.name]));
+    expect(manifest.entries.map((e) => e.key).sort()).toEqual([...catalog].sort());
+    const names = new Map([...RULES.cards, ...WORKS].map((c) => [c.key, c.name]));
     for (const e of manifest.entries) {
       expect(e.name, e.key).toBe(names.get(e.key));
       expect(e.brief, e.key).toBeTruthy();
       expect(e.status === 'svg' ? e.asset : existsSync(`public${e.asset}`), e.key).toBe(e.status === 'svg' ? null : true);
+    }
+  });
+  it('KC5-ART-1: each of the 69 expansion cards has its own drawn file, under budget and without text', () => {
+    expect(later).toHaveLength(69);
+    for (const { key } of later) {
+      expect(artFor(key), key).toBe(`<img src="/cards/${key}.svg" alt="" loading="lazy" />`);
+      const file = readFileSync(`public/cards/${key}.svg`, 'utf8');
+      expect(file.length, key).toBeLessThan(48 * 1024);
+      expect(file, key).not.toMatch(/<text|<image|<foreignObject/);
     }
   });
   it('KC-ART-1: scenes hold no machinery left over from the old theme', () => {

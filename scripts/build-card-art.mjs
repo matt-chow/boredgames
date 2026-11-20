@@ -1,14 +1,19 @@
 /** Writes the catalogue's illustrations to public/cards/<card key>.svg. Run: node scripts/build-card-art.mjs [key ...] */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { COURT } from './art/court.mjs';
+import { GLORY } from './art/glory.mjs';
+import { HOUSES } from './art/houses.mjs';
 import { svg } from './art/kit.mjs';
+import { MASTERS } from './art/masters.mjs';
 import { PILOT } from './art/pilot.mjs';
+import { PORTS } from './art/ports.mjs';
+import { REPUBLICS } from './art/republics.mjs';
 import { PROJECTS, TREASURY } from './art/treasury.mjs';
 import { TOWN } from './art/town.mjs';
 import { WORK } from './art/work.mjs';
 
 const only = new Set(process.argv.slice(2));
-const ALL = { ...TREASURY, ...PROJECTS, ...WORK, ...TOWN, ...COURT };
+const ALL = { ...TREASURY, ...PROJECTS, ...WORK, ...TOWN, ...COURT, ...REPUBLICS, ...HOUSES, ...MASTERS, ...PORTS, ...GLORY };
 mkdirSync('public/cards', { recursive: true });
 for (const [key, [name, draw]] of Object.entries(ALL)) {
   if (PILOT[key]) throw new Error(`${key} is an approved pilot: do not redraw it`);

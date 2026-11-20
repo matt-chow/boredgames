@@ -24,6 +24,17 @@ const ILLUSTRATED = [
    'steam_diverter', 'supply_crane', 'surveyor', 'tally_clerk', 'tax_arrears', 'timer_switch', 'town_crier',
    'trade_bonds', 'tram_extension', 'treasury_auditor', 'waterwheel', 'whistle_stop', 'whistleblower',
    'zoning_board',
+   // The five 2026 expansions, drawn by scripts/art/{republics,houses,masters,ports,glory}.mjs.
+   'coin_clipper', 'promissory_note', 'florin_table', 'fondaco', 'underwriter', 'lending_house', 'wholesaler',
+   'bookkeeper', 'partnership', 'gilder', 'ledger_hall', 'compound_interest', 'bourse', 'gold_florin',
+   'household_guard', 'antechamber', 'bribed_magistrate', 'counter_intrigue', 'whispered_promise', 'signoria',
+   'hollow_title', 'purchased_office', 'court_purge', 'family_crest', 'marriage_pact', 'majordomo',
+   'palace_intrigue', 'sweeper', 'sketchbook', 'bottega', 'guild_diploma', 'woodcarver', 'promotion', 'masters_hand',
+   'open_studio', 'study_hall', 'patternmaker', 'atelier', 'schoolroom', 'lecture_hall', 'masters_fee', 'maestro',
+   'harbour_pilot', 'dockhand', 'barter_post', 'quayside_sale', 'ferry_landing', 'chandler', 'bonded_store',
+   'trade_agreement', 'cargo_manifest', 'grain_hoy', 'hiring_day', 'customs_cutter', 'landing_rights', 'galleass',
+   'tenant_farmer', 'manor_court', 'votive_offering', 'banner_bearer', 'laurel_wreath', 'land_grant', 'grand_muster',
+   'memorial_statue', 'point_of_honour', 'honour_guard', 'victory_parade', 'chivalric_order', 'royal_jubilee',
 ];
 const IMAGES: Record<string, string> = Object.fromEntries(ILLUSTRATED.map((key) => [key, `/cards/${key}.svg`]));
 export const artImages = () => IMAGES;

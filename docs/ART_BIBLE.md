@@ -1,7 +1,9 @@
 # Kingdom & Commerce art bible
 
-The standard for card illustrations. Status: **approved by the owner, and complete.** All 110 cards and Crown Projects have
-an illustration: the five approved pilots, unchanged, and 105 drawn afterwards to the same standard. A card added later
+The standard for card illustrations. Status: **approved by the owner, and complete.** All 179 cards and Crown Projects have
+an illustration: the five approved pilots, unchanged, 105 drawn afterwards to the same standard, and 69 for the five
+later expansions (`scripts/art/republics.mjs`, `houses.mjs`, `masters.mjs`, `ports.mjs`, `glory.mjs`). Those 69 have no
+inline fallback scene; KC5-ART-1 checks that each has its file. A card added later
 falls back to an inline scene from `src/games/clockwork/ui/art.ts` until it is drawn.
 
 ## The look in one paragraph
@@ -126,8 +128,8 @@ Compositions must differ card to card. A catalog page should never look like one
 - Files load through `<img loading="lazy">`, so an inline DOM tree is never built for them and a long catalog costs
   nothing until a row scrolls into view. The browser's cache handles repeats.
 
-Measured on the complete set of 110: smallest 3,177 bytes, median 9,299, largest 40,523 (`relay_junction`, a pilot), and
-1,139,876 in all. Gzipped, the whole set is 197,338 bytes, a mean of 1.8 KB and at most 5.8 KB a card. `public/_headers`
+Measured on the complete set of 179: smallest 1,835 bytes, median 9,001, largest 46,110 (`grand_muster`, two ranks of
+pikemen), and 1,811,562 in all. Gzipped, the whole set is 300,470 bytes, a mean of 1.6 KB and at most 5.8 KB a card. `public/_headers`
 lets browsers cache `/cards/*` for a day. The inline fallback scenes stay in the bundle, so its size did not change.
 
 ## Legibility at card size
@@ -146,7 +148,8 @@ main masses are not. The strip crop must show part of the subject, not only sky.
 
 ## Known weak spots
 
-All 110 were reviewed in contact sheets at 60 by 34, 88 by 50 and as a 150-pixel strip crop. Silhouettes read at each
+The first 110 were reviewed in contact sheets at 60 by 34, 88 by 50 and as a 150-pixel strip crop. The 69 expansion
+scenes were reviewed on contact sheets at about 320 by 180 only; check them at card size before calling them final. Silhouettes read at each
 size. These are accepted but are the first to redraw if the owner wants more:
 
 - `burden_relief`: the bundle sits above a figure who only bends slightly, so the weight reads less than it should.

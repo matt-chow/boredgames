@@ -292,7 +292,7 @@ test.describe('Kingdom & Commerce', () => {
       const r = await fetch(`/cards/${key}.svg`);
       return { key, ok: r.ok, type: r.headers.get('content-type') ?? '' };
     })), keys);
-    expect(served).toHaveLength(110);
+    expect(served).toHaveLength(179);
     expect(served.filter((f) => !f.ok || !f.type.includes('image/svg')), 'failed files').toEqual([]);
     await table(host, 1);
     await start(host);
