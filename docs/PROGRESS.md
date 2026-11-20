@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-13.
+Last updated 2026-11-20.
 
 ## Milestones
 
@@ -18,6 +18,19 @@ Last updated 2026-11-13.
 | M10 Dead Drop | On staging | Third game: two people, secret orders, statements and challenges. See DEADDROP.md and DEADDROP_BALANCE.md |
 | M11 Sealed Correspondence v1.0 | Done | Court deduction card game, Classic (16 cards, 2–4) and Expanded (21 cards, 2–6). See SEALED.md |
 | M12 Palazzo v1.0 | Done | Original hidden-influence bluffing game for 2–6 people, five roles, server-timed response windows. See PALAZZO.md |
+
+## Kingdom & Commerce: five expansions (2026-11-20)
+
+- **Cards:** 69 new cards in five opt-in sets (Merchant Republics 14, Houses of Influence 13, Masters & Apprentices 15,
+  Ports & Provinces 14, Glory of the Realm 13), each with a CC-REP/HOU/MAS/POR/GLO test. No existing card changed.
+- **Crown Projects switch:** on by default. Off removes Projects and the 8 Project-linked cards, keeps the Grand Duchy
+  and pile endings and the finished round (KC5-PRJ-1 to 6). State version 5; older rooms load unchanged (KC5-VER-1).
+- **Art:** 69 clear-line SVGs (KC5-ART-1); 179 illustrated cards in all.
+- **Docs:** CLOCKWORK.md (KC5 section), expansions/FIVE_EXPANSION_GUIDE.md, in-game guide rulings, a Projects-off guide.
+- **Balance:** `npm run balance:expansions` writes expansions/FIVE_EXPANSION_BALANCE.md. The committed report is a
+  2-games-per-row smoke run: every game finished on equal turns, but the win rates mean nothing yet. The 40-game run
+  was stopped for lack of memory; rerun it on a machine with room.
+- **Gaps:** the 69 scenes were reviewed on contact sheets only, not at card size. No human playtest of the new sets.
 
 ## Palazzo v1.0 (2026-11-12)
 
@@ -365,3 +378,88 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
 - **Released to staging, 2026-11-13.** Commit `858e0e0`, staging `199284b2-4472-4ab4-a307-5578c30cc92a`. The faces serve
   as `image/webp` with a one-day cache, and all three `mines.spec.ts` tests pass against it. Production is not yet
   deployed; deploy it from a clean checkout of `main` so no uncommitted work goes with it.
+
+### Kingdom & Commerce: opening deal, Project Buys audit, tidier Crown Projects (2026-11-19)
+
+- **Opening deal (CC-DEAL-UI).** A new table (still on its first turn) deals its 10 Kingdom Market cards and then its 5 Crown Projects
+  from the top of the supply, one every 70 ms, each a 420 ms transform-and-opacity flight (about 1.4 s in all). The
+  cards stay clickable while they move. A **Skip** button lands them at once. Skipped in reduced motion, on a table
+  past its first turn (someone opening a running game), and on a device that already saw that room and setup
+  (`deal:<code>:<market code>` in localStorage), so a refresh or reconnect doesn't replay it. Client only: no server,
+  state or randomness change. `src/games/deck/ui/deal.ts`; Kingdom & Commerce opts in through the `deck-deal` context.
+- **Project contributions use Buys (CC-STAGE-5).** Audit: the engine already took one Buy per stage, refused a stage
+  at 0 Buys, and shared the turn's Buys with card purchases; bots read the same legal moves. No rule change. Added a
+  test on the live rules (a card plus a stage on 2 Buys, then both refused, and every bot profile ends its turn). The
+  step line now says "Buy a card or fund a Crown Project (each uses a Buy)" and "No Buys left. End your turn.", and
+  End turn is only the main button once nothing is left to buy or fund. The detailed rules say so too.
+- **Crown Projects section.** Removed the "n/5 complete to end the game" line. A trial room still shows its edition's
+  name. Stage pips, costs, rewards, the ending rules in the guide and the final-round banner are unchanged.
+- **Balance comparison.** `scripts/project-buys-experiment.test.ts` plays 100 paired games per player count with
+  Buy-consuming stages against stages that need a Buy but keep it. Results in docs/PROJECT_BUYS_RESULTS.md: every
+  measure differs by no more than sampling noise, because bots seldom hold a second Buy. No costs, Renown or stages
+  were changed.
+- Verified: `npm run check` 0 errors; `npm test` 44 files, 1015 passed, 1 skipped; `clockwork.spec.ts` 16 passed on a
+  local dev server (CC-E2E-7 failed once on a missing Playwright trace file and passed on rerun).
+- **Released to staging, 2026-11-19.** Commit `7cc048e`, staging `cc9efb97-bc9a-435e-9550-a7a590c6bdd3`. CC-DEAL-UI,
+  CC-STAGE-UI, CC-F2-UI, CC-E2E-2, CC-E2E-4 and CC-E2E-6 pass against it. Production is not deployed.
+
+### Kingdom & Commerce: five-expansion catalog design (2026-11-19, design only)
+
+- **Documents only. No card, rule, art or deploy changed.** They are in `docs/expansions/`:
+  - EXISTING_CATALOG_AUDIT.md: 88 market cards, 15 Projects, a mechanics inventory and naming findings.
+  - DOMINION_COMPARISON.md: a per-card similarity matrix, from memory, not source-checked.
+  - FIVE_EXPANSION_MANIFEST.md: the authoritative specification for 69 cards in five sets.
+  - EXPANSION_BALANCE_REVIEW.md
+  - EXPANSION_IMPLEMENTATION_PLAN.md
+- **The five sets:**
+
+  | Set | Key | Cards |
+  |---|---|---|
+  | The Merchant Republics | `republics` | 14 |
+  | Houses of Influence | `houses` | 13 |
+  | Masters & Apprentices | `masters` | 15 |
+  | Ports & Provinces | `ports` | 14 |
+  | Glory of the Realm | `glory` | 13 |
+
+- **Design properties:**
+  - No card references Crown Projects.
+  - No card gives Royal Debt.
+  - The design is net Influence-negative.
+  - One new engine value is proposed, `pileLeft`, for Royal Jubilee. It is optional and has a fallback.
+- **Next steps:** the owner answers the questions in the plan's section 9, then phase 0 runs the engine VERIFY tests.
+- **Found along the way:** CLOCKWORK.md gives Artisans' Row 10 cards and Rival Houses 10. The code has 11 and 9.
+  This is not fixed yet.
+
+### Kingdom & Commerce: final expansion design review (2026-11-19, design only)
+
+- **Documents only. No card, rule, art or deploy changed.** All four expansion documents are revised.
+  EXISTING_CATALOG_AUDIT.md is unchanged.
+- **Owner decisions recorded:**
+  - The set sizes stay 14/13/15/14/13, 69 cards in total.
+  - Core and Crown stay the defaults. The five new sets are opt-in.
+  - Market Square keeps its name.
+  - A future "Enable Crown Projects" setting is approved, on by default.
+- **Eight cards revised:**
+  - Royal Jubilee: its threshold is now half of the starting pile.
+  - Hollow Title: targets one chosen opponent.
+  - Ledger Hall: per 3 Currency cards, not counting Bronze.
+  - Master's Hand: at most +1 Influence from its two plays.
+  - Trade Agreement: your discard is mandatory, and its complexity drops from high to medium.
+  - Votive Offering: +1 Renown on trash.
+  - Memorial Statue: counts piles with 2 or fewer cards left, capped at +3.
+  - Victory Parade: discounts Homesteads and Noble Estates only.
+- **Underwriter and Purchased Office** are kept unchanged, with reasons.
+- **The manifest** gains edge-case rulings for all 69 cards and a Projects-off section.
+- **The balance review** gains hand-calculated checks and a 69-card audit. No simulations were run.
+- **The Dominion comparison** gains a 69-card matrix checked against secondary sources:
+  - 6 close, 33 partial, 17 shared and 13 none;
+  - 50 analogues verified, 6 from memory;
+  - Patrol is unverified.
+- **Engine needs:** four small public-information items (`pile` Num, `emptyPiles atMost`, `CardMatch.notKey`,
+  `attack.player`) and several VERIFY tests. The Projects setting needs `STATE_VERSION` 5 with a migrate step
+  (plan section 3b).
+- **Bonded Store:** the projection already hides other seats' mat contents.
+- **Open questions:**
+  - the six close analogues;
+  - finish-the-round with Projects off;
+  - when to ship the Projects setting.

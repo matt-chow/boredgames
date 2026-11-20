@@ -1,7 +1,7 @@
 /** Turns a `Ruleset` into a `GameModule` the hub can host. Validation and projection live here; effects in runtime.ts. */
 import { seedRng, shuffle } from '../rng';
 import type { ApplyResult, BotMove, GameModule, PlayerResult } from '../types';
-import { activeSets, randomMarket, randomProjects, sanitizeMarketConfig, validateBans, validateMarket, validateProjects, validateRuleset } from './market';
+import { activeSets, effectiveBans, randomMarket, randomProjects, sanitizeMarketConfig, validateBans, validateMarket, validateProjects, validateRuleset } from './market';
 import { costOf, makeLibrary, matches, projectPrice, Runtime, type Library } from './runtime';
 import { helpedComplete, nextStage, stagedProjects } from './stages';
 import type {
@@ -23,7 +23,7 @@ export * from './stages';
 export type * from './types';
 
 /** 2 added `rulesVersion`, so a game stays on the rules it started with. 3 added optional project `stages`. 4 added optional `finalRound`. */
-const STATE_VERSION = 4;
+const STATE_VERSION = 5;
 const DEFAULT_WORDS = { actions: 'actions', treasures: 'treasures', buyPhase: 'buy', project: 'project' };
 const title = (x: string) => x[0].toUpperCase() + x.slice(1);
 const fail = (code: string, error: string): ApplyResult<DeckState> => ({ ok: false, code, error });
@@ -101,8 +101,9 @@ function setup(lib: Library, playerCount: number, seed: string, config: DeckConf
   const rules = lib.rules;
   const rng = seedRng(seed);
   const sets = activeSets(rules, config);
-  const market = config.market.length ? [...config.market] : randomMarket(rules, rng, config.bans, sets);
-  const projects = config.projects?.length ? [...config.projects] : randomProjects(rules, rng, sets);
+  const market = config.market.length ? [...config.market] : randomMarket(rules, rng, effectiveBans(rules, config), sets);
+  // KC5-PRJ-1: switched off, no projects are dealt, so the project ending can never be reached.
+  const projects = config.crownProjects === false ? [] : config.projects?.length ? [...config.projects] : randomProjects(rules, rng, sets);
   const physical: string[] = [];
   const piles: [string, number][] = [
     ...Object.entries(rules.basicPiles(playerCount)),
@@ -154,7 +155,7 @@ function setup(lib: Library, playerCount: number, seed: string, config: DeckConf
     log: [],
     nextLog: 1,
     over: false,
-    projects: rules.staged ? stagedProjects(rules, seed, projects, playerCount) : projects.map((key) => ({ key, by: null, onTurn: null, surcharges: [] })),
+    projects: rules.staged && projects.length ? stagedProjects(rules, seed, projects, playerCount) : projects.map((key) => ({ key, by: null, onTurn: null, surcharges: [] })),
   };
   const rt = new Runtime(state, lib);
   rt.beginTurn(first);
@@ -351,7 +352,7 @@ function project(lib: Library, s: DeckState, viewer: number | null): DeckView {
     revealed: s.limbo.filter((l) => l.public).map((l) => ref(l.id)),
     pending,
     projects: projectViews,
-    projectsEnd: lib.rules.projectsToEnd?.(s.n) ?? null,
+    projectsEnd: s.projects.length ? (lib.rules.projectsToEnd?.(s.n) ?? null) : null,
     finalRound: s.finalRound ? { by: s.finalRound.by, turnsLeft: s.players.reduce((a, p) => a + Math.max(0, s.finalRound!.turns - p.turns), 0) } : null,
     legal: viewer === null ? { play: [], buy: [], endPhase: false, convert: false, claim: [] } : legalMoves(s, lib, viewer),
     // Points gained directly would otherwise give away part of a rival's score, in saved logs too.
@@ -418,8 +419,10 @@ export function createDeckGame(rules: Ruleset, older: Ruleset[] = [], trials: Ru
       if (n < rules.minPlayers || n > rules.maxPlayers) return `${rules.name} is for ${rules.minPlayers}–${rules.maxPlayers} players.`;
       if (config.edition && !trialCalled(config.edition)) return 'That trial edition is not available.';
       const sets = activeSets(rules, config);
-      const problem = config.market.length ? validateMarket(rules, config.market, config.bans) : validateBans(rules, config.bans, sets);
+      const bans = effectiveBans(rules, config);
+      const problem = config.market.length ? validateMarket(rules, config.market, bans) : validateBans(rules, bans, sets);
       if (problem) return problem;
+      if (config.crownProjects === false) return config.projects?.length ? 'Projects are switched off.' : null;
       return config.projects?.length ? validateProjects(rules, config.projects) : null;
     },
     sanitizeConfig(raw) {
@@ -444,8 +447,8 @@ export function createDeckGame(rules: Ruleset, older: Ruleset[] = [], trials: Ru
     },
     bot: rules.bot ?? bot,
     migrate(state, from) {
-      // 2 to 4 only added optional fields, so nothing already saved changes.
-      if (from === STATE_VERSION || from === 2 || from === 3) return state as DeckState;
+      // 2 to 5 only added optional fields, so nothing already saved changes (KC5-VER-1).
+      if (from === STATE_VERSION || from === 2 || from === 3 || from === 4) return state as DeckState;
       // Nothing else in the room changes, so a save stays readable by anything that can read this one field.
       if (from === 1) return { ...(state as DeckState), rulesVersion: oldest };
       throw new Error(`deckbuilder: cannot read state version ${from}`);

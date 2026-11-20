@@ -28,7 +28,7 @@
   let guideOpen = $state(false);
   let guideFile = $state<Awaited<ReturnType<NonNullable<CatalogEntry['guide']>>> | null>(null);
   // Follows the host's choice of rules while it is open.
-  const guideDoc = $derived(guideFile ? (guideFile.guideFor?.(room.config.edition as string | undefined) ?? guideFile.guide) : null);
+  const guideDoc = $derived(guideFile ? (guideFile.guideFor?.(room.config.edition as string | undefined, undefined, room.config.crownProjects === false) ?? guideFile.guide) : null);
   function openGuide() {
     guideOpen = true;
     loadGuide?.().then((m) => (guideFile = m));

@@ -136,7 +136,7 @@ export const guide: GuideDoc = {
           title: 'The Market phase',
           body: [
             'Tap Currency cards one at a time, or press **Play all Currency cards**. The Coins add to your total. Some Currency in the market has extra effects, so play those singly if you want to choose the order.',
-            'Then spend Coins. Each purchase uses 1 Buy. You can still play more Currency after a purchase. Press **End turn** when you’re done.',
+            'Then spend Coins. Each purchase and each Crown Project stage uses 1 Buy. You can still play more Currency after a purchase. Press **End turn** when you’re done.',
           ],
         },
         {
@@ -433,7 +433,8 @@ export const guide: GuideDoc = {
           body: [
             {
               ul: [
-                'Sets: Core Set and Crown Decrees are on by default. Artisans’ Row, Rival Houses and The Chancery are optional.',
+                'Sets: Core Set and Crown Decrees are on by default. Artisans’ Row, Rival Houses, The Chancery, The Merchant Republics, Houses of Influence, Masters & Apprentices, Ports & Provinces and Glory of the Realm are optional.',
+                '**Enable Crown Projects** is on by default. Switched off, the table has no Projects and the cards that need them leave the market. The Grand Duchy and empty-pile endings still apply, and the round still finishes.',
                 'A market code shares a game’s market and Projects with another host.',
                 '**Older rooms:** a game keeps the rules it started with, to the end. When a table began under earlier rules, its own guide says so at the top and shows those rules here instead.',
               ],
@@ -450,6 +451,7 @@ export const guide: GuideDoc = {
                 'Each stage has its own price in Coins and Influence, and its own Renown. Each tile shows the next stage. The eye button on a tile lists them all.',
                 'In the Market phase, for 1 Buy, you may pay the next unfunded stage of any Project and keep that stage’s Renown. Stages are funded in order, by anyone. Different players can fund different stages.',
                 'You can fund only one stage of a Project per turn, but stages of different Projects if you have the Buys and the price.',
+                'Buying a card and funding a stage use the same Buys. You start each turn with 1. A card that gives +1 Buy lets you buy another card or fund another stage. With no Buys left you can do neither.',
                 'Renown from a stage counts at the end **even if the Project is never finished**.',
                 'A Project is complete when its last stage is funded. Its reward happens once, for whoever funds that stage. A one-stage Project is complete as soon as it’s funded.',
                 'Who funded what is public. Your Renown total stays private.',
@@ -522,6 +524,10 @@ export const guide: GuideDoc = {
                 'A Crown Project isn’t a card. It doesn’t enter your deck.',
                 'Currency in your hand is worth nothing until it’s played.',
                 'Cards you trash go to the shared trash pile. There’s no way to take them back unless a card says so.',
+                'When a card has an opponent choose, they make the choice, but its effects go to whoever the card names.',
+                'A card gained “to your hand” skips your discard pile, so you can use it this turn.',
+                'A card played twice resolves in full, then again. It is still one card in play.',
+                'Cards set aside until your next turn are still yours. Opponents see how many, never which.',
               ],
             },
           ],
@@ -565,11 +571,11 @@ function endingSections(toEnd: string, staged: boolean): Record<string, GuideBlo
 }
 
 /** A copy of the guide with sections replaced, and examples of rules this table doesn't use taken out. */
-function edit(note: string, changed: Record<string, GuideBlock[]>, dropExamples: string[]): GuideDoc {
+function edit(note: string, changed: Record<string, GuideBlock[]>, dropExamples: string[], base = guide): GuideDoc {
   return {
-    ...guide,
+    ...base,
     note,
-    levels: guide.levels.map((l) => ({
+    levels: base.levels.map((l) => ({
       ...l,
       sections: l.sections.map((s) =>
         changed[s.id]
@@ -585,8 +591,32 @@ function edit(note: string, changed: Record<string, GuideBlock[]>, dropExamples:
 const NEW_EXAMPLES = ['Finishing the round', 'Sharing a three-stage Crown Project', 'Completing a one-stage Crown Project'];
 const LIVE_VERSION = 4;
 
-/** The guide for a room: the current rules, or those its table started on (CC-F2-5). */
-export function guideFor(edition?: string | null, version?: number): GuideDoc {
+/** KC5-PRJ-5: a table set up with Crown Projects switched off. The other endings and finishing the round still apply. */
+function withoutProjects(doc: GuideDoc): GuideDoc {
+  const section = (id: string) => doc.levels.flatMap((l) => l.sections).find((s) => s.id === id)!.body;
+  const noProject = (b: GuideBlock): GuideBlock => (typeof b === 'object' && 'ul' in b ? { ...b, ul: b.ul.filter((i) => !/Crown Project|Project’s last stage/.test(i)) } : b);
+  return edit(
+    `${doc.note ? `${doc.note} ` : ''}This table plays without Crown Projects: the game ends when the Grand Duchy pile is empty or enough market piles are.`,
+    {
+      'q-score': ['Homestead 1, Noble Estate 3, Grand Duchy 6, plus scoring cards. Royal Debt is −1. Your total is private until the end.'],
+      'q-end': section('q-end').map(noProject),
+      'f-projects': ['This table plays without Crown Projects. Influence is still gained, converted to Coins and spent by the cards that ask for it.'],
+      'f-end': section('f-end').map((b) => (typeof b === 'string' ? b.replace(/, (all 5|4) Crown Projects complete,/, ',').replace(' A part-built Project doesn’t count.', '').replace('. A part-built Project doesn’t count', '') : b)),
+      'f-mistakes': section('f-mistakes').map(noProject),
+      'r-staged': ['This table plays without Crown Projects.'],
+    },
+    NEW_EXAMPLES.slice(1),
+    doc,
+  );
+}
+
+/** The guide for a room: the current rules, or those its table started on (CC-F2-5), without Projects if it has none. */
+export function guideFor(edition?: string | null, version?: number, noProjects = false): GuideDoc {
+  const doc = rulesGuide(edition, version);
+  return noProjects ? withoutProjects(doc) : doc;
+}
+
+function rulesGuide(edition?: string | null, version?: number): GuideDoc {
   const trial = EDITIONS.find((r) => r.edition!.code === edition);
   if (trial) {
     const staged = !!trial.staged;

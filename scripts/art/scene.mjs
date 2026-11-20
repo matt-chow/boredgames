@@ -222,3 +222,11 @@ export const shield = (x, y, s = 1, fill = C.burgundy, charge = C.gold) => path(
 export const pike = (x, y, h = 170) => line(`M${x} ${y}V${y - h}`, 3.4) + line(`M${x} ${y}V${y - h}`, 1.6, C.woodLight) + poly([[x - 5, y - h], [x, y - h - 20], [x + 5, y - h]], C.slateLight, LINE.fine);
 
 export { arch, C, cypress, ell, foliage, group, H, line, LINE, masonry, path, person, poly, rect, rng, ticks, W };
+
+/* ---------- Added for the five expansions ---------- */
+/** A sword with its grip at (x, y), blade up, turned by `rot` degrees. */
+export const sword = (x, y, l = 90, rot = 0) => group(`translate(${x} ${y}) rotate(${rot})`, line(`M0 0V${-l}`, 4.6) + line(`M0 0V${-l}`, 2.2, C.stoneLight) + line(`M-11 0H11`, 4.4) + line(`M-11 0H11`, 2.2, C.gold) + line(`M0 2V13`, 4.4) + line(`M0 2V13`, 2.2, C.woodDark));
+/** A bank of oars along a hull, blades in the water. */
+export const oars = (x, y, n, gap = 22, reach = 46, slope = 0.5) => ticks(Array.from({ length: n }, (_, i) => [x + i * gap, y, x + i * gap - reach * slope, y + reach]), 3, C.ink) + ticks(Array.from({ length: n }, (_, i) => [x + i * gap, y, x + i * gap - reach * slope, y + reach]), 1.4, C.woodLight);
+/** An open arcade on piers: `n` arches, each `w` wide, standing on (x, y). */
+export const arcade = (x, y, n, w, h, fill = C.stoneLight, dark = C.slateDark) => rect(x, y - h - 18, n * w, h + 18, fill, LINE.heavy) + Array.from({ length: n }, (_, i) => arch(x + w * (i + 0.5), y, w - 16, h - 6, dark, LINE.form)).join('') + rect(x - 4, y - h - 24, n * w + 8, 8, fill, LINE.form);

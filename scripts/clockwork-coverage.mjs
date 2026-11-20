@@ -7,7 +7,7 @@ const manifest = JSON.parse(read('data/clockwork-commons/art-manifest.json'));
 const spec = JSON.parse(read('data/clockwork-commons/clockwork_commons_original_cardset.json'));
 const supplied = new Set([...spec.basic_cards, ...spec.market_cards, ...spec.public_works].map((c) => c.id));
 
-const tests = ['cards', 'rules', 'simulate', 'crown'].flatMap((name) => {
+const tests = ['cards', 'rules', 'simulate', 'crown', 'expansions5'].flatMap((name) => {
   const file = `tests/clockwork/${name}.test.ts`;
   return read(file)
     .split(/(?=^\s*it(?:\.each\([^\n]*\))?\()/m)
@@ -18,11 +18,13 @@ const tests = ['cards', 'rules', 'simulate', 'crown'].flatMap((name) => {
 // Crown Projects are tested from one table of expected rewards, one named test per row.
 const rewards = /const REWARDS[^]*?\n  };/.exec(read('tests/clockwork/rules.test.ts'))[0];
 const hasRewardTest = (key) => new RegExp(`^    ${key}: \\{`, 'm').test(rewards);
-const rules = ['cards', 'expansions', 'ruleset', 'crown'].map((n) => `src/games/clockwork/rules/${n}.ts`).map((file) => ({ file, text: read(file) }));
+const rules = ['cards', 'expansions', 'ruleset', 'crown', 'republics', 'houses', 'masters', 'ports', 'glory'].map((n) => `src/games/clockwork/rules/${n}.ts`).map((file) => ({ file, text: read(file) }));
 
 const entries = manifest.entries.map(({ key, name }) => {
   const mentioned = tests.filter((t) => t.ids.includes(`CC-CARD-${key}`) || t.body.includes(`'${key}'`));
-  const dedicated = mentioned.some((t) => t.ids.includes(`CC-CARD-${key}`)) ? `CC-CARD-${key}` : hasRewardTest(key) ? `CC-PW-${key}` : null;
+  // The five later expansions number each card's test within its set: `CC-REP-1 coin_clipper: ...`.
+  const numbered = tests.find((t) => new RegExp(`CC-(REP|HOU|MAS|POR|GLO)-\\d+ ${key}:`).test(t.body.split('\n')[0]))?.ids[0];
+  const dedicated = mentioned.some((t) => t.ids.includes(`CC-CARD-${key}`)) ? `CC-CARD-${key}` : hasRewardTest(key) ? `CC-PW-${key}` : (numbered ?? null);
   return {
     key,
     name,

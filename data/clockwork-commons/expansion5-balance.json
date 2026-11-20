@@ -1,0 +1,1700 @@
+{
+  "generated": "npm run balance:expansions",
+  "gamesPerRow": 40,
+  "tables": [
+    {
+      "sets": "republics",
+      "projects": true,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.6,
+      "longest": 44,
+      "winnerScore": 49.3,
+      "newCardBuys": 2,
+      "ended": {
+        "grandDuchy": 62.5,
+        "projects": 37.5,
+        "piles": 0
+      },
+      "firstSeat": 52.5,
+      "fair": 50
+    },
+    {
+      "sets": "republics",
+      "projects": true,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.5,
+      "longest": 48,
+      "winnerScore": 43.7,
+      "newCardBuys": 3.3,
+      "ended": {
+        "grandDuchy": 45,
+        "projects": 55,
+        "piles": 0
+      },
+      "firstSeat": 32.5,
+      "fair": 33.3
+    },
+    {
+      "sets": "republics",
+      "projects": true,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.7,
+      "longest": 40,
+      "winnerScore": 40.9,
+      "newCardBuys": 3.3,
+      "ended": {
+        "grandDuchy": 35,
+        "projects": 65,
+        "piles": 0
+      },
+      "firstSeat": 28.8,
+      "fair": 25
+    },
+    {
+      "sets": "republics",
+      "projects": true,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.9,
+      "longest": 41,
+      "winnerScore": 39,
+      "newCardBuys": 6.1,
+      "ended": {
+        "grandDuchy": 30,
+        "projects": 70,
+        "piles": 0
+      },
+      "firstSeat": 17.5,
+      "fair": 20
+    },
+    {
+      "sets": "republics",
+      "projects": true,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.8,
+      "longest": 36,
+      "winnerScore": 35.9,
+      "newCardBuys": 5.6,
+      "ended": {
+        "grandDuchy": 15,
+        "projects": 85,
+        "piles": 0
+      },
+      "firstSeat": 24.6,
+      "fair": 16.7
+    },
+    {
+      "sets": "republics",
+      "projects": false,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20,
+      "longest": 27,
+      "winnerScore": 39.5,
+      "newCardBuys": 2.5,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 42.5,
+      "fair": 50
+    },
+    {
+      "sets": "republics",
+      "projects": false,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.3,
+      "longest": 27,
+      "winnerScore": 43.7,
+      "newCardBuys": 3.3,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 28.8,
+      "fair": 33.3
+    },
+    {
+      "sets": "republics",
+      "projects": false,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.1,
+      "longest": 24,
+      "winnerScore": 38.4,
+      "newCardBuys": 3.6,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 31.3,
+      "fair": 25
+    },
+    {
+      "sets": "republics",
+      "projects": false,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.4,
+      "longest": 28,
+      "winnerScore": 42,
+      "newCardBuys": 5.3,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 23.3,
+      "fair": 20
+    },
+    {
+      "sets": "republics",
+      "projects": false,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.4,
+      "longest": 28,
+      "winnerScore": 39.7,
+      "newCardBuys": 6.4,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 20.8,
+      "fair": 16.7
+    },
+    {
+      "sets": "houses",
+      "projects": true,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 24.1,
+      "longest": 52,
+      "winnerScore": 51.2,
+      "newCardBuys": 1.9,
+      "ended": {
+        "grandDuchy": 62.5,
+        "projects": 37.5,
+        "piles": 0
+      },
+      "firstSeat": 55,
+      "fair": 50
+    },
+    {
+      "sets": "houses",
+      "projects": true,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.4,
+      "longest": 56,
+      "winnerScore": 46.5,
+      "newCardBuys": 2.4,
+      "ended": {
+        "grandDuchy": 37.5,
+        "projects": 62.5,
+        "piles": 0
+      },
+      "firstSeat": 48.8,
+      "fair": 33.3
+    },
+    {
+      "sets": "houses",
+      "projects": true,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.6,
+      "longest": 49,
+      "winnerScore": 38.8,
+      "newCardBuys": 3.3,
+      "ended": {
+        "grandDuchy": 20,
+        "projects": 80,
+        "piles": 0
+      },
+      "firstSeat": 41.3,
+      "fair": 25
+    },
+    {
+      "sets": "houses",
+      "projects": true,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.8,
+      "longest": 41,
+      "winnerScore": 35.2,
+      "newCardBuys": 3.9,
+      "ended": {
+        "grandDuchy": 25,
+        "projects": 75,
+        "piles": 0
+      },
+      "firstSeat": 18.8,
+      "fair": 20
+    },
+    {
+      "sets": "houses",
+      "projects": true,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.1,
+      "longest": 52,
+      "winnerScore": 33.8,
+      "newCardBuys": 4.4,
+      "ended": {
+        "grandDuchy": 17.5,
+        "projects": 82.5,
+        "piles": 0
+      },
+      "firstSeat": 22.1,
+      "fair": 16.7
+    },
+    {
+      "sets": "houses",
+      "projects": false,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.7,
+      "longest": 27,
+      "winnerScore": 40.3,
+      "newCardBuys": 1.7,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 46.3,
+      "fair": 50
+    },
+    {
+      "sets": "houses",
+      "projects": false,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 21,
+      "longest": 29,
+      "winnerScore": 42.9,
+      "newCardBuys": 3.1,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 37.5,
+      "fair": 33.3
+    },
+    {
+      "sets": "houses",
+      "projects": false,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19,
+      "longest": 24,
+      "winnerScore": 39.4,
+      "newCardBuys": 2.4,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 26.3,
+      "fair": 25
+    },
+    {
+      "sets": "houses",
+      "projects": false,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.8,
+      "longest": 25,
+      "winnerScore": 40,
+      "newCardBuys": 4.5,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 27.1,
+      "fair": 20
+    },
+    {
+      "sets": "houses",
+      "projects": false,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.7,
+      "longest": 40,
+      "winnerScore": 38.6,
+      "newCardBuys": 5.1,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 28.3,
+      "fair": 16.7
+    },
+    {
+      "sets": "masters",
+      "projects": true,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 21.9,
+      "longest": 42,
+      "winnerScore": 46.6,
+      "newCardBuys": 1.8,
+      "ended": {
+        "grandDuchy": 45,
+        "projects": 55,
+        "piles": 0
+      },
+      "firstSeat": 47.5,
+      "fair": 50
+    },
+    {
+      "sets": "masters",
+      "projects": true,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.5,
+      "longest": 56,
+      "winnerScore": 46.7,
+      "newCardBuys": 2.7,
+      "ended": {
+        "grandDuchy": 30,
+        "projects": 67.5,
+        "piles": 2.5
+      },
+      "firstSeat": 43.8,
+      "fair": 33.3
+    },
+    {
+      "sets": "masters",
+      "projects": true,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.4,
+      "longest": 50,
+      "winnerScore": 37.4,
+      "newCardBuys": 4.1,
+      "ended": {
+        "grandDuchy": 32.5,
+        "projects": 67.5,
+        "piles": 0
+      },
+      "firstSeat": 35,
+      "fair": 25
+    },
+    {
+      "sets": "masters",
+      "projects": true,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.3,
+      "longest": 44,
+      "winnerScore": 41,
+      "newCardBuys": 5,
+      "ended": {
+        "grandDuchy": 30,
+        "projects": 70,
+        "piles": 0
+      },
+      "firstSeat": 15,
+      "fair": 20
+    },
+    {
+      "sets": "masters",
+      "projects": true,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.6,
+      "longest": 49,
+      "winnerScore": 38.6,
+      "newCardBuys": 4,
+      "ended": {
+        "grandDuchy": 20,
+        "projects": 80,
+        "piles": 0
+      },
+      "firstSeat": 36.3,
+      "fair": 16.7
+    },
+    {
+      "sets": "masters",
+      "projects": false,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 21.2,
+      "longest": 35,
+      "winnerScore": 42.3,
+      "newCardBuys": 2,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 63.8,
+      "fair": 50
+    },
+    {
+      "sets": "masters",
+      "projects": false,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 21,
+      "longest": 36,
+      "winnerScore": 43.3,
+      "newCardBuys": 3.4,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 28.8,
+      "fair": 33.3
+    },
+    {
+      "sets": "masters",
+      "projects": false,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.1,
+      "longest": 40,
+      "winnerScore": 41.3,
+      "newCardBuys": 3.7,
+      "ended": {
+        "grandDuchy": 97.5,
+        "projects": 0,
+        "piles": 2.5
+      },
+      "firstSeat": 17.5,
+      "fair": 25
+    },
+    {
+      "sets": "masters",
+      "projects": false,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.8,
+      "longest": 31,
+      "winnerScore": 43,
+      "newCardBuys": 4.8,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 26.3,
+      "fair": 20
+    },
+    {
+      "sets": "masters",
+      "projects": false,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.7,
+      "longest": 40,
+      "winnerScore": 40.2,
+      "newCardBuys": 6.5,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 32.5,
+      "fair": 16.7
+    },
+    {
+      "sets": "ports",
+      "projects": true,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.5,
+      "longest": 43,
+      "winnerScore": 49.9,
+      "newCardBuys": 1.4,
+      "ended": {
+        "grandDuchy": 57.5,
+        "projects": 42.5,
+        "piles": 0
+      },
+      "firstSeat": 46.3,
+      "fair": 50
+    },
+    {
+      "sets": "ports",
+      "projects": true,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.5,
+      "longest": 37,
+      "winnerScore": 45,
+      "newCardBuys": 2,
+      "ended": {
+        "grandDuchy": 40,
+        "projects": 60,
+        "piles": 0
+      },
+      "firstSeat": 36.3,
+      "fair": 33.3
+    },
+    {
+      "sets": "ports",
+      "projects": true,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.1,
+      "longest": 34,
+      "winnerScore": 39.7,
+      "newCardBuys": 2.6,
+      "ended": {
+        "grandDuchy": 35,
+        "projects": 65,
+        "piles": 0
+      },
+      "firstSeat": 32.5,
+      "fair": 25
+    },
+    {
+      "sets": "ports",
+      "projects": true,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 17.8,
+      "longest": 39,
+      "winnerScore": 38.6,
+      "newCardBuys": 4.7,
+      "ended": {
+        "grandDuchy": 32.5,
+        "projects": 67.5,
+        "piles": 0
+      },
+      "firstSeat": 22.5,
+      "fair": 20
+    },
+    {
+      "sets": "ports",
+      "projects": true,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.9,
+      "longest": 39,
+      "winnerScore": 36.3,
+      "newCardBuys": 3.8,
+      "ended": {
+        "grandDuchy": 20,
+        "projects": 80,
+        "piles": 0
+      },
+      "firstSeat": 23.8,
+      "fair": 16.7
+    },
+    {
+      "sets": "ports",
+      "projects": false,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.5,
+      "longest": 27,
+      "winnerScore": 39.7,
+      "newCardBuys": 1.1,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 45,
+      "fair": 50
+    },
+    {
+      "sets": "ports",
+      "projects": false,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.3,
+      "longest": 27,
+      "winnerScore": 42.9,
+      "newCardBuys": 2.8,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 32.5,
+      "fair": 33.3
+    },
+    {
+      "sets": "ports",
+      "projects": false,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.6,
+      "longest": 28,
+      "winnerScore": 36.5,
+      "newCardBuys": 2.8,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 28.3,
+      "fair": 25
+    },
+    {
+      "sets": "ports",
+      "projects": false,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18,
+      "longest": 25,
+      "winnerScore": 39.7,
+      "newCardBuys": 3.7,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 21.3,
+      "fair": 20
+    },
+    {
+      "sets": "ports",
+      "projects": false,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 17.9,
+      "longest": 30,
+      "winnerScore": 37.9,
+      "newCardBuys": 5,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 22.1,
+      "fair": 16.7
+    },
+    {
+      "sets": "glory",
+      "projects": true,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.2,
+      "longest": 57,
+      "winnerScore": 47.1,
+      "newCardBuys": 1.2,
+      "ended": {
+        "grandDuchy": 57.5,
+        "projects": 42.5,
+        "piles": 0
+      },
+      "firstSeat": 35,
+      "fair": 50
+    },
+    {
+      "sets": "glory",
+      "projects": true,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.5,
+      "longest": 50,
+      "winnerScore": 43.3,
+      "newCardBuys": 2.4,
+      "ended": {
+        "grandDuchy": 40,
+        "projects": 60,
+        "piles": 0
+      },
+      "firstSeat": 36.3,
+      "fair": 33.3
+    },
+    {
+      "sets": "glory",
+      "projects": true,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.6,
+      "longest": 39,
+      "winnerScore": 40.5,
+      "newCardBuys": 2.9,
+      "ended": {
+        "grandDuchy": 32.5,
+        "projects": 67.5,
+        "piles": 0
+      },
+      "firstSeat": 17.5,
+      "fair": 25
+    },
+    {
+      "sets": "glory",
+      "projects": true,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.2,
+      "longest": 43,
+      "winnerScore": 37,
+      "newCardBuys": 3.6,
+      "ended": {
+        "grandDuchy": 15,
+        "projects": 85,
+        "piles": 0
+      },
+      "firstSeat": 21.3,
+      "fair": 20
+    },
+    {
+      "sets": "glory",
+      "projects": true,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.9,
+      "longest": 44,
+      "winnerScore": 36.2,
+      "newCardBuys": 5.1,
+      "ended": {
+        "grandDuchy": 25,
+        "projects": 75,
+        "piles": 0
+      },
+      "firstSeat": 18.8,
+      "fair": 16.7
+    },
+    {
+      "sets": "glory",
+      "projects": false,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.9,
+      "longest": 35,
+      "winnerScore": 40,
+      "newCardBuys": 1.6,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 46.3,
+      "fair": 50
+    },
+    {
+      "sets": "glory",
+      "projects": false,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.8,
+      "longest": 28,
+      "winnerScore": 44.5,
+      "newCardBuys": 2.7,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 33.8,
+      "fair": 33.3
+    },
+    {
+      "sets": "glory",
+      "projects": false,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 17.9,
+      "longest": 29,
+      "winnerScore": 38.1,
+      "newCardBuys": 3.9,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 33.8,
+      "fair": 25
+    },
+    {
+      "sets": "glory",
+      "projects": false,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.2,
+      "longest": 33,
+      "winnerScore": 40,
+      "newCardBuys": 4.6,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 22.5,
+      "fair": 20
+    },
+    {
+      "sets": "glory",
+      "projects": false,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 18.7,
+      "longest": 26,
+      "winnerScore": 39.4,
+      "newCardBuys": 5.3,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 21.3,
+      "fair": 16.7
+    },
+    {
+      "sets": "all five",
+      "projects": true,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 21.2,
+      "longest": 40,
+      "winnerScore": 46.9,
+      "newCardBuys": 5.2,
+      "ended": {
+        "grandDuchy": 62.5,
+        "projects": 37.5,
+        "piles": 0
+      },
+      "firstSeat": 45,
+      "fair": 50
+    },
+    {
+      "sets": "all five",
+      "projects": true,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20,
+      "longest": 30,
+      "winnerScore": 46.3,
+      "newCardBuys": 7.8,
+      "ended": {
+        "grandDuchy": 60,
+        "projects": 37.5,
+        "piles": 2.5
+      },
+      "firstSeat": 35,
+      "fair": 33.3
+    },
+    {
+      "sets": "all five",
+      "projects": true,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.1,
+      "longest": 43,
+      "winnerScore": 44.1,
+      "newCardBuys": 11.6,
+      "ended": {
+        "grandDuchy": 57.5,
+        "projects": 40,
+        "piles": 2.5
+      },
+      "firstSeat": 31.3,
+      "fair": 25
+    },
+    {
+      "sets": "all five",
+      "projects": true,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 20.7,
+      "longest": 43,
+      "winnerScore": 43.7,
+      "newCardBuys": 14.1,
+      "ended": {
+        "grandDuchy": 42.5,
+        "projects": 55,
+        "piles": 2.5
+      },
+      "firstSeat": 20,
+      "fair": 20
+    },
+    {
+      "sets": "all five",
+      "projects": true,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 23.8,
+      "longest": 48,
+      "winnerScore": 43.2,
+      "newCardBuys": 14.3,
+      "ended": {
+        "grandDuchy": 45,
+        "projects": 55,
+        "piles": 0
+      },
+      "firstSeat": 6.3,
+      "fair": 16.7
+    },
+    {
+      "sets": "all five",
+      "projects": false,
+      "players": 2,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 21.2,
+      "longest": 36,
+      "winnerScore": 40.6,
+      "newCardBuys": 5.3,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 46.3,
+      "fair": 50
+    },
+    {
+      "sets": "all five",
+      "projects": false,
+      "players": 3,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 22.4,
+      "longest": 45,
+      "winnerScore": 45.6,
+      "newCardBuys": 8.3,
+      "ended": {
+        "grandDuchy": 97.5,
+        "projects": 0,
+        "piles": 2.5
+      },
+      "firstSeat": 41.3,
+      "fair": 33.3
+    },
+    {
+      "sets": "all five",
+      "projects": false,
+      "players": 4,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.6,
+      "longest": 35,
+      "winnerScore": 39.3,
+      "newCardBuys": 10.4,
+      "ended": {
+        "grandDuchy": 97.5,
+        "projects": 0,
+        "piles": 2.5
+      },
+      "firstSeat": 24.2,
+      "fair": 25
+    },
+    {
+      "sets": "all five",
+      "projects": false,
+      "players": 5,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19,
+      "longest": 28,
+      "winnerScore": 40.6,
+      "newCardBuys": 12,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 30,
+      "fair": 20
+    },
+    {
+      "sets": "all five",
+      "projects": false,
+      "players": 6,
+      "games": 40,
+      "unfinished": 0,
+      "unequalTurns": 0,
+      "rounds": 19.9,
+      "longest": 34,
+      "winnerScore": 42.3,
+      "newCardBuys": 18.5,
+      "ended": {
+        "grandDuchy": 100,
+        "projects": 0,
+        "piles": 0
+      },
+      "firstSeat": 25,
+      "fair": 16.7
+    }
+  ],
+  "cards": [
+    {
+      "key": "coin_clipper",
+      "name": "Coin Clipper",
+      "set": "republics",
+      "cost": 2,
+      "favourWinPct": 2.5,
+      "margin": 4.8
+    },
+    {
+      "key": "promissory_note",
+      "name": "Promissory Note",
+      "set": "republics",
+      "cost": 2,
+      "favourWinPct": 36.3,
+      "margin": 14.9
+    },
+    {
+      "key": "florin_table",
+      "name": "Florin Table",
+      "set": "republics",
+      "cost": 3,
+      "favourWinPct": 10,
+      "margin": 9.3
+    },
+    {
+      "key": "fondaco",
+      "name": "Fondaco",
+      "set": "republics",
+      "cost": 3,
+      "favourWinPct": 17.5,
+      "margin": 11.8
+    },
+    {
+      "key": "underwriter",
+      "name": "Underwriter",
+      "set": "republics",
+      "cost": 3,
+      "favourWinPct": 40,
+      "margin": 15.2
+    },
+    {
+      "key": "lending_house",
+      "name": "Lending House",
+      "set": "republics",
+      "cost": 3,
+      "favourWinPct": 27.5,
+      "margin": 13.8
+    },
+    {
+      "key": "wholesaler",
+      "name": "Wholesaler",
+      "set": "republics",
+      "cost": 4,
+      "favourWinPct": 15,
+      "margin": 11.1
+    },
+    {
+      "key": "bookkeeper",
+      "name": "Bookkeeper",
+      "set": "republics",
+      "cost": 4,
+      "favourWinPct": 52.5,
+      "margin": 15.5
+    },
+    {
+      "key": "partnership",
+      "name": "Partnership",
+      "set": "republics",
+      "cost": 4,
+      "favourWinPct": 21.3,
+      "margin": 12.7
+    },
+    {
+      "key": "gilder",
+      "name": "Gilder",
+      "set": "republics",
+      "cost": 5,
+      "favourWinPct": 40,
+      "margin": 15.2
+    },
+    {
+      "key": "ledger_hall",
+      "name": "Ledger Hall",
+      "set": "republics",
+      "cost": 5,
+      "favourWinPct": 13.8,
+      "margin": 10.7
+    },
+    {
+      "key": "compound_interest",
+      "name": "Compound Interest",
+      "set": "republics",
+      "cost": 5,
+      "favourWinPct": 21.3,
+      "margin": 12.7
+    },
+    {
+      "key": "bourse",
+      "name": "Bourse",
+      "set": "republics",
+      "cost": 5,
+      "favourWinPct": 21.3,
+      "margin": 12.7
+    },
+    {
+      "key": "gold_florin",
+      "name": "Gold Florin",
+      "set": "republics",
+      "cost": 6,
+      "favourWinPct": 55,
+      "margin": 15.4
+    },
+    {
+      "key": "household_guard",
+      "name": "Household Guard",
+      "set": "houses",
+      "cost": 2,
+      "favourWinPct": 6.3,
+      "margin": 7.5
+    },
+    {
+      "key": "antechamber",
+      "name": "Antechamber",
+      "set": "houses",
+      "cost": 3,
+      "favourWinPct": 13.8,
+      "margin": 10.7
+    },
+    {
+      "key": "bribed_magistrate",
+      "name": "Bribed Magistrate",
+      "set": "houses",
+      "cost": 3,
+      "favourWinPct": 22.5,
+      "margin": 12.9
+    },
+    {
+      "key": "counter_intrigue",
+      "name": "Counter-Intrigue",
+      "set": "houses",
+      "cost": 3,
+      "favourWinPct": 21.3,
+      "margin": 12.7
+    },
+    {
+      "key": "whispered_promise",
+      "name": "Whispered Promise",
+      "set": "houses",
+      "cost": 3,
+      "favourWinPct": 15,
+      "margin": 11.1
+    },
+    {
+      "key": "signoria",
+      "name": "Signoria",
+      "set": "houses",
+      "cost": 4,
+      "favourWinPct": 35,
+      "margin": 14.8
+    },
+    {
+      "key": "hollow_title",
+      "name": "Hollow Title",
+      "set": "houses",
+      "cost": 4,
+      "favourWinPct": 58.8,
+      "margin": 15.3
+    },
+    {
+      "key": "purchased_office",
+      "name": "Purchased Office",
+      "set": "houses",
+      "cost": 4,
+      "favourWinPct": 7.5,
+      "margin": 8.2
+    },
+    {
+      "key": "court_purge",
+      "name": "Court Purge",
+      "set": "houses",
+      "cost": 4,
+      "favourWinPct": 0,
+      "margin": 0
+    },
+    {
+      "key": "family_crest",
+      "name": "Family Crest",
+      "set": "houses",
+      "cost": 4,
+      "favourWinPct": 2.5,
+      "margin": 4.8
+    },
+    {
+      "key": "marriage_pact",
+      "name": "Marriage Pact",
+      "set": "houses",
+      "cost": 5,
+      "favourWinPct": 10,
+      "margin": 9.3
+    },
+    {
+      "key": "majordomo",
+      "name": "Majordomo",
+      "set": "houses",
+      "cost": 5,
+      "favourWinPct": 45,
+      "margin": 15.4
+    },
+    {
+      "key": "palace_intrigue",
+      "name": "Palace Intrigue",
+      "set": "houses",
+      "cost": 6,
+      "favourWinPct": 7.5,
+      "margin": 8.2
+    },
+    {
+      "key": "sweeper",
+      "name": "Sweeper",
+      "set": "masters",
+      "cost": 2,
+      "favourWinPct": 2.5,
+      "margin": 4.8
+    },
+    {
+      "key": "sketchbook",
+      "name": "Sketchbook",
+      "set": "masters",
+      "cost": 2,
+      "favourWinPct": 17.5,
+      "margin": 11.8
+    },
+    {
+      "key": "bottega",
+      "name": "Bottega",
+      "set": "masters",
+      "cost": 3,
+      "favourWinPct": 42.5,
+      "margin": 15.3
+    },
+    {
+      "key": "guild_diploma",
+      "name": "Guild Diploma",
+      "set": "masters",
+      "cost": 3,
+      "favourWinPct": 2.5,
+      "margin": 4.8
+    },
+    {
+      "key": "woodcarver",
+      "name": "Woodcarver",
+      "set": "masters",
+      "cost": 3,
+      "favourWinPct": 42.5,
+      "margin": 15.3
+    },
+    {
+      "key": "promotion",
+      "name": "Promotion",
+      "set": "masters",
+      "cost": 4,
+      "favourWinPct": 10,
+      "margin": 9.3
+    },
+    {
+      "key": "masters_hand",
+      "name": "Master’s Hand",
+      "set": "masters",
+      "cost": 4,
+      "favourWinPct": 41.3,
+      "margin": 15.3
+    },
+    {
+      "key": "open_studio",
+      "name": "Open Studio",
+      "set": "masters",
+      "cost": 4,
+      "favourWinPct": 51.3,
+      "margin": 15.5
+    },
+    {
+      "key": "study_hall",
+      "name": "Study Hall",
+      "set": "masters",
+      "cost": 4,
+      "favourWinPct": 12.5,
+      "margin": 10.2
+    },
+    {
+      "key": "patternmaker",
+      "name": "Patternmaker",
+      "set": "masters",
+      "cost": 4,
+      "favourWinPct": 10,
+      "margin": 9.3
+    },
+    {
+      "key": "atelier",
+      "name": "Atelier",
+      "set": "masters",
+      "cost": 4,
+      "favourWinPct": 5,
+      "margin": 6.8
+    },
+    {
+      "key": "schoolroom",
+      "name": "Schoolroom",
+      "set": "masters",
+      "cost": 4,
+      "favourWinPct": 0,
+      "margin": 0
+    },
+    {
+      "key": "lecture_hall",
+      "name": "Lecture Hall",
+      "set": "masters",
+      "cost": 5,
+      "favourWinPct": 27.5,
+      "margin": 13.8
+    },
+    {
+      "key": "masters_fee",
+      "name": "Master’s Fee",
+      "set": "masters",
+      "cost": 5,
+      "favourWinPct": 42.5,
+      "margin": 15.3
+    },
+    {
+      "key": "maestro",
+      "name": "Maestro",
+      "set": "masters",
+      "cost": 6,
+      "favourWinPct": 18.8,
+      "margin": 12.1
+    },
+    {
+      "key": "harbour_pilot",
+      "name": "Harbour Pilot",
+      "set": "ports",
+      "cost": 2,
+      "favourWinPct": 25,
+      "margin": 13.4
+    },
+    {
+      "key": "dockhand",
+      "name": "Dockhand",
+      "set": "ports",
+      "cost": 2,
+      "favourWinPct": 11.3,
+      "margin": 9.8
+    },
+    {
+      "key": "barter_post",
+      "name": "Barter Post",
+      "set": "ports",
+      "cost": 3,
+      "favourWinPct": 0,
+      "margin": 0
+    },
+    {
+      "key": "quayside_sale",
+      "name": "Quayside Sale",
+      "set": "ports",
+      "cost": 3,
+      "favourWinPct": 22.5,
+      "margin": 12.9
+    },
+    {
+      "key": "ferry_landing",
+      "name": "Ferry Landing",
+      "set": "ports",
+      "cost": 3,
+      "favourWinPct": 13.8,
+      "margin": 10.7
+    },
+    {
+      "key": "chandler",
+      "name": "Chandler",
+      "set": "ports",
+      "cost": 4,
+      "favourWinPct": 55,
+      "margin": 15.4
+    },
+    {
+      "key": "bonded_store",
+      "name": "Bonded Store",
+      "set": "ports",
+      "cost": 4,
+      "favourWinPct": 21.3,
+      "margin": 12.7
+    },
+    {
+      "key": "trade_agreement",
+      "name": "Trade Agreement",
+      "set": "ports",
+      "cost": 4,
+      "favourWinPct": 5,
+      "margin": 6.8
+    },
+    {
+      "key": "cargo_manifest",
+      "name": "Cargo Manifest",
+      "set": "ports",
+      "cost": 4,
+      "favourWinPct": 11.3,
+      "margin": 9.8
+    },
+    {
+      "key": "grain_hoy",
+      "name": "Grain Hoy",
+      "set": "ports",
+      "cost": 5,
+      "favourWinPct": 22.5,
+      "margin": 12.9
+    },
+    {
+      "key": "hiring_day",
+      "name": "Hiring Day",
+      "set": "ports",
+      "cost": 5,
+      "favourWinPct": 7.5,
+      "margin": 8.2
+    },
+    {
+      "key": "customs_cutter",
+      "name": "Customs Cutter",
+      "set": "ports",
+      "cost": 5,
+      "favourWinPct": 18.8,
+      "margin": 12.1
+    },
+    {
+      "key": "landing_rights",
+      "name": "Landing Rights",
+      "set": "ports",
+      "cost": 5,
+      "favourWinPct": 17.5,
+      "margin": 11.8
+    },
+    {
+      "key": "galleass",
+      "name": "Galleass",
+      "set": "ports",
+      "cost": 6,
+      "favourWinPct": 58.8,
+      "margin": 15.3
+    },
+    {
+      "key": "tenant_farmer",
+      "name": "Tenant Farmer",
+      "set": "glory",
+      "cost": 2,
+      "favourWinPct": 28.8,
+      "margin": 14
+    },
+    {
+      "key": "manor_court",
+      "name": "Manor Court",
+      "set": "glory",
+      "cost": 3,
+      "favourWinPct": 36.3,
+      "margin": 14.9
+    },
+    {
+      "key": "votive_offering",
+      "name": "Votive Offering",
+      "set": "glory",
+      "cost": 3,
+      "favourWinPct": 2.5,
+      "margin": 4.8
+    },
+    {
+      "key": "banner_bearer",
+      "name": "Banner Bearer",
+      "set": "glory",
+      "cost": 3,
+      "favourWinPct": 53.8,
+      "margin": 15.5
+    },
+    {
+      "key": "laurel_wreath",
+      "name": "Laurel Wreath",
+      "set": "glory",
+      "cost": 4,
+      "favourWinPct": 38.8,
+      "margin": 15.1
+    },
+    {
+      "key": "land_grant",
+      "name": "Land Grant",
+      "set": "glory",
+      "cost": 4,
+      "favourWinPct": 16.3,
+      "margin": 11.4
+    },
+    {
+      "key": "grand_muster",
+      "name": "Grand Muster",
+      "set": "glory",
+      "cost": 4,
+      "favourWinPct": 32.5,
+      "margin": 14.5
+    },
+    {
+      "key": "memorial_statue",
+      "name": "Memorial Statue",
+      "set": "glory",
+      "cost": 4,
+      "favourWinPct": 0,
+      "margin": 0
+    },
+    {
+      "key": "point_of_honour",
+      "name": "Point of Honour",
+      "set": "glory",
+      "cost": 4,
+      "favourWinPct": 67.5,
+      "margin": 14.5
+    },
+    {
+      "key": "honour_guard",
+      "name": "Honour Guard",
+      "set": "glory",
+      "cost": 4,
+      "favourWinPct": 32.5,
+      "margin": 14.5
+    },
+    {
+      "key": "victory_parade",
+      "name": "Victory Parade",
+      "set": "glory",
+      "cost": 5,
+      "favourWinPct": 25,
+      "margin": 13.4
+    },
+    {
+      "key": "chivalric_order",
+      "name": "Chivalric Order",
+      "set": "glory",
+      "cost": 5,
+      "favourWinPct": 16.3,
+      "margin": 11.4
+    },
+    {
+      "key": "royal_jubilee",
+      "name": "Royal Jubilee",
+      "set": "glory",
+      "cost": 6,
+      "favourWinPct": 37.5,
+      "margin": 15
+    }
+  ]
+}

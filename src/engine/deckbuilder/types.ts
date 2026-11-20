@@ -17,7 +17,10 @@ export type Num =
   | { value: string }
   | { costOf: string; plus?: number }
   | { token: string }
-  | { emptyPiles: true }
+  /** Supply piles that are empty, or with `atMost` that have that many cards or fewer left. */
+  | { emptyPiles: true; atMost?: number }
+  /** Cards left in a supply pile, or with `start` the size it began the game at. Both are public. */
+  | { pile: string; start?: true }
   /** Cards in one of the resolving player's zones. All of these counts are public. */
   | { count: 'hand' | 'deck' | 'discard' | 'play' | 'deck+discard' }
   /** How many cards or piles held in a variable pass a filter. */
@@ -36,6 +39,7 @@ export interface CardFilter {
   type?: CardType;
   notType?: CardType;
   key?: string;
+  notKey?: string;
   maxCost?: Num;
   minCost?: Num;
   exactCost?: Num;
@@ -46,7 +50,7 @@ export interface CardFilter {
 }
 
 /** Filters for cost changes cannot depend on cost. */
-export type CardMatch = Pick<CardFilter, 'type' | 'notType' | 'key'>;
+export type CardMatch = Pick<CardFilter, 'type' | 'notType' | 'key' | 'notKey'>;
 
 /** `rest`: the cards in a look or reveal that have not been moved anywhere yet. `hand`: the resolving player's whole hand, in order. */
 export type CardRef = 'source' | 'hand' | { var: string } | { rest: string };
@@ -112,8 +116,8 @@ export type Effect =
   /** Add a variable's contents to the same list in the parent's context, so an attack can report back. */
   | { op: 'pass-up'; var: string; as?: string }
   | { op: 'shuffle' }
-  /** The other players in turn order, skipping any made immune by a reaction. */
-  | { op: 'attack'; effects: Effect[] }
+  /** The other players in turn order, or with `player` only that one, skipping any made immune by a reaction. */
+  | { op: 'attack'; effects: Effect[]; player?: PlayerRef }
   | { op: 'each-other'; effects: Effect[] }
   | { op: 'repeat'; n: Num; effects: Effect[] }
   /** Check the condition, and while it is false run the effects and check again. `max` caps the rounds. */
@@ -266,6 +270,8 @@ export interface Ruleset {
   projects?: ProjectDef[];
   /** How many projects a game uses. */
   projectCount?: number;
+  /** Cards that only make sense with projects. A game with projects switched off leaves them out of its market. */
+  projectCards?: string[];
   /** The game ends after a turn when this many projects have been claimed. */
   projectsToEnd?(players: number): number;
   /** Projects are built in stages that any player may fund. Its absence means one player claims each one whole. */
@@ -498,6 +504,8 @@ export interface DeckConfig {
   projects?: string[];
   /** The groups of cards a random market may draw from. */
   sets?: string[];
+  /** False deals no projects and leaves out the ruleset's `projectCards`. Absent means on. */
+  crownProjects?: boolean;
   /** A trial edition's code. Only a server with experiments on stores one. */
   edition?: string | null;
 }

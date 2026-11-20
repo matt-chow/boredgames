@@ -9,6 +9,7 @@
 
   setContext('deck-art', artFor);
   setContext('deck-guide', guideFor);
+  setContext('deck-deal', true);
 </script>
 
 <DeckTable {conn} {room} />

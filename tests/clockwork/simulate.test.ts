@@ -31,6 +31,8 @@ function assertPrivate(s: DeckState) {
         if (seen.has(id) && !(s.pending?.seat === seat && s.pending.cards.includes(id))) throw new Error(`seat ${seat} sees a card in a deck`);
       }
       if (other === seat) continue;
+      // CC-POR-7: Bonded Store's cards are the owner's alone.
+      expect(v.players[other].mats.bonded?.cards).toBeUndefined();
       // CC-ATT-1: a card its owner has just revealed from hand, offered to the player who must choose among them, is public.
       const shown = s.log.at(-1)?.kind === 'reveal' && s.log.at(-1)?.seat === other && s.pending?.seat === seat ? (s.pending.cards ?? []) : [];
       for (const id of s.players[other].hand) if (seen.has(id) && !shown.includes(id)) throw new Error(`seat ${seat} sees a card in seat ${other}'s hand`);
@@ -40,8 +42,8 @@ function assertPrivate(s: DeckState) {
 }
 
 /** A whole game with computer players, checked as it goes. */
-function simulate(players: number, seed: string, sets: string[], everyStep = false, offset = seed.length, played?: Set<string>, market: string[] = [], favour?: string) {
-  let s = game.setup({ playerCount: players, seed, config: { market, bans: [], sets, projects: [] } });
+function simulate(players: number, seed: string, sets: string[], everyStep = false, offset = seed.length, played?: Set<string>, market: string[] = [], favour?: string, extra = {}) {
+  let s = game.setup({ playerCount: players, seed, config: { market, bans: [], sets, projects: [], ...extra } });
   const profiles = Array.from({ length: players }, (_, i) => ({ ...PROFILES[(i * 3 + offset) % PROFILES.length], favour }));
   let steps = 0;
   for (; steps < 30_000 && !s.over; steps++) {
@@ -128,6 +130,11 @@ describe('whole games', () => {
     simulate(3, 'private', ALL_SETS, true);
     simulate(6, 'private-6', ALL_SETS, true);
   }, 120_000);
+  it('KC5-SIM-1: privacy holds at every step with the five new sets, Projects on and off', () => {
+    const sets = [...ALL_SETS, 'republics', 'houses', 'masters', 'ports', 'glory'];
+    expect(simulate(3, 'private-5', sets, true).s.over).toBe(true);
+    expect(simulate(6, 'private-5-6', sets, true, 1, undefined, [], undefined, { crownProjects: false }).s.over).toBe(true);
+  }, 120_000);
   it('CC-SIM-ALL: every market card is played at some point in a batch of games', () => {
     const played = new Set<string>();
     const market = CARDS.filter((c) => !c.basic);
@@ -173,6 +180,26 @@ describe('in a room', () => {
       expect(core.status).toBe('over');
       expect(core.view(0, connected).game).toMatchObject({ over: true });
     }
+  }, 120_000);
+  it('KC5-PRJ-6: a room without Crown Projects reloads after every move and finishes with none', () => {
+    const store = new MemoryStore();
+    const first = RoomCore.create(store, opts, { code: 'ABCDEF', gameId: 'clockwork', name: 'One', th: 'a', bots: 3 });
+    const connected = new Set([0]);
+    first.handle(0, { t: 'config', id: 'c', v: first.version, config: { crownProjects: false, sets: ['core', 'crown', 'glory'] } }, connected);
+    const started = new RoomCore(store, opts);
+    started.handle(0, { t: 'start', id: 's', v: started.version }, connected);
+    for (let n = 0; n < 20_000; n++) {
+      const core = new RoomCore(store, opts);
+      if (core.status === 'over') break;
+      const view = core.view(0, connected).game as DeckView;
+      expect(view.projects).toEqual([]);
+      if (game.actors(store.getState() as DeckState).includes(0)) {
+        const move = botMove(view, PROFILES[1], 0)!;
+        expect(move.actions.some((a, i) => core.handle(0, { t: 'act', id: `h${n}-${i}`, v: core.version, a }, connected).ack?.ok)).toBe(true);
+      } else expect(core.playBot()).toBe(true);
+    }
+    const s = store.getState() as DeckState;
+    expect([s.over, s.projects, new Set(s.players.map((p) => p.turns)).size]).toEqual([true, [], 1]);
   }, 120_000);
   it('CC-ROOM-2: nothing hidden is written to the room history', () => {
     const { store, connected } = played(3);

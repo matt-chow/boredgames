@@ -20,7 +20,10 @@
   const rules = $derived((GAMES[room.gameId] as unknown as DeckGame).rules);
   const sets = $derived((room.config.sets as string[] | undefined) ?? []);
   const onSets = $derived(activeSets(rules, { sets }));
-  const pool = $derived([...selectable(rules, [], onSets), ...selectable(rules).filter((c) => market.includes(c.key) && !selectable(rules, [], onSets).includes(c))].sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name)));
+  /** KC5-PRJ-1: switched off, Projects and the cards that need them leave the catalog. */
+  const projectsOn = $derived(room.config.crownProjects !== false);
+  const offCards = $derived(projectsOn ? [] : (rules.projectCards ?? []));
+  const pool = $derived([...selectable(rules, [], onSets), ...selectable(rules).filter((c) => market.includes(c.key) && !selectable(rules, [], onSets).includes(c))].filter((c) => !offCards.includes(c.key)).sort((a, b) => a.cost - b.cost || a.name.localeCompare(b.name)));
   const market = $derived((room.config.market as string[] | undefined) ?? []);
   const bans = $derived((room.config.bans as string[] | undefined) ?? []);
   const canEdit = $derived(room.canConfigure);
@@ -111,6 +114,10 @@
     send({ sets: next });
   }
 
+  // Chosen Projects and Project-linked piles would make the room's setup invalid, so they go in the same message.
+  const toggleProjects = () =>
+    send(projectsOn ? { crownProjects: false, projects: [], market: market.filter((k) => !(rules.projectCards ?? []).includes(k)) } : { crownProjects: true });
+
   function toggleProject(key: string) {
     const on = projects.includes(key);
     if (!on && projects.length >= need) {
@@ -178,6 +185,18 @@
           </label>
         </li>
       {/each}
+    </ul>
+  {/if}
+
+  {#if need}
+    <ul class="sets" aria-label="Game options">
+      <li>
+        <label class="set" class:on={projectsOn}>
+          <input type="checkbox" data-projects-toggle checked={projectsOn} disabled={!canEdit || conn.busy} onchange={toggleProjects} />
+          <span class="nm">Enable {projectWord}</span>
+          <span class="ds">{projectsOn ? `${need} ${projectWord} to fund, and another way to end the game.` : `No ${projectWord}. Every other way to end the game still applies.`}</span>
+        </label>
+      </li>
     </ul>
   {/if}
 
@@ -290,7 +309,7 @@
     {/each}
   </ul>
 
-  {#if need}
+  {#if need && projectsOn}
     <h3 class="h sub">
       {projectWord}
       <span class="num muted">{projects.length ? `${projects.length}/${need}` : `${need} at random`}</span>

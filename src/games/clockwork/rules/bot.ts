@@ -7,6 +7,11 @@ import type { CardDef, CardRefView, DeckAction, DeckView, Effect, PendingView } 
 import { BASICS, CORE, SPARK } from './cards';
 import { CROWN } from './crown';
 import { FOUNDRY, NIGHT, TOWN } from './expansions';
+import { GLORY } from './glory';
+import { HOUSES } from './houses';
+import { MASTERS } from './masters';
+import { PORTS } from './ports';
+import { REPUBLICS } from './republics';
 
 export type Style = 'economy' | 'cycling' | 'combo' | 'spark' | 'works' | 'devices' | 'interaction' | 'defence' | 'scoring' | 'risk' | 'thinning';
 
@@ -100,6 +105,80 @@ export const STYLES: Record<string, Style[]> = {
   royal_advocate: ['defence', 'economy'],
   court_saboteur: ['interaction', 'economy'],
   noble_council: ['scoring'],
+  // The Merchant Republics
+  coin_clipper: ['thinning', 'economy'],
+  promissory_note: ['economy', 'risk'],
+  florin_table: ['economy'],
+  fondaco: ['cycling', 'economy'],
+  underwriter: ['defence', 'economy'],
+  lending_house: ['economy'],
+  wholesaler: ['economy'],
+  bookkeeper: ['cycling', 'economy'],
+  partnership: ['interaction', 'economy'],
+  gilder: ['economy'],
+  ledger_hall: ['scoring', 'economy'],
+  compound_interest: ['devices', 'economy'],
+  bourse: ['spark', 'economy'],
+  gold_florin: ['economy', 'risk'],
+  // Houses of Influence
+  household_guard: ['defence'],
+  antechamber: ['combo', 'spark'],
+  bribed_magistrate: ['interaction', 'spark'],
+  counter_intrigue: ['defence', 'economy'],
+  whispered_promise: ['spark', 'devices'],
+  signoria: ['interaction', 'cycling'],
+  hollow_title: ['interaction', 'economy'],
+  purchased_office: ['spark'],
+  court_purge: ['thinning', 'interaction'],
+  family_crest: ['scoring'],
+  marriage_pact: ['scoring', 'cycling'],
+  majordomo: ['economy', 'cycling'],
+  palace_intrigue: ['cycling'],
+  // Masters & Apprentices
+  sweeper: ['thinning', 'cycling'],
+  sketchbook: ['cycling', 'combo'],
+  bottega: ['combo'],
+  guild_diploma: ['thinning', 'scoring'],
+  woodcarver: ['combo'],
+  promotion: ['combo', 'thinning'],
+  masters_hand: ['combo'],
+  open_studio: ['cycling', 'interaction'],
+  study_hall: ['combo', 'cycling'],
+  patternmaker: ['combo'],
+  atelier: ['thinning', 'economy'],
+  schoolroom: ['thinning', 'cycling'],
+  lecture_hall: ['cycling', 'combo'],
+  masters_fee: ['economy', 'cycling'],
+  maestro: ['combo', 'cycling'],
+  // Ports & Provinces
+  harbour_pilot: ['devices', 'cycling'],
+  dockhand: ['economy'],
+  barter_post: ['thinning'],
+  quayside_sale: ['economy', 'cycling'],
+  ferry_landing: ['devices', 'combo'],
+  chandler: ['combo', 'economy'],
+  bonded_store: ['devices', 'economy'],
+  trade_agreement: ['interaction', 'cycling'],
+  cargo_manifest: ['devices', 'cycling'],
+  grain_hoy: ['devices', 'economy'],
+  hiring_day: ['economy'],
+  customs_cutter: ['interaction', 'economy'],
+  landing_rights: ['scoring', 'economy'],
+  galleass: ['devices', 'cycling'],
+  // Glory of the Realm
+  tenant_farmer: ['scoring', 'cycling'],
+  manor_court: ['scoring'],
+  votive_offering: ['scoring', 'thinning'],
+  banner_bearer: ['combo', 'scoring'],
+  laurel_wreath: ['scoring', 'economy'],
+  land_grant: ['scoring', 'economy'],
+  grand_muster: ['scoring', 'cycling'],
+  memorial_statue: ['scoring', 'risk'],
+  point_of_honour: ['interaction', 'economy'],
+  honour_guard: ['defence', 'scoring'],
+  victory_parade: ['scoring', 'economy'],
+  chivalric_order: ['scoring'],
+  royal_jubilee: ['scoring', 'economy'],
 };
 
 export interface Profile {
@@ -136,7 +215,7 @@ export const PROFILES: Profile[] = [
 
 export const BALANCED: Profile = PROFILES[1];
 
-const DEFS: Record<string, CardDef> = Object.fromEntries([...BASICS, ...CORE, ...FOUNDRY, ...NIGHT, ...TOWN, ...CROWN].map((c) => [c.key, c]));
+const DEFS: Record<string, CardDef> = Object.fromEntries([...BASICS, ...CORE, ...FOUNDRY, ...NIGHT, ...TOWN, ...CROWN, ...REPUBLICS, ...HOUSES, ...MASTERS, ...PORTS, ...GLORY].map((c) => [c.key, c]));
 const types = (key: string) => DEFS[key]?.types ?? [];
 
 const grantsActions = (effects: Effect[] | undefined): boolean => (effects ?? []).some((e) => e.op === 'actions' && typeof e.n === 'number' && e.n > 0);
@@ -194,7 +273,8 @@ function chooseOption(q: PendingView, v: DeckView, profile: Profile): number {
     if (profile.hoard && sparkNow <= 5 && /[Ss]pend/.test(q.prompt) && !/Debt/.test(q.prompt)) return 1;
     return 0;
   }
-  const sparky = options.findIndex((o) => /Influence/.test(o) && !/^Spend|Lose/.test(o));
+  // "They ..." is a reward for someone else, when an opponent chooses for them.
+  const sparky = options.findIndex((o) => /Influence/.test(o) && !/^Spend|Lose|They/.test(o));
   if (profile.likes.spark && sparky >= 0) return sparky;
   if (v.you !== null && (v.players[v.you].tokens[SPARK] ?? 0) >= 2) {
     const spend = options.findIndex((o) => /^Spend 2 Influence/.test(o));
@@ -229,7 +309,8 @@ export function roundsLeft(v: DeckView): number {
   const played = Math.max(1, (v.turn.number + 1) / n);
   const stages = v.projects.flatMap((p) => p.stages ?? []);
   const funded = stages.filter((x) => x.by !== null).length;
-  const projects = openStages(v) / Math.max(n * 0.25, funded / played);
+  // KC5-PRJ-4: with Crown Projects switched off, they never end the game.
+  const projects = v.projects.length ? openStages(v) / Math.max(n * 0.25, funded / played) : Infinity;
   const duchies = pileOf(v, 'monument') / (n * 0.3);
   const counts = v.market.map((k) => pileOf(v, k)).sort((a, b) => a - b);
   const piles = counts.slice(0, emptiedToEnd(v)).reduce((a, c) => a + c, 0) / (n * 0.6);
@@ -317,7 +398,7 @@ function plannedBasic(key: string, v: DeckView, r: number): number {
 /** Late in the game, once any end condition is near. Based only on public counts. */
 function isLate(v: DeckView, profile: Profile): boolean {
   const monuments = v.supply.find((p) => p.key === 'monument')?.count ?? 99;
-  const open = trial(v) ? (investmentsToEnd(v) <= (v.projects.some((p) => p.stages) ? 2 : 1) ? 0 : 99) : v.projects.filter((p) => p.by === null).length;
+  const open = trial(v) ? (investmentsToEnd(v) <= (v.projects.some((p) => p.stages) ? 2 : 1) ? 0 : 99) : v.projects.length ? v.projects.filter((p) => p.by === null).length : 99;
   const emptied = v.market.filter((k) => v.supply.find((p) => p.key === k)?.count === 0).length;
   const turn = v.you === null ? 0 : (v.turn.number + 1) / Math.max(1, v.players.length);
   return monuments <= 3 || open <= 2 || emptied >= 2 || turn >= profile.greening;

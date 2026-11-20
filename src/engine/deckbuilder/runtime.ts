@@ -54,7 +54,13 @@ export function makeLibrary(rules: Ruleset): Library {
 }
 
 export const matches = (def: CardDef, f: CardMatch | undefined) =>
-  !f || ((!f.type || def.types.includes(f.type)) && (!f.notType || !def.types.includes(f.notType)) && (!f.key || def.key === f.key));
+  !f || ((!f.type || def.types.includes(f.type)) && (!f.notType || !def.types.includes(f.notType)) && (!f.key || def.key === f.key) && (!f.notKey || def.key !== f.notKey));
+
+/** The size a supply pile started the game at. Zero for a pile not in this game. */
+export function startSize(rules: Ruleset, state: DeckState, key: string): number {
+  if (!(key in state.supply)) return 0;
+  return rules.basicPiles(state.n)[key] ?? rules.extraPiles?.(state.market, state.n)[key] ?? rules.marketPileSize(key, state.n);
+}
 
 export function costOf(state: DeckState, lib: Library, key: string): number {
   const def = lib.defs[key];
@@ -193,7 +199,8 @@ export class Runtime {
     if ('div' in n) return (n.up ? Math.ceil : Math.floor)(this.num(c, n.div[0]) / n.div[1]);
     if ('actionsPlayed' in n) return this.state.turn.actionsPlayed;
     if ('projects' in n) return this.state.projects.filter((x) => n.projects === 'all' ? x.by !== null : helpedComplete(x, ctx.player)).length;
-    return Object.values(this.state.supply).filter((p) => p.length === 0).length;
+    if ('pile' in n) return n.start ? startSize(this.lib.rules, this.state, n.pile) : (this.state.supply[n.pile]?.length ?? 0);
+    return Object.values(this.state.supply).filter((p) => p.length <= (n.atMost ?? 0)).length;
   }
 
   /** The card keys held in a variable, whether it holds cards or piles. */
@@ -459,7 +466,8 @@ export class Runtime {
       case 'attack':
       case 'each-other': {
         this.tainted = true;
-        const others = this.turnOrder().filter((x) => x !== ctx.player && !(fx.op === 'attack' && ctx.immune.includes(x)));
+        const target = fx.op === 'attack' && fx.player !== undefined ? this.seatOf(c, fx.player) : null;
+        const others = this.turnOrder().filter((x) => x !== ctx.player && (target === null || x === target) && !(fx.op === 'attack' && ctx.immune.includes(x)));
         const frames: Frame[] = [];
         for (const seat of others) {
           const child = this.newCtx({ player: seat, source: ctx.source, vars: { ...ctx.vars }, parent: c });

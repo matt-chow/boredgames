@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { expect, test, type Page } from '@playwright/test';
-import { PHONE, joinRoom, newPlayer, roomViews, type Player } from './helpers';
+import { DESKTOP, PHONE, joinRoom, newPlayer, roomViews, type Player } from './helpers';
 
 // Kingdom & Commerce through its real buttons on a real server. Also runs against staging with E2E_BASE_URL.
 
@@ -199,7 +199,8 @@ test.describe('Kingdom & Commerce', () => {
     await start(host);
     const tiles = host.page.locator('.work');
     await expect(tiles).toHaveCount(5);
-    await expect(host.page.locator('[data-trial]')).toContainText('0/5');
+    await expect(host.page.locator('[data-trial]')).toContainText('Trial S1');
+    await expect(host.page.locator('.works')).not.toContainText('complete to end the game');
     // Six players, S1: two Projects of 2 stages and three of 3, thirteen investments in all.
     await expect(host.page.locator('[data-progress="0/2"]')).toHaveCount(2);
     await expect(host.page.locator('[data-progress="0/3"]')).toHaveCount(3);
@@ -218,6 +219,41 @@ test.describe('Kingdom & Commerce', () => {
     await shot(host.page, 'stage-inspect-phone');
     await host.page.keyboard.press('Escape');
     await expect(host.page.locator('[data-stage]').first()).toBeHidden();
+  });
+
+  test('CC-DEAL-UI: a new table deals its market and Projects, Skip lands them, and a reload or a later look skips it', async ({ browser }) => {
+    const motion = { reducedMotion: 'no-preference' } as const;
+    const host = await newPlayer(browser, 'Ada', { ...DESKTOP, ...motion });
+    const guest = await newPlayer(browser, 'Bea', { ...PHONE, ...motion });
+    const code = await table(host);
+    await joinRoom(guest, code);
+    await start(host);
+    await host.page.locator('[data-skip-deal]').click({ timeout: 1_000 });
+    await expect(host.page.locator('[data-deal]')).toHaveCount(15);
+    const moving = (p: Player) => p.page.evaluate(() => [...document.querySelectorAll('[data-deal]')].filter((e) => e.getAnimations().length).length);
+    await expect(host.page.locator('[data-skip-deal]')).toBeHidden();
+    expect(await moving(host)).toBe(0);
+    // The guest is dealt the same table and, left alone, it runs out by itself; the phone table still fits.
+    await expect(guest.page.locator('.table .turn')).toBeVisible({ timeout: 15_000 });
+    expect(await guest.page.evaluate(() => Object.keys(localStorage).some((k) => k.startsWith('deal:')))).toBe(true);
+    await expect(guest.page.locator('[data-skip-deal]')).toBeHidden({ timeout: 5_000 });
+    expect(await moving(guest)).toBe(0);
+    const box = await guest.page.locator('.works').boundingBox();
+    expect(box!.x + box!.width).toBeLessThanOrEqual(PHONE.viewport!.width);
+
+    await host.page.reload();
+    await expect(host.page.locator('.table .turn')).toBeVisible({ timeout: 15_000 });
+    await host.page.waitForTimeout(400);
+    await expect(host.page.locator('[data-skip-deal]')).toHaveCount(0);
+
+    // A device that never saw the deal, opening the table once play is under way, goes straight to it.
+    await playOutFor(host, guest, 12);
+    await guest.page.evaluate(() => localStorage.clear());
+    await guest.page.reload();
+    await expect(guest.page.locator('.table .turn')).toBeVisible({ timeout: 15_000 });
+    await guest.page.waitForTimeout(400);
+    await expect(guest.page.locator('[data-skip-deal]')).toHaveCount(0);
+    expect([...host.errors, ...guest.errors]).toEqual([]);
   });
 
   test('CC-F2-UI: a new room shows five Projects staged 1, 2, 2, 3, 3', async ({ browser }) => {
@@ -256,7 +292,7 @@ test.describe('Kingdom & Commerce', () => {
       const r = await fetch(`/cards/${key}.svg`);
       return { key, ok: r.ok, type: r.headers.get('content-type') ?? '' };
     })), keys);
-    expect(served).toHaveLength(110);
+    expect(served).toHaveLength(179);
     expect(served.filter((f) => !f.ok || !f.type.includes('image/svg')), 'failed files').toEqual([]);
     await table(host, 1);
     await start(host);

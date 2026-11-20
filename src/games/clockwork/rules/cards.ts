@@ -3,7 +3,7 @@
  * to the engine's typed effects. The JSON is a design document and is never read at run time. Interpretations of the
  * design are numbered in docs/CLOCKWORK.md.
  */
-import type { CardDef, CardSource, ChoiceHint, Effect, Num } from '../../../engine/deckbuilder';
+import type { CardDef, CardFilter, CardSource, ChoiceHint, Effect, Num } from '../../../engine/deckbuilder';
 
 export const SPARK = 'spark';
 
@@ -18,6 +18,18 @@ export const gainRust: Effect = { op: 'gain', pile: 'rust' };
 export function pick(as: string, prompt: string, min: Num, max: Num, from: CardSource = 'hand', hint?: ChoiceHint): Effect {
   return { op: 'choose-cards', from, min, max, as, prompt, hint };
 }
+
+/** `pick` limited to cards passing a filter. */
+export const pickOf = (as: string, prompt: string, min: Num, max: Num, filter: CardFilter, from: CardSource = 'hand', hint?: ChoiceHint): Effect => ({
+  op: 'choose-cards',
+  from,
+  min,
+  max,
+  filter,
+  as,
+  prompt,
+  hint,
+});
 
 /** Discard exactly one card from hand, if there is one. */
 export const discardOne = (prompt = 'Discard a card.'): Effect[] => [pick('lost', prompt, 1, 1), { op: 'move', cards: { var: 'lost' }, to: 'discard' }];

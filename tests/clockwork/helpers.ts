@@ -1,5 +1,5 @@
 /** A small table driver for Clockwork Commons tests. Every step goes through JSON, as a saved game would. */
-import type { DeckAction, DeckState, DeckView } from '../../src/engine/deckbuilder';
+import type { DeckAction, DeckConfig, DeckState, DeckView } from '../../src/engine/deckbuilder';
 import { createDeckGame } from '../../src/engine/deckbuilder';
 import { clockwork } from '../../src/games/clockwork';
 import { RULES_V3 } from '../../src/games/clockwork/rules/ruleset';
@@ -24,6 +24,8 @@ export interface Options {
   edition?: string;
   /** Start on edition 3, whose Projects are claimed whole and end the game at four. */
   v3?: boolean;
+  /** Anything else to set up with, such as more sets or Crown Projects switched off. */
+  config?: Partial<DeckConfig>;
 }
 
 export class Table {
@@ -35,7 +37,7 @@ export class Table {
     this.s = (o.v3 ? v3 : game).setup({
       playerCount: players,
       seed: o.seed ?? 'clockwork',
-      config: { market: o.market ?? MARKET, bans: [], sets: ALL_SETS, projects: o.works ?? WORKS, ...(o.edition ? { edition: o.edition } : {}) },
+      config: { market: o.market ?? MARKET, bans: [], sets: ALL_SETS, projects: o.works ?? WORKS, ...(o.edition ? { edition: o.edition } : {}), ...o.config },
     });
     this.me = this.s.turn.seat;
     const zone = this.s.players[this.me];
