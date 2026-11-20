@@ -4,6 +4,11 @@ import { clockworkBot } from './bot';
 import { BASICS, buys, coins, CORE, draw, spark, SPARK } from './cards';
 import { CROWN, CROWN_WORKS } from './crown';
 import { FOUNDRY, HANDLERS, NIGHT, TOWN, TOWN_WORKS } from './expansions';
+import { GLORY } from './glory';
+import { HOUSES } from './houses';
+import { MASTERS } from './masters';
+import { PORTS } from './ports';
+import { REPUBLICS } from './republics';
 import { modernise } from './legacy';
 
 /** The Core Projects carry no set, so they are on offer whichever cards are in use. */
@@ -118,13 +123,33 @@ export const STAGE_NAMES: Record<string, readonly [string, string, string]> = {
 };
 
 /**
- * Edition 4, for every new game: the Crown Project rules chosen after the construction experiment (CC-F2-*) and the
- * finished round at the end (CC-FINAL-*). Everything else is edition 3.
+ * Edition 4: the Crown Project rules chosen after the construction experiment (CC-F2-*) and the finished round at the
+ * end (CC-FINAL-*). Everything else is edition 3. Rooms started on it keep it.
  */
-export const RULES: Ruleset = {
+export const RULES_V4: Ruleset = {
   ...RULES_V3,
   version: 4,
   projectsToEnd: () => 5,
   staged: { counts: () => [1, 2, 2], extraCoins: 1, names: STAGE_NAMES },
   finishRound: true,
+};
+
+/**
+ * Edition 5, for every new game: the five opt-in sets (KC5-SET-1) and the Crown Projects switch (KC5-PRJ-*). New cards
+ * come after every existing one, so a seeded edition 4 game deals the same market.
+ */
+export const RULES: Ruleset = {
+  ...RULES_V4,
+  version: 5,
+  cards: [...CARDS, ...REPUBLICS, ...HOUSES, ...MASTERS, ...PORTS, ...GLORY],
+  sets: [
+    ...RULES_V4.sets!,
+    { key: 'republics', name: 'The Merchant Republics', text: 'Currency economy, extra Buys, Currency cost cuts and deals with an opponent.' },
+    { key: 'houses', name: 'Houses of Influence', text: 'Court politics: opponents choose your reward, Influence sinks, measured attacks and reactions.' },
+    { key: 'masters', name: 'Masters & Apprentices', text: 'Action chains, playing a card twice, upgrades, thinning and draw.' },
+    { key: 'ports', name: 'Ports & Provinces', text: 'Trading, gaining to hand, setting cards aside, Establishments and flexible buying.' },
+    { key: 'glory', name: 'Glory of the Realm', text: 'Renown cards with uses, Renown that counts Renown, and endgame timing.' },
+  ],
+  // KC5-PRJ-1: cards that only make sense with Crown Projects, left out when they are switched off.
+  projectCards: ['clock_garden', 'inventors_medal', 'surveyor', 'zoning_board', 'ribbon_cutter', 'town_crier', 'civic_bond', 'city_charter'],
 };

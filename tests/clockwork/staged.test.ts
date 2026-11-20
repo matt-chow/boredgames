@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { assignStages, splitProject, type DeckState, type DeckView, type ProjectState } from '../../src/engine/deckbuilder';
 import { EDITIONS, STAGE_NAMES } from '../../src/games/clockwork/rules/editions';
 import { botMove, PROFILES } from '../../src/games/clockwork/rules/bot';
-import { RULES } from '../../src/games/clockwork/rules/ruleset';
+import { RULES, RULES_V3 } from '../../src/games/clockwork/rules/ruleset';
 import { MemoryStore, RoomCore } from '../../src/server/core';
 import { ALL_SETS, game, MARKET, Table, WORKS } from './helpers';
 
@@ -138,13 +138,13 @@ describe('CC-STAGE costs', () => {
   it('CC-STAGE-4: C1 adds a Coin to each Project and no card changes', () => {
     const c1 = edition('C1');
     for (const def of c1.projects!) expect(def.coins).toBe(RULES.projects!.find((p) => p.key === def.key)!.coins + 1);
-    expect(c1.cards).toBe(RULES.cards);
+    expect(c1.cards).toBe(RULES_V3.cards);
   });
 
   it('CC-STAGE-4: costs are stored in the game, and every edition keeps every card', () => {
     const t = site({ city_illumination: 3 });
     expect(JSON.parse(JSON.stringify(t.s)).projects[0].stages[0]).toMatchObject({ name: 'Foundations', coins: 3, by: null });
-    for (const r of EDITIONS) expect(r.cards).toBe(RULES.cards);
+    for (const r of EDITIONS) expect(r.cards).toBe(RULES_V3.cards);
   });
 });
 
@@ -536,7 +536,7 @@ describe('CC-STAGE saves and rooms', () => {
       expect(send(core, { t: 'config', config: { edition: 'S1' } }).ack!.ok).toBe(false);
       expect(core.view(0, everyone).config.edition).toBeUndefined();
       send(core, { t: 'start' });
-      expect((core.view(0, everyone).game as DeckView).rulesVersion).toBe(4);
+      expect((core.view(0, everyone).game as DeckView).rulesVersion).toBe(5);
     });
 
     it('CC-STAGE-12: with experiments on the host can pick one, go back, and a rematch keeps it', () => {

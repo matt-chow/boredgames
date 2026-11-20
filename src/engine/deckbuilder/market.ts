@@ -16,6 +16,10 @@ export const activeSets = (rules: Ruleset, config: Pick<DeckConfig, 'sets'>): st
 
 export const selectableProjects = (rules: Ruleset, sets?: string[]): ProjectDef[] => (rules.projects ?? []).filter((p) => inSets(p.set, sets));
 
+/** The config's bans, plus the project cards when the config switches projects off (KC5-PRJ-1). */
+export const effectiveBans = (rules: Ruleset, config: Pick<DeckConfig, 'bans' | 'crownProjects'>): string[] =>
+  config.crownProjects === false ? [...new Set([...(config.bans ?? []), ...(rules.projectCards ?? [])])] : (config.bans ?? []);
+
 /** Returns a reason when these keys cannot be the game's projects, otherwise null. */
 export function validateProjects(rules: Ruleset, keys: string[]): string | null {
   const need = rules.projectCount ?? 0;
@@ -79,6 +83,10 @@ export function sanitizeMarketConfig(rules: Ruleset, raw: Record<string, unknown
     const v = raw.sets;
     if (!Array.isArray(v) || !v.length || !v.every((k) => typeof k === 'string' && known.has(k)) || new Set(v).size !== v.length) return { error: 'Keep at least one set switched on.' };
     config.sets = v as string[];
+  }
+  if (raw.crownProjects !== undefined) {
+    if (typeof raw.crownProjects !== 'boolean' || !rules.projectCount) return { error: 'Projects cannot be switched in this game.' };
+    config.crownProjects = raw.crownProjects;
   }
   return { config };
 }

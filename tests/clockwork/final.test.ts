@@ -32,11 +32,11 @@ function fundable(t: Table, key: string) {
 const turns = (s: DeckState) => s.players.map((p) => p.turns);
 
 describe('CC-F2: the final Crown Project rules', () => {
-  it('CC-F2-1: new games use edition 4 at every player count, with five Projects of 1, 2, 2, 3 and 3 stages', () => {
+  it('CC-F2-1: new games use edition 4’s Project rules at every player count, with five Projects of 1, 2, 2, 3 and 3 stages', () => {
     for (const n of [2, 3, 4, 5, 6]) {
       for (const seed of ['a', 'b', 'c']) {
         const s = start(n, seed);
-        expect(s.rulesVersion).toBe(4);
+        expect(s.rulesVersion).toBe(5);
         expect(s.projects).toHaveLength(5);
         expect(sizes(s)).toEqual([1, 2, 2, 3, 3]);
       }
