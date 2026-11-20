@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-19.
+Last updated 2026-11-20.
 
 ## Milestones
 
@@ -18,6 +18,19 @@ Last updated 2026-11-19.
 | M10 Dead Drop | On staging | Third game: two people, secret orders, statements and challenges. See DEADDROP.md and DEADDROP_BALANCE.md |
 | M11 Sealed Correspondence v1.0 | Done | Court deduction card game, Classic (16 cards, 2–4) and Expanded (21 cards, 2–6). See SEALED.md |
 | M12 Palazzo v1.0 | Done | Original hidden-influence bluffing game for 2–6 people, five roles, server-timed response windows. See PALAZZO.md |
+
+## Kingdom & Commerce: five expansions (2026-11-20)
+
+- **Cards:** 69 new cards in five opt-in sets (Merchant Republics 14, Houses of Influence 13, Masters & Apprentices 15,
+  Ports & Provinces 14, Glory of the Realm 13), each with a CC-REP/HOU/MAS/POR/GLO test. No existing card changed.
+- **Crown Projects switch:** on by default. Off removes Projects and the 8 Project-linked cards, keeps the Grand Duchy
+  and pile endings and the finished round (KC5-PRJ-1 to 6). State version 5; older rooms load unchanged (KC5-VER-1).
+- **Art:** 69 clear-line SVGs (KC5-ART-1); 179 illustrated cards in all.
+- **Docs:** CLOCKWORK.md (KC5 section), expansions/FIVE_EXPANSION_GUIDE.md, in-game guide rulings, a Projects-off guide.
+- **Balance:** `npm run balance:expansions` writes expansions/FIVE_EXPANSION_BALANCE.md. The committed report is a
+  2-games-per-row smoke run: every game finished on equal turns, but the win rates mean nothing yet. The 40-game run
+  was stopped for lack of memory; rerun it on a machine with room.
+- **Gaps:** the 69 scenes were reviewed on contact sheets only, not at card size. No human playtest of the new sets.
 
 ## Palazzo v1.0 (2026-11-12)
 

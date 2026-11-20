@@ -42,8 +42,13 @@ replay against them.
 | Artisans’ Row | 10 | | Added: economy, combinations, deck cycling, lasting Establishments | No |
 | Rival Houses | 10 | | Added: attacks, defences, payoffs that leave Debt behind | No |
 | The Chancery | 8 | 5 | Added: Crown Projects rivalry, other ways to score | No |
+| The Merchant Republics | 14 | | Edition 5: Currency economy, extra Buys, deals with an opponent | No |
+| Houses of Influence | 13 | | Edition 5: opponents choose your reward, Influence sinks, measured attacks | No |
+| Masters & Apprentices | 15 | | Edition 5: Action chains, playing a card twice, upgrades, thinning | No |
+| Ports & Provinces | 14 | | Edition 5: trading, gaining to hand, setting cards aside | No |
+| Glory of the Realm | 13 | | Edition 5: Renown cards with uses, endgame timing | No |
 
-That's 88 market cards, 7 basics (Bronze, Silver, Gold, Homestead, Noble Estate, Grand Duchy, Royal Debt)
+That's 157 market cards, 7 basics (Bronze, Silver, Gold, Homestead, Noble Estate, Grand Duchy, Royal Debt)
 and 15 Crown Projects. The default "Standard" game is the first two sets, **60 market cards**. Hosts choose any sets of at
 least one. The Core Projects are available whichever sets are on. A game has 10 market piles and 5 Crown Projects, random or
 chosen, and both go in the shareable market code.
@@ -194,6 +199,36 @@ imbalances are in [BOT_BENCHMARK.md](BOT_BENCHMARK.md). Card effects, costs and 
 - **CC-BOT-8, finishing.** Every profile finishes a game with legal moves, on equal turns.
 - **CC-BOT-9, money floor.** A bot won't trash below 6 Coins of money in its deck, and takes a free Bronze when it has less. Without this, Thinning bots trashed all their money and games stalled.
 - **CC-BOT-OLD, older games.** Editions before 4 and the trials keep their old bot decisions, so saved games and the golden games in `compat.test.ts` play the same. A fingerprint of old-edition bot moves was byte-identical before and after this work.
+
+## Edition 5: five expansions and the Crown Projects switch (KC5)
+
+The design, every card's text and the reasons for each revised effect are in
+[FIVE_EXPANSION_MANIFEST.md](expansions/FIVE_EXPANSION_MANIFEST.md); player guides per set are in
+[FIVE_EXPANSION_GUIDE.md](expansions/FIVE_EXPANSION_GUIDE.md); the bot screen is
+[FIVE_EXPANSION_BALANCE.md](expansions/FIVE_EXPANSION_BALANCE.md). Each card has a test named `CC-REP-n`, `CC-HOU-n`,
+`CC-MAS-n`, `CC-POR-n` or `CC-GLO-n` with its key, in `tests/clockwork/expansions5.test.ts`.
+
+- **KC5-SET-1, sets.** 69 cards in five sets, all off by default, listed after every existing card. No existing card,
+  key, cost, effect or piece of art changed.
+- **KC5-SET-2, all together.** Any mix of sets deals a legal 10-pile market and plays to the end.
+- **KC5-PRJ-1, the switch.** `config.crownProjects`, on unless set to `false`. Off deals no Projects, and the 8 cards
+  that only work with Projects (Builder's Honour, Civic Tribute and the rest of `projectCards`) are banned from the market.
+- **KC5-PRJ-2, chosen markets.** A chosen market or Project list that needs Projects is refused while they are off.
+- **KC5-PRJ-3, endings.** With Projects off the game ends on the Grand Duchy pile or on empty piles (3, or 4 at 5+
+  players), and the round is still finished (CC-FINAL). Project Renown is 0.
+- **KC5-PRJ-4, bots.** Bots finish Projects-off games at 2 to 6 players.
+- **KC5-PRJ-5, guide.** A Projects-off table's guide drops Projects from scoring, endings and the mistakes list.
+- **KC5-PRJ-6, rooms.** A Projects-off room reloads from storage after every move and finishes with no Projects.
+- **KC5-VER-1, saves.** State version 5. Older rooms load unchanged (the migration adds nothing) and keep their edition.
+  A room with no `crownProjects` key has Projects on.
+- **KC5-SIM-1, privacy.** Every step of a game with the new sets, Projects on and off, passes the projection check.
+  Bonded Store's set-aside cards show only a count to opponents (CC-POR-7).
+- **KC5-ART-1, art.** Each of the 69 has its own SVG under 48 KB with no text.
+
+Validations the owner asked for, and where they are tested: Master's Hand gives at most +1 Influence (CC-MAS-7); Bonded
+Store doesn't leak (CC-POR-7, KC5-SIM-1); Victory Parade leaves the Grand Duchy's cost alone (CC-GLO-11); Ledger Hall
+doesn't count Bronze (CC-REP-11); Underwriter asks each holder in turn at 6 players (CC-REP-5); Royal Jubilee's
+threshold is half the starting Grand Duchy pile, 4/6/6/7/9 at 2 to 6 players (CC-GLO-13).
 
 ## Staged construction trial (CC-STAGE)
 
