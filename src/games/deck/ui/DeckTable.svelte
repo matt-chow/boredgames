@@ -46,8 +46,8 @@
   let quitting = $state(false);
   let howto = $state(false);
   let helpAt = $state<string | null>(null);
-  const guideOf = getContext<((edition?: string, version?: number) => GuideDoc) | undefined>('deck-guide');
-  const guideDoc = $derived(guideOf?.(rules.edition?.code, g.rulesVersion) ?? null);
+  const guideOf = getContext<((edition?: string, version?: number, noProjects?: boolean) => GuideDoc) | undefined>('deck-guide');
+  const guideDoc = $derived(guideOf?.(rules.edition?.code, g.rulesVersion, !!rules.projectCount && !g.projects.length) ?? null);
   setContext('deck-labels', () => rules.labels);
   function help(id: string | null) {
     helpAt = id;

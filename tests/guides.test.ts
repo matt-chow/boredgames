@@ -207,6 +207,24 @@ describe('Kingdom & Commerce rules for the room', () => {
     expect(body(doc, 'f-examples')).not.toContain('three-stage');
   });
 
+  it('KC5-PRJ-5: a table without Crown Projects gets a guide that keeps the other endings and finishing the round', () => {
+    const doc = guideFor(undefined, 5, true);
+    expect(doc.note).toContain('without Crown Projects');
+    expect(body(doc, 'q-end')).toContain('Grand Duchy pile is empty');
+    expect(body(doc, 'q-end')).toContain('market piles are empty');
+    expect(body(doc, 'q-end')).toContain('The round then finishes');
+    expect(body(doc, 'q-end')).not.toContain('Crown Projects are complete');
+    expect(body(doc, 'f-end')).not.toMatch(/Crown Projects complete|part-built/);
+    expect(body(doc, 'f-end')).toContain('same number of turns');
+    expect(body(doc, 'f-mistakes')).not.toContain('Crown Project');
+    expect(body(doc, 'f-examples')).toContain('Finishing the round');
+    expect(body(doc, 'f-examples')).not.toContain('three-stage');
+    expect(textOf(kingdom)).toContain('Glory of the Realm');
+    const trial = guideFor(EDITIONS[0].edition!.code, undefined, true);
+    expect(trial.note).toContain(EDITIONS[0].edition!.name);
+    expect(trial.note).toContain('without Crown Projects');
+  });
+
   it.each(EDITIONS.map((e) => e.edition!.code))('GUIDE-K10: a %s room’s guide states that room’s rule everywhere', (code) => {
     const rules = EDITIONS.find((e) => e.edition!.code === code)!;
     const doc = guideFor(code);
