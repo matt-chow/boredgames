@@ -29,7 +29,8 @@ Last updated 2026-11-20.
 | A2 | Done: race engine `rules/race.ts`, 38 tests (AX-CAR..AX-FIN, replay determinism) |
 | A3 | Done: computer driver `rules/ai.ts` from its own view only; all-AI grids finish every circuit, modules off and on (AX-AI-1..2) |
 | A4 | Done: module rules tested (AX-MOD-1..4); all 16 module combinations finish on all 8 circuits |
-| A5–A9 | Not started |
+| A5 | Done: `rules/season.ts`: points, tiebreaks, reverse-standings drafts, 4-upgrade cap, sponsors and press with the 2-point cap (AX-CH-1..6, AX-GRID-2) |
+| A6–A9 | Not started |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
 

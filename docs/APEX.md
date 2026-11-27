@@ -152,11 +152,13 @@ Four modules, each independent and on by default. Every circuit plays with any c
 - **AX-CH-2** Points by finishing place: 9, 6, 4, 3, 2, 1, 0, 0. Ties in the standings break on wins, then on most
   second places and so on, then on the last race's finish.
 - **AX-CH-3** After every race but the last, an upgrade draft: cars+1 upgrades are revealed and drivers pick one each
-  in reverse standings order. Computer cars pick too.
+  in reverse standings order. Computer cars pick too. **Interpretation:** a driver may pass; unpicked and returned
+  upgrades go to the bottom of the season's face-down stack, so nothing is lost or duplicated.
 - **AX-CH-4** A car holds at most 4 upgrades. Taking a fifth means returning one. Upgrades last for this season only.
 - **AX-CH-5** Before each race the weather and one pre-race event are drawn (if those are on).
 - **AX-CH-6** Sponsors and press objectives (on by default): each driver holds one sponsor for the season; each race
-  shows two press objectives. Each pays 1 point at most once per race per driver, and a driver can earn at most 2
+  shows two press objectives. **Interpretation:** with more than six cars, sponsors go to people first, then computer
+  cars, until the six run out. Each pays 1 point at most once per race per driver, and a driver can earn at most 2
   bonus points per race (anti-farming). In a single race they pay press stars, shown on the podium only.
 - **AX-CH-7** A season can be shelved between races and resumed later from the same room.
 
