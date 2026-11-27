@@ -28,8 +28,8 @@ async function openTable(players: Player[], configure?: (page: Page) => Promise<
 }
 
 const laps1 = async (page: Page) => {
-  await page.getByLabel('Laps').selectOption('1');
-  await expect(page.getByLabel('Laps')).toHaveValue('1');
+  await page.getByRole('combobox', { name: /^Laps/ }).selectOption('1');
+  await expect(page.getByRole('combobox', { name: /^Laps/ })).toHaveValue('1');
 };
 
 /** Lock a plan through the dashboard: the highest gear that can be reached, then cards in hand order until legal. */
@@ -78,7 +78,7 @@ test.describe('Apex ’66', () => {
     test.setTimeout(180_000);
     const a = await newPlayer(browser, 'Ada', DESKTOP);
     await openTable([a], async (page) => {
-      await page.getByLabel('Mode').selectOption('solo');
+      await page.getByRole('radio', { name: /^Solo/ }).check();
       await laps1(page);
       await page.getByLabel('Cars on the grid').selectOption('4');
     });
@@ -132,7 +132,7 @@ test.describe('Apex ’66', () => {
 
   test('the rules open from the table and Driving School coaches', async ({ browser }) => {
     const a = await newPlayer(browser, 'Ada', DESKTOP);
-    await openTable([a], (page) => page.getByLabel('Mode').selectOption('school').then(() => undefined));
+    await openTable([a], (page) => page.getByRole('radio', { name: /^Driving School/ }).check());
     await expect(a.page.getByRole('region', { name: /Coach/ })).toContainText('Gears');
     await a.page.getByRole('button', { name: 'Got it' }).click();
     await a.page.getByRole('button', { name: 'Rules', exact: true }).click();

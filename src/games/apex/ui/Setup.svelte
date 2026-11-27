@@ -3,7 +3,7 @@
   import type { GameUiProps } from '../../ui';
   import { CIRCUITS } from '../rules/content/circuits';
   import { MAX_CARS, SEASON_LENGTHS, TIMERS, type AConfig } from '../rules/engine';
-  import Spot from './Spot.svelte';
+  import { paint } from './assets';
   import { MODE_NAMES } from './text';
 
   let { conn, room }: GameUiProps = $props();
@@ -13,6 +13,7 @@
   const can = $derived(room.canConfigure && !conn.busy);
   const circuit = $derived(CIRCUITS.find((x) => x.id === c.circuit)!);
   const school = $derived(c.mode === 'school');
+  const custom = $derived(c.mode === 'championship' && c.length === 0);
 
   async function send(config: Partial<AConfig>) {
     const r = await conn.send({ t: 'config', config });
@@ -29,25 +30,65 @@
   }
 </script>
 
+<!-- Race settings come first and span the lobby: the mode and circuit are the choices people make most. -->
 <section class="setup" aria-labelledby="ax-setup-h">
   <h2 id="ax-setup-h" class="label">Race settings</h2>
   {#if !room.canConfigure}<p class="muted">{room.seats.find((s) => s.host)?.name ?? 'The host'} chooses the settings. They are fixed once the race starts.</p>{/if}
-  <div class="opts">
-    <label>Mode
-      <select value={c.mode} disabled={!can} onchange={(e) => send({ mode: e.currentTarget.value as AConfig['mode'] })}>
-        {#each Object.entries(MODE_NAMES) as [id, name] (id)}<option value={id} disabled={(id === 'solo' || id === 'school') && n > 1}>{name}</option>{/each}
-      </select>
-      <span class="hint">{MODE_TEXT[c.mode]}</span>
-    </label>
-    {#if !school && !(c.mode === 'championship')}
-      <label>Circuit
-        <select value={c.circuit} disabled={!can} onchange={(e) => send({ circuit: e.currentTarget.value })}>
-          {#each CIRCUITS as x (x.id)}<option value={x.id}>{x.name} ({x.level}, {x.corners.length} corners)</option>{/each}
-        </select>
-        <span class="hint lined"><Spot id="poster.{c.circuit}" size={44} /><span>{circuit.blurb}</span></span>
+
+  <fieldset class="modes">
+    <legend>Mode</legend>
+    {#each Object.entries(MODE_NAMES) as [id, name] (id)}
+      {@const off = (id === 'solo' || id === 'school') && n > 1}
+      <label class="tile" class:on={c.mode === id} class:off>
+        <input type="radio" name="ax-mode" value={id} checked={c.mode === id} disabled={!can || off} onchange={() => send({ mode: id as AConfig['mode'] })} />
+        <b>{name}</b>
+        <span>{off ? 'One player only.' : MODE_TEXT[id as AConfig['mode']]}</span>
       </label>
-    {/if}
-    {#if !school}
+    {/each}
+  </fieldset>
+
+  {#if !school && (c.mode !== 'championship' || custom)}
+    <fieldset class="circuits">
+      <legend>{custom ? `Custom calendar: tap a circuit to add it (${c.races.length} of 12)` : 'Circuit'}</legend>
+      {#each CIRCUITS as x (x.id)}
+        {@const art = paint(`poster.${x.id}`)}
+        {#if custom}
+          <button class="tile circ" disabled={!can || c.races.length >= 12} onclick={() => addRace(x.id)}>
+            {#if art}<img src={art} alt="" loading="lazy" decoding="async" />{/if}
+            <b>{x.name}</b><span>{x.level} · {x.corners.length} corners · {x.laps} laps</span>
+          </button>
+        {:else}
+          <label class="tile circ" class:on={c.circuit === x.id}>
+            <input type="radio" name="ax-circuit" value={x.id} checked={c.circuit === x.id} disabled={!can} onchange={() => send({ circuit: x.id })} />
+            {#if art}<img src={art} alt="" loading="lazy" decoding="async" />{/if}
+            <b>{x.name}</b><span>{x.level} · {x.corners.length} corners · {x.laps} laps</span>
+          </label>
+        {/if}
+      {/each}
+    </fieldset>
+    {#if !custom}<p class="muted blurb"><b>{circuit.name}.</b> {circuit.blurb}</p>{/if}
+  {/if}
+
+  {#if custom}
+    <ol class="calendar">
+      {#each c.races as r, i (i)}
+        <li>{i + 1}. {CIRCUITS.find((x) => x.id === r)?.name}<button class="btn small ghost" disabled={!can} aria-label="Remove race {i + 1}" onclick={() => send({ races: c.races.filter((_, k) => k !== i) })}>Remove</button></li>
+      {:else}
+        <li class="muted">No races yet.</li>
+      {/each}
+    </ol>
+  {/if}
+
+  {#if !school}
+    <div class="opts">
+      {#if c.mode === 'championship'}
+        <label>Season
+          <select value={c.length} disabled={!can} onchange={(e) => send({ length: Number(e.currentTarget.value) })}>
+            {#each SEASON_LENGTHS as l (l)}<option value={l}>{l} races</option>{/each}
+            <option value={0}>Custom</option>
+          </select>
+        </label>
+      {/if}
       <label>Laps
         <select value={c.laps ?? ''} disabled={!can} onchange={(e) => send({ laps: e.currentTarget.value ? Number(e.currentTarget.value) : null })}>
           <option value="">Circuit default{c.mode === 'championship' ? 's' : ` (${circuit.laps})`}</option>
@@ -78,64 +119,124 @@
           {#each TIMERS as t (t)}<option value={t}>{t ? `${t} seconds` : 'Off (recommended)'}</option>{/each}
         </select>
       </label>
-    {/if}
-    {#if c.mode === 'championship'}
-      <label>Season
-        <select value={c.length} disabled={!can} onchange={(e) => send({ length: Number(e.currentTarget.value) })}>
-          {#each SEASON_LENGTHS as l (l)}<option value={l}>{l} races</option>{/each}
-          <option value={0}>Custom</option>
-        </select>
-      </label>
-    {/if}
-  </div>
-  {#if c.mode === 'championship' && c.length === 0}
-    <div class="custom">
-      <p class="label2">Custom calendar ({c.races.length} of 12)</p>
-      <ol>
-        {#each c.races as r, i (i)}
-          <li>{CIRCUITS.find((x) => x.id === r)?.name}<button class="btn small ghost" disabled={!can} aria-label="Remove race {i + 1}" onclick={() => send({ races: c.races.filter((_, k) => k !== i) })}>Remove</button></li>
-        {/each}
-      </ol>
-      <label class="row">Add a race
-        <select value="" disabled={!can || c.races.length >= 12} onchange={(e) => addRace(e.currentTarget.value)}>
-          <option value="">Choose a circuit…</option>
-          {#each CIRCUITS as x (x.id)}<option value={x.id}>{x.name}</option>{/each}
-        </select>
-      </label>
     </div>
   {/if}
   <p class="muted">
-    {#if school}Driving School fixes everything else: two careful computer cars, one lap, no modules or timer.{:else}The modules, upgrade pools and paddock switches below are all on by default. Every circuit plays with any of them off. Weather is drawn before the race and never changes during it.{/if}
+    {#if school}Driving School fixes everything else: two careful computer cars, one lap, no modules or timer.{:else}The modules, upgrade pools and paddock switches under Variants are all on by default. Every circuit plays with any of them off. Weather is drawn before the race and never changes during it.{/if}
   </p>
 </section>
 
 <style>
+  .setup {
+    /* A child of the lobby's column grid: take the whole first row. */
+    grid-column: 1 / -1;
+    order: -1;
+    display: grid;
+    gap: 12px;
+  }
   .setup h2 {
-    margin: 0 0 6px;
+    margin: 0;
     font-size: 22px;
   }
-  .muted,
-  .hint {
-    margin: 8px 0 0;
+  .muted {
+    margin: 0;
     color: var(--ink-3);
     font-size: 14px;
-    font-weight: 400;
   }
-  .hint {
-    margin: 0;
-    font-size: 13px;
-  }
-  .lined {
-    display: flex;
+  fieldset {
+    display: grid;
     gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  legend {
+    padding: 0 0 6px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .modes {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  }
+  .circuits {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+  .tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    font: inherit;
+    font-size: 13px;
+    text-align: left;
+    color: var(--ink-3);
+    background: var(--ground-1);
+    border: 1px solid var(--rim);
+    border-radius: var(--r-md, 8px);
+    cursor: pointer;
+  }
+  .tile b {
+    font-size: 15px;
+    color: var(--ink);
+  }
+  .tile input {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: inherit;
+  }
+  .tile:has(input:focus-visible),
+  button.tile:focus-visible {
+    outline: 2px solid var(--sprout);
+    outline-offset: 2px;
+  }
+  .tile.on {
+    border-color: var(--sprout);
+    box-shadow: 0 0 0 1px var(--sprout) inset;
+    background: color-mix(in srgb, var(--sprout) 10%, var(--ground-1));
+  }
+  .tile.off,
+  .tile:has(input:disabled):not(.on),
+  button.tile:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .circ {
+    padding: 0 0 8px;
+    overflow: hidden;
+  }
+  .circ img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin-bottom: 4px;
+  }
+  .circ b,
+  .circ span {
+    padding: 0 10px;
+  }
+  .calendar {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: 420px;
+  }
+  .calendar li {
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 8px;
   }
   .opts {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px 12px;
   }
-  label {
+  .opts label {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -151,25 +252,5 @@
     background: var(--ground-0);
     border: 1px solid var(--rim);
     border-radius: var(--r-sm, 6px);
-  }
-  .custom {
-    margin-top: 10px;
-  }
-  .label2 {
-    margin: 0 0 4px;
-    font-weight: 600;
-  }
-  .custom ol {
-    margin: 0 0 8px;
-    padding-left: 20px;
-  }
-  .custom li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-  .row {
-    max-width: 320px;
   }
 </style>

@@ -95,6 +95,7 @@
 </script>
 
 <section class="dash" aria-label="Your dashboard" class:still={settings.instant}>
+  <div class="lay">
   <div class="instruments">
     <figure class="gauge" aria-label="Engine: {car.engine} of {maxEngine} Strain left">
       <svg viewBox="0 0 120 76" aria-hidden="true">
@@ -141,9 +142,11 @@
         <p class="big">Clogged</p>
         <p>No card you can commit: you limp 1 space at speed 1 in gear 1.</p>
       {:else}
-        <p class="row"><span>Speed</span><b>{est.speed}{est.unknown ? ` + ${est.unknown}?` : ''}</b></p>
-        <p class="row"><span>Distance</span><b>{est.dist}{est.unknown ? ` + ${est.unknown}?` : ''}</b></p>
-        <p class="row"><span>Cools</span><b>{est.cool}</b></p>
+        <div class="stats">
+          <p class="row"><span>Speed</span><b>{est.speed}{est.unknown ? ` + ${est.unknown}?` : ''}</b></p>
+          <p class="row"><span>Distance</span><b>{est.dist}{est.unknown ? ` + ${est.unknown}?` : ''}</b></p>
+          <p class="row"><span>Cools</span><b>{est.cool}</b></p>
+        </div>
         {#if est.catchup}<p class="note">Catch-up: +1 distance, +1 cooling.</p>{/if}
         {#each est.checks.filter((c) => c.cost) as c (c.m)}
           <p class="warn">{c.corner >= 0 ? 'Corner' : 'Pass'} limit {c.limit}: costs {c.cost} Strain{c.cost > engineAfter ? ', you would spin' : ''}</p>
@@ -156,6 +159,7 @@
     </div>
   </div>
 
+  <div class="handarea">
   <div class="handbar">
     <div class="modes" role="group" aria-label="What a tap on a card does">
       <button class="btn small" class:primary={mode === 'commit'} aria-pressed={mode === 'commit'} disabled={!planning} onclick={() => (mode = 'commit')}>Commit</button>
@@ -175,7 +179,7 @@
     {/if}
   </div>
 
-  <ul class="hand" aria-label="Your hand, {me.hand.length} cards">
+  <ul class="hand" aria-label="Your hand, {me.hand.length} cards" style="--n: {me.hand.length}">
     {#each me.hand as c, i (i)}
       <li style="transform: {fan(i, me.hand.length)}; z-index: {i}">
         <button
@@ -192,6 +196,8 @@
       </li>
     {/each}
   </ul>
+  </div>
+  </div>
 </section>
 
 <style>
@@ -205,11 +211,38 @@
       #1a2420;
     border: 1px solid var(--rim);
   }
+  .dash {
+    container-type: inline-size;
+  }
+  .lay,
+  .handarea {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+    align-content: start;
+  }
+  .handarea {
+    container-type: inline-size;
+  }
   .instruments {
     display: grid;
     grid-template-columns: 170px minmax(200px, 250px) minmax(170px, 1fr);
     gap: 12px;
     align-items: start;
+  }
+  /* Wide dashboards put the hand beside the instruments, so the whole table fits one screen. */
+  @container (min-width: 860px) {
+    .lay {
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 16px;
+    }
+    .instruments {
+      grid-template-columns: 150px 220px;
+      gap: 8px;
+    }
+    .readout {
+      grid-column: 1 / -1;
+    }
   }
   .gauge {
     margin: 0;
@@ -327,11 +360,16 @@
   .readout p {
     margin: 0;
   }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
   .readout .row {
     display: flex;
-    justify-content: space-between;
-    border-bottom: 1px dotted var(--rim);
+    flex-direction: column;
     padding: 2px 0;
+    border-bottom: 1px dotted var(--rim);
   }
   .readout b,
   .readout .big {
@@ -348,8 +386,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    min-height: 40px;
-    margin-top: 4px;
+    min-height: 36px;
   }
   .handbar {
     display: flex;
@@ -373,14 +410,17 @@
     display: flex;
     justify-content: center;
     margin: 0;
-    padding: 22px 0 0;
+    padding: 26px 0 18px;
     list-style: none;
-    min-height: 140px;
   }
   .hand li {
     margin: 0 -8px;
     transform-origin: 50% 120%;
     transition: transform 220ms cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+  /* The fan, overlapping 16px per card, is sized to fit the row; 48px spare covers the tilt of the end cards. */
+  .hand li :global(.card) {
+    --w: clamp(48px, calc((100cqi - 48px + (var(--n) - 1) * 16px) / var(--n)), 108px);
   }
   .cardbtn {
     display: block;
@@ -417,12 +457,6 @@
     }
     .h {
       display: none;
-    }
-    .hand li {
-      margin: 0 -10px;
-    }
-    .hand li :global(.card) {
-      --w: 66px;
     }
   }
 </style>

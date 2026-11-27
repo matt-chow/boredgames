@@ -110,17 +110,29 @@
   const previewPath = $derived(preview && preview.to > preview.from ? T.path(preview.from, preview.to) : null);
   const ghost = $derived(preview && preview.to > preview.from ? poseOf(preview.to, 0) : null);
 
+  // The view frames the circuit and its dressing, not the whole poster page, so the road fills the box.
+  const vb = $derived.by(() => {
+    const xs = [...geo.line.map((q) => q[0]), ...corners.map((k) => k.x)];
+    const ys = [...geo.line.map((q) => q[1]), ...corners.map((k) => k.y)];
+    for (const m of models) xs.push(m.x - m.a.w / 2, m.x + m.a.w / 2), ys.push(m.y - m.a.h, m.y);
+    const pad = ROAD;
+    const x = Math.max(0, Math.min(...xs) - pad), y = Math.max(0, Math.min(...ys) - pad);
+    return { x, y, w: Math.min(W, Math.max(...xs) + pad) - x, h: Math.min(H, Math.max(...ys) + pad) - y };
+  });
+
   // ---- Camera. Moves only on the reader's command: drag, wheel, keys or the buttons. --------------------------------
   let cam = $state({ x: 0, y: 0, k: 1 });
   let svg: SVGSVGElement;
-  const clampK = (k: number) => Math.min(4, Math.max(1, k));
+  const clampK = (k: number) => Math.min(6, Math.max(1, k));
   function clamp(c: { x: number; y: number; k: number }) {
     const k = clampK(c.k);
-    return { k, x: Math.min(0, Math.max(W - W * k, c.x)), y: Math.min(0, Math.max(H - H * k, c.y)) };
+    const x1 = vb.x + vb.w, y1 = vb.y + vb.h;
+    return { k, x: Math.min(vb.x - vb.x * k, Math.max(x1 - x1 * k, c.x)), y: Math.min(vb.y - vb.y * k, Math.max(y1 - y1 * k, c.y)) };
   }
+  const mid = () => ({ x: vb.x + vb.w / 2, y: vb.y + vb.h / 2 });
   function toBoard(cx: number, cy: number) {
     const m = svg.getScreenCTM();
-    if (!m) return { x: W / 2, y: H / 2 };
+    if (!m) return mid();
     const p = new DOMPoint(cx, cy).matrixTransform(m.inverse());
     return { x: p.x, y: p.y };
   }
@@ -134,7 +146,7 @@
     const c = cars.find((x) => x.c.id === id) ?? grid.map((g) => ({ p: g.p })).find((_, i) => race.cars.filter((c) => c.pos < 0)[i]?.id === id);
     if (!c) return;
     const k = Math.max(cam.k, 2.2);
-    cam = clamp({ k, x: W / 2 - c.p.x * k, y: H / 2 - c.p.y * k });
+    cam = clamp({ k, x: mid().x - c.p.x * k, y: mid().y - c.p.y * k });
   }
   let drag: { id: number; x: number; y: number; cx: number; cy: number } | null = null;
   const pts = new Map<number, { x: number; y: number }>();
@@ -189,9 +201,9 @@
       ArrowRight: () => (cam = clamp({ ...cam, x: cam.x - d })),
       ArrowUp: () => (cam = clamp({ ...cam, y: cam.y + d })),
       ArrowDown: () => (cam = clamp({ ...cam, y: cam.y - d })),
-      '+': () => zoomAt(W / 2, H / 2, 1.25),
-      '=': () => zoomAt(W / 2, H / 2, 1.25),
-      '-': () => zoomAt(W / 2, H / 2, 0.8),
+      '+': () => zoomAt(mid().x, mid().y, 1.25),
+      '=': () => zoomAt(mid().x, mid().y, 1.25),
+      '-': () => zoomAt(mid().x, mid().y, 0.8),
       '0': fit0,
       c: () => centre(mine),
     };
@@ -250,7 +262,7 @@
   <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
   <svg
     bind:this={svg}
-    viewBox="0 0 {W} {H}"
+    viewBox="{vb.x} {vb.y} {vb.w} {vb.h}"
     preserveAspectRatio="xMidYMid meet"
     role="application"
     aria-label="{label}. Drag or use the arrow keys to look around, plus and minus to zoom, 0 to fit, C to find your car."
@@ -371,8 +383,8 @@
   <div class="cambar" role="toolbar" aria-label="Board view">
     <button class="btn small ghost" onclick={fit0} title="Fit the whole circuit (0)">Fit</button>
     {#if mine != null}<button class="btn small ghost" onclick={() => centre(mine)} title="Centre on your car (C)">My car</button>{/if}
-    <button class="btn small ghost" onclick={() => zoomAt(W / 2, H / 2, 1.25)} aria-label="Zoom in">+</button>
-    <button class="btn small ghost" onclick={() => zoomAt(W / 2, H / 2, 0.8)} aria-label="Zoom out">−</button>
+    <button class="btn small ghost" onclick={() => zoomAt(mid().x, mid().y, 1.25)} aria-label="Zoom in">+</button>
+    <button class="btn small ghost" onclick={() => zoomAt(mid().x, mid().y, 0.8)} aria-label="Zoom out">−</button>
   </div>
 </div>
 

@@ -176,7 +176,7 @@
       <section class="boardwrap" aria-label="Circuit">
         <Board {race} mine={me?.car ?? null} fit={me?.ai.me.fit ?? {}} preview={myMove || me?.plan ? preview : null} label="{circuitName(race.circuit)}, lap {leaderLap} of {race.laps}" />
         {#if showIntro}
-          <div class="intro" role="dialog" aria-label="Grid introduction">
+          <div class="sheet" role="dialog" aria-modal="true" aria-label="Grid introduction">
             <div class="poster">
               {#if paint(`poster.${race.circuit}`)}<img class="band-art" src={paint(`poster.${race.circuit}`)} alt="" decoding="async" />{/if}
               <p class="kicker">Round {view.season.index + 1}{view.season.champ ? ` of ${view.season.races.length}` : ''}</p>
@@ -188,6 +188,22 @@
           </div>
         {/if}
       </section>
+    {/if}
+
+    {#if me && race && view.phase === 'race'}
+      <div class="dashwrap">
+        {#if reacting}
+          <div class="react" role="alertdialog" aria-label="Draft decision">
+            <p>
+              <b>Slipstream.</b> You can draft {race.pending!.len} more {race.pending!.len === 1 ? 'space' : 'spaces'}.
+              {race.pending!.hazard ? `It crosses a corner and costs ${race.pending!.hazard} Strain.` : ''}
+            </p>
+            <button class="btn primary" disabled={conn.busy} onclick={() => act({ type: 'react', step: view.step, take: true })}>Draft</button>
+            <button class="btn" disabled={conn.busy} onclick={() => act({ type: 'react', step: view.step, take: false })}>Stay put</button>
+          </div>
+        {/if}
+        <Dashboard {view} {act} busy={conn.busy} onpreview={(p) => (preview = p)} />
+      </div>
     {/if}
 
     <aside class="side" aria-label="Race information">
@@ -244,21 +260,6 @@
       {#if view.mode === 'school'}<Coach {view} onrules={rules} />{/if}
     </aside>
 
-    {#if me && race && view.phase === 'race'}
-      <div class="dashwrap">
-        {#if reacting}
-          <div class="react" role="alertdialog" aria-label="Draft decision">
-            <p>
-              <b>Slipstream.</b> You can draft {race.pending!.len} more {race.pending!.len === 1 ? 'space' : 'spaces'}.
-              {race.pending!.hazard ? `It crosses a corner and costs ${race.pending!.hazard} Strain.` : ''}
-            </p>
-            <button class="btn primary" disabled={conn.busy} onclick={() => act({ type: 'react', step: view.step, take: true })}>Draft</button>
-            <button class="btn" disabled={conn.busy} onclick={() => act({ type: 'react', step: view.step, take: false })}>Stay put</button>
-          </div>
-        {/if}
-        <Dashboard {view} {act} busy={conn.busy} onpreview={(p) => (preview = p)} />
-      </div>
-    {/if}
   </div>
 
   {#if view.phase === 'podium' || view.phase === 'over'}
@@ -340,7 +341,8 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    min-height: 100%;
+    height: 100%;
+    overflow-y: auto;
     padding: 8px 12px 16px;
     color: var(--ink);
   }
@@ -413,24 +415,30 @@
     display: grid;
     gap: 10px;
   }
+  /* On a desk the table fits one screen: the board takes what the dashboard leaves, the side panel scrolls. */
   .wide .main {
+    flex: 1 0 auto;
     grid-template-columns: minmax(0, 1fr) 320px;
+    grid-template-rows: minmax(260px, 1fr) auto;
     grid-template-areas: 'board side' 'dash side';
-    align-items: start;
   }
   .boardwrap {
     position: relative;
     aspect-ratio: 16 / 10;
+    max-height: 55dvh;
     min-width: 0;
   }
   .wide .boardwrap {
     grid-area: board;
-    min-height: 320px;
     aspect-ratio: auto;
-    height: calc(100dvh - 440px);
+    max-height: none;
+    contain: size;
   }
+  /* Size containment keeps a long side panel from stretching the rows; it scrolls instead. A short window scrolls the page. */
   .wide .side {
     grid-area: side;
+    contain: size;
+    overflow-y: auto;
   }
   .wide .dashwrap {
     grid-area: dash;
@@ -547,18 +555,10 @@
     flex: 1;
     margin: 0;
   }
-  .intro,
   .sheet {
     display: grid;
     place-items: center;
     padding: 16px;
-  }
-  .intro {
-    position: absolute;
-    inset: 0;
-    background: rgb(11 19 16 / 0.55);
-  }
-  .sheet {
     position: fixed;
     inset: 0;
     z-index: 20;
