@@ -1,4 +1,5 @@
 import type { AnyGameModule } from '../engine/types';
+import { apex } from './apex';
 import { bohnanza } from './bohnanza';
 import { clockwork } from './clockwork';
 import { deaddrop } from './deaddrop';
@@ -10,6 +11,7 @@ import { tally } from './tally';
 
 /** Server-side rules registry. Adding a game = one import + one entry. */
 export const GAMES: Record<string, AnyGameModule> = {
+  [apex.meta.id]: apex,
   [bohnanza.meta.id]: bohnanza,
   [clockwork.meta.id]: clockwork,
   [deaddrop.meta.id]: deaddrop,
@@ -21,7 +23,7 @@ export const GAMES: Record<string, AnyGameModule> = {
 };
 
 /** Games offered in the hub UI (the tally module is a test fixture). */
-export const LISTED_GAMES = ['bohnanza', 'clockwork', ...(__DEAD_DROP__ ? ['deaddrop'] : []), 'mines', 'sealed', 'palazzo'];
+export const LISTED_GAMES = ['bohnanza', 'clockwork', ...(__DEAD_DROP__ ? ['deaddrop'] : []), 'mines', 'sealed', 'palazzo', 'apex'];
 
 /** Games a new room may be created for: the listed ones, plus the deck bench on a bench dev server. */
 export const HOSTABLE_GAMES = __DECK_BENCH__ ? [...LISTED_GAMES, deckbench.meta.id] : LISTED_GAMES;

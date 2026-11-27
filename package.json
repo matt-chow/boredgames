@@ -13,6 +13,8 @@
     "test:watch": "vitest",
     "balance": "vitest run --config scripts/balance.config.ts scripts/clockwork-balance.test.ts",
     "balance:expansions": "vitest run --config scripts/balance.config.ts scripts/expansion5-balance.test.ts",
+    "balance:apex": "vitest run --config scripts/balance.config.ts scripts/apex-balance.test.ts",
+    "measure:apex": "vitest run --config scripts/balance.config.ts scripts/apex-balance.test.ts",
     "experiment:crown-end": "vitest run --config scripts/crown-end.config.ts",
     "experiment:crown-construction": "vitest run --config scripts/crown-construction.config.ts",
     "experiment:bots": "vitest run --config scripts/bots.config.ts bot-benchmark --maxWorkers=1",

@@ -91,6 +91,8 @@ export type ClientMsg =
   | { t: 'ready'; id: string; v: number; on: boolean }
   | { t: 'leave'; id: string; v: number }
   | { t: 'rematch'; id: string; v: number }
+  /** The host deletes the room for everyone, at any time. */
+  | { t: 'close'; id: string }
   | { t: 'ping' };
 
 export type ServerMsg =

@@ -1,0 +1,34 @@
+/*
+ * Apex '66: a race-day poster laid on the paddock table. The room is racing green at dusk; the circuit is printed on
+ * cream poster stock with vermilion and ink. Sprout stays the signal colour ("green flag: legal, your move").
+ * Vermilion is the poster's own red: kerbs, limits, overspeed. It never marks a legal move.
+ */
+[data-game-theme='apex'] {
+  --ground-0: #0b1310;
+  --ground-1: #101b17;
+  --ground-2: #17241f;
+  --ground-3: #1f2f29;
+  --rim: #2f443b;
+  --rim-hi: #4a6358;
+  --ink: #f1ead8;
+  --ink-2: #cfc6ae;
+  --ink-3: #9a9884;
+
+  --ax-paper: #efe6cf;
+  --ax-paper-2: #e4d8b9;
+  --ax-paper-ink: #1d1a14;
+  --ax-paper-ink-2: #5a5040;
+  --ax-asphalt: #3a3a37;
+  --ax-asphalt-hi: #4a4a46;
+  --ax-red: #c8402c;
+  --ax-red-ink: #fff3e6;
+  --ax-blue: #2c5d7c;
+  --ax-mustard: #d9a53a;
+  --ax-chrome: #c9c6bb;
+  --ax-dial: #f4eedc;
+  --ax-serif: 'Rockwell', 'Roboto Slab', 'Iowan Old Style', Georgia, serif;
+}
+
+body:has([data-game-theme='apex']:not([data-fan])) {
+  background: #101b17;
+}

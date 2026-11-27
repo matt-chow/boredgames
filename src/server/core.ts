@@ -119,7 +119,7 @@ export interface HandleResult {
   changed: boolean;
   /** Token hashes whose sockets must be closed (kicked or left). */
   evict: string[];
-  /** The last person quit a game in progress: the room ends for everyone and is deleted. Holds the quitter's name. */
+  /** The room ends for everyone and is deleted (the last person quit, or the host closed it). Holds that person's name. */
   end?: string;
 }
 
@@ -206,7 +206,8 @@ export class RoomCore {
 
   /** When the room's data should be deleted if nothing else happens. */
   get expiresAt() {
-    return this.meta.updatedAt + RETENTION_MS[this.meta.status];
+    const own = this.meta.status === 'lobby' ? undefined : this.game.retainMs?.(this.getState(), this.meta.status);
+    return this.meta.updatedAt + (own ?? RETENTION_MS[this.meta.status]);
   }
 
   seatOf(th: string | null): number {
@@ -355,6 +356,11 @@ export class RoomCore {
     }
     // Quitting a game in progress does not depend on the table, so it is never stale. With other people still
     // seated a bot takes over the seat; otherwise (only bots left, or a game without bots) the game ends.
+    if (msg.t === 'close') {
+      if (this.seats[seat]?.th !== this.meta.hostTh)
+        return { ack: { id, v: this.meta.version, ok: false, code: 'not-host', error: 'Only the host can close the room.' }, changed: false, evict: [] };
+      return { ack: { id, v: this.meta.version, ok: true }, changed: false, evict: [], end: this.seats[seat].name };
+    }
     const quitting = msg.t === 'leave' && this.meta.status === 'playing';
     if (quitting && !this.handsOver(seat))
       return { ack: { id, v: this.meta.version, ok: true }, changed: false, evict: [], end: this.seats[seat].name };

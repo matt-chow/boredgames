@@ -113,3 +113,27 @@ apply. `scripts/art/palazzo.mjs` holds every prompt, seed and pick and can regen
 
 The engraved frame and name plate are CSS in `src/games/palazzo/ui/Card.svelte`. The sounds are synthesized at run
 time, so there are no audio files.
+
+## Apex '66
+
+The paintings are original images made for this project with the image tool built into the Codex CLI
+(`codex exec`), signed in with the owner's ChatGPT plan. There was no API key, no per-image billing and no paid asset.
+OpenAI's terms assign the output to the user. The prompts are written from [APEX_ART_BIBLE.md](APEX_ART_BIBLE.md),
+with no artist names, real brands, circuits or people. The only reference images are earlier accepted paintings
+from this same set, which keeps the family consistent. `scripts/art/apex-paint.mjs` holds the prompts and builds the
+web files. `data/apex-art-manifest.json` records every attempt: prompt, references, raw file, time, status and the
+reason for each rejection. The raw PNGs stay outside the repo in `.art/apex/raw`.
+
+| Files | What |
+|---|---|
+| `public/art/apex/card-*.webp` | Driving-card art windows, 480×360: Pace 1–5, Coast, Stress, Strain |
+| `public/art/apex/part-*.webp` | Upgrade catalogue pictures, 320×320 |
+| `public/art/apex/{sponsor,press,event,weather,rival}-*.webp` | Paddock spot pictures, 320×320 |
+| `public/art/apex/poster-*.webp` | Eight circuit posters, 600×900 |
+| `public/art/apex/prop-*.webp` | Eighteen board scenery miniatures with alpha, longest side 256 |
+| `public/art/apex/car-{0..7}.webp` | One painted car, recoloured to the eight liveries, 240×112 with alpha |
+| `public/art/apex/misc-{cover,trophy,school}.webp` | Game cover (also the hub cover), championship trophy, Driving School coach |
+
+Every painting has a code-drawn fallback: the SVG symbols in `src/games/apex/ui/Art.svelte` for scenery and the car,
+and the plain card and panel layouts elsewhere. The track, lanes, spaces, corner markers, gauges, icons and the car's
+stripe and number roundel stay SVG.

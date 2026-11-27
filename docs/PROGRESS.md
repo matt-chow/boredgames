@@ -18,6 +18,24 @@ Last updated 2026-11-20.
 | M10 Dead Drop | On staging | Third game: two people, secret orders, statements and challenges. See DEADDROP.md and DEADDROP_BALANCE.md |
 | M11 Sealed Correspondence v1.0 | Done | Court deduction card game, Classic (16 cards, 2–4) and Expanded (21 cards, 2–6). See SEALED.md |
 | M12 Palazzo v1.0 | Done | Original hidden-influence bluffing game for 2–6 people, five roles, server-timed response windows. See PALAZZO.md |
+| M13 Apex '66 | Staging (feat/apex66) | Original card-driven racing game. See APEX.md, APEX_MILESTONES.md and the section below |
+
+## Apex '66 (2026-11-26, on `feat/apex66`)
+
+| Milestone | Status |
+|---|---|
+| A0 Design documents | Done: APEX.md, APEX_CONTENT.md, APEX_ARCHITECTURE.md, APEX_MILESTONES.md, D57 |
+| A1 Content and circuit geometry | Done: 8 spline circuits validated (AX-TRK-1..8); 64 upgrades, 6 sponsors, 10 press, 16 events, 6 weather, 8 rivals (AX-CONT-1..4) |
+| A2 | Done: race engine `rules/race.ts`, 38 tests (AX-CAR..AX-FIN, replay determinism) |
+| A3 | Done: computer driver `rules/ai.ts` from its own view only; all-AI grids finish every circuit, modules off and on (AX-AI-1..2) |
+| A4 | Done: module rules tested (AX-MOD-1..4); all 16 module combinations finish on all 8 circuits |
+| A5 | Done: `rules/season.ts`: points, tiebreaks, reverse-standings drafts, 4-upgrade cap, sponsors and press with the 2-point cap (AX-CH-1..6, AX-GRID-2) |
+| A6 | Done: room engine `rules/engine.ts` (phases, private views, retract, timer, pause and autopilot, retention per stage), host close, replays `rules/replay.ts`; registered server-side (AX-PRV-1, AX-NET-1..3, AX-REP-1/2, AX-RET-1) |
+| A7 | Done: table UI in `src/games/apex/ui` (poster board from circuit geometry, analog dashboard, gear gate, fanned hand, coach, replay viewer with export/import, rules guide), hub listing and cover; `tests/e2e/apex.spec.ts` (solo race to replay on desktop; secret plans, retract and host autopilot handover on phones; school coach and rules) |
+| A8 | Done: `npm run balance:apex` (alias `measure:apex`) writes APEX_BALANCE.md: seeded races per circuit, module setting, grid size, AI level and risk, rivals; storage for a full 5-race championship (state peak about 53 KB) |
+| A9 | Done: check, 1280 unit tests and the browser suite pass; staging deploy (https://boredgames-staging.mchowcl.workers.dev, version 696a84b1) and the Apex browser tests pass against it. Production not deployed |
+| A11 Playtest fixes (2026-11-27) | Done: the grid introduction is a full-screen sheet (it spilled out of the board over the gear lever); on a desk the table fits one screen (hand beside the instruments, side panel scrolls), and on a phone the table scrolls with the dashboard under the board; the board frames the circuit's own bounds instead of the whole poster page, and zooms to 6×; race settings lead the lobby with mode buttons and circuit picture tiles (custom calendars add by tile). Second pass: the fanned hand is sized to fit its row at any width, so no card hangs off-screen; the desk layout pins the board and side panel to their grid cells so the dashboard never falls below the fold, and short or narrow windows scroll the page (the narrow board is capped at 55% of the screen height) |
+| A10 Painted art | **Paused, partial.** 119 Codex-painted pictures accepted (APEX_ART_BIBLE.md, ASSETS.md, `data/apex-art-manifest.json`), 126 WebPs, 2.9 MB in `public/art/apex`: all 8 driving cards, 8 posters, 18 scenery props, the car and 8 liveries, cover, trophy, school, 6 sponsors, 16 events, 8 rivals, 9 of 10 press, 4 of 6 weathers and 38 of 63 upgrades. Not painted yet, so the SVG/CSS fallbacks show: upgrades b02–b09, a24, e01–e16; weather overcast and drizzle; press Flat Out. Resume with `node scripts/art/apex-paint.mjs generate part --ref part.b01,part.a12` and `generate weather.overcast,weather.drizzle,press.flat --ref event.morning`. The whole-catalogue audit sheet is still to do |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
 
