@@ -50,16 +50,15 @@ async function drive(page: Page): Promise<boolean> {
     await gears.nth(gear - 1).check({ force: true });
     for (let i = 0; i < (await hand.count()); i++) {
       if ((await hand.and(page.getByRole('button', { pressed: true })).count()) >= gear) break;
-      if ((await hand.nth(i).getAttribute('aria-pressed')) !== 'true') await hand.nth(i).click();
+      // Fanned cards overlap and rotate, so pick them by keyboard: no hit-testing, and it covers keyboard play.
+      if ((await hand.nth(i).getAttribute('aria-pressed')) !== 'true') await hand.nth(i).press('Enter');
     }
     return expect(lock).toBeEnabled({ timeout: 3000 }).then(() => true, () => false);
   };
   // A clogged hand can only limp, and that plan is ready as it stands.
   let ok = /limp/.test((await lock.textContent()) ?? '') && (await lock.isEnabled());
-  if (!ok) for (const g of [4, 3, 2, 1]) if (await gears.nth(g - 1).isEnabled()) {
-    ok = (await fill(g)) || (await fill(1)); // too few playable cards for the high gear: drop to gear 1
-    break;
-  }
+  // Highest reachable gear first; too few playable cards for it means trying the next one down.
+  for (const g of [4, 3, 2, 1]) if (!ok && (await gears.nth(g - 1).isEnabled())) ok = await fill(g);
   if (!ok) return false;
   const before = await page.locator('.title .sub').textContent();
   if (!(await lock.click({ timeout: 5000 }).then(() => true, () => false))) return false;
