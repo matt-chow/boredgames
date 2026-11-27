@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 840" width="600" height="840" role="img" aria-label="Apex ’66: a vintage race poster with a cigar-shaped racing car sweeping through a banked corner under a low sun">
+<defs>
+<pattern id="grain" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#efe6cf"/><circle cx="1" cy="2" r=".6" fill="#d9cba6"/><circle cx="4" cy="5" r=".5" fill="#e4d8b9"/></pattern>
+<pattern id="chk" width="20" height="20" patternUnits="userSpaceOnUse"><rect width="20" height="20" fill="#f4eedc"/><rect width="10" height="10" fill="#1d1a14"/><rect x="10" y="10" width="10" height="10" fill="#1d1a14"/></pattern>
+<linearGradient id="road" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a4a46"/><stop offset="1" stop-color="#2c2c2a"/></linearGradient>
+</defs>
+<rect width="600" height="840" fill="url(#grain)"/>
+<circle cx="420" cy="300" r="190" fill="#d9a53a"/>
+<circle cx="420" cy="300" r="150" fill="#e3b552"/>
+<path d="M0 470 C120 420 250 440 330 400 C420 355 470 300 600 290 V840 H0 Z" fill="#2c5d7c"/>
+<path d="M0 520 C150 480 260 500 360 460 C450 425 520 400 600 395 V840 H0 Z" fill="#244e69"/>
+<path d="M60 840 C80 700 160 600 300 560 C430 523 520 520 600 470 V560 C540 600 450 610 340 640 C230 670 180 740 190 840 Z" fill="#1d1a14" opacity=".35" transform="translate(10 14)"/>
+<path d="M60 840 C80 700 160 600 300 560 C430 523 520 520 600 470 V560 C540 600 450 610 340 640 C230 670 180 740 190 840 Z" fill="url(#road)"/>
+<path d="M60 840 C80 700 160 600 300 560 C430 523 520 520 600 470" fill="none" stroke="#c8402c" stroke-width="10" stroke-dasharray="22 16"/>
+<path d="M60 840 C80 700 160 600 300 560 C430 523 520 520 600 470" fill="none" stroke="#f4eedc" stroke-width="10" stroke-dasharray="22 16" stroke-dashoffset="22"/>
+<path d="M125 840 C140 720 200 640 320 600 C440 562 520 560 600 515" fill="none" stroke="#efe6cf" stroke-width="4" stroke-dasharray="26 22" opacity=".7"/>
+<g transform="translate(300 612) rotate(-16)">
+<ellipse cx="0" cy="34" rx="130" ry="18" fill="#000" opacity=".35"/>
+<path d="M-128 10 C-120 -14 -60 -26 10 -24 C70 -22 118 -12 136 2 C140 12 132 22 110 24 L-110 26 C-128 24 -132 18 -128 10 Z" fill="#c8402c"/>
+<path d="M-118 6 C-60 -2 60 -6 132 0" fill="none" stroke="#f4eedc" stroke-width="7"/>
+<path d="M-40 -22 C-28 -40 6 -42 18 -26" fill="#1d1a14"/>
+<path d="M-34 -24 C-24 -36 2 -37 12 -25 Z" fill="#9fc1d2" opacity=".8"/>
+<circle cx="-62" cy="-6" r="18" fill="#f4eedc"/>
+<text x="-62" y="1" text-anchor="middle" font-family="Rockwell, 'Roboto Slab', Georgia, serif" font-weight="700" font-size="20" fill="#1d1a14">7</text>
+<g fill="#1d1a14"><circle cx="-84" cy="26" r="22"/><circle cx="82" cy="26" r="22"/></g>
+<g fill="#b8b2a0"><circle cx="-84" cy="26" r="10"/><circle cx="82" cy="26" r="10"/></g>
+<path d="M136 2 C144 6 146 14 138 18" fill="none" stroke="#1d1a14" stroke-width="4"/>
+</g>
+<g stroke="#efe6cf" stroke-width="3" stroke-linecap="round" opacity=".75"><path d="M120 560 H40"/><path d="M140 590 H70"/><path d="M110 620 H20"/></g>
+<rect x="0" y="0" width="600" height="26" fill="url(#chk)"/>
+<rect x="40" y="58" width="520" height="3" fill="#1d1a14"/>
+<text x="300" y="196" text-anchor="middle" font-family="'Big Shoulders Stencil', Impact, 'Arial Narrow', sans-serif" font-weight="900" font-size="150" letter-spacing="-2" fill="#1d1a14">APEX ’66</text>
+<text x="300" y="102" text-anchor="middle" font-family="Rockwell, 'Roboto Slab', Georgia, serif" font-weight="700" font-size="22" letter-spacing="8" fill="#c8402c">GRAND PRIX DE L’IMAGINAIRE</text>
+<rect x="40" y="230" width="520" height="3" fill="#1d1a14"/>
+<text x="300" y="262" text-anchor="middle" font-family="Rockwell, 'Roboto Slab', Georgia, serif" font-weight="700" font-size="18" letter-spacing="5" fill="#1d1a14">EIGHT CIRCUITS · FOUR GEARS · ONE ENGINE</text>
+<rect x="0" y="814" width="600" height="26" fill="url(#chk)"/>
+</svg>

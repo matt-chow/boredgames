@@ -13,6 +13,7 @@ export interface GameUiProps {
  * initial bundle stays small. Keys match `GAMES` in ./registry.ts.
  */
 export const GAME_UI: Record<string, () => Promise<{ default: Component<GameUiProps> }>> = {
+  apex: () => import('./apex/ui/Table.svelte'),
   bohnanza: () => import('./bohnanza/ui/Table.svelte'),
   clockwork: () => import('./clockwork/ui/ClockworkTable.svelte'),
   deaddrop: () => import('./deaddrop/ui/Table.svelte'),
@@ -25,6 +26,7 @@ export const GAME_UI: Record<string, () => Promise<{ default: Component<GameUiPr
 
 /** A game's look, loaded as soon as its room is known so the lobby is dressed too. Scoped to its rooms by data-game-theme. */
 export const GAME_THEME: Record<string, () => Promise<unknown>> = {
+  apex: () => import('./apex/ui/theme.css'),
   clockwork: () => import('./clockwork/ui/theme.css'),
   deaddrop: () => import('./deaddrop/ui/theme.css'),
   mines: () => import('./mines/ui/theme.css'),
@@ -34,6 +36,7 @@ export const GAME_THEME: Record<string, () => Promise<unknown>> = {
 
 /** Optional game-specific section of the lobby, for settings a list of switches can't express. */
 export const GAME_SETUP: Record<string, () => Promise<{ default: Component<GameUiProps> }>> = {
+  apex: () => import('./apex/ui/Setup.svelte'),
   clockwork: () => import('./clockwork/ui/ClockworkSetup.svelte'),
   deaddrop: () => import('./deaddrop/ui/Setup.svelte'),
   mines: () => import('./mines/ui/Setup.svelte'),

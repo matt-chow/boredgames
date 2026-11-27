@@ -12,7 +12,7 @@ const toggle = (key: string, label: string, description: string): OptionDescript
  * because the race itself pauses for an absent driver (AX-NET-2) and the host can hand the car to the computer.
  */
 export const apex: GameModule<AConfig, AState, AAction, AView> = {
-  meta: { id: 'apex', name: "Apex '66", minPlayers: 1, maxPlayers: 6, stateVersion: STATE_VERSION, simultaneous: true, graceMs: 30 * 60_000 },
+  meta: { id: 'apex', name: 'Apex ’66', minPlayers: 1, maxPlayers: 6, stateVersion: STATE_VERSION, simultaneous: true, graceMs: 30 * 60_000 },
   options: [
     toggle('storm', 'Storm Front', 'Weather is drawn before each race: rain lowers corner limits, a downpour floods sectors.'),
     toggle('mountains', 'Through the Mountains', 'Tunnels are single file and mountain passes have their own limits.'),

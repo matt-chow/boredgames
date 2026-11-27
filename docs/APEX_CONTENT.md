@@ -18,7 +18,7 @@ Overlays used only by modules: sectors (always 3), tunnels and passes (Through t
 | Circuit | Level | Spaces | Laps | Corners | Limits in order | Overlays | Character |
 |---|---|---|---|---|---|---|---|
 | Ashford Aerodrome | beginner | 60 | 3 | 4 | 5 3 4 6 | gravel by the hairpin | Runways and perimeter roads of a wartime airfield; two very long straights, one tight hairpin round the control tower |
-| Autodromo Bellavista | intermediate | 64 | 2 | 7 | 6 4 2 5 3 4 7 | gravel at the hairpin | Royal parkland; the fast Curva dei Pini sweeper is unrestricted, a slow hairpin by the villa, a flat-out Curva Grande before the line |
+| Autodromo Bellavista | intermediate | 64 | 2 | 7 | 6 4 2 5 3 4 7 | gravel at the hairpin | Royal parkland; the fast Curva dei Pini sweeper is unrestricted, a slow hairpin by the villa, a flat-out Curva dei Cipressi before the line |
 | Belle-Rive | advanced | 72 | 2 | 12 | 3 4 2 5 3 4 2 3 5 4 3 6 | tunnel under the old bridge | Riverside town streets; chicanes, a quay hairpin, an S down the hill, a tunnel and the harbour front |
 | Redwood Raceway | intermediate | 66 | 2 | 8 | 5 3 6 4 2 5 4 6 | rock tunnel, a mountain pass, gravel | Forest road with a long uphill esses, a double-apex left and a cliff tunnel |
 | Mizukawa | advanced | 70 | 2 | 11 | 4 6 3 5 2 4 3 5 6 3 4 | mountain tunnel, pass, gravel | Hillside course by a lake; a double-apex spoon, flowing esses and a hairpin under the shrine steps |
