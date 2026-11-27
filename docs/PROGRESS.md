@@ -20,7 +20,7 @@ Last updated 2026-11-20.
 | M12 Palazzo v1.0 | Done | Original hidden-influence bluffing game for 2–6 people, five roles, server-timed response windows. See PALAZZO.md |
 | M13 Apex '66 | In progress (feat/apex66) | Original card-driven racing game. See APEX.md, APEX_MILESTONES.md and the section below |
 
-## Apex '66 (2026-11-26, on )
+## Apex '66 (2026-11-26, on `feat/apex66`)
 
 | Milestone | Status |
 |---|---|
