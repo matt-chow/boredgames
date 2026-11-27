@@ -252,9 +252,12 @@ export function newRace(s: RaceSetup): Race {
 // ---------------------------------------------------------------------------------------------------------------------
 // Queries
 
-export const circuitOf = (r: Race): Circuit => resolveCircuit(r.circuit);
-export const spaceOf = (r: Race, pos: number) => ((pos % r.n) + r.n) % r.n;
-const weatherOf = (r: Race) => WEATHER.find((w) => w.id === r.weather) ?? WEATHER[0];
+/** The public parts of a race that rules queries need; the AI gets only these. */
+export type Track = Pick<Race, 'circuit' | 'laps' | 'n' | 'modules' | 'weather' | 'sectors' | 'cornerDelta'>;
+
+export const circuitOf = (r: Track): Circuit => resolveCircuit(r.circuit);
+export const spaceOf = (r: Track, pos: number) => ((pos % r.n) + r.n) % r.n;
+export const weatherOf = (r: Track) => WEATHER.find((w) => w.id === r.weather) ?? WEATHER[0];
 
 export function lanesAt(r: Race, space: number): number {
   return r.modules.mountains && circuitOf(r).tunnel[space] ? 1 : 2;
@@ -279,7 +282,7 @@ export function raceOrder(r: Race): number[] {
 }
 
 /** Strain cost of shifting to gear `g`, or null if the shift is not allowed (AX-GEAR-2). */
-export function shiftCost(c: Car, g: number): number | null {
+export function shiftCost(c: Pick<Car, 'gear' | 'fit'>, g: number): number | null {
   const d = Math.abs(g - c.gear);
   if (!Number.isInteger(g) || g < 1 || g > 4) return null;
   if (d <= 1) return 0;
@@ -288,7 +291,7 @@ export function shiftCost(c: Car, g: number): number | null {
 }
 
 /** The effective limit of corner `k` for this car this move (AX-CRN, AX-MOD-1, upgrades). */
-export function cornerLimit(r: Race, c: Car, k: number, cardGrip = 0): number {
+export function cornerLimit(r: Track, c: Pick<Car, 'fit'>, k: number, cardGrip = 0): number {
   const cc = circuitOf(r).corners[k];
   const rain = (weatherOf(r).limit ?? 0) !== 0 && !c.fit.rainGrip ? weatherOf(r).limit! : 0;
   const wet = r.sectors[circuitOf(r).sector[cc.at]] === 'wet' ? -1 : 0;
@@ -296,12 +299,12 @@ export function cornerLimit(r: Race, c: Car, k: number, cardGrip = 0): number {
   return Math.max(1, cc.limit + r.cornerDelta[k] + rain + wet) + (c.fit.grip ?? 0) + tight + cardGrip;
 }
 
-function cornerAt(r: Race, space: number): number {
+function cornerAt(r: Track, space: number): number {
   return circuitOf(r).corners.findIndex((k) => k.at === space);
 }
 
 /** Overspeed checkpoints crossed moving from `from` (exclusive) to `to` (inclusive): corners and pass entries. */
-function checkpoints(r: Race, c: Car, from: number, to: number, speed: number, cardGrip: number) {
+export function checkpoints(r: Track, c: Pick<Car, 'fit'>, from: number, to: number, speed: number, cardGrip: number) {
   const out: { m: number; corner: number; limit: number; cost: number }[] = [];
   const circ = circuitOf(r);
   const last = Math.min(to, r.laps * r.n - 1);
@@ -324,7 +327,7 @@ function checkpoints(r: Race, c: Car, from: number, to: number, speed: number, c
 }
 
 /** Can this car drive at all, other than limping? Some gear it can reach with enough committable cards and Strain. */
-export function canDrive(c: Car): boolean {
+export function canDrive(c: Pick<Car, 'hand' | 'engine' | 'gear' | 'fit'>): boolean {
   const costs = c.hand.filter(committable).map((x) => cardFx(x)?.cost ?? 0).sort((a, b) => a - b);
   for (let g = 1; g <= 4; g++) {
     const sc = shiftCost(c, g);
