@@ -37,8 +37,9 @@ async function drive(page: Page): Promise<boolean> {
   const dash = page.getByRole('region', { name: 'Your dashboard' });
   if (await page.getByRole('alertdialog', { name: 'Draft decision' }).isVisible()) {
     const take = page.getByRole('button', { name: 'Draft', exact: true });
-    if (!(await take.isEnabled())) return false; // a request is in flight
-    await take.click();
+    // The prompt may close or be busy between checks: never wait on it for long.
+    if (!(await take.isEnabled({ timeout: 1000 }).catch(() => false))) return false;
+    await take.click({ timeout: 2000 }).catch(() => {});
     return true;
   }
   const lock = dash.getByRole('button', { name: /^Lock in/ });
@@ -70,6 +71,9 @@ async function drive(page: Page): Promise<boolean> {
 }
 
 test.describe('Apex ’66', () => {
+  // The table re-renders under the helper as rounds resolve: a vanished element should fail fast, not hang.
+  test.use({ actionTimeout: 5000 });
+
   test('a solo race from the grid to the replay, on desktop', async ({ browser }) => {
     test.setTimeout(180_000);
     const a = await newPlayer(browser, 'Ada', DESKTOP);
@@ -86,7 +90,7 @@ test.describe('Apex ’66', () => {
     await shot(a, 'desktop-locked');
     const until = Date.now() + 150_000;
     for (let i = 0; Date.now() < until && !(await page.getByRole('heading', { name: 'Results' }).isVisible()); i++) {
-      if (!(await drive(page))) await page.waitForTimeout(100);
+      if (!(await drive(page).catch(() => false))) await page.waitForTimeout(100);
       if (i === 3) await shot(a, 'desktop-mid');
     }
     await expect(page.getByRole('heading', { name: 'Results' })).toBeVisible();
