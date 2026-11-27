@@ -26,10 +26,10 @@ Overlays used only by modules: sectors (always 3), tunnels and passes (Through t
 | Kalahari | advanced | 70 | 2 | 10 | 4 6 3 5 2 4 6 3 5 4 | gravel everywhere, a pass through the kopje | Desert plateau; wide fast sweepers, gravel run-offs, a rocky pass and a sudden hairpin at the waterhole |
 
 **Validation** (`tests/apex/circuits.test.ts`, AX-TRK-*): the spline never crosses itself; every pair of spaces more
-than 3 apart is at least two lane widths away from each other; corners are at least 3 spaces apart and never on the
+than 3 apart is at least two lane widths away from each other; corners are at least 2 spaces apart (a chicane is two corners 2 apart) and never on the
 grid or the first space after the line; every space has 1–2 lanes and narrow runs are at most 4 spaces; the start grid
-holds 8 cars; every overlay index is in range; the corner count matches this table; at least as many unrestricted
-bends as corners (measured from curvature); and the seeded simulations finish every circuit in 8–26 rounds.
+holds 8 cars; every overlay index is in range; the corner count matches this table; at least three unrestricted
+bends (peaks of heading change of 0.3 rad or more over five spaces, more than one space from any corner marker); and the seeded simulations finish every circuit in 8–26 rounds.
 
 ## 2. Upgrades (64)
 
