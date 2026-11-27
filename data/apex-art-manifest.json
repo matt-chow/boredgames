@@ -310,10 +310,23 @@
     "at": "2026-11-27T06:44:44.696Z",
     "status": "rejected",
     "note": "copied Bellavista's stone pines; no English aerodrome / misty indigo lake accent"
+   },
+   {
+    "file": ".art/apex/raw/poster.ashford.v2.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nCircuit poster artwork with no text. Fixed composition: the top quarter is calm open sky left empty for a title; a regional landmark silhouette on the horizon at the upper third; the circuit's signature bend sweeps diagonally from the lower left to the centre right; one open-wheel 1960s racing car leans into the bend in the lower third. Region: an old airfield: a control tower and a curved hangar on the horizon, a windsock, runway markings; regional colours: green #254C3D and ivory dominant. Format: portrait 2:3.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T15:22:03.443Z",
+    "status": "accepted",
+    "note": "v2 without reference; car takes the regional accent colour"
    }
   ],
-  "pick": ".art/apex/raw/poster.ashford.v1.png",
-  "status": "rejected"
+  "pick": ".art/apex/raw/poster.ashford.v2.png",
+  "status": "accepted",
+  "size": [
+   600,
+   900
+  ],
+  "bytes": 58496
  },
  "poster.bellavista": {
   "family": "poster",
@@ -391,10 +404,23 @@
     "at": "2026-11-27T06:44:44.705Z",
     "status": "rejected",
     "note": "copied Bellavista's stone pines; no English aerodrome / misty indigo lake accent"
+   },
+   {
+    "file": ".art/apex/raw/poster.mizukawa.v2.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nCircuit poster artwork with no text. Fixed composition: the top quarter is calm open sky left empty for a title; a regional landmark silhouette on the horizon at the upper third; the circuit's signature bend sweeps diagonally from the lower left to the centre right; one open-wheel 1960s racing car leans into the bend in the lower third. Region: a lakeside hillside course: misty mountains, a calm lake, a small wooden hillside shrine with stone steps; regional colours: indigo and mist #B9C2BF dominant. Format: portrait 2:3.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T15:22:03.463Z",
+    "status": "accepted",
+    "note": "v2 without reference; car takes the regional accent colour"
    }
   ],
-  "pick": ".art/apex/raw/poster.mizukawa.v1.png",
-  "status": "rejected"
+  "pick": ".art/apex/raw/poster.mizukawa.v2.png",
+  "status": "accepted",
+  "size": [
+   600,
+   900
+  ],
+  "bytes": 67652
  },
  "poster.noordzee": {
   "family": "poster",
@@ -508,6 +534,29 @@
   ],
   "bytes": 12658
  },
+ "prop.bridge": {
+  "family": "prop",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/prop.bridge.v1.png",
+    "refs": [
+     "prop.tree",
+     "prop.stand"
+    ],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA single tabletop miniature model of a red painted footbridge with a lattice of girders, plain fascia with no lettering, seen from a high three-quarter top-down angle of about 55 degrees, lit from the upper left, compact and chunky like a painted scale model, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T15:24:52.914Z",
+    "status": "accepted",
+    "note": "batch 2; tent repainted from a distinct subject"
+   }
+  ],
+  "pick": ".art/apex/raw/prop.bridge.v1.png",
+  "status": "accepted",
+  "size": [
+   256,
+   255
+  ],
+  "bytes": 18180
+ },
  "prop.cactus": {
   "family": "prop",
   "attempts": [
@@ -530,6 +579,29 @@
    256
   ],
   "bytes": 11428
+ },
+ "prop.dune": {
+  "family": "prop",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/prop.dune.v1.png",
+    "refs": [
+     "prop.tree",
+     "prop.stand"
+    ],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA single tabletop miniature model of a low sand dune with marram grass tufts, seen from a high three-quarter top-down angle of about 55 degrees, lit from the upper left, compact and chunky like a painted scale model, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T15:24:52.903Z",
+    "status": "accepted",
+    "note": "batch 2; tent repainted from a distinct subject"
+   }
+  ],
+  "pick": ".art/apex/raw/prop.dune.v1.png",
+  "status": "accepted",
+  "size": [
+   256,
+   248
+  ],
+  "bytes": 18546
  },
  "prop.hangar": {
   "family": "prop",
@@ -646,6 +718,29 @@
   ],
   "bytes": 12130
  },
+ "prop.pits": {
+  "family": "prop",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/prop.pits.v1.png",
+    "refs": [
+     "prop.tree",
+     "prop.stand"
+    ],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA single tabletop miniature model of a long low row of pit garages with dark open doors and a blue fascia, seen from a high three-quarter top-down angle of about 55 degrees, lit from the upper left, compact and chunky like a painted scale model, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T15:24:52.909Z",
+    "status": "accepted",
+    "note": "batch 2; tent repainted from a distinct subject"
+   }
+  ],
+  "pick": ".art/apex/raw/prop.pits.v1.png",
+  "status": "accepted",
+  "size": [
+   256,
+   179
+  ],
+  "bytes": 9810
+ },
  "prop.rock": {
   "family": "prop",
   "attempts": [
@@ -668,6 +763,29 @@
    254
   ],
   "bytes": 16938
+ },
+ "prop.shrine": {
+  "family": "prop",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/prop.shrine.v1.png",
+    "refs": [
+     "prop.tree",
+     "prop.stand"
+    ],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA single tabletop miniature model of a small wooden hillside shrine with a curved dark roof, seen from a high three-quarter top-down angle of about 55 degrees, lit from the upper left, compact and chunky like a painted scale model, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T15:24:52.885Z",
+    "status": "accepted",
+    "note": "batch 2; tent repainted from a distinct subject"
+   }
+  ],
+  "pick": ".art/apex/raw/prop.shrine.v1.png",
+  "status": "accepted",
+  "size": [
+   223,
+   256
+  ],
+  "bytes": 17188
  },
  "prop.stand": {
   "family": "prop",
@@ -702,10 +820,26 @@
     "at": "2026-11-27T06:56:14.161Z",
     "status": "rejected",
     "note": "a copy of prop.stand, not a tent"
+   },
+   {
+    "file": ".art/apex/raw/prop.tent.v2.png",
+    "refs": [
+     "prop.tree",
+     "prop.stand"
+    ],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA single tabletop miniature model of a closed ridge-roofed canvas paddock marquee with sloping striped red and ivory walls, guy ropes and pegs, no seats or benches, seen from a high three-quarter top-down angle of about 55 degrees, lit from the upper left, compact and chunky like a painted scale model, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T15:25:40.500Z",
+    "status": "accepted",
+    "note": "batch 2; tent repainted from a distinct subject"
    }
   ],
-  "pick": ".art/apex/raw/prop.tent.v1.png",
-  "status": "rejected"
+  "pick": ".art/apex/raw/prop.tent.v2.png",
+  "status": "accepted",
+  "size": [
+   256,
+   245
+  ],
+  "bytes": 13768
  },
  "prop.tower": {
   "family": "prop",

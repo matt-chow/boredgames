@@ -155,7 +155,7 @@ export const PROPS = {
   windmill: 'a traditional four-sailed windmill on a tapered tower',
   rock: 'a low weathered rock outcrop',
   barn: 'a red wooden barn with a grey roof',
-  tent: 'a striped red and ivory paddock tent',
+  tent: 'a closed ridge-roofed canvas paddock marquee with sloping striped red and ivory walls, guy ropes and pegs, no seats or benches',
   lighthouse: 'a red and white striped lighthouse',
   boat: 'a small sailing boat with one mast',
   shrine: 'a small wooden hillside shrine with a curved dark roof',
