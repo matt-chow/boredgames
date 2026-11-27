@@ -28,7 +28,8 @@ Last updated 2026-11-20.
 | A1 Content and circuit geometry | Done: 8 spline circuits validated (AX-TRK-1..8); 64 upgrades, 6 sponsors, 10 press, 16 events, 6 weather, 8 rivals (AX-CONT-1..4) |
 | A2 | Done: race engine `rules/race.ts`, 38 tests (AX-CAR..AX-FIN, replay determinism) |
 | A3 | Done: computer driver `rules/ai.ts` from its own view only; all-AI grids finish every circuit, modules off and on (AX-AI-1..2) |
-| A4–A9 | Not started |
+| A4 | Done: module rules tested (AX-MOD-1..4); all 16 module combinations finish on all 8 circuits |
+| A5–A9 | Not started |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
 
