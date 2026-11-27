@@ -416,24 +416,27 @@
   }
   .boardwrap {
     position: relative;
-    grid-area: board;
     aspect-ratio: 16 / 10;
     min-width: 0;
   }
   .wide .boardwrap {
-    max-height: calc(100dvh - 380px);
-    min-height: 340px;
+    grid-area: board;
+    min-height: 320px;
     aspect-ratio: auto;
-    height: calc(100dvh - 380px);
+    height: calc(100dvh - 440px);
+  }
+  .wide .side {
+    grid-area: side;
+  }
+  .wide .dashwrap {
+    grid-area: dash;
   }
   .side {
-    grid-area: side;
     display: grid;
     gap: 10px;
     align-content: start;
   }
   .dashwrap {
-    grid-area: dash;
     display: grid;
     gap: 8px;
   }

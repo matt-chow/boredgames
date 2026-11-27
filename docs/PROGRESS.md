@@ -31,7 +31,9 @@ Last updated 2026-11-20.
 | A4 | Done: module rules tested (AX-MOD-1..4); all 16 module combinations finish on all 8 circuits |
 | A5 | Done: `rules/season.ts`: points, tiebreaks, reverse-standings drafts, 4-upgrade cap, sponsors and press with the 2-point cap (AX-CH-1..6, AX-GRID-2) |
 | A6 | Done: room engine `rules/engine.ts` (phases, private views, retract, timer, pause and autopilot, retention per stage), host close, replays `rules/replay.ts`; registered server-side (AX-PRV-1, AX-NET-1..3, AX-REP-1/2, AX-RET-1) |
-| A7–A9 | Not started |
+| A7 | Done: table UI in `src/games/apex/ui` (poster board from circuit geometry, analog dashboard, gear gate, fanned hand, coach, replay viewer with export/import, rules guide), hub listing and cover; `tests/e2e/apex.spec.ts` (solo race to replay on desktop; secret plans, retract and host autopilot handover on phones; school coach and rules) |
+| A8 | Done: `npm run balance:apex` (alias `measure:apex`) writes APEX_BALANCE.md: seeded races per circuit, module setting, grid size, AI level and risk, rivals; storage for a full 5-race championship (state peak about 53 KB) |
+| A9 | Not started |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
 

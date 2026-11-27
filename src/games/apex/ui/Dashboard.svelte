@@ -207,7 +207,7 @@
   }
   .instruments {
     display: grid;
-    grid-template-columns: minmax(150px, 1fr) minmax(200px, 1.2fr) minmax(170px, 1.2fr);
+    grid-template-columns: 170px minmax(200px, 250px) minmax(170px, 1fr);
     gap: 12px;
     align-items: start;
   }
@@ -222,7 +222,7 @@
   .gauge svg {
     display: block;
     width: 100%;
-    max-width: 200px;
+    max-width: 150px;
     margin: 0 auto;
   }
   .tick {
@@ -372,10 +372,10 @@
   .hand {
     display: flex;
     justify-content: center;
-    margin: 10px 0 0;
-    padding: 18px 0 0;
+    margin: 0;
+    padding: 22px 0 0;
     list-style: none;
-    min-height: 150px;
+    min-height: 140px;
   }
   .hand li {
     margin: 0 -8px;
@@ -419,10 +419,10 @@
       display: none;
     }
     .hand li {
-      margin: 0 -14px;
+      margin: 0 -10px;
     }
-    .hand :global(.card) {
-      --w: 70px;
+    .hand li :global(.card) {
+      --w: 66px;
     }
   }
 </style>

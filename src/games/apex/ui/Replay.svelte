@@ -24,7 +24,8 @@
   const rep = $derived(loaded ?? replays[index]);
   const frames = $derived.by(() => {
     try {
-      return replayFrames(rep);
+      // The engine structuredClones its frames, which a reactive proxy cannot survive.
+      return replayFrames($state.snapshot(rep));
     } catch {
       return [];
     }
