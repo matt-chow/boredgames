@@ -1,0 +1,237 @@
+{
+ "car": {
+  "family": "car",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/car.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA top-down overhead view, exactly from above, of one 1966 cigar-bodied open-wheel racing car, nose pointing right, plain unmarked ivory-white body with no stripes or numbers, open cockpit with a small wraparound windscreen, exposed rear engine with exhaust pipes, charcoal tyres, subtle dimensional shading, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: landscape 2:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:36:44.313Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/car.v1.png",
+  "status": "accepted"
+ },
+ "card.P1": {
+  "family": "card",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/card.P1.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nCard illustration, a single edge-to-edge scene: a single open-wheel racing car rolling gently out of the pit lane at walking pace, a mechanic waving it on, long calm empty straight ahead. Horizon low, the car small to medium in frame, calm ivory or sky areas around it. Format: landscape 4:3.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:32:10.745Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/card.P1.v1.png",
+  "status": "accepted",
+  "size": [
+   480,
+   360
+  ],
+  "bytes": 16224
+ },
+ "card.P5": {
+  "family": "card",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/card.P5.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nCard illustration, a single edge-to-edge scene: a single open-wheel racing car flat out, dramatic low diagonal angle, the car slightly blurred into bold horizontal speed bands, grandstand rushing past. Horizon low, the car small to medium in frame, calm ivory or sky areas around it. Format: landscape 4:3.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:32:10.760Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/card.P5.v1.png",
+  "status": "accepted",
+  "size": [
+   480,
+   360
+  ],
+  "bytes": 18160
+ },
+ "card.X": {
+  "family": "card",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/card.X.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nCard illustration, a single edge-to-edge scene: engine strain: close view of a hot exposed racing engine with exhaust pipes glowing, wavy heat shimmer rising, a red temperature needle in the redline. Horizon low, the car small to medium in frame, calm ivory or sky areas around it. Format: landscape 4:3.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:32:10.763Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/card.X.v1.png",
+  "status": "accepted",
+  "size": [
+   480,
+   360
+  ],
+  "bytes": 23562
+ },
+ "part.a12": {
+  "family": "part",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/part.a12.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nParts-catalogue illustration of one isolated period racing-car component: a cast magnesium alloy racing wheel with eight spokes. Three-quarter view from slightly above, lit from the upper left, the object centred and filling about two thirds of the frame, on a plain flat ivory #EDE3CB background with a small flat charcoal shadow beneath it, nothing else in frame. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:34:30.398Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/part.a12.v1.png",
+  "status": "accepted",
+  "size": [
+   320,
+   320
+  ],
+  "bytes": 12938
+ },
+ "part.b01": {
+  "family": "part",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/part.b01.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nParts-catalogue illustration of one isolated period racing-car component: a twin-choke carburettor with two polished bell-mouth trumpets. Three-quarter view from slightly above, lit from the upper left, the object centred and filling about two thirds of the frame, on a plain flat ivory #EDE3CB background with a small flat charcoal shadow beneath it, nothing else in frame. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:32:10.766Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/part.b01.v1.png",
+  "status": "accepted",
+  "size": [
+   320,
+   320
+  ],
+  "bytes": 13888
+ },
+ "poster.bellavista": {
+  "family": "poster",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/poster.bellavista.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nCircuit poster artwork with no text. Fixed composition: the top quarter is calm open sky left empty for a title; a regional landmark silhouette on the horizon at the upper third; the circuit's signature bend sweeps diagonally from the lower left to the centre right; one open-wheel 1960s racing car leans into the bend in the lower third. Region: royal Italian-style parkland: tall cypress and umbrella pines, a villa with a balustrade, a fountain; regional colours: red #B43D32 and ochre #D0A34B dominant. Format: portrait 2:3.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:36:44.304Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/poster.bellavista.v1.png",
+  "status": "accepted",
+  "size": [
+   600,
+   900
+  ],
+  "bytes": 75098
+ },
+ "prop.stand": {
+  "family": "prop",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/prop.stand.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA single tabletop miniature model of a small covered spectator grandstand with tiered benches and a striped red and ivory awning, seen from a high three-quarter top-down angle of about 55 degrees, lit from the upper left, compact and chunky like a painted scale model, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:36:44.310Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/prop.stand.v1.png",
+  "status": "accepted",
+  "size": [
+   245,
+   256
+  ],
+  "bytes": 15786
+ },
+ "prop.tree": {
+  "family": "prop",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/prop.tree.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nA single tabletop miniature model of a round leafy deciduous tree, seen from a high three-quarter top-down angle of about 55 degrees, lit from the upper left, compact and chunky like a painted scale model, isolated on a perfectly flat, uniform pure magenta #FF00FF background that touches every edge, with no ground plane, no cast shadow on the background and no magenta anywhere on the subject. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:36:44.306Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/prop.tree.v1.png",
+  "status": "accepted",
+  "size": [
+   229,
+   256
+  ],
+  "bytes": 16236
+ },
+ "rival.ortega": {
+  "family": "paddock",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/rival.ortega.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nSquare spot illustration, one compact scene filling the frame edge to edge: driver portrait: a confident woman racing driver in an open-face helmet and goggles pushed up, scarf flowing, head and shoulders. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:34:30.409Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/rival.ortega.v1.png",
+  "status": "accepted",
+  "size": [
+   320,
+   320
+  ],
+  "bytes": 17150
+ },
+ "sponsor.aurora": {
+  "family": "paddock",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/sponsor.aurora.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nSquare spot illustration, one compact scene filling the frame edge to edge: sponsor vignette: a chrome chronograph wristwatch on a leather strap over a chequered cloth, no lettering. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:34:30.402Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/sponsor.aurora.v1.png",
+  "status": "accepted",
+  "size": [
+   320,
+   320
+  ],
+  "bytes": 21936
+ },
+ "weather.rain": {
+  "family": "paddock",
+  "attempts": [
+   {
+    "file": ".art/apex/raw/weather.rain.v1.png",
+    "refs": [],
+    "prompt": "A mid-century geometric motorsport illustration in the style of a 1966 screenprinted racing poster and period automotive advertising. Bold simplified silhouettes, moderate recognisable mechanical detail, flat colour shapes with two or three tonal shading steps, restrained thin charcoal outlines used sparingly, subtle printed ink grain with slight screenprint texture, generous negative space, light from the upper left. Palette: ivory #EDE3CB, red #B43D32, deep green #254C3D, ochre #D0A34B, petrol blue #486E8A, charcoal #292D2B, with occasional terracotta #BD7858, sage #94A58A and mist #B9C2BF; three to five dominant colours.\n\nSquare spot illustration, one compact scene filling the frame edge to edge: weather vignette: steady rain, puddles reflecting the cars’ shapes, umbrellas in the stand. Format: square 1:1.\n\nAvoid: any text, letters, numbers, logos, brand names, watermarks, signatures, frames or borders; photorealism, 3D render, glossy reflections, airbrushed gradients, modern cars or modern aerodynamics, sponsor decals, exaggerated cartoon proportions, heavy grunge, clip art, neon colours.",
+    "at": "2026-11-27T06:34:30.406Z",
+    "status": "accepted",
+    "note": "pilot; canonical reference for its family"
+   }
+  ],
+  "pick": ".art/apex/raw/weather.rain.v1.png",
+  "status": "accepted",
+  "size": [
+   320,
+   320
+  ],
+  "bytes": 27678
+ }
+}

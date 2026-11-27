@@ -114,7 +114,8 @@ function generate(list, refIds, n) {
     if (!p) throw new Error(`Reference ${id} has no pick`);
     return p;
   });
-  const ids = expand(list);
+  // A family or prefix skips pictures already accepted; naming an id repaints it.
+  const ids = expand(list).filter((id) => list.split(',').includes(id) || m[id]?.status !== 'accepted');
   for (let i = 0; i < ids.length; i += n) {
     const batch = ids.slice(i, i + n);
     console.log(`Painting ${batch.join(', ')}…`);
@@ -155,10 +156,14 @@ async function recolour(png, hex) {
   for (let i = 0; i < data.length; i += 4) {
     const [r, g, b] = [data[i], data[i + 1], data[i + 2]];
     const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
-    // Body paint: warm light ivory (high value, low saturation); chrome and tyres are cooler or darker.
-    if (data[i + 3] === 0 || mx < 120 || mx - mn > 70 || r < b) continue;
-    const l = mx / 232;
-    for (let k = 0; k < 3; k++) data[i + k] = Math.min(255, Math.round(t[k] * l * 1.04));
+    // Body paint: warm light ivory and its shading; chrome and tyres are cooler or darker. A soft mask keeps the
+    // print grain from breaking the livery into speckles.
+    if (data[i + 3] === 0 || r < b) continue;
+    const clamp = (v) => Math.max(0, Math.min(1, v));
+    const w = clamp((0.56 - (mx - mn) / mx) / 0.12) * clamp((mx - 95) / 50);
+    if (!w) continue;
+    const l = Math.min(1.12, (0.3 * r + 0.59 * g + 0.11 * b) / 215);
+    for (let k = 0; k < 3; k++) data[i + k] = Math.round(data[i + k] * (1 - w) + Math.min(255, t[k] * l) * w);
   }
   return sharp(data, { raw: info }).png();
 }
