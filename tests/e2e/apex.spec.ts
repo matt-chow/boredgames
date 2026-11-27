@@ -54,8 +54,9 @@ async function drive(page: Page): Promise<boolean> {
     }
     return expect(lock).toBeEnabled({ timeout: 3000 }).then(() => true, () => false);
   };
-  let ok = false;
-  for (const g of [4, 3, 2, 1]) if (await gears.nth(g - 1).isEnabled()) {
+  // A clogged hand can only limp, and that plan is ready as it stands.
+  let ok = /limp/.test((await lock.textContent()) ?? '') && (await lock.isEnabled());
+  if (!ok) for (const g of [4, 3, 2, 1]) if (await gears.nth(g - 1).isEnabled()) {
     ok = (await fill(g)) || (await fill(1)); // too few playable cards for the high gear: drop to gear 1
     break;
   }
