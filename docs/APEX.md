@@ -31,7 +31,8 @@ Every round all drivers plan at the same time and in secret.
 - **AX-PLAN-2** Strain can't be committed. If you hold fewer committable cards than the gear you want, you can't
   choose that gear.
 - **AX-PLAN-3** **Clogged hand:** with no committable card at all you *limp*: gear 1, no cards, distance 1, speed 1,
-  and you still cool as gear 1.
+  and you still cool as gear 1. **Interpretation:** you limp whenever no legal plan exists (too few committable
+  cards for any reachable gear, or too little Strain to pay for one), and a limping car cannot boost.
 - **AX-PLAN-4** You may also mark any uncommitted non-Strain cards to throw away at the end of the round, and you may
   plan a **boost** (AX-BST-1).
 - **AX-PLAN-5** A plan stays hidden until every car has locked one. Until then you may retract it and plan again
@@ -79,8 +80,10 @@ Every round all drivers plan at the same time and in secret.
 
 - **AX-DRF-1** After moving (and not spinning), if another car is level with you or on the next space ahead, you may
   draft 2 more spaces. Draft distance is not speed, but corners it crosses are checked with your speed.
+  **Interpretation:** a car that did not move this round (blocked, or distance 0) cannot draft.
 - **AX-DRF-2** **Interpretation (pauses):** a draft that crosses no corner is always worth taking, so it is taken
-  automatically. A draft that would cross a corner is a real choice: the round pauses for that driver only.
+  automatically, as is one that crosses corners at or under their limit. A draft that would overspeed a corner (or a
+  mountain pass) is a real choice: the round pauses for that driver only.
 - **AX-OVT-1** An overtake is counted for every car you were behind before resolving and ahead of after. It feeds the
   statistics, press objectives and sponsors, never the rules.
 
