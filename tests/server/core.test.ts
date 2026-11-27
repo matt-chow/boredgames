@@ -219,6 +219,16 @@ describe('H4 privacy and persistence', () => {
     expect(core.expiresAt).toBe(clock + RETENTION_MS.playing);
   });
 
+  it('only the host can close the room, at any time', () => {
+    const { core } = room();
+    expect(send(core, 1, { t: 'close' }).ack).toMatchObject({ ok: false, code: 'not-host' });
+    expect(send(core, 1, { t: 'close' }).end).toBeUndefined();
+    const r = send(core, 0, { t: 'close' });
+    expect([r.ack!.ok, r.end]).toEqual([true, 'Ann']);
+    send(core, 0, { t: 'start' });
+    expect(send(core, 0, { t: 'close' }).end).toBe('Ann');
+  });
+
   it('history records every committed change in version order', () => {
     const { core, store } = room();
     send(core, 0, { t: 'start' });

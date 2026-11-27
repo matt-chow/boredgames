@@ -104,6 +104,8 @@ export interface GameModule<Config = unknown, State = unknown, Action = unknown,
   tick?(state: State, now: number, online: boolean[]): State | null;
   /** When `tick` next has something to do (a window closing), so the room can wake for it. */
   wakeAt?(state: State): number | null;
+  /** How long the room keeps a started game after its last change, when the game wants other than the default. */
+  retainMs?(state: State, status: 'playing' | 'over'): number | undefined;
   /** Upgrade persisted state from an older `stateVersion`. */
   migrate?(state: unknown, fromVersion: number): State;
 }
