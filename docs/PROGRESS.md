@@ -30,7 +30,8 @@ Last updated 2026-11-20.
 | A3 | Done: computer driver `rules/ai.ts` from its own view only; all-AI grids finish every circuit, modules off and on (AX-AI-1..2) |
 | A4 | Done: module rules tested (AX-MOD-1..4); all 16 module combinations finish on all 8 circuits |
 | A5 | Done: `rules/season.ts`: points, tiebreaks, reverse-standings drafts, 4-upgrade cap, sponsors and press with the 2-point cap (AX-CH-1..6, AX-GRID-2) |
-| A6–A9 | Not started |
+| A6 | Done: room engine `rules/engine.ts` (phases, private views, retract, timer, pause and autopilot, retention per stage), host close, replays `rules/replay.ts`; registered server-side (AX-PRV-1, AX-NET-1..3, AX-REP-1/2, AX-RET-1) |
+| A7–A9 | Not started |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
 
