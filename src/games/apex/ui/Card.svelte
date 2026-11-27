@@ -112,8 +112,10 @@
     position: absolute;
     inset: 9px 0 auto;
     width: 100%;
-    aspect-ratio: 4 / 3;
+    /* A letterbox crop of the 4:3 painting leaves room for four lines of rules text. */
+    aspect-ratio: 16 / 9;
     object-fit: cover;
+    object-position: 50% 60%;
   }
   .art .big {
     position: absolute;
@@ -127,7 +129,7 @@
     box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
   }
   .art .nm {
-    margin-top: calc(var(--w) * 0.75 + 2px);
+    margin-top: calc(var(--w) * 0.5625 + 4px);
   }
   .strain .band {
     background: var(--ax-red);

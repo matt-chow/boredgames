@@ -164,7 +164,7 @@ export const CATALOG: CatalogEntry[] = ([
     maxPlayers: 6,
     minutes: '20-40',
     pitch: 'Vintage grand-prix racing with a hand of cards for a gearbox. Push through the corners and the strain comes back to clog your hand; cool off and the field slips past.',
-    cover: '/art/covers/apex.svg',
+    cover: '/art/apex/misc-cover.webp',
     fan: () => import('../games/apex/ui/Fan.svelte'),
     guide: () => import('../games/apex/ui/guide'),
     accent: '#c8402c',
