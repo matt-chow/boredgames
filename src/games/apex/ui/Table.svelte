@@ -31,7 +31,8 @@
 
   async function act(a: AAction) {
     const r = await conn.act(a);
-    if (!r.ok) toasts.push(r.error ?? 'Not allowed.', 'error');
+    // A stale action raced a table that already moved on; the fresh view is on its way, so there is nothing to report.
+    if (!r.ok && r.code !== 'stale') toasts.push(r.error ?? 'Not allowed.', 'error');
     return r;
   }
 
@@ -174,7 +175,7 @@
   <div class="main">
     {#if race}
       <section class="boardwrap" aria-label="Circuit">
-        <Board {race} mine={me?.car ?? null} fit={me?.ai.me.fit ?? {}} preview={myMove || me?.plan ? preview : null} label="{circuitName(race.circuit)}, lap {leaderLap} of {race.laps}" />
+        <Board {race} mine={race.cars.find((c) => c.seat === seat && seat != null)?.id ?? null} fit={me?.ai.me.fit ?? {}} preview={myMove || me?.plan ? preview : null} label="{circuitName(race.circuit)}, lap {leaderLap} of {race.laps}" />
         {#if showIntro}
           <div class="sheet" role="dialog" aria-modal="true" aria-label="Grid introduction">
             <div class="poster">

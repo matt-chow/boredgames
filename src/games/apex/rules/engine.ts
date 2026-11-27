@@ -353,7 +353,8 @@ export function apply(state: AState, seat: number, raw: AAction): ApplyResult<AS
       break;
     }
     case 'ready':
-      if (s.phase !== 'podium') return fail('not-now', 'There is nothing to get ready for.');
+      // A late or repeated Continue after the podium has closed is stale, not an error (AX-NET-1).
+      if (s.phase !== 'podium') return fail('stale', 'The table moved on before that arrived.');
       if (!s.ready.includes(seat)) s.ready.push(seat);
       break;
     case 'shelve':
@@ -429,7 +430,8 @@ export function actors(s: AState): number[] {
 export function project(s: AState, viewer: number | null): AView {
   const r = s.race;
   const mine = viewer == null ? null : carOf(s, viewer);
-  const live = r && r.phase !== 'over' && s.phase === 'race';
+  // A finished car has nothing left to plan, so its driver gets no dashboard (AX-FIN-1).
+  const live = r && r.phase !== 'over' && s.phase === 'race' && !mine?.done;
   return {
     seat: viewer,
     mode: s.config.mode,

@@ -77,8 +77,29 @@ describe('Apex room engine', () => {
   it('AX-NET-1 an action for another step or the wrong phase is refused', () => {
     const s = start(1, { mode: 'solo', cars: 3 });
     expect(apex.apply(s, 0, { type: 'retract', step: s.step + 1 })).toMatchObject({ ok: false, code: 'stale' });
-    expect(apex.apply(s, 0, { type: 'ready', step: s.step })).toMatchObject({ ok: false, code: 'not-now' });
+    // A Continue that arrives after the podium has closed is stale, never "nothing to get ready for".
+    expect(apex.apply(s, 0, { type: 'ready', step: s.step })).toMatchObject({ ok: false, code: 'stale' });
     expect(apex.apply(s, 0, { type: 'plan', step: s.step, gear: 4, cards: [0, 0, 0, 0], discard: [], boost: false })).toMatchObject({ ok: false, code: 'illegal' });
+  });
+
+  it('AX-FIN-1 a driver whose car has finished gets no dashboard and no plan to make while the others race on', () => {
+    let seen = false;
+    for (let k = 0; k < 20 && !seen; k++) {
+      let s = start(2, { cars: 4 }, `fin${k}`);
+      for (let i = 0; i < 2000 && s.phase === 'race'; i++) {
+        for (const seat of [0, 1]) {
+          if (!s.race!.cars.find((c) => c.seat === seat)!.done || s.race!.phase !== 'plan') continue;
+          seen = true;
+          expect(apex.project(s, seat).me).toBeNull();
+          expect(apex.bot!(apex.project(s, seat))?.actions ?? []).toEqual([]);
+          expect(apex.actors(s)).not.toContain(seat);
+        }
+        const seat = apex.actors(s)[0];
+        if (seat == null) break;
+        s = act(s, seat, apex.bot!(apex.project(s, seat))!.actions[0]);
+      }
+    }
+    expect(seen).toBe(true);
   });
 
   it('AX-PLAN-6 the timer is off by default; when on, it pauses for an absent driver and then plans for the late', () => {

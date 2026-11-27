@@ -271,6 +271,7 @@
     onpointermove={move}
     onpointerup={up}
     onpointercancel={up}
+    ondragstart={(e) => e.preventDefault()}
     onkeydown={key}
   >
     <g style="transform: translate({cam.x}px, {cam.y}px) scale({cam.k})" class="cam">
@@ -405,6 +406,10 @@
     width: 100%;
     height: 100%;
     touch-action: none;
+    /* Panning must not select labels or drag the painted images off the board. */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
     cursor: grab;
     outline: none;
   }

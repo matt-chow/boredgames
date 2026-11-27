@@ -47,7 +47,9 @@
   const est = $derived(estimate(ai, plan));
   const engineAfter = $derived(Math.max(0, car.engine - est.pay));
   const ready = $derived(!est.error && planning);
-  $effect(() => onpreview?.(planning || locked ? { from: car.pos, to: car.pos + est.dist, checks: est.checks } : null));
+  // No chosen cards, no ghost: only a clogged hand (which can only limp) or a locked plan has a known destination.
+  const shown = $derived(locked ? locked.cards.length > 0 || !drive : planning && (cards.length > 0 || !drive));
+  $effect(() => onpreview?.(shown ? { from: car.pos, to: car.pos + est.dist, checks: est.checks } : null));
 
   function setGear(g: number) {
     if (!planning) return;
