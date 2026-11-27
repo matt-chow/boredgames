@@ -370,3 +370,11 @@ and interface. Its response windows must close even when nobody sends anything, 
 `GameModule` gained `tick` and `wakeAt`, and the Durable Object's alarm wakes the room at the next deadline. Mandatory
 choices have no clock, because nothing is ever chosen for a player. Inside this game, gilt gold takes `--sprout`'s
 role (D26).
+
+### D57. Apex '66 is an original racing game in a familiar genre
+A card-driven motor race with gears, an engine that strains and cools, corner limits and drafting was asked for.
+Those are genre mechanics, so Apex '66 keeps them, with its own title, rules text, numbers, card mix, eight circuits,
+sponsors, events, drivers and art; nothing is taken from any published racing game. Computer cars are not seats (a
+grid of up to 8 cars from 1–6 people), absent drivers pause the table rather than being replaced by the room, and two
+optional room hooks came with it: a per-game retention period and a host-only delete. See APEX.md and
+APEX_ARCHITECTURE.md.
