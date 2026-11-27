@@ -1,6 +1,6 @@
 /**
  * Championship seasons (AX-CH) and the paddock draws a single race shares: grid, event and press objectives. Pure; the
- * season carries its own RNG, and each race gets a seed derived from the season's.
+ * season carries its own RNG, and each race gets a seed hashed from the season's.
  */
 import { randInt, seedRng, shuffle, type RngState } from '../../../engine/rng';
 import { resolveCircuit } from './content/circuits';
@@ -63,8 +63,10 @@ export interface Season {
   stack: string[];
   draft: Draft | null;
   /** Drawn for the next race. */
-  next: { event: string | null; press: string[]; grid: number[] } | null;
+  next: { event: string | null; press: string[]; grid: number[]; seed: string } | null;
   over: boolean;
+  /** A championship, or a single race (no sponsors, no draft, no championship-only events). */
+  champ: boolean;
 }
 
 /** AX-CH-5/6: draw the event and press objectives for a race. */
@@ -76,10 +78,16 @@ export function drawPaddock(rng: RngState, p: Paddock, champ: boolean, last: boo
   return { event, press };
 }
 
-export function newSeason(seed: string, races: string[], paddock: Paddock, drivers: Omit<Driver, 'upgrades' | 'sponsor' | 'points' | 'places'>[]): Season {
+export function newSeason(
+  seed: string,
+  races: string[],
+  paddock: Paddock,
+  drivers: Omit<Driver, 'upgrades' | 'sponsor' | 'points' | 'places'>[],
+  champ = true,
+): Season {
   const rng = seedRng(`season:${seed}`);
   // Sponsors go to people first, then computer cars, while they last.
-  const sponsors = paddock.sponsors ? shuffle(rng, SPONSORS.map((s) => s.id)) : [];
+  const sponsors = paddock.sponsors && champ ? shuffle(rng, SPONSORS.map((s) => s.id)) : [];
   const byPeople = drivers.map((d, i) => [d.seat == null ? 1 : 0, i]).sort((a, b) => a[0] - b[0] || a[1] - b[1]).map(([, i]) => i);
   const sponsorOf: (string | null)[] = drivers.map(() => null);
   byPeople.forEach((i, k) => (sponsorOf[i] = sponsors[k] ?? null));
@@ -95,6 +103,7 @@ export function newSeason(seed: string, races: string[], paddock: Paddock, drive
     draft: null,
     next: null,
     over: false,
+    champ,
   };
   prepareNext(s);
   return s;
@@ -117,10 +126,13 @@ export function standings(s: Season): number[] {
 
 function prepareNext(s: Season) {
   const last = s.index === s.races.length - 1;
-  const { event, press } = drawPaddock(s.rng, s.paddock, true, last);
+  const { event, press } = drawPaddock(s.rng, s.paddock, s.champ, last);
   // AX-GRID-2: race one drawn, then reverse standings (the leader starts last).
   const grid = s.index === 0 || event === 'shuffle' ? shuffle(s.rng, s.drivers.map((_, i) => i)) : standings(s).reverse();
-  s.next = { event, press, grid };
+  // A finished race's replay carries its seed, so it is a hash of the season's: it reveals neither the season seed nor
+  // the upgrade stack.
+  const seed = seedRng(`race:${s.seed}:${s.index}`).map((x) => x.toString(16).padStart(8, '0')).join('');
+  s.next = { event, press, grid, seed };
 }
 
 /** The race to run next. Grid slot k holds driver grid[k]; car ids are grid slots. */
@@ -130,7 +142,7 @@ export function raceSetup(s: Season): RaceSetup {
   return {
     circuit,
     laps: s.paddock.laps ?? resolveCircuit(circuit).laps,
-    seed: `${s.seed}:${s.index}`,
+    seed: next.seed,
     modules: s.paddock.modules,
     event: next.event,
     cars: next.grid.map((d) => {
@@ -189,7 +201,7 @@ export function scoreRace(s: Season, r: Race) {
   });
   s.results.push({ circuit: s.races[s.index], event: next.event, press: next.press, rows });
   s.next = null;
-  if (s.index === s.races.length - 1) {
+  if (s.index === s.races.length - 1 || !s.champ) {
     s.over = true;
     return;
   }
@@ -243,7 +255,7 @@ export function upgradeWorth(id: string): number {
 }
 
 /** The computer's draft pick: the best offer, swapping out its weakest upgrade only for a better one. */
-export function aiPick(s: Season, driver: number): { take: string | null; give: string | null } {
+export function aiPick(s: Pick<Season, 'draft' | 'drivers'>, driver: number): { take: string | null; give: string | null } {
   const offer = [...s.draft!.offer].sort((a, b) => upgradeWorth(b) - upgradeWorth(a) || (a < b ? -1 : 1));
   const take = offer[0] ?? null;
   const held = s.drivers[driver].upgrades;

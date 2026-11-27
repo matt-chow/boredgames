@@ -38,7 +38,7 @@ Every round all drivers plan at the same time and in secret.
 - **AX-PLAN-5** A plan stays hidden until every car has locked one. Until then you may retract it and plan again
   (AX-UNDO-1). Computer cars plan from what their own driver could know.
 - **AX-PLAN-6** **Timer (off by default).** A host may set 30/60/90 seconds. When it expires, an unlocked human gets the
-  cautious computer plan, and the log says so.
+  cautious computer plan, and the table says so. The timer stops while any driver it waits for is offline (AX-NET-2).
 
 ## 3. Resolution (AX-RES)
 
@@ -113,7 +113,8 @@ Every round all drivers plan at the same time and in secret.
 - **AX-NET-1** Every game action carries the round's step number; a late or repeated one is refused.
 - **AX-NET-2** **Pause on disconnect.** When the table needs a decision from a person who is offline, it pauses for
   everyone. It resumes when they return.
-- **AX-NET-3** While paused, any connected player may hand the absent car to the computer driver. The car's owner
+- **AX-NET-3** While paused, the host may hand the absent car to the computer driver. Interpretation: the host is the
+  first seat; if the host is the one away, any connected player may approve it. The car's owner
   takes it back simply by reconnecting and pressing "Drive again". Nothing is done for an absent player otherwise.
 - **AX-NET-4** No spectators: the room only admits seated players.
 

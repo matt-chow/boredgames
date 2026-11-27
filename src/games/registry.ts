@@ -1,4 +1,5 @@
 import type { AnyGameModule } from '../engine/types';
+import { apex } from './apex';
 import { bohnanza } from './bohnanza';
 import { clockwork } from './clockwork';
 import { deaddrop } from './deaddrop';
@@ -10,6 +11,7 @@ import { tally } from './tally';
 
 /** Server-side rules registry. Adding a game = one import + one entry. */
 export const GAMES: Record<string, AnyGameModule> = {
+  [apex.meta.id]: apex,
   [bohnanza.meta.id]: bohnanza,
   [clockwork.meta.id]: clockwork,
   [deaddrop.meta.id]: deaddrop,
