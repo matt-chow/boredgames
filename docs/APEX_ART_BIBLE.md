@@ -56,11 +56,11 @@ proportions, heavy grunge, clip art, neon colours.
 |---|---|---|---|
 | Driving cards | 8 | Edge-to-edge 4:3 scene, low horizon, one car small to medium. Pace 1→5 runs from a calm roll-out to flat out with speed bands; Coast is petrol-blue cooling air; Stress is a twitch at the limit; Strain is a hot engine in red. | 480×360 WebP in the card's art window |
 | Upgrades | 63 | Parts-catalogue object, three-quarter view from slightly above, centred at two thirds of the frame, flat ivory ground with a small flat shadow. Related parts share motifs (tyres, radiators, brakes) but each is its own object. | 320×320 WebP |
-| Paddock | 50 | Square edge-to-edge spot scene: 6 sponsors (product vignettes, no lettering), 10 press objectives, 16 events, 6 weathers, 8 rival portraits, 4 module emblems. | 320×320 WebP |
+| Paddock | 46 | Square edge-to-edge spot scene: 6 sponsors (product vignettes, no lettering), 10 press objectives, 16 events, 6 weathers, 8 rival portraits sharing one head-and-shoulders framing. | 320×320 WebP |
 | Circuit posters | 8 | Portrait 2:3; top quarter empty sky for the title; landmark at the upper third; signature bend from lower left to centre right; one car in the lower third. | 600×900 WebP |
 | Scenery | 18 | One tabletop miniature, high three-quarter view (~55°), lit from the upper left, chunky scale-model proportions, keyed from magenta to transparency. | WebP with alpha, longest side 256 |
 | Car | 1 + 8 | One canonical overhead car, nose right, plain ivory body. The eight liveries are recoloured from that one picture, so silhouette, scale, orientation and pivot are identical. Stripe, number roundel and shadow stay SVG on top. | 240×112 WebP with alpha |
-| Cover and extras | 5 | Cover, card back, Driving School, championship trophy, table paper. | 600×840 WebP (texture tiled) |
+| Cover and extras | 3 | Cover (also the hub cover), Driving School coach, championship trophy. | 600×840 WebP |
 
 ## Consistency protocol
 
@@ -85,3 +85,7 @@ The track, lanes, spaces, corner markers, tunnels, gravel and every functional i
 SVG, so painted scenery never decides a space. Card names, numbers and rules text are printed by the UI over or beside
 the art. The dashboard gauges and gear selector stay vector. Each painting has an SVG or CSS fallback that draws if the
 file is missing.
+
+The module emblems, a card back and a table texture have subjects in `apex-subjects.mjs` but are not painted:
+the module switches are drawn by the hub's shared options UI, the deck is shown as a count, and the board keeps its
+flat field colour.

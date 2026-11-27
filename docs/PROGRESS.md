@@ -34,6 +34,7 @@ Last updated 2026-11-20.
 | A7 | Done: table UI in `src/games/apex/ui` (poster board from circuit geometry, analog dashboard, gear gate, fanned hand, coach, replay viewer with export/import, rules guide), hub listing and cover; `tests/e2e/apex.spec.ts` (solo race to replay on desktop; secret plans, retract and host autopilot handover on phones; school coach and rules) |
 | A8 | Done: `npm run balance:apex` (alias `measure:apex`) writes APEX_BALANCE.md: seeded races per circuit, module setting, grid size, AI level and risk, rivals; storage for a full 5-race championship (state peak about 53 KB) |
 | A9 | Done: check, 1280 unit tests and the browser suite pass; staging deploy (https://boredgames-staging.mchowcl.workers.dev, version 696a84b1) and the Apex browser tests pass against it. Production not deployed |
+| A10 Painted art | **Paused, partial.** 119 Codex-painted pictures accepted (APEX_ART_BIBLE.md, ASSETS.md, `data/apex-art-manifest.json`), 126 WebPs, 2.9 MB in `public/art/apex`: all 8 driving cards, 8 posters, 18 scenery props, the car and 8 liveries, cover, trophy, school, 6 sponsors, 16 events, 8 rivals, 9 of 10 press, 4 of 6 weathers and 38 of 63 upgrades. Not painted yet, so the SVG/CSS fallbacks show: upgrades b02–b09, a24, e01–e16; weather overcast and drizzle; press Flat Out. Resume with `node scripts/art/apex-paint.mjs generate part --ref part.b01,part.a12` and `generate weather.overcast,weather.drizzle,press.flat --ref event.morning`. The whole-catalogue audit sheet is still to do |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
 

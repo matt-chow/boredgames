@@ -97,7 +97,9 @@ function paint(ids, refs) {
   const args = ['exec', '-s', 'read-only', '--skip-git-repo-check', ...refs.flatMap((r) => ['-i', r]), '-'];
   const res = spawnSync('codex', args, { input: prompt, encoding: 'utf8', timeout: 25 * 60_000, maxBuffer: 64 << 20, shell: process.platform === 'win32' });
   const done = [...(res.stdout ?? '').matchAll(/^DONE (\S+)/gm)].map((m) => m[1]);
-  const files = pngsSince(t);
+  // Codex prints its session id; that session's folder holds only this batch, even if another Codex is painting.
+  const session = /session id:s*([0-9a-f-]{36})/i.exec(`${res.stderr}${res.stdout}`)?.[1];
+  const files = pngsSince(t).filter((p) => !session || p.includes(session));
   if (files.length !== ids.length) {
     console.error(`Expected ${ids.length} pictures, got ${files.length}. Codex said: ${(res.stdout ?? '').slice(-600)} ${(res.stderr ?? '').slice(-300)}`);
     return [];
@@ -108,7 +110,7 @@ function paint(ids, refs) {
 
 function generate(list, refIds, n) {
   mkdirSync(RAW, { recursive: true });
-  const m = load();
+  let m = load();
   const refs = refIds.map((id) => {
     const p = m[id]?.pick;
     if (!p) throw new Error(`Reference ${id} has no pick`);
@@ -119,7 +121,10 @@ function generate(list, refIds, n) {
   for (let i = 0; i < ids.length; i += n) {
     const batch = ids.slice(i, i + n);
     console.log(`Painting ${batch.join(', ')}…`);
-    for (const [id, src] of paint(batch, refs)) {
+    const painted = paint(batch, refs);
+    // Reload, so a status recorded while this batch painted is not overwritten.
+    m = load();
+    for (const [id, src] of painted) {
       const e = (m[id] ??= { family: catalogue()[id].family, attempts: [] });
       const file = join(RAW, `${id}.v${e.attempts.length + 1}.png`).replaceAll('\\', '/');
       copyFileSync(src, file);
