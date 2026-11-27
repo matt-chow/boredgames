@@ -18,6 +18,15 @@ Last updated 2026-11-20.
 | M10 Dead Drop | On staging | Third game: two people, secret orders, statements and challenges. See DEADDROP.md and DEADDROP_BALANCE.md |
 | M11 Sealed Correspondence v1.0 | Done | Court deduction card game, Classic (16 cards, 2–4) and Expanded (21 cards, 2–6). See SEALED.md |
 | M12 Palazzo v1.0 | Done | Original hidden-influence bluffing game for 2–6 people, five roles, server-timed response windows. See PALAZZO.md |
+| M13 Apex '66 | In progress (feat/apex66) | Original card-driven racing game. See APEX.md, APEX_MILESTONES.md and the section below |
+
+## Apex '66 (2026-11-26, on )
+
+| Milestone | Status |
+|---|---|
+| A0 Design documents | Done: APEX.md, APEX_CONTENT.md, APEX_ARCHITECTURE.md, APEX_MILESTONES.md, D57 |
+| A1 Content and circuit geometry | Done: 8 spline circuits validated (AX-TRK-1..8); 64 upgrades, 6 sponsors, 10 press, 16 events, 6 weather, 8 rivals (AX-CONT-1..4) |
+| A2–A9 | Not started |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
 
