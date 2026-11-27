@@ -1,16 +1,20 @@
 <!-- One race card, printed like a 1960s programme insert: a big stencil numeral and a plain line of what it does. -->
 <script lang="ts">
   import { cardFx, COAST, STRAIN, STRESS } from '../rules/cards';
+  import { paint } from './assets';
   import { cardName, cardText } from './text';
 
   let { card, size = 'md' }: { card: string; size?: 'sm' | 'md' } = $props();
   const fx = $derived(cardFx(card));
   const kind = $derived(card === STRAIN ? 'strain' : card === STRESS ? 'stress' : card === COAST ? 'coast' : /^P\d$/.test(card) ? 'pace' : 'part');
+  // The painting fills a window under the band; the numeral moves to a printed index tab over its corner.
+  const art = $derived(paint(kind === 'part' ? `part.${card}` : `card.${card}`));
   const big = $derived(card === STRAIN ? '!' : card === STRESS ? '?' : String(fx?.value ?? ''));
 </script>
 
-<span class="card {kind} {size}" title="{cardName(card)}: {cardText(card)}">
+<span class="card {kind} {size}" class:art title="{cardName(card)}: {cardText(card)}">
   <span class="band" aria-hidden="true"></span>
+  {#if art}<img class="pic" src={art} alt="" loading="lazy" decoding="async" draggable="false" />{/if}
   <span class="big" aria-hidden="true">{big}</span>
   <span class="nm">{cardName(card)}</span>
   {#if size === 'md' && kind !== 'pace'}<span class="fx">{cardText(card)}</span>{/if}
@@ -103,6 +107,27 @@
   }
   .strain {
     background: repeating-linear-gradient(-45deg, #e8d5c4 0 6px, #efe2d2 6px 12px);
+  }
+  .pic {
+    position: absolute;
+    inset: 9px 0 auto;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+  .art .big {
+    position: absolute;
+    top: 12px;
+    left: 4px;
+    margin: 0;
+    padding: 1px 4px 0;
+    border-radius: 3px;
+    font-size: calc(var(--w) * 0.3);
+    background: var(--ax-paper);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+  }
+  .art .nm {
+    margin-top: calc(var(--w) * 0.75 + 2px);
   }
   .strain .band {
     background: var(--ax-red);

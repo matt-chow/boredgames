@@ -11,12 +11,13 @@
   import type { AAction, AView } from '../rules/engine';
   import { MAX_UPGRADES } from '../rules/season';
   import Art from './Art.svelte';
-  import { livery } from './assets';
+  import { livery, paint } from './assets';
   import { prefs, sounds } from './audio.svelte';
   import Board, { type Preview } from './Board.svelte';
   import Coach from './Coach.svelte';
   import Dashboard from './Dashboard.svelte';
   import Replay from './Replay.svelte';
+  import Spot from './Spot.svelte';
   import { circuitName, eventInfo, fitText, MODE_NAMES, ordinal, pressInfo, rivalInfo, sectorInfo, sponsorInfo, upgradeName, weatherInfo, cardText, isPartCard } from './text';
   import './theme.css';
 
@@ -118,6 +119,7 @@
   }
 
   const lastResult = $derived(view.season.results.at(-1) ?? null);
+  const resultArt = $derived(paint(view.season.champ && view.phase === 'over' ? 'misc.trophy' : `poster.${lastResult?.circuit}`));
   const rows = $derived(lastResult ? lastResult.rows.map((r, i) => ({ ...r, i })).filter((r) => r.place).sort((a, b) => a.place - b.place) : []);
   const earnedName = (id: string) => pressInfo(id)?.name ?? sponsorInfo(id)?.name ?? id;
   const weather = $derived(race ? weatherInfo(race.weather) : null);
@@ -176,6 +178,7 @@
         {#if showIntro}
           <div class="intro" role="dialog" aria-label="Grid introduction">
             <div class="poster">
+              {#if paint(`poster.${race.circuit}`)}<img class="band-art" src={paint(`poster.${race.circuit}`)} alt="" decoding="async" />{/if}
               <p class="kicker">Round {view.season.index + 1}{view.season.champ ? ` of ${view.season.races.length}` : ''}</p>
               <h2>{circuitName(race.circuit)}</h2>
               <p>{race.laps} {race.laps === 1 ? 'lap' : 'laps'} · {race.cars.length} cars · {weather?.name}</p>
@@ -201,7 +204,7 @@
                   <small>
                     {#if c.done}Finished {ordinal(c.done.place)}{:else}Lap {lapOf(c.pos)} · gear {c.gear} · engine {c.engine} · {c.hand} cards{/if}
                     {#if c.spun} · spun{/if}
-                    {#if c.rival} · {rivalInfo(c.rival)?.name}{/if}
+                    {#if c.rival} · <Spot id="rival.{c.rival}" size={18} round /> {rivalInfo(c.rival)?.name}{/if}
                   </small>
                 </span>
                 {#if race.phase === 'plan' && !c.done}<span class="ok" class:on={c.planned} title={c.planned ? 'Plan locked' : 'Still planning'}>{c.planned ? '✓' : '…'}</span>{/if}
@@ -211,19 +214,19 @@
         </section>
         <section class="panel">
           <h3>Conditions</h3>
-          <p><b>{weather?.name}</b>: {weather?.text}</p>
+          <p class="lined"><Spot id="weather.{race.weather}" /><span><b>{weather?.name}</b>: {weather?.text}</span></p>
           {#if race.sectors.some((s) => s !== 'none')}
             <ul class="plain">{#each race.sectors as s, i (i)}{#if s !== 'none'}<li>Sector {i + 1}: <b>{sectorInfo(s)?.name}</b>, {sectorInfo(s)?.text}</li>{/if}{/each}</ul>
           {/if}
-          {#if event}<p><b>{event.name}</b>: {event.text}</p>{/if}
+          {#if event}<p class="lined"><Spot id="event.{race.event}" /><span><b>{event.name}</b>: {event.text}</span></p>{/if}
           {#if view.press.length}
             <p class="h4">Press objectives</p>
-            <ul class="plain">{#each view.press as p (p)}<li><b>{pressInfo(p)?.name}</b>: {pressInfo(p)?.text}</li>{/each}</ul>
+            <ul class="plain lined">{#each view.press as p (p)}<li><Spot id="press.{p}" size={32} /><span><b>{pressInfo(p)?.name}</b>: {pressInfo(p)?.text}</span></li>{/each}</ul>
           {/if}
-          {#if myDriver?.sponsor}<p><b>Sponsor {sponsorInfo(myDriver.sponsor)?.name}</b>: {sponsorInfo(myDriver.sponsor)?.text}</p>{/if}
+          {#if myDriver?.sponsor}<p class="lined"><Spot id="sponsor.{myDriver.sponsor}" /><span><b>Sponsor {sponsorInfo(myDriver.sponsor)?.name}</b>: {sponsorInfo(myDriver.sponsor)?.text}</span></p>{/if}
           {#if me && myDriver?.upgrades.length}
             <p class="h4">Your upgrades</p>
-            <ul class="plain">{#each myDriver.upgrades as u (u)}<li><b>{upgradeName(u)}</b>: {isPartCard(u) ? `a card in your deck. ${cardText(u)}` : cardText(u)}</li>{/each}</ul>
+            <ul class="plain lined">{#each myDriver.upgrades as u (u)}<li><Spot id="part.{u}" size={32} /><span><b>{upgradeName(u)}</b>: {isPartCard(u) ? `a card in your deck. ${cardText(u)}` : cardText(u)}</span></li>{/each}</ul>
           {/if}
           <button class="btn small ghost" onclick={() => rules('corners')}>How corners work</button>
         </section>
@@ -261,6 +264,7 @@
   {#if view.phase === 'podium' || view.phase === 'over'}
     <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ax-podium-h">
       <div class="poster results">
+        {#if resultArt}<img class="band-art" src={resultArt} alt="" decoding="async" />{/if}
         <p class="kicker">{lastResult ? circuitName(lastResult.circuit) : ''}</p>
         <h2 id="ax-podium-h">{view.phase === 'over' && view.season.champ ? 'Final standings' : 'Results'}</h2>
         {#if !prefs.skipIntro && !settings.instant && rows.length >= 3}
@@ -307,7 +311,7 @@
           {#each d.offer as u (u)}
             <li>
               <button class="part" class:on={take === u} aria-pressed={take === u} disabled={d.order[0] !== seat} onclick={() => (take = take === u ? null : u)}>
-                <b>{upgradeName(u)}</b><span>{isPartCard(u) ? `Card: ${cardText(u)}` : cardText(u)}</span>
+                <Spot id="part.{u}" size={56} /><b>{upgradeName(u)}</b><span>{isPartCard(u) ? `Card: ${cardText(u)}` : cardText(u)}</span>
               </button>
             </li>
           {/each}
@@ -465,6 +469,26 @@
   .plain {
     margin: 0 0 6px;
     padding-left: 16px;
+  }
+  /* A painted spot beside its line; without the painting the text sits as before. */
+  .lined,
+  .lined li {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  ul.lined {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  .band-art {
+    display: block;
+    width: calc(100% + 48px);
+    height: clamp(120px, 26vh, 220px);
+    margin: -12px -24px 10px;
+    object-fit: cover;
+    object-position: 50% 62%;
   }
   .order {
     display: grid;

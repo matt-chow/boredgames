@@ -3,6 +3,7 @@
   import type { GameUiProps } from '../../ui';
   import { CIRCUITS } from '../rules/content/circuits';
   import { MAX_CARS, SEASON_LENGTHS, TIMERS, type AConfig } from '../rules/engine';
+  import Spot from './Spot.svelte';
   import { MODE_NAMES } from './text';
 
   let { conn, room }: GameUiProps = $props();
@@ -43,7 +44,7 @@
         <select value={c.circuit} disabled={!can} onchange={(e) => send({ circuit: e.currentTarget.value })}>
           {#each CIRCUITS as x (x.id)}<option value={x.id}>{x.name} ({x.level}, {x.corners.length} corners)</option>{/each}
         </select>
-        <span class="hint">{circuit.blurb}</span>
+        <span class="hint lined"><Spot id="poster.{c.circuit}" size={44} /><span>{circuit.blurb}</span></span>
       </label>
     {/if}
     {#if !school}
@@ -123,6 +124,11 @@
   .hint {
     margin: 0;
     font-size: 13px;
+  }
+  .lined {
+    display: flex;
+    gap: 8px;
+    align-items: center;
   }
   .opts {
     display: grid;

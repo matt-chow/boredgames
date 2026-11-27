@@ -5,6 +5,7 @@
 <script lang="ts">
   import { STRAIN, STRESS } from '../rules/cards';
   import type { AView } from '../rules/engine';
+  import Spot from './Spot.svelte';
 
   let { view, onrules }: { view: AView; onrules: (at: string) => void } = $props();
 
@@ -34,7 +35,7 @@
 </script>
 
 <section class="coach" aria-labelledby="ax-coach-h" aria-live="polite">
-  <h3 id="ax-coach-h">Coach <small>{done} of {LESSONS.length} lessons</small></h3>
+  <h3 id="ax-coach-h"><span class="who"><Spot id="misc.school" size={28} round />Coach</span> <small>{done} of {LESSONS.length} lessons</small></h3>
   {#if lesson}
     <p class="t">{lesson.title}</p>
     <p>{lesson.text}</p>
@@ -60,11 +61,16 @@
   h3 {
     display: flex;
     justify-content: space-between;
-    align-items: baseline;
+    align-items: center;
     margin: 4px 0 6px;
     font: 700 14px/1 var(--ax-serif);
     letter-spacing: 0.14em;
     text-transform: uppercase;
+  }
+  .who {
+    display: flex;
+    gap: 8px;
+    align-items: center;
   }
   small {
     font: 400 12px/1 inherit;

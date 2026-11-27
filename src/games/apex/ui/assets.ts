@@ -4,6 +4,7 @@
  * public/art/apex/ and nothing else changes: the board draws an <image> instead of the symbol.
  */
 import type { PropKind } from '../rules/content/circuits';
+import { PAINTED } from './painted';
 
 export interface Asset {
   /** The SVG fallback's symbol id. */
@@ -17,7 +18,7 @@ export interface Asset {
   ay: number;
 }
 
-const prop = (kind: PropKind, w: number, h: number): [string, Asset] => [`prop.${kind}`, { symbol: `ax-prop-${kind}`, raster: null, w, h, ax: 0.5, ay: 0.9 }];
+const prop = (kind: PropKind, w: number, h: number): [string, Asset] => [`prop.${kind}`, { symbol: `ax-prop-${kind}`, raster: PAINTED[`prop.${kind}`] ?? null, w, h, ax: 0.5, ay: 0.9 }];
 
 export const ASSETS: Record<string, Asset> = Object.fromEntries([
   prop('stand', 96, 54),
@@ -58,3 +59,10 @@ export const LIVERIES = [
   { name: 'Plum', body: '#6d3b5e', stripe: '#ece4cf', roundel: '#f1ead8' },
 ] as const;
 export const livery = (i: number) => LIVERIES[((i % LIVERIES.length) + LIVERIES.length) % LIVERIES.length];
+
+/**
+ * Painted illustrations (docs/APEX_ART_BIBLE.md), keyed like data/apex-art-manifest.json. `scripts/art/apex-paint.mjs
+ * build` writes painted.ts from the accepted pictures; a key with no painting returns null and the UI keeps its
+ * SVG or CSS fallback.
+ */
+export const paint = (id: string): string | null => PAINTED[id] ?? null;

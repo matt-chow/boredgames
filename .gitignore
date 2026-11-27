@@ -11,3 +11,6 @@ playwright-report/
 
 # Impeccable per-session hook cache (local paths)
 .impeccable/hook.cache.json
+
+# Apex art working files (raw paintings, kept out of the repo)
+.art/

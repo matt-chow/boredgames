@@ -31,7 +31,7 @@
   import { settings } from '../../../client/lib/settings.svelte';
   import { LANE_W, lanePos } from '../rules/geometry';
   import { cornerLimit, spaceOf } from '../rules/race';
-  import { livery, propAsset } from './assets';
+  import { livery, paint, propAsset } from './assets';
   import { sectorInfo } from './text';
   import { boardTrack } from './track';
 
@@ -343,17 +343,25 @@
       {/each}
 
       {#each cars as { c, p, l } (c.id)}
+        {@const art = paint(`car.${((c.livery % 8) + 8) % 8}`)}
         <g class="car" class:mine={c.id === mine} style="transform: {tf(p, c.spun ? 35 : 0)}" use:carEl={c.id}>
           {#if c.id === mine}<ellipse rx="21" ry="13" fill="none" stroke="var(--sprout)" stroke-width="3" />{/if}
           <ellipse cx="3" cy="4" rx="15" ry="7" fill="#000" opacity="0.28" />
-          <use href="#ax-car" x="-15" y="-7" width="30" height="14" style="color: {l.body}; --stripe: {l.stripe}; --roundel: {l.roundel}" />
+          {#if art}
+            <!-- The painted car is already in its livery colour; stripe and roundel stay vector so they match the chips. -->
+            <image href={art} x="-15" y="-7" width="30" height="14" />
+            <path d="M-12 -0.6 L12 -0.6 L12 0.6 L-12 0.6 Z" fill={l.stripe} opacity="0.85" />
+            <circle cx="5" r="2.4" fill={l.roundel} stroke="#292d2b" stroke-width="0.5" />
+          {:else}
+            <use href="#ax-car" x="-15" y="-7" width="30" height="14" style="color: {l.body}; --stripe: {l.stripe}; --roundel: {l.roundel}" />
+          {/if}
           <title>No. {c.number}, {c.name}{c.spun ? ', spun' : ''}</title>
         </g>
       {/each}
 
       {#each models as p (p.i)}
         {#if p.a.raster}
-          <image href={p.a.raster} x={p.x - p.a.w * p.a.ax} y={p.y - p.a.h * p.a.ay} width={p.a.w} height={p.a.h} />
+          <image href={p.a.raster} x={p.x - p.a.w * p.a.ax} y={p.y - p.a.h * p.a.ay} width={p.a.w} height={p.a.h} preserveAspectRatio="xMidYMax meet" />
         {:else}
           <use href="#{p.a.symbol}" x={p.x - p.a.w * p.a.ax} y={p.y - p.a.h * p.a.ay} width={p.a.w} height={p.a.h} />
         {/if}
