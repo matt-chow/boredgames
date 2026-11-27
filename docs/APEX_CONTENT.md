@@ -1,7 +1,8 @@
 # Apex '66: content
 
 Everything here is original to this hub: names, numbers, layouts and wording. The data lives in
-`src/games/apex/rules/content/*.ts`; `tests/apex/content.test.ts` checks counts, ids and the filters below.
+`src/games/apex/rules/content/*.ts`; `tests/apex/content.test.ts` checks counts, ids and the filters below (AX-CONT-1 upgrade counts and shape,
+AX-CONT-2 pool and module filtering, AX-CONT-3 the other counts and weights, AX-CONT-4 event filtering).
 
 ## 1. Circuits
 
