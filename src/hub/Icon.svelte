@@ -33,6 +33,8 @@
     coin: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z',
     influence: 'M7.5 21a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z M21 2l-9.6 9.6 M15.5 7.5l3 3L22 7l-3-3',
     eye: 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
+    wheel: 'M4 3h16 M3 9h18v6H3z M4 21h16',
+    grid: 'M3 3h7v7H3z M14 3h7v7h-7z M3 14h7v7H3z M14 14h7v7h-7z',
   } as const;
   export type IconName = keyof typeof PATHS;
 </script>
