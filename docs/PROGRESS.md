@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-27.
+Last updated 2026-11-28.
 
 ## Milestones
 
@@ -19,6 +19,7 @@ Last updated 2026-11-27.
 | M11 Sealed Correspondence v1.0 | Done | Court deduction card game, Classic (16 cards, 2–4) and Expanded (21 cards, 2–6). See SEALED.md |
 | M12 Palazzo v1.0 | Done | Original hidden-influence bluffing game for 2–6 people, five roles, server-timed response windows. See PALAZZO.md |
 | M13 Apex '66 | Staging (feat/apex66) | Original card-driven racing game. See APEX.md, APEX_MILESTONES.md and the section below |
+| M14 Home page v2.0 | Staging (feat/home-wheel) | The banner list is now a vertical game wheel with per-game fan choreography, a gallery view, active-room chips and an All rooms dialog. Geometry and spring in `src/hub/wheel.ts` (unit tested), wheel in `GameWheel.svelte`, gallery in `GameGallery.svelte`; `tests/e2e/home.spec.ts` covers fit at six sizes, looping, keys, row clicks, drag-not-launching, persistence and the gallery; other specs open games through `openGame`. Not done: the "Gilded Whispers" choreography maps to Palazzo and there is no "Minimalist Poker" game, so it has none |
 
 ## Apex '66 (2026-11-26, on `feat/apex66`)
 

@@ -71,8 +71,17 @@ Kingdom & Commerce (`src/games/clockwork`, first released as Clockwork Commons) 
 **Presentation is per game; everything functional is shared.** Three things vary:
 
 - `src/hub/catalog.ts`: one data entry per game on the home page (box cover, fan, colours, pitch, player counts, length,
-  settings shown). A game's fan is its own `ui/Fan.svelte`, loaded on demand. `GameFeature`, `CardFan`, `GamePanel` and
-  `RoomList` hold no game-specific code.
+  settings shown). A game's fan is its own `ui/Fan.svelte`, loaded on demand, which picks a `CardFan` motion and may add
+  its own pieces (cars, coins, a seal) through `extra`. `GameWheel`, `GameGallery`, `CardFan`, `GamePanel` and
+  `RoomList` hold no game-specific code: a new catalog entry appears in the wheel with nothing else to change.
+
+The home page is a vertical wheel (`src/hub/GameWheel.svelte`). One number, the wheel's position, drives every row:
+`src/hub/wheel.ts` turns a row's signed distance from the centre into its offset, height, openness and fade, and a
+`requestAnimationFrame` loop writes those straight onto the rows as transforms, opacity and CSS variables (`--s` size,
+`--f` fan, `--m` meta), so turning re-renders nothing. Svelte state changes only when the centred game does. A spring
+snaps to the nearest game; wheel, drag and keys all just move the target, so motion never queues. Art mounts only for
+the settled game and its neighbours, at rest. Rows only focus; only Open Table, or Enter on the wheel, opens a game.
+`bg.hub` in localStorage keeps the centred game's id and the view the person chose (wheel or gallery).
 - `GAME_THEME` in `src/games/ui.ts`: an optional lazy stylesheet. `RoomPage` puts `data-game-theme` around the room, and
   the stylesheet's rules all start from that attribute, so it restyles through tokens and can't reach anything else.
 - A ruleset's optional `present(text)`: rewords text saved in state as a view is built, so a game can be renamed without

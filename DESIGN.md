@@ -144,13 +144,18 @@ for panels and dialogs. Cards are portrait 5:7 (76 × 106 px at rest).
 - **Trading dock:** each proposed offer is a dashed "slip" (an offer addressed to you is edged in sprout). Once
   accepted, the cards fly to the receivers' pending area, so proposed and committed are never confused. Accept /
   Reject / Withdraw / Counter sit on the slip.
-- **Home page:** one feature card per catalog entry, in a single column, so any number of games fits and none has a
-  position of its own. Each card has the game's name, pitch, player count, length and one **Open Table** button on one
-  side, and a fan of that game's own cards on the other. Below 640px of card width (a container query, not the viewport)
-  the card stacks and the button goes full width. Below 340px of fan width, a fan keeps its middle three cards. The fan
-  scales from its container's width, and the card clips anything that would escape. The fan opens 10% on hover or focus
-  where hover exists; only `transform` animates. No illustration is shared between games. A coming-soon card is an
-  outline with blank cards, a pill and no button.
+- **Home page:** a vertical wheel of games with a fixed centre. Turning it, each game grows into the centre and shrinks
+  away again on one continuous motion: plate height, a slight tilt, scale and fade all follow the wheel's position, and
+  the game's fan unfolds with it (its own motion: Bohnanza fans, Kingdom & Commerce deals out from a deck, Dead Drop
+  drops in, Sealed Correspondence rises from a letter under a seal, Palazzo gathers in with coins, Miners & Saboteurs
+  lays a tunnel, Apex '66 rolls three cars into formation). Only the centre shows art, pitch, players, length and
+  **Open Table**; its neighbours show title and players/length; further rows show the title. 7, 5 or 3 rows by height.
+  It loops. Wheel, trackpad, swipe and keys turn it, and it snaps in about 300ms; a click on a row only turns to it.
+  The page behind takes a soft glow of the centre game's accent. A rail of dots (a count on narrow screens) shows the
+  position. Header, join and up to three active-room chips stay above; every room is behind **All rooms**. A
+  Wheel/Gallery switch offers every game as small cover tiles; a tile turns the wheel to that game, carrying the title
+  across with a view transition. Phones keep the wheel vertical, stack art over details and fold the rooms into one
+  button. With reduced motion the wheel jumps straight to the open game. A coming-soon game is blank cards, a pill and no button.
 - **Per-game themes:** a game may override tokens inside `[data-game-theme]`. Kingdom & Commerce uses burgundy, antique
   gold, ivory and charcoal, and keeps the same layout, motion and components (docs/CLOCKWORK.md).
 - **Switches** (lobby variants): sprout when on; options that cannot be used at this player count stay visible with
