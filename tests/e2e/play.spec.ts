@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { PHONE, activePlayer, botStep, newPlayer, rawSend, roomViews, startTable } from './helpers';
+import { PHONE, activePlayer, botStep, newPlayer, rawSend, roomViews, startTable, openGame } from './helpers';
 
 test('a turn with planting, trading (offer, counter, accept), and resolving on desktop and phone', async ({ browser }) => {
   const players = [await newPlayer(browser, 'Ana'), await newPlayer(browser, 'Bo', PHONE), await newPlayer(browser, 'Cy')];
@@ -183,7 +183,7 @@ test('quitting a practice game against bots ends it and deletes the table', asyn
   const ana = await newPlayer(browser, 'Ana', PHONE);
   const { page } = ana;
   await page.goto('/');
-  await page.getByRole('button', { name: /^Open Table: Bohnanza/ }).click();
+  await openGame(page, 'Bohnanza');
   await page.fill('#name', 'Ana');
   await page.getByRole('button', { name: /Practise with bots/ }).click();
   await page.waitForURL(/\/r\/[A-Z0-9]{6}$/);

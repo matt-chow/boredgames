@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { DESKTOP, newPlayer, PHONE, type Player } from './helpers';
+import { DESKTOP, newPlayer, PHONE, type Player, openGame } from './helpers';
 
 const shot = async (p: Player, name: string) => {
   if (process.env.AX_SHOTS) await p.page.screenshot({ path: `${process.env.AX_SHOTS}/${name}.png` });
@@ -8,7 +8,7 @@ const shot = async (p: Player, name: string) => {
 async function openTable(players: Player[], configure?: (page: Page) => Promise<void>) {
   const [a, ...rest] = players;
   await a.page.goto('/');
-  await a.page.getByRole('button', { name: /^Open Table: Apex/ }).click();
+  await openGame(a.page, 'Apex ’66');
   await a.page.fill('#name', a.name);
   await a.page.getByRole('button', { name: 'Create room' }).click();
   await a.page.waitForURL(/\/r\/[A-Z0-9]{6}$/);

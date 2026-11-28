@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test';
-import { PHONE, botStep, newPlayer } from './helpers';
+import { PHONE, botStep, newPlayer, openGame } from './helpers';
 
 test('one player practises against bots: the home page seats them, the lobby adds one, and the bots take their turns', async ({ browser }) => {
   test.setTimeout(6 * 60_000);
   const ana = await newPlayer(browser, 'Ana', PHONE);
   const { page } = ana;
   await page.goto('/');
-  await page.getByRole('button', { name: /^Open Table: Bohnanza/ }).click();
+  await openGame(page, 'Bohnanza');
   await page.fill('#name', 'Ana');
   await page.getByRole('button', { name: /Practise with bots/ }).click();
   await page.waitForURL(/\/r\/[A-Z0-9]{6}$/);
@@ -42,7 +42,7 @@ test('panning the table selects no text, and an offer started from a card asks w
   const ana = await newPlayer(browser, 'Ana');
   const { page } = ana;
   await page.goto('/');
-  await page.getByRole('button', { name: /^Open Table: Bohnanza/ }).click();
+  await openGame(page, 'Bohnanza');
   await page.fill('#name', 'Ana');
   await page.getByRole('button', { name: /Practise with bots/ }).click();
   await page.waitForURL(/\/r\/[A-Z0-9]{6}$/);

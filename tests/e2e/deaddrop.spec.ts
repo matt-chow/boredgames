@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { DESKTOP, newPlayer, PHONE, type Player } from './helpers';
+import { DESKTOP, newPlayer, PHONE, type Player, openGame } from './helpers';
 
 const LOC = { embassy: 'Embassy', station: 'Rail Station', hotel: 'Grand Hotel', harbour: 'Harbour' } as const;
 const NAMES = Object.values(LOC);
@@ -11,7 +11,7 @@ const shot = async (p: Player, name: string) => {
 
 async function openTable(a: Player, b: Player) {
   await a.page.goto('/');
-  await a.page.getByRole('button', { name: /^Open Table: Dead Drop/ }).click();
+  await openGame(a.page, 'Dead Drop');
   await shot(a, 'panel');
   await a.page.fill('#name', a.name);
   await a.page.getByRole('button', { name: 'Create room' }).click();

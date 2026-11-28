@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { PHONE, newPlayer, startTable } from './helpers';
+import { PHONE, newPlayer, startTable, openGame } from './helpers';
 
 // The three-level guides: from the pre-game panel, the ? menu and the contextual ? on the table.
 
@@ -28,7 +28,7 @@ async function kingdomTable(page: Page, name: string) {
 test('GUIDE-E1: the panel opens the full guide, with levels, search and Escape', async ({ browser }) => {
   const p = await newPlayer(browser, 'Ada');
   await p.page.goto('/');
-  await p.page.getByRole('button', { name: /^Open Table: Bohnanza/ }).click();
+  await openGame(p.page, 'Bohnanza');
   await p.page.getByText('How to play', { exact: false }).first().click();
   await p.page.getByRole('button', { name: 'Open the full guide' }).click();
   const d = dialog(p.page).last();
