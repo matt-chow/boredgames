@@ -324,12 +324,57 @@ export async function openings(input) {
 const roundMask = Buffer.from(`<svg width="${W}" height="${H}"><rect width="${W}" height="${H}" rx="14" fill="#fff"/></svg>`);
 const border = (extra = '') => Buffer.from(`<svg width="${W}" height="${H}">${extra}<rect x="2" y="2" width="${W - 4}" height="${H - 4}" rx="12.5" fill="none" stroke="#1a120c" stroke-width="4"/></svg>`);
 
-/** A cream chip holding a tool badge, so an action's tool shows by shape as well as by the band's colour. */
-async function chips(kind) {
+/**
+ * What an action does, as a large badge in the corner the painting leaves clear: the tool with a red cross (break) or
+ * a teal tick (fix), or a glyph of its own. Drawn on the same dark disc as the tool badges, in a 96 box.
+ */
+const CREAM = '#efe3c8';
+const st = (w, c = CREAM) => `fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"`;
+const arrowHead = (x, y, deg) => `<path d="M-7 -7L0 0L-7 7" transform="translate(${x} ${y}) rotate(${deg})" ${st(5)}/>`;
+const GLYPH = {
+  // Look at a hidden destination.
+  survey: `<path d="M14 48Q48 16 82 48Q48 80 14 48Z" fill="${INK}" ${st(5).replace('fill="none" ', '')}/><circle cx="48" cy="48" r="12" fill="#e0ac3c"/><circle cx="48" cy="48" r="5" fill="${INK}"/>`,
+  // Rock comes down on a tunnel.
+  caveIn: `<path d="M48 14V36" ${st(6)}/>${arrowHead(48, 38, 90)}<ellipse cx="33" cy="64" rx="14" ry="11" fill="#8d9296" stroke="${INK}" stroke-width="3"/><ellipse cx="62" cy="66" rx="15" ry="11" fill="#8d9296" stroke="${INK}" stroke-width="3"/><ellipse cx="48" cy="52" rx="11" ry="9" fill="#c3c7ca" stroke="${INK}" stroke-width="3"/>`,
+  // A coin taken away.
+  theft: `<circle cx="38" cy="58" r="17" fill="#e0ac3c" stroke="${INK}" stroke-width="3"/><circle cx="38" cy="58" r="10" fill="none" stroke="#6e4c12" stroke-width="2.5"/><path d="M50 38Q58 22 74 22" ${st(6)}/>${arrowHead(76, 22, 0)}`,
+  // A lock against the Pickpocket.
+  guard: `<path d="M36 46V36A12 12 0 0 1 60 36V46" ${st(7)}/><rect x="28" y="44" width="40" height="32" rx="5" fill="#e0ac3c" stroke="${INK}" stroke-width="3"/><circle cx="48" cy="57" r="4.5" fill="${INK}"/><path d="M48 59V67" stroke="${INK}" stroke-width="4" stroke-linecap="round"/>`,
+  // Two hands of cards change places.
+  swapHands: `<rect x="22" y="34" width="20" height="30" rx="3" fill="#e2d1ac" stroke="${INK}" stroke-width="3"/><rect x="54" y="34" width="20" height="30" rx="3" fill="#e2d1ac" stroke="${INK}" stroke-width="3"/><path d="M30 28Q48 12 64 26" ${st(5)}/>${arrowHead(66, 28, 40)}<path d="M66 70Q48 86 32 72" ${st(5)}/>${arrowHead(30, 70, 220)}`,
+  // Look at a player's role.
+  inspect: `<circle cx="42" cy="42" r="17" fill="#3c679c" fill-opacity=".45" ${st(6).replace('fill="none" ', '')}/><path d="M55 55L74 74" ${st(10, '#a0743f')}/>`,
+  // A role badge exchanged for another.
+  swapRole: `<path d="M48 31L52.7 41.5L64 42.6L55.5 50.2L58 61.4L48 55.6L38 61.4L40.5 50.2L32 42.6L43.3 41.5Z" fill="#e0ac3c" stroke="${INK}" stroke-width="2.5"/><path d="M22 52A26 26 0 1 0 30 28" ${st(5)}/>${arrowHead(31, 27, 230)}`,
+  // Bars across a player.
+  trap: `${[28, 42, 56, 70].map((x) => `<path d="M${x} 20V76" ${st(6, '#c3c7ca')}/>`).join('')}<path d="M22 32H74M22 64H74" ${st(5, '#8d9296')}/>`,
+  // A rope pulls a player up and out.
+  free: `<ellipse cx="48" cy="64" rx="20" ry="11" ${st(6, '#c9a36a')}/><ellipse cx="48" cy="64" rx="10" ry="5" ${st(4, '#c9a36a')}/><path d="M48 54V20" ${st(6)}/>${arrowHead(48, 18, -90)}`,
+};
+const toolInner = (t, broken) => {
+  const svg = readFileSync(`public/art/mines/${TOOL_FILE[t]}${broken ? 'Broken' : ''}.svg`, 'utf8');
+  return svg.slice(svg.indexOf('<g'), svg.lastIndexOf('</g>') + 4);
+};
+const PIP = {
+  break: `<circle cx="74" cy="74" r="17" fill="#a8432c" stroke="${INK}" stroke-width="3"/><path d="M67 67L81 81M81 67L67 81" ${st(5)}/>`,
+  fix: `<circle cx="74" cy="74" r="17" fill="#3f7a74" stroke="${INK}" stroke-width="3"/><path d="M66 74L72 80L83 68" ${st(5)}/>`,
+};
+const disc = (body) =>
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96"><circle cx="48" cy="48" r="45" fill="#4d3a2a" stroke="#1a120c" stroke-width="3"/><circle cx="48" cy="48" r="40" fill="none" stroke="#c9b48a" stroke-width="3"/>${body}</svg>`;
+
+/** The SVG badges for an action: one per tool it names, or its own glyph. */
+export function actionBadges(kind) {
   const tools = ACTION[kind]?.tools;
-  if (!tools) return [];
-  const file = (t) => `public/art/mines/${TOOL_FILE[t]}${kind.startsWith('break') ? 'Broken' : ''}.svg`;
-  return Promise.all(tools.map(async (t, i) => ({ input: await sharp(file(t), { density: 96 }).resize(46, 46).png().toBuffer(), left: W - 56 - i * 50, top: 34 })));
+  if (!tools) return GLYPH[kind] ? [disc(GLYPH[kind])] : [];
+  const act = kind.startsWith('break') ? 'break' : 'fix';
+  // The tool badges draw at 0.62 of their disc; here the tool fills it, nudged clear of the pip.
+  return tools.map((t) => disc(`<g transform="translate(45 48) scale(1.3) translate(-48 -48)">${toolInner(t, act === 'break')}</g>` + PIP[act]));
+}
+
+async function icons(kind) {
+  const badges = actionBadges(kind);
+  const size = badges.length > 1 ? 72 : 84;
+  return Promise.all(badges.map(async (b, i) => ({ input: await sharp(Buffer.from(b), { density: 192 }).resize(size, size).png().toBuffer(), left: W - 8 - size - i * (size + 4), top: 36 })));
 }
 
 function overlay(p) {
@@ -369,7 +414,7 @@ async function build(dir) {
     const art = await sharp(src).resize(W, H, { fit: 'cover' }).toBuffer();
     const file = join(out, `${p.kind}.webp`);
     await sharp(art)
-      .composite([{ input: border(overlay(p)) }, ...(await chips(p.kind)), { input: roundMask, blend: 'dest-in' }])
+      .composite([{ input: border(overlay(p)) }, ...(await icons(p.kind)), { input: roundMask, blend: 'dest-in' }])
       .webp({ quality: 82, alphaQuality: 60, effort: 6 })
       .toFile(file);
     // Measure the framed file that ships, as MS-ART2 does: the border alone can tip a faint opening.
