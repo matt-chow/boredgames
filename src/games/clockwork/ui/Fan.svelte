@@ -14,7 +14,7 @@
 
 <!-- data-fan keeps the theme's tokens on these cards and off the page around them. -->
 <div data-game-theme="clockwork" data-fan>
-  <CardFan items={cards} cardWidth={112}>
+  <CardFan items={cards} cardWidth={112} motion="spread">
     {#snippet card(def)}<DeckCard {def} size="lg" />{/snippet}
   </CardFan>
 </div>

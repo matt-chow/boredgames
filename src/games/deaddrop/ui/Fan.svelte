@@ -9,7 +9,7 @@
 
 <!-- data-fan keeps the theme's tokens on these cards and off the page around them. -->
 <div data-game-theme="deaddrop" data-fan>
-  <CardFan {items} cardWidth={112}>
+  <CardFan {items} cardWidth={112} motion="deal">
     {#snippet card(l)}
       <div class="dd-fan">
         <img src={sceneOf(l)} alt="" width="640" height="400" loading="lazy" />
@@ -21,6 +21,7 @@
 
 <style>
   .dd-fan {
+    flex: none;
     width: 112px;
     height: 157px;
     display: flex;
