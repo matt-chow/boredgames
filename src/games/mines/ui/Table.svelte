@@ -379,7 +379,7 @@
           const half = 380 * P;
           const turned = view.cells.find((c) => c.x === g.x && c.y === g.y)?.rot ? ' rotate(180deg)' : '';
           const start = t + 120 * P;
-          if (at) flipOut(tileArt('goalBack', deep), at, half, start);
+          if (at) flipOut(artOf('cardBack'), at, half, start);
           move(cell, [{ opacity: 0 }, { opacity: 0 }], start + half);
           move(cell?.querySelector('img') ?? null, [{ transform: `perspective(400px) rotateY(-90deg)${turned}` }, { transform: `perspective(400px) rotateY(0deg)${turned}` }], half, start + half);
           later(start + half, () => {

@@ -9,7 +9,8 @@ const MODES = { classic: [3, 10], expanded: [2, 10], duel: [2, 2] } as const;
 export const mines: GameModule<MConfig, MState, MAction, MView> = {
   meta: { id: 'mines', name: 'Miners & Saboteurs', minPlayers: 2, maxPlayers: 10, stateVersion: 2, simultaneous: true },
   options: [],
-  defaultConfig: () => ({ mode: 'classic', rounds: 3, target: 0, timer: 0, away: 'pause' }),
+  // MS-CFG2: a table created with exactly two seats (practice with one bot) starts on the Duel, which it can play.
+  defaultConfig: (n) => ({ mode: n === 2 ? 'duel' : 'classic', rounds: 3, target: 0, timer: 0, away: 'pause' }),
   validateConfig(c, n) {
     const [lo, hi] = MODES[c.mode] ?? [0, 0];
     if (n < lo || n > hi)

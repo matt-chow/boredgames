@@ -162,6 +162,7 @@ export class RoomCore {
     const name = normalizeName(init.name);
     if (!name) throw new RoomError('bad-name', 'Enter a display name (1–20 characters).');
     const now = opts.now();
+    const bots = Math.min(Number.isInteger(init.bots) ? init.bots! : 0, game.meta.maxPlayers - 1);
     store.transaction(() => {
       store.putMeta({
         schema: ROOM_SCHEMA,
@@ -170,7 +171,7 @@ export class RoomCore {
         status: 'lobby',
         version: 1,
         hostTh: init.th,
-        config: game.defaultConfig(game.meta.minPlayers) as Record<string, unknown>,
+        config: game.defaultConfig(1 + bots) as Record<string, unknown>,
         seed: null,
         stateVersion: game.meta.stateVersion,
         createdAt: now,
@@ -180,7 +181,6 @@ export class RoomCore {
       store.appendHistory({ version: 1, seat: 0, kind: 'create', data: '{}', at: now });
     });
     const core = new RoomCore(store, opts);
-    const bots = Math.min(Number.isInteger(init.bots) ? init.bots! : 0, game.meta.maxPlayers - 1);
     for (let i = 0; i < bots; i++) core.seatBot(0);
     return core;
   }

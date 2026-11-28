@@ -595,8 +595,8 @@
   "file": "/art/mines/miner.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 59",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "miner.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -610,8 +610,8 @@
   "file": "/art/mines/saboteur.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 83",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "saboteur.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -624,8 +624,8 @@
   "file": "/art/mines/green.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 41",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "green.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -638,8 +638,8 @@
   "file": "/art/mines/blue.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 41",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "blue.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -652,8 +652,8 @@
   "file": "/art/mines/foreman.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 131",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "foreman.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -666,8 +666,8 @@
   "file": "/art/mines/opportunist.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 59",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "opportunist.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -680,8 +680,8 @@
   "file": "/art/mines/seeker.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 83",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "seeker.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -696,8 +696,8 @@
   "file": "/art/mines/breakPick.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "breakPick.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -712,8 +712,8 @@
   "file": "/art/mines/breakLamp.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "breakLamp.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -728,8 +728,8 @@
   "file": "/art/mines/breakCart.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "breakCart.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -744,8 +744,8 @@
   "file": "/art/mines/fixPick.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 7",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "fixPick.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -760,8 +760,8 @@
   "file": "/art/mines/fixLamp.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "fixLamp.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -776,8 +776,8 @@
   "file": "/art/mines/fixCart.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 7",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "fixCart.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -792,8 +792,8 @@
   "file": "/art/mines/fixPickLamp.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 167",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "fixPickLamp.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -808,8 +808,8 @@
   "file": "/art/mines/fixPickCart.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 131",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "fixPickCart.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -824,8 +824,8 @@
   "file": "/art/mines/fixLampCart.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "fixLampCart.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -840,8 +840,8 @@
   "file": "/art/mines/survey.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 7",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "survey.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -856,8 +856,8 @@
   "file": "/art/mines/caveIn.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "caveIn.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -870,8 +870,8 @@
   "file": "/art/mines/theft.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "theft.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -884,8 +884,8 @@
   "file": "/art/mines/guard.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 23",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "guard.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -898,8 +898,8 @@
   "file": "/art/mines/swapHands.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 23",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "swapHands.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -912,8 +912,8 @@
   "file": "/art/mines/inspect.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 167",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "inspect.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -926,8 +926,8 @@
   "file": "/art/mines/swapRole.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "swapRole.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -940,8 +940,8 @@
   "file": "/art/mines/trap.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 131",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "trap.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -954,8 +954,8 @@
   "file": "/art/mines/free.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 23",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "free.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -970,8 +970,8 @@
   "file": "/art/mines/cardBack.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 83",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "cardBack.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -985,24 +985,8 @@
   "file": "/art/mines/roleBack.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 59",
-  "source": "AI Horde, Deliberate, text prompt only",
-  "fallback": "none: MS-ART1 fails the build if the file is missing"
- },
- {
-  "asset": "mines/goalBack",
-  "card": "goalBack",
-  "category": "back",
-  "rulesets": [
-   "classic",
-   "expanded",
-   "duel"
-  ],
-  "file": "/art/mines/goalBack.webp",
-  "width": 240,
-  "height": 360,
-  "variant": "seed 23",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "roleBack.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -1015,8 +999,8 @@
   "file": "/art/mines/reward1.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 23",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "reward1.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -1029,8 +1013,8 @@
   "file": "/art/mines/reward2.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 41",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "reward2.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
@@ -1043,8 +1027,8 @@
   "file": "/art/mines/reward3.webp",
   "width": 240,
   "height": 360,
-  "variant": "seed 101",
-  "source": "AI Horde, Deliberate, text prompt only",
+  "variant": "reward3.v1.png",
+  "source": "Codex CLI built-in image tool, text prompt with accepted faces from this set as style references",
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  }
 ]

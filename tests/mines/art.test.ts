@@ -26,7 +26,7 @@ describe('art', () => {
   it('MS-ART3: every card face is painted, listed in the manifest, and small enough for the table', () => {
     // Only the round badges stay vector icons.
     expect(painted.length).toBe(ART_KINDS.length - 8);
-    for (const k of [...Object.keys(TUNNEL), ...ACTIONS.map((a) => a.kind), ...ROLES.map((r) => r.role), 'cardBack', 'roleBack', 'goalBack']) expect(painted).toContain(k);
+    for (const k of [...Object.keys(TUNNEL), ...ACTIONS.map((a) => a.kind), ...ROLES.map((r) => r.role), 'cardBack', 'roleBack']) expect(painted).toContain(k);
     const manifest: { card: string; file: string }[] = JSON.parse(readFileSync('data/mines-art-manifest.json', 'utf8'));
     expect(manifest.map((m) => m.card).sort()).toEqual([...painted].sort());
     for (const m of manifest) {
