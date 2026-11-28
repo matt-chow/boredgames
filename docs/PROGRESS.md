@@ -1,6 +1,6 @@
 # Progress
 
-Last updated 2026-11-20.
+Last updated 2026-11-27.
 
 ## Milestones
 
@@ -35,6 +35,7 @@ Last updated 2026-11-20.
 | A8 | Done: `npm run balance:apex` (alias `measure:apex`) writes APEX_BALANCE.md: seeded races per circuit, module setting, grid size, AI level and risk, rivals; storage for a full 5-race championship (state peak about 53 KB) |
 | A9 | Done: check, 1280 unit tests and the browser suite pass; staging deploy (https://boredgames-staging.mchowcl.workers.dev, version 696a84b1) and the Apex browser tests pass against it. Production not deployed |
 | A11 Playtest fixes (2026-11-27) | Done: the grid introduction is a full-screen sheet (it spilled out of the board over the gear lever); on a desk the table fits one screen (hand beside the instruments, side panel scrolls), and on a phone the table scrolls with the dashboard under the board; the board frames the circuit's own bounds instead of the whole poster page, and zooms to 6×; race settings lead the lobby with mode buttons and circuit picture tiles (custom calendars add by tile). Second pass: the fanned hand is sized to fit its row at any width, so no card hangs off-screen; the desk layout pins the board and side panel to their grid cells so the dashboard never falls below the fold, and short or narrow windows scroll the page (the narrow board is capped at 55% of the screen height) |
+| A12 v1.3 rules and turns (2026-11-27, `feat/apex-v1.3`) | Done: rules audit (APEX_COMPLIANCE.md); turn-by-turn resolution with move, react (cool, boost, catch-up), slipstream offer, one corner check and Finish turn, each confirmed by the server (AX-TURN-1..7); spins give Stress; the race runs until every car finishes; Strain renamed Heat; state version 2 with migration, v1 replays play through the frozen `race-v1.ts`. UI: turn bar beside the hand, Cool by hand, speed/distance ranges and risk, min/max ghost, billboards, round history, sequential car motion with a speed setting and Skip car animations, finished cars stay on the board. Deferred: APEX_V1_4_BACKLOG.md |
 | A10 Painted art | **Paused, partial.** 119 Codex-painted pictures accepted (APEX_ART_BIBLE.md, ASSETS.md, `data/apex-art-manifest.json`), 126 WebPs, 2.9 MB in `public/art/apex`: all 8 driving cards, 8 posters, 18 scenery props, the car and 8 liveries, cover, trophy, school, 6 sponsors, 16 events, 8 rivals, 9 of 10 press, 4 of 6 weathers and 38 of 63 upgrades. Not painted yet, so the SVG/CSS fallbacks show: upgrades b02–b09, a24, e01–e16; weather overcast and drizzle; press Flat Out. Resume with `node scripts/art/apex-paint.mjs generate part --ref part.b01,part.a12` and `generate weather.overcast,weather.drizzle,press.flat --ref event.morning`. The whole-catalogue audit sheet is still to do |
 
 ## Kingdom & Commerce: five expansions (2026-11-20)
