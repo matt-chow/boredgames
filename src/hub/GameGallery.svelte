@@ -100,4 +100,14 @@
   .facts :global(svg:not(:first-child)) {
     margin-left: 8px;
   }
+  /* Phones keep two across, so the gallery stays a quick overview. */
+  @media (max-width: 639px) {
+    .gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .name {
+      font-size: 16px;
+    }
+  }
 </style>

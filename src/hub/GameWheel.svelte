@@ -125,7 +125,7 @@
 
   /** Head for game `to` (unwrapped), carrying on from wherever the wheel is now: a new aim replaces the old one. */
   function snap(to: number, v = vel) {
-    target = Math.max(Math.round(pos) - 3, Math.min(Math.round(pos) + 3, to));
+    target = to;
     moved = true;
     if (settings.instant) {
       pos = target;
@@ -218,7 +218,8 @@
     if (!dragged) return;
     const first = samples[0];
     const v = first && e.timeStamp > first.t ? ((pos - first.pos) / (e.timeStamp - first.t)) * 1000 : 0;
-    snap(landing(pos, v), Math.max(-12, Math.min(12, v)));
+    // A fling turns at most three games, however hard.
+    snap(Math.max(Math.round(pos) - 3, Math.min(Math.round(pos) + 3, landing(pos, v))), Math.max(-12, Math.min(12, v)));
   }
   /** A drag that ends over a button must not press it. */
   function onclickcapture(e: MouseEvent) {
@@ -306,78 +307,81 @@
 </div>
 
 <div class="stage" bind:this={stage}>
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (a carousel region takes the arrow keys) -->
-  <div
-    class="wheel"
-    class:narrow
-    bind:this={wheel}
-    style="height:{L.height}px;--focus:{L.focus}px;--row:{L.row}px;--open:{L.focus - L.row}px;--shut:{(L.row - 32) / (L.focus - 32)}"
-    role="region"
-    aria-roledescription="carousel"
-    aria-label="Games. Use the arrow keys to turn, Enter to open."
-    tabindex="0"
-    {onwheel}
-    onpointerdown={ondown}
-    onpointermove={onmove}
-    onpointerup={onup}
-    onpointercancel={onup}
-    onclickcapture={onclickcapture}
-    {onkeydown}
-  >
-    {#each near as i (games[i].id)}
-      {@const g = games[i]}
-      {@const on = i === index}
-      <div class="row" class:on class:soon={g.status === 'soon'} use:track={[rows, i]} style="--accent:{g.accent};--title:{g.titleFont ?? 'var(--font-label)'}">
-        <div class="plate top"></div>
-        <div class="plate body"></div>
-        <div class="plate bottom"></div>
-        {#if !on}
-          <button class="pick" tabindex="-1" aria-hidden="true" onclick={() => show(i)}></button>
-        {/if}
-        <div class="sheet" inert={!on}>
-          <div class="scene">
-            {#if art.has(i)}
-              {@const fan = fanOf(g)}
-              {#if fan}
-                {#await fan then m}<m.default />{:catch}{@render blanks()}{/await}
-              {:else}
-                {@render blanks()}
-              {/if}
-            {/if}
-          </div>
-          <div class="info" use:measure>
-            <h2 class="title" class:plain={!!g.titleFont} id="game-{g.id}" use:titled style="--len:{g.name.length};{on ? `view-transition-name:title-${g.id}` : ''}">{g.name}</h2>
-            <div class="more">
-              <p class="pitch">{g.pitch}</p>
-              {#if g.status === 'soon'}
-                <p class="pill">Coming soon</p>
-              {:else}
-                <ul class="facts">
-                  <li><Icon name="users" size={16} /><span class="num">{players(g)}</span> players</li>
-                  <li><Icon name="clock" size={16} /><span class="num">{g.minutes}</span> min</li>
-                </ul>
-                <button class="btn primary open" aria-haspopup="dialog" aria-label="Open Table: {g.name}" onclick={() => open(g)}>Open Table <Icon name="arrowRight" /></button>
+  <!-- The stage measures the room; the frame is the wheel's own size, so the rail and hint stay with it when it outgrows a short screen. -->
+  <div class="frame">
+    <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (a carousel region takes the arrow keys) -->
+    <div
+      class="wheel"
+      class:narrow
+      bind:this={wheel}
+      style="height:{L.height}px;--focus:{L.focus}px;--row:{L.row}px;--open:{L.focus - L.row}px;--shut:{(L.row - 32) / (L.focus - 32)}"
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Games. Use the arrow keys to turn, Enter to open."
+      tabindex="0"
+      {onwheel}
+      onpointerdown={ondown}
+      onpointermove={onmove}
+      onpointerup={onup}
+      onpointercancel={onup}
+      onclickcapture={onclickcapture}
+      {onkeydown}
+    >
+      {#each near as i (games[i].id)}
+        {@const g = games[i]}
+        {@const on = i === index}
+        <div class="row" class:on class:soon={g.status === 'soon'} use:track={[rows, i]} style="--accent:{g.accent};--title:{g.titleFont ?? 'var(--font-label)'}">
+          <div class="plate top"></div>
+          <div class="plate body"></div>
+          <div class="plate bottom"></div>
+          {#if !on}
+            <button class="pick" tabindex="-1" aria-hidden="true" onclick={() => show(i)}></button>
+          {/if}
+          <div class="sheet" inert={!on}>
+            <div class="scene">
+              {#if art.has(i)}
+                {@const fan = fanOf(g)}
+                {#if fan}
+                  {#await fan then m}<m.default />{:catch}{@render blanks()}{/await}
+                {:else}
+                  {@render blanks()}
+                {/if}
               {/if}
             </div>
+            <div class="info" use:measure>
+              <h2 class="title" class:plain={!!g.titleFont} id="game-{g.id}" use:titled style="--len:{g.name.length};{on ? `view-transition-name:title-${g.id}` : ''}">{g.name}</h2>
+              <div class="more">
+                <p class="pitch">{g.pitch}</p>
+                {#if g.status === 'soon'}
+                  <p class="pill">Coming soon</p>
+                {:else}
+                  <ul class="facts">
+                    <li><Icon name="users" size={16} /><span class="num">{players(g)}</span> players</li>
+                    <li><Icon name="clock" size={16} /><span class="num">{g.minutes}</span> min</li>
+                  </ul>
+                  <button class="btn primary open" aria-haspopup="dialog" aria-label="Open Table: {g.name}" onclick={() => open(g)}>Open Table <Icon name="arrowRight" /></button>
+                {/if}
+              </div>
+            </div>
           </div>
+          <p class="meta" aria-hidden="true">
+            {#if g.status === 'soon'}Soon{:else}<Icon name="users" size={14} /><span class="num">{players(g)}</span><Icon name="clock" size={14} /><span class="num">{g.minutes}</span>{/if}
+          </p>
         </div>
-        <p class="meta" aria-hidden="true">
-          {#if g.status === 'soon'}Soon{:else}<Icon name="users" size={14} /><span class="num">{players(g)}</span><Icon name="clock" size={14} /><span class="num">{g.minutes}</span>{/if}
-        </p>
-      </div>
-    {/each}
-  </div>
-
-  <nav class="rail" aria-label="All games">
-    <ol>
-      {#each games as g, i (g.id)}
-        <li><button tabindex="-1" aria-label="Show {g.name}" aria-current={i === index ? 'true' : undefined} onclick={() => show(i)}></button></li>
       {/each}
-    </ol>
-    <p class="count num" aria-hidden="true">{index + 1}<span> / {n}</span></p>
-  </nav>
-  <p class="hint" aria-hidden="true"><span class="fine">Scroll or use ↑ ↓ to turn</span><span class="coarse">Swipe to turn</span></p>
-  <p class="visually-hidden" aria-live="polite">{games[settled].name}, {settled + 1} of {n}</p>
+    </div>
+
+    <nav class="rail" aria-label="All games">
+      <ol>
+        {#each games as g, i (g.id)}
+          <li><button tabindex="-1" aria-label="Show {g.name}" aria-current={i === index ? 'true' : undefined} onclick={() => show(i)}></button></li>
+        {/each}
+      </ol>
+      <p class="count num" aria-hidden="true">{index + 1}<span> / {n}</span></p>
+    </nav>
+    <p class="hint" aria-hidden="true"><span class="fine">Scroll or use ↑ ↓ to turn</span><span class="coarse">Swipe to turn</span></p>
+    <p class="visually-hidden" aria-live="polite">{games[settled].name}, {settled + 1} of {n}</p>
+  </div>
 </div>
 
 {#snippet blanks()}
@@ -410,10 +414,14 @@
     align-items: flex-start;
     justify-content: center;
   }
-  .wheel {
+  .frame {
     position: relative;
     flex: 1;
+    min-width: 0;
     max-width: 1040px;
+  }
+  .wheel {
+    position: relative;
     perspective: 1600px;
     touch-action: none;
     user-select: none;

@@ -360,6 +360,9 @@
       flex-wrap: nowrap;
       align-items: center;
     }
+    .wordmark {
+      font-size: 30px;
+    }
     .lab[for='code'] {
       position: absolute;
       width: 1px;
@@ -386,6 +389,15 @@
     }
     .narrow {
       display: inline;
+    }
+  }
+  /* The smallest phones have no room for the code beside the wordmark. */
+  @media (max-width: 359px) {
+    .top {
+      flex-wrap: wrap;
+    }
+    .joinrow {
+      flex: 1 1 100%;
     }
   }
 </style>
