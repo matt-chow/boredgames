@@ -280,7 +280,6 @@ const fixed = { entrance: ENTRANCE, ...GOALS };
 function draw(kind, P, deep) {
   const def = TUNNEL[kind] ?? fixed[kind];
   if (def) return tunnelCard(def, P, deep);
-  if (kind === 'goalBack') return back(kind, C.gold, 'A face-down destination', at(CX, CY, 1, `<circle r="30" fill="#2a1d14" stroke="${C.gold}" stroke-width="3"/>` + nuggets(0, 2, 1, 1) + line('M-16-16L16 16M16-16L-16 16', C.gold, 2, 'opacity=".35"')));
   if (kind === 'cardBack') return back(kind, C.parch2, 'The back of a mine card', lanternEmblem(CX, CY, 1.4));
   if (kind === 'roleBack') return back(kind, C.teal, 'The back of a role card', at(CX, CY, 0.8, ICON.badge));
   if (ACTION[kind]) return actionCard(kind);
@@ -295,6 +294,6 @@ function draw(kind, P, deep) {
 
 // Tabletop card faces are paintings now (scripts/art/mines-paint.mjs); this draws the badges, the deep mine and the cover.
 for (const kind of ART_KINDS.filter((k) => artOf(k).endsWith('.svg'))) writeFileSync(`${out}/${kind}.svg`, draw(kind, TABLE, false));
-for (const kind of DEEP_KINDS) writeFileSync(`${out}/deep/${kind}.svg`, kind === 'goalBack' ? back(kind, C.crystal, 'A face-down destination', at(CX, CY, 1, `<circle r="30" fill="#0e1218" stroke="${C.crystal}" stroke-width="3"/>` + nuggets(0, 2, 1, 1))) : draw(kind, DEEP, true));
+for (const kind of DEEP_KINDS) writeFileSync(`${out}/deep/${kind}.svg`, draw(kind, DEEP, true));
 writeFileSync('public/art/covers/mines.svg', cover());
 console.log(`Wrote the badges, ${DEEP_KINDS.length} deep tiles and the cover.`);

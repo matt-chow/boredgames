@@ -990,22 +990,6 @@
   "fallback": "none: MS-ART1 fails the build if the file is missing"
  },
  {
-  "asset": "mines/goalBack",
-  "card": "goalBack",
-  "category": "back",
-  "rulesets": [
-   "classic",
-   "expanded",
-   "duel"
-  ],
-  "file": "/art/mines/goalBack.webp",
-  "width": 240,
-  "height": 360,
-  "variant": "seed 23",
-  "source": "AI Horde, Deliberate, text prompt only",
-  "fallback": "none: MS-ART1 fails the build if the file is missing"
- },
- {
   "asset": "mines/reward1",
   "card": "reward1",
   "category": "reward",

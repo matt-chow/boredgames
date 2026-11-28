@@ -196,11 +196,11 @@ export const deepArtOf = (kind: string) => `/art/mines/deep/${kind}.svg`;
 /** Every kind with art, for the art script and the asset test. */
 export const ART_KINDS: string[] = [
   ...TUNNELS.map((t) => t.kind),
-  'entrance', 'gold', 'coalL', 'coalR', 'goalBack', 'cardBack',
+  'entrance', 'gold', 'coalL', 'coalR', 'cardBack',
   ...ACTIONS.map((a) => a.kind),
   ...ROLES.map((r) => r.role), 'roleBack',
   'reward1', 'reward2', 'reward3', 'nugget', 'crystal',
   'toolPick', 'toolLamp', 'toolCart', 'toolPickBroken', 'toolLampBroken', 'toolCartBroken',
 ];
 /** Tunnel kinds also drawn for the immersive mine. */
-export const DEEP_KINDS: string[] = [...TUNNELS.map((t) => t.kind), 'entrance', 'gold', 'coalL', 'coalR', 'goalBack'];
+export const DEEP_KINDS: string[] = [...TUNNELS.map((t) => t.kind), 'entrance', 'gold', 'coalL', 'coalR'];
