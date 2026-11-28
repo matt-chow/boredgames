@@ -379,6 +379,16 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
   - Production `0c44c073-41a6-46e6-83ac-24fb49cf796e`: all three `mines.spec.ts` tests pass; Dead Drop is still absent.
   - To roll back, return to `0564a063-b84d-4bd1-916a-281f3be87179`.
 
+### Miners & Saboteurs v1.4.1: action badges, practice table (2026-11-28)
+
+- **Action badges.** Every action card now carries an 84px badge top right (72px each for the two-tool fixes) that
+  says what it does: the tool with a red cross or teal tick, or a glyph of its own for the nine other actions
+  (`actionBadges` in `mines-paint.mjs`). Art only.
+- **Practice table could not start (MS-CFG2).** Practise with bots seats one bot, but the room always opened on
+  Classic Mining (3–10 players), so the host saw every mode but the chosen one dimmed and a Start that would not go.
+  The room now builds its default config from the seats it is created with, and Miners opens a two-seat table on the
+  Prospector Duel.
+
 ### Miners & Saboteurs v1.4: one card back, Codex card faces (2026-11-28)
 
 - **One back.** Face-down gold and coal destinations now show the deck's card back, in both the tabletop and the deep
