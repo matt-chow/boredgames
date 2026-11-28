@@ -13,9 +13,10 @@ How it is built is in [APEX_ARCHITECTURE.md](APEX_ARCHITECTURE.md); the plan is 
 
 - **AX-CAR-1** Every car starts identical. Its race deck has 16 cards: Pace 1 ×3, Pace 2 ×3, Pace 3 ×3, Pace 4 ×3,
   Pace 5 ×1, Coast ×1 and Stress ×2. Liveries and numbers are cosmetic only.
-- **AX-CAR-2** Beside the deck sits the **engine**: 6 Strain cards *(tuned)*. Strain is a physical card. It moves
+- **AX-CAR-2** Beside the deck sits the **engine**: 6 Heat cards *(tuned)*. (Heat was called Strain before v1.3; saved
+  games and replays still load, AX-STATE-2.) Heat is a physical card. It moves
   engine → discard when you pay for something, discard → deck when the deck is rebuilt, deck → hand when drawn, and
-  hand → engine when you cool. Strain in hand is dead weight: it can't be committed or discarded.
+  hand → engine when you cool. Heat in hand is dead weight: it can't be committed or discarded.
 - **AX-CAR-3** Hand size is 7. The deck is shuffled from the race seed; nobody, including the owner, sees its order.
 - **AX-CAR-4** Card values: Pace *n* is *n*; Coast is 1 and cools 1 when committed; Stress is uncertain (AX-STR-1).
   Upgrade cards have their own values and effects (APEX_CONTENT.md §2).
@@ -26,15 +27,15 @@ Every round all drivers plan at the same time and in secret.
 
 - **AX-GEAR-1** There are four gears. Cars start the race in gear 1.
 - **AX-GEAR-2** Each round you may stay in gear or shift one gear up or down for free. Shifting two gears costs 1
-  Strain from the engine. Shifting three is not allowed. With an empty engine only ±1 is allowed.
+  Heat from the engine. Shifting three is not allowed. With an empty engine only ±1 is allowed.
 - **AX-PLAN-1** Your gear is the number of cards you commit, exactly.
-- **AX-PLAN-2** Strain can't be committed. If you hold fewer committable cards than the gear you want, you can't
+- **AX-PLAN-2** Heat can't be committed. If you hold fewer committable cards than the gear you want, you can't
   choose that gear.
 - **AX-PLAN-3** **Clogged hand:** with no committable card at all you *limp*: gear 1, no cards, distance 1, speed 1,
   and you still cool as gear 1. **Interpretation:** you limp whenever no legal plan exists (too few committable
-  cards for any reachable gear, or too little Strain to pay for one), and a limping car cannot boost.
-- **AX-PLAN-4** You may also mark any uncommitted non-Strain cards to throw away at the end of the round, and you may
-  plan a **boost** (AX-BST-1).
+  cards for any reachable gear, or too little Heat to pay for one), and a limping car cannot boost.
+- **AX-PLAN-4** A plan is a gear and the cards for it, nothing else. Boost, cooling, catch-up, slipstream and throwing
+  cards away are decided in your turn (AX-TURN), after you see your move.
 - **AX-PLAN-5** A plan stays hidden until every car has locked one. Until then you may retract it and plan again
   (AX-UNDO-1). Computer cars plan from what their own driver could know.
 - **AX-PLAN-6** **Timer (off by default).** A host may set 30/60/90 seconds. When it expires, an unlocked human gets the
@@ -42,17 +43,32 @@ Every round all drivers plan at the same time and in secret.
 
 ## 3. Resolution (AX-RES)
 
-- **AX-RES-1** After the reveal, cars resolve one at a time in race order, leader first. Race order is progress
-  (laps × circuit length + space), then lane (the racing line, lane 0, is ahead), then who arrived first.
-- **AX-RES-2** Each car: pay the shift cost, flip Stress, boost, move, check corners, draft, cool, then the next car.
-  Refilling hands happens after every car has resolved.
+- **AX-RES-1** After the reveal, cars take their turns one at a time in race order, leader first. The order is fixed
+  when the round starts: progress (laps × circuit length + space), then lane (the racing line, lane 0, is ahead), then
+  who arrived first.
+- **AX-RES-2** Each turn, in order (AX-TURN-3): reveal the cards, pay the shift, turn Stress, move, react, slipstream,
+  check the corners, throw away and refill. Then the next car.
+- **AX-TURN-1** **Authority.** The server applies every decision. Each one carries the table's step; a stale, repeated
+  or out-of-turn one is refused and changes nothing. Locking the same plan twice changes nothing.
+- **AX-TURN-2** Whose turn it is, its stage (react, slipstream, discard) and what that driver may do are public.
+- **AX-TURN-3** A turn: pay the shift and card costs, turn Stress, then move the full distance (AX-MOV). No corner is
+  checked yet.
+- **AX-TURN-4** **React.** Then, in any order and as many as are open: cool (AX-COOL-1), boost (AX-BST-1), take
+  catch-up (AX-ADR-1). Continue ends reacting. Anything with no choice left is done for you, and a stage with nothing
+  to decide is skipped. The board shows each step before the next choice; the server never waits for an animation.
+- **AX-TURN-5** Cooling and catch-up happen before the corner check, so cooling can refill the engine that the corners
+  then pay from.
+- **AX-TURN-6** **Corner check.** After the slipstream, every corner between where the move started and where the car
+  now stands is checked once at the turn's final speed (AX-CRN-2).
+- **AX-TURN-7** **Finish turn.** Throw away any cards you like (never Heat, unless an upgrade allows it), then refill.
+  A car past the line, or a hand with nothing that may go, finishes the turn without asking.
 - **AX-STR-1** **Stress.** For each committed Stress card, turn over cards from the top of your deck until a card
   with a pace value appears (Pace, Coast or a valued upgrade). Add its value; every turned card goes to your discard.
   If the deck runs out it is rebuilt from the discard (AX-DECK-1). If there is no valued card anywhere, Stress adds 0.
-- **AX-BST-1** **Boost.** Once per round, a planned boost pays 1 Strain and turns over cards like Stress. With an empty
-  engine when it is your turn to resolve, the boost is cancelled for free.
+- **AX-BST-1** **Boost.** Once per turn, after your move, you may pay 1 Heat and turn over a card like Stress. Its
+  value adds to speed and distance and you move on at once. You need Heat in the engine (or a free boost upgrade).
 - **AX-SPD-1** **Speed vs distance.** *Speed* is the total of your committed values plus boost. Only speed is checked at
-  corners. *Distance* is speed plus catch-up (AX-ADR-1) plus any draft (AX-DRF-1). Some upgrades change one and not
+  corners. *Distance* is your committed values plus boost, catch-up (AX-ADR-1) and any slipstream (AX-DRF-1). Some upgrades change one and not
   the other (brakes lower speed, not distance).
 
 ## 4. Movement and blocking (AX-MOV, AX-LAP)
@@ -68,49 +84,52 @@ Every round all drivers plan at the same time and in secret.
 
 - **AX-CRN-1** A restricted corner is a line on the track with a speed limit (2–7). A painted bend without a marker is
   not a corner, whatever it looks like.
-- **AX-CRN-2** Work out where you stop (AX-MOV-2) first, then check every corner line between where you started and
-  where you stop, in order. At each one where speed > limit, pay the difference in Strain, engine → discard.
-- **AX-SPN-1** If the engine can't pay a corner in full, you **spin**: you stop on the last free space before that
+- **AX-CRN-2** Work out where you stop (AX-MOV-2, after boost, catch-up and slipstream) first, then check every corner
+  line between where you started and where you stop, in order. At each one where speed > limit, pay the difference in Heat, engine → discard.
+- **AX-SPN-1** If the engine can't pay a corner in full, you **spin**: you go back to the last free space before that
   corner. Nothing is paid for it; earlier corners stay paid.
-- **AX-SPN-2** A spinning car takes Strain straight into its hand from the pit stock (unlimited): 1 in gear 1–2,
-  2 in gear 3–4. It resets to gear 1 for the next round's shift and skips drafting and catch-up cooling this round.
+- **AX-SPN-2** A spinning car takes Stress cards straight into its hand from the pit stock (unlimited): 1 in gear 1–2,
+  2 in gear 3–4, fewer with the marshals' help. It resets to gear 1 for the next round's shift. **v1.3 correction:**
+  this was Heat before; the board game's spin puts Stress, not Heat, in the hand.
 - **AX-CRN-3** Several corners in one move are checked in order; you can pay for one and spin at the next.
 
 ## 6. Drafting and overtaking (AX-DRF, AX-OVT)
 
-- **AX-DRF-1** After moving (and not spinning), if another car is level with you or on the next space ahead, you may
-  draft 2 more spaces. Draft distance is not speed, but corners it crosses are checked with your speed.
-  **Interpretation:** a car that did not move this round (blocked, or distance 0) cannot draft.
-- **AX-DRF-2** **Interpretation (pauses):** a draft that crosses no corner is always worth taking, so it is taken
-  automatically, as is one that crosses corners at or under their limit. A draft that would overspeed a corner (or a
-  mountain pass) is a real choice: the round pauses for that driver only.
+- **AX-DRF-1** After reacting, if another car is level with you or on the next space ahead, you are offered a
+  slipstream of 2 more spaces. It is not speed, but corners it crosses are checked with your speed.
+  **Interpretation:** a car that did not move this turn (blocked, or distance 0) cannot slipstream.
+- **AX-DRF-2** The offer shows how much extra corner Heat it would add. Take it or decline it; it is always a choice.
 - **AX-OVT-1** An overtake is counted for every car you were behind before resolving and ahead of after. It feeds the
   statistics, press objectives and sponsors, never the rules.
 
 ## 7. Cooling, catch-up and the end of the round (AX-COOL, AX-ADR, AX-END, AX-DECK)
 
-- **AX-COOL-1** After moving, cool by your gear: gear 1 cools 3, gear 2 cools 1, gears 3–4 cool 0 *(tuned)*. Coast adds
-  1. Cooling returns Strain from hand to the engine, as many as allowed, automatically.
-- **AX-ADR-1** **Catch-up.** At the reveal, the last car (the last two with 5 or more cars) gets +1 distance (not speed)
-  and +1 cooling this round.
-- **AX-END-1** Committed and thrown-away cards go to the discard. Everyone draws back up to 7.
+- **AX-COOL-1** After moving, cool by your gear: gear 1 up to 3, gear 2 up to 1, gears 3–4 none *(tuned)*. Coast and
+  upgrades add more. Cooling returns Heat from hand to the engine.
+- **AX-COOL-2** Cooling takes the most it can, by itself. A driver may switch on "Cool by hand" to choose instead.
+- **AX-ADR-1** **Catch-up.** At the reveal, the last car (the last two with 5 or more cars) is offered +1 distance
+  (not speed) and +1 cooling in its turn. It is optional: the extra space can carry you into a corner.
+- **AX-END-1** At the end of each turn, committed and thrown-away cards go to the discard and the car draws back up
+  to 7.
 - **AX-DECK-1** When you must draw or turn a card and the deck is empty, shuffle the discard into a new deck (cards in
   play this round stay out). If both are empty you simply stop.
 
 ## 8. The finish (AX-FIN)
 
-- **AX-FIN-1** A car that crosses the line at the end of its last lap has finished and leaves the track at once, so it
-  never blocks anyone.
-- **AX-FIN-2** Finishers in the same round rank by how far past the line they would have travelled, then by resolution
-  order (the leader resolved first). That breaks every tie.
-- **AX-FIN-3** After the first car finishes, the others get at most 2 more rounds *(tuned)*. Cars still running then
-  rank by race order.
+- **AX-FIN-1** A car that crosses the line at the end of its last lap has finished. It moves its full distance past
+  the line and stays on the board, faded, with its provisional place.
+- **AX-FIN-2** Finishers in the same round rank by how far past the line they went, then by lane (the racing line
+  first), then by driving order. Earlier rounds' finishers rank ahead.
+- **AX-FIN-5** A finished car holds its space until its finishing round ends, then never blocks anyone.
+- **AX-FIN-6** No slipstream across the line or after it. Corners beyond the line are not checked.
+- **AX-END-2** The race ends when every car has finished (replaces the old two-round limit, AX-FIN-3). The podium
+  shows only then. A safety stop at 200 rounds ranks any car still running by race order.
 - **AX-FIN-4** Laps default per circuit (2 or 3) and the host may choose 1–5.
 
 ## 9. Undo, timers and absent drivers (AX-UNDO, AX-NET)
 
 - **AX-UNDO-1** Before the reveal, retracting a plan is the only undo. Nothing can be undone after a reveal.
-- **AX-NET-1** Every game action carries the round's step number; a late or repeated one is refused.
+- **AX-NET-1** Every game action carries the table's step number; a late or repeated one is refused (AX-TURN-1).
 - **AX-NET-2** **Pause on disconnect.** When the table needs a decision from a person who is offline, it pauses for
   everyone. It resumes when they return.
 - **AX-NET-3** While paused, the host may hand the absent car to the computer driver. Interpretation: the host is the
@@ -129,7 +148,9 @@ Every round all drivers plan at the same time and in secret.
 ## 11. Computer drivers (AX-AI)
 
 - **AX-AI-1** One driver serves every computer car, bot seat and handed-over car. It sees only what its own driver
-  could: its hand, its own deck's contents (not order), the public table.
+  could: its hand, its own deck's contents (not order), the public table. It plans and takes its turn decisions the
+  same way a person does.
+- **AX-SIM-1** Seeded races with 1–4 seats and varied grids and laps always run to the end.
 - **AX-AI-2** It has a risk setting (cautious, balanced, bold) and a difficulty (novice, club, works) that limits how
   many plans it considers.
 - **AX-AI-3** Racing Rivals (module) give named computer drivers one ability each. Without it they are plain.
@@ -143,7 +164,7 @@ Four modules, each independent and on by default. Every circuit plays with any c
 - **AX-MOD-2 Through the Mountains.** A circuit's tunnel spaces become one lane wide; no drafting from or into a
   tunnel; no boost when you start your move in one. Mountain passes cap speed. With the module off, tunnels are
   scenery.
-- **AX-MOD-3 Dust & Gravel.** Each deck gets one more Stress. Ending a move on gravel at speed 7 or more puts 1 Strain
+- **AX-MOD-3 Dust & Gravel.** Each deck gets one more Stress. Ending a move on gravel at speed 7 or more puts 1 Heat
   from the pit stock in your discard. Corners in gravel sectors cost 1 more when you overspeed.
 - **AX-MOD-4 Racing Rivals.** Named computer drivers with abilities. Basic computer drivers are always available.
 
@@ -167,8 +188,15 @@ Four modules, each independent and on by default. Every circuit plays with any c
 
 - **AX-PRV-1** A projection never holds another car's hand, any deck's order, or the seed while a race is running.
   After the reveal, committed cards are public.
+- **AX-PRV-2** No race view holds a deck, another hand, the locked plans or the replay.
+- **AX-PLAN-7** The dashboard preview is built from your own view only. A fully known plan shows one speed and one
+  landing space; Stress shows a range from the least and most valued card left in your deck and discard (their
+  contents, never their order). It accounts for cars still to move, laps and modifiers, leaves out boost, catch-up and
+  slipstream, and labels the corners safe, possible overspeed or certain overspeed. No cards chosen, no ghost.
+- **AX-STATE-2** Saved state is versioned (now 2). A v1 race in progress migrates and plays on.
 - **AX-REP-1** Every finished race keeps a compact, versioned replay: the seed, the setup and each round's revealed
-  plans and reactions. Replaying it through the engine reproduces the race exactly.
+  plans and turn decisions. Replaying it through the engine reproduces the race exactly.
+- **AX-REP-3** Replays recorded before v1.3 (version 1) still play back through the old resolver, which is kept frozen.
 - **AX-REP-2** A replay is available only once its race is over.
 - **AX-RET-1** Retention after the last change: lobby 24 h, race in progress 7 days, finished single race 24 h,
   season between races 30 days, shelved season 90 days, finished season 7 days. Expiry deletes the room's storage,

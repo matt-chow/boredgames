@@ -1,6 +1,6 @@
 import type { GameModule, OptionDescriptor } from '../../engine/types';
 import {
-  actors, apply, botActions, defaultConfig, MAX_CARS, project, results, retainMs, sanitizeConfig, setup, STATE_VERSION, tick,
+  actors, apply, botActions, defaultConfig, MAX_CARS, migrate, project, results, retainMs, sanitizeConfig, setup, STATE_VERSION, tick,
   validateConfig, wakeAt, type AAction, type AConfig, type AState, type AView,
 } from './rules/engine';
 
@@ -16,7 +16,7 @@ export const apex: GameModule<AConfig, AState, AAction, AView> = {
   options: [
     toggle('storm', 'Storm Front', 'Weather is drawn before each race: rain lowers corner limits, a downpour floods sectors.'),
     toggle('mountains', 'Through the Mountains', 'Tunnels are single file and mountain passes have their own limits.'),
-    toggle('dust', 'Dust & Gravel', 'An extra Stress card, and gravel that strains a fast car.'),
+    toggle('dust', 'Dust & Gravel', 'An extra Stress card, and gravel that heats a fast car.'),
     toggle('rivals', 'Racing Rivals', 'Computer cars may be named rivals, each with one ability.'),
     toggle('basic', 'Basic upgrades', 'Draft from the 24 basic upgrades.'),
     toggle('advanced', 'Advanced upgrades', 'Draft from the 24 advanced upgrades.'),
@@ -43,6 +43,7 @@ export const apex: GameModule<AConfig, AState, AAction, AView> = {
   tick,
   wakeAt,
   retainMs,
+  migrate,
 };
 
 export { MAX_CARS };

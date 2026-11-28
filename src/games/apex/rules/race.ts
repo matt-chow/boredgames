@@ -1,9 +1,13 @@
 /**
- * One race: setup and the deterministic round resolution (APEX.md §1–8, §12). Functions here mutate the race they are
- * given; the engine clones state before calling them. All randomness comes from `race.rng`.
+ * One race: setup and the deterministic turn-by-turn resolution (APEX.md §1–8, §12). Functions here mutate the race
+ * they are given; the engine clones state before calling them. All randomness comes from `race.rng`.
+ *
+ * A round (AX-TURN): everyone commits a gear and cards in secret, then each driver in race order takes a turn: reveal,
+ * Stress, the move, reactions (cool, boost, catch-up) in any order, the slipstream offer, the corner check, then an
+ * optional discard and refill. Decisions come in through `turnAct`; anything with no choice resolves by itself.
  */
 import { randInt, seedRng, shuffle, type RngState } from '../../../engine/rng';
-import { baseDeck, cardFx, committable, isValued, STRAIN, STRESS, valueOf, type Card } from './cards';
+import { baseDeck, cardFx, committable, HEAT, isValued, STRESS, valueOf, type Card } from './cards';
 import { resolveCircuit, type Circuit } from './content/circuits';
 import { EVENTS, RIVALS, SECTOR_MODS, WEATHER } from './content/paddock';
 import { sumFit, UPGRADE_BY_ID, type Fit, type ModuleId } from './content/upgrades';
@@ -36,17 +40,13 @@ export interface RaceSetup {
   cars: CarSpec[];
   modules: Modules;
   event: string | null;
-  /** Rounds the field gets after the first finisher (AX-FIN-3). */
-  finishRounds?: number;
 }
 
+/** AX-PLAN: the secret part of a turn. Everything else is decided in the open, during the turn. */
 export interface Plan {
   gear: number;
   /** Hand indices to commit; empty means limp (AX-PLAN-3). */
   cards: number[];
-  /** Hand indices to throw away at the end of the round. */
-  discard: number[];
-  boost: boolean;
 }
 
 export interface Stats {
@@ -67,10 +67,23 @@ export interface Stats {
   ledR1: boolean;
 }
 
-/** What happened to one car in the last resolved round. Public once revealed. */
+/** One public step of a turn, in the order it happened; the table animates these one by one. */
+export type TurnEvent =
+  | { k: 'pay'; n: number }
+  | { k: 'flip'; card: Card }
+  | { k: 'move' | 'boost' | 'catchup' | 'draft'; to: number; lane: number }
+  | { k: 'cool'; n: number }
+  | { k: 'corner'; at: number; limit: number; paid: number }
+  | { k: 'spin'; to: number; lane: number; stress: number }
+  | { k: 'heat'; n: number; why: 'gravel' | 'flood' }
+  | { k: 'discard'; n: number }
+  | { k: 'finish'; over: number };
+
+/** What happened to one car this round. Public once revealed. */
 export interface Resolved {
   car: number;
   gear: number;
+  /** Heat paid up front: the shift and any card costs. */
   shift: number;
   cards: Card[];
   flipped: Card[];
@@ -79,7 +92,6 @@ export interface Resolved {
   dist: number;
   from: number;
   to: number;
-  /** Positions along the way, for drawing the path: after the move, after the draft. */
   corners: { at: number; limit: number; paid: number }[];
   spun: boolean;
   drafted: number;
@@ -87,7 +99,7 @@ export interface Resolved {
   catchup: boolean;
   finished: boolean;
   limp: boolean;
-  hazard: number;
+  events: TurnEvent[];
 }
 
 export interface Car {
@@ -103,7 +115,7 @@ export interface Car {
   deck: Card[];
   hand: Card[];
   discard: Card[];
-  /** Committed and thrown-away cards, out of play until the round ends (AX-DECK-1). */
+  /** Committed and thrown-away cards, out of play until the turn ends (AX-DECK-1). */
   play: Card[];
   engine: number;
   handSize: number;
@@ -119,16 +131,35 @@ export interface Car {
   stats: Stats;
 }
 
-interface Working {
+export type Stage = 'react' | 'draft' | 'discard';
+
+/** The driver whose turn it is, and what they may still do (AX-TURN-2). All of it is public. */
+export interface Turn {
   car: number;
-  speed: number;
-  cardGrip: number;
-  cardDraft: number;
-  cool: number;
-  catchup: boolean;
+  stage: Stage;
+  /** Where the move started; the corner check covers everything from here (AX-TURN-6). */
   start: number;
-  rec: Resolved;
+  lane0: number;
+  /** Speed for corners, and card grip and draft bonus from the committed cards. */
+  speed: number;
+  grip: number;
+  draftBonus: number;
+  /** Cooling this turn can still use (AX-COOL-1). */
+  cool: number;
+  boosted: boolean;
+  catchup: 'none' | 'open' | 'taken';
+  offer: { len: number; hazard: number } | null;
 }
+
+export type TurnAct =
+  | { do: 'cool'; n: number }
+  | { do: 'boost' }
+  | { do: 'catchup' }
+  /** Done reacting. */
+  | { do: 'go' }
+  | { do: 'draft'; take: boolean }
+  /** Finish Turn, throwing away these hand indices. */
+  | { do: 'finish'; discard: number[] };
 
 export interface Race {
   circuit: string;
@@ -145,24 +176,27 @@ export interface Race {
   round: number;
   /** Bumped at every state change a player acts on (AX-NET-1). */
   step: number;
-  phase: 'plan' | 'react' | 'over';
+  phase: 'plan' | 'turn' | 'over';
   rng: RngState;
   seed: string;
   seq: number;
   plans: (Plan | null)[];
-  res: { order: number[]; idx: number; catchup: number[]; before: number[]; finishers: [number, number, number][]; cur: Working | null } | null;
-  /** A driver deciding whether to take a draft that would overspeed a corner (AX-DRF-2). */
-  pending: { car: number; len: number; hazard: number } | null;
+  /** The round's driving order, fixed when it starts (AX-TURN-1), and who gets catch-up. */
+  res: { order: number[]; idx: number; catchup: number[]; before: number[] } | null;
+  turn: Turn | null;
+  /** This round's turns so far, in driving order. */
   last: Resolved[];
-  endRound: number | null;
   finished: number[];
-  replay: { plans: (Plan | null)[]; reacts: [number, boolean][] }[];
-  finishRounds: number;
+  replay: { plans: (Plan | null)[]; acts: [number, TurnAct][] }[];
+  /** Set on a race migrated mid-way from the v1 rules: its record cannot be replayed. */
+  noReplay?: boolean;
 }
 
 export const HAND = 7;
 export const ENGINE = 6;
 export const GEAR_COOL = [3, 1, 0, 0];
+/** shortcut: a backstop against a race that never ends; no real race comes near it. */
+const MAX_ROUNDS = 200;
 
 const pick = <T extends { weight: number }>(rng: RngState, list: T[]): T => {
   let r = randInt(rng, list.reduce((s, x) => s + x.weight, 0));
@@ -240,12 +274,10 @@ export function newRace(s: RaceSetup): Race {
     seq: cars.length,
     plans: cars.map(() => null),
     res: null,
-    pending: null,
+    turn: null,
     last: [],
-    endRound: null,
     finished: [],
     replay: [],
-    finishRounds: s.finishRounds ?? 2,
   };
 }
 
@@ -258,16 +290,20 @@ export type Track = Pick<Race, 'circuit' | 'laps' | 'n' | 'modules' | 'weather' 
 export const circuitOf = (r: Track): Circuit => resolveCircuit(r.circuit);
 export const spaceOf = (r: Track, pos: number) => ((pos % r.n) + r.n) % r.n;
 export const weatherOf = (r: Track) => WEATHER.find((w) => w.id === r.weather) ?? WEATHER[0];
+const lineOf = (r: Track) => r.laps * r.n;
 
-export function lanesAt(r: Race, space: number): number {
-  return r.modules.mountains && circuitOf(r).tunnel[space] ? 1 : 2;
+export function lanesAt(r: Pick<Race, 'modules' | 'circuit'>, space: number): number {
+  return r.modules.mountains && circuitOf(r as Track).tunnel[space] ? 1 : 2;
 }
+
+/** AX-FIN-5: a car that finished still holds its space until the end of the round it finished in. */
+const occupies = (r: Pick<Race, 'round'>, o: Pick<Car, 'done'>) => !o.done || o.done.round === r.round;
 
 /** The lowest free lane of a space, ignoring one car, or -1. Cars a lap apart share the physical space. */
 export function freeLane(r: Race, pos: number, except: number): number {
   const sp = spaceOf(r, pos);
   for (let l = 0; l < lanesAt(r, sp); l++)
-    if (!r.cars.some((o) => o.id !== except && !o.done && spaceOf(r, o.pos) === sp && o.lane === l)) return l;
+    if (!r.cars.some((o) => o.id !== except && occupies(r, o) && spaceOf(r, o.pos) === sp && o.lane === l)) return l;
   return -1;
 }
 
@@ -281,7 +317,7 @@ export function raceOrder(r: Race): number[] {
     .map((c) => c.id);
 }
 
-/** Strain cost of shifting to gear `g`, or null if the shift is not allowed (AX-GEAR-2). */
+/** Heat cost of shifting to gear `g`, or null if the shift is not allowed (AX-GEAR-2). */
 export function shiftCost(c: Pick<Car, 'gear' | 'fit'>, g: number): number | null {
   const d = Math.abs(g - c.gear);
   if (!Number.isInteger(g) || g < 1 || g > 4) return null;
@@ -307,7 +343,8 @@ function cornerAt(r: Track, space: number): number {
 export function checkpoints(r: Track, c: Pick<Car, 'fit'>, from: number, to: number, speed: number, cardGrip: number) {
   const out: { m: number; corner: number; limit: number; cost: number }[] = [];
   const circ = circuitOf(r);
-  const last = Math.min(to, r.laps * r.n - 1);
+  // AX-FIN-1: nothing past the line is checked.
+  const last = Math.min(to, lineOf(r) - 1);
   for (let m = from + 1; m <= last; m++) {
     const sp = spaceOf(r, m);
     const k = cornerAt(r, sp);
@@ -326,7 +363,23 @@ export function checkpoints(r: Track, c: Pick<Car, 'fit'>, from: number, to: num
   return out;
 }
 
-/** Can this car drive at all, other than limping? Some gear it can reach with enough committable cards and Strain. */
+/** The corner bill for a move, with the once-a-lap overspeed relief applied (AX-CRN-2). Does not pay it. */
+export function cornerBill(r: Track, c: Pick<Car, 'fit' | 'reliefLap'>, from: number, to: number, speed: number, grip: number) {
+  let relief = c.reliefLap;
+  return checkpoints(r, c, from, to, speed, grip).map((cp) => {
+    const lap = Math.floor(cp.m / r.n);
+    let cost = cp.cost;
+    let relieved = false;
+    if (cost > 0 && cp.corner >= 0 && c.fit.overspeedRelief && relief !== lap) {
+      relief = lap;
+      relieved = true;
+      cost = Math.max(0, cost - c.fit.overspeedRelief);
+    }
+    return { ...cp, cost, relieved, lap };
+  });
+}
+
+/** Can this car drive at all, other than limping? Some gear it can reach with enough committable cards and Heat. */
 export function canDrive(c: Pick<Car, 'hand' | 'engine' | 'gear' | 'fit'>): boolean {
   const costs = c.hand.filter(committable).map((x) => cardFx(x)?.cost ?? 0).sort((a, b) => a - b);
   for (let g = 1; g <= 4; g++) {
@@ -341,25 +394,16 @@ export function canDrive(c: Pick<Car, 'hand' | 'engine' | 'gear' | 'fit'>): bool
 export function planError(r: Race, carId: number, p: Plan): string | null {
   const c = r.cars[carId];
   if (!c || c.done) return 'That car is not racing.';
-  if (typeof p !== 'object' || !p || !Array.isArray(p.cards) || !Array.isArray(p.discard)) return 'Malformed plan.';
-  const idx = [...p.cards, ...p.discard];
-  if (idx.some((i) => !Number.isInteger(i) || i < 0 || i >= c.hand.length) || new Set(idx).size !== idx.length)
+  if (typeof p !== 'object' || !p || !Array.isArray(p.cards)) return 'Malformed plan.';
+  if (p.cards.some((i) => !Number.isInteger(i) || i < 0 || i >= c.hand.length) || new Set(p.cards).size !== p.cards.length)
     return 'Pick each card from your hand once.';
-  const strainOut = p.discard.filter((i) => c.hand[i] === STRAIN).length;
-  if (strainOut > (c.fit.dumpStrain ?? 0)) return 'Strain cannot be thrown away.';
-  if (p.cards.length === 0) {
-    if (canDrive(c)) return 'You have cards to drive with: commit as many cards as your gear.';
-    if (p.boost) return 'A limping car cannot boost.';
-    return null;
-  }
+  if (p.cards.length === 0) return canDrive(c) ? 'You have cards to drive with: commit as many cards as your gear.' : null;
   const sc = shiftCost(c, p.gear);
-  if (sc == null) return 'You can shift at most one gear for free, or two for 1 Strain.';
+  if (sc == null) return 'You can shift at most one gear for free, or two for 1 Heat.';
   if (p.cards.length !== p.gear) return `Gear ${p.gear} commits exactly ${p.gear} card${p.gear > 1 ? 's' : ''}.`;
-  if (p.cards.some((i) => !committable(c.hand[i]))) return 'Strain cannot be committed.';
+  if (p.cards.some((i) => !committable(c.hand[i]))) return 'Heat cannot be committed.';
   const cost = sc + p.cards.reduce((s, i) => s + (cardFx(c.hand[i])?.cost ?? 0), 0);
-  if (cost > c.engine) return 'Your engine has too little Strain left for that.';
-  if (p.boost && r.modules.mountains && circuitOf(r).tunnel[spaceOf(r, c.pos)] && !c.fit.tunnelBoost)
-    return 'No boosting from inside a tunnel.';
+  if (cost > c.engine) return 'Your engine has too little Heat left for that.';
   return null;
 }
 
@@ -384,6 +428,7 @@ function flip(r: Race, c: Car, rec: Resolved): number {
     if (x == null) return 0;
     c.discard.push(x);
     rec.flipped.push(x);
+    rec.events.push({ k: 'flip', card: x });
     if (isValued(x)) return valueOf(x);
   }
 }
@@ -396,6 +441,12 @@ function refill(r: Race, c: Car) {
   }
 }
 
+function payHeat(c: Car, n: number) {
+  const k = Math.min(n, c.engine);
+  c.engine -= k;
+  for (let i = 0; i < k; i++) c.discard.push(HEAT);
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 // Resolution
 
@@ -405,82 +456,199 @@ export function allPlanned(r: Race): boolean {
 
 /** Lock a plan (or clear it with null). The caller checks `planError` first. */
 export function setPlan(r: Race, carId: number, p: Plan | null) {
-  r.plans[carId] = p ? { gear: p.cards.length ? p.gear : 1, cards: [...p.cards], discard: [...p.discard], boost: !!p.boost } : null;
+  r.plans[carId] = p ? { gear: p.cards.length ? p.gear : 1, cards: [...p.cards] } : null;
 }
 
-/** AX-PLAN-5: every plan is in; reveal and resolve until done or a driver must decide. */
+/** AX-PLAN-5 and AX-TURN-1: every plan is in; fix the order and run turns until a driver must decide. */
 export function reveal(r: Race) {
   const order = raceOrder(r).filter((id) => !r.cars[id].done);
   const k = order.length >= 2 ? Math.min(order.length - 1, (order.length >= 5 ? 2 : 1) + (r.event === 'fever' ? 1 : 0)) : 0;
-  r.replay.push({ plans: r.plans.map((p) => (p ? { ...p, cards: [...p.cards], discard: [...p.discard] } : null)), reacts: [] });
-  r.res = { order, idx: 0, catchup: order.slice(order.length - k), before: raceOrder(r), finishers: [], cur: null };
+  r.replay.push({ plans: r.plans.map((p) => (p ? { gear: p.gear, cards: [...p.cards] } : null)), acts: [] });
+  r.res = { order, idx: 0, catchup: order.slice(order.length - k), before: raceOrder(r) };
   r.last = [];
+  r.phase = 'turn';
   advance(r);
 }
 
-/** Answer a pending draft decision and carry on resolving. */
-export function react(r: Race, take: boolean) {
-  const p = r.pending!;
-  r.pending = null;
-  r.phase = 'plan';
-  r.replay[r.replay.length - 1].reacts.push([p.car, take]);
-  const w = r.res!.cur!;
-  if (take) draft(r, r.cars[p.car], w, p.len);
-  finishCar(r, w);
-  r.res!.idx++;
+const recOf = (r: Race) => r.last[r.last.length - 1];
+const tunnelAt = (r: Race, pos: number) => r.modules.mountains && !!circuitOf(r).tunnel[spaceOf(r, pos)];
+
+/** What the driver whose turn it is may do now (AX-TURN-4). */
+export function turnOptions(r: Race) {
+  const t = r.turn!;
+  const c = r.cars[t.car];
+  const rec = recOf(r);
+  const react = t.stage === 'react';
+  const heat = c.hand.filter((x) => x === HEAT).length;
+  const lap = Math.floor(Math.max(0, c.pos) / r.n);
+  const free = !!c.fit.freeBoostPerLap && c.freeBoostLap !== lap;
+  return {
+    cool: react ? Math.min(t.cool, heat) : 0,
+    boost: react && !t.boosted && !rec.limp && (free || c.engine > 0) && (!tunnelAt(r, t.start) || !!c.fit.tunnelBoost),
+    freeBoost: free,
+    catchup: react && t.catchup === 'open',
+    /** Extra corner Heat catch-up would add (an upper bound: blocking can only shorten it). */
+    catchupCost: react && t.catchup === 'open'
+      ? cornerBill(r, c, t.start, c.pos + 1 + (c.fit.catchDist ?? 0), t.speed, t.grip).reduce((s, x) => s + x.cost, 0) -
+        cornerBill(r, c, t.start, c.pos, t.speed, t.grip).reduce((s, x) => s + x.cost, 0)
+      : 0,
+    /** Heat the corners crossed so far would cost at the current speed; more than the engine holds means a spin. */
+    cost: cornerBill(r, c, t.start, c.pos, t.speed, t.grip).reduce((s, x) => s + x.cost, 0),
+  };
+}
+
+/** Why a turn decision is not legal now, or null. */
+export function turnError(r: Race, a: TurnAct): string | null {
+  const t = r.turn;
+  if (r.phase !== 'turn' || !t) return 'It is nobody’s turn.';
+  if (!a || typeof a !== 'object') return 'Malformed decision.';
+  const o = turnOptions(r);
+  const c = r.cars[t.car];
+  switch (a.do) {
+    case 'cool':
+      return Number.isInteger(a.n) && a.n >= 1 && a.n <= o.cool ? null : 'You cannot cool that much now.';
+    case 'boost':
+      return o.boost ? null : 'You cannot boost now.';
+    case 'catchup':
+      return o.catchup ? null : 'Catch-up is not yours to take.';
+    case 'go':
+      return t.stage === 'react' ? null : 'You have already moved on.';
+    case 'draft':
+      return t.stage === 'draft' ? null : 'There is no slipstream on offer.';
+    case 'finish': {
+      if (t.stage !== 'discard') return 'Finish your move first.';
+      const d = a.discard;
+      if (!Array.isArray(d) || d.some((i) => !Number.isInteger(i) || i < 0 || i >= c.hand.length) || new Set(d).size !== d.length)
+        return 'Pick each card from your hand once.';
+      if (d.filter((i) => c.hand[i] === HEAT).length > (c.fit.dumpStrain ?? 0)) return 'Heat cannot be thrown away.';
+      return null;
+    }
+    default:
+      return 'Unknown decision.';
+  }
+}
+
+/** Apply a turn decision. The caller checks `turnError` first. */
+export function turnAct(r: Race, a: TurnAct) {
+  const t = r.turn!;
+  const c = r.cars[t.car];
+  const rec = recOf(r);
+  r.replay[r.replay.length - 1].acts.push([t.car, structuredClone(a)]);
+  switch (a.do) {
+    case 'cool': {
+      // Hand → engine, taking Heat from the right of the hand so the rest keeps its order.
+      let n = a.n;
+      for (let i = c.hand.length - 1; i >= 0 && n > 0; i--)
+        if (c.hand[i] === HEAT) {
+          c.hand.splice(i, 1);
+          c.engine++;
+          n--;
+        }
+      t.cool -= a.n;
+      rec.cooled += a.n;
+      c.stats.cooled += a.n;
+      rec.events.push({ k: 'cool', n: a.n });
+      break;
+    }
+    case 'boost': {
+      // AX-BST-1: 1 Heat, then turn cards like Stress; it adds speed and distance.
+      const lap = Math.floor(Math.max(0, c.pos) / r.n);
+      const free = !!c.fit.freeBoostPerLap && c.freeBoostLap !== lap;
+      if (free) c.freeBoostLap = lap;
+      else payHeat(c, 1);
+      rec.events.push({ k: 'pay', n: free ? 0 : 1 });
+      t.boosted = true;
+      rec.boost = true;
+      c.stats.boosts++;
+      let v = 0;
+      for (let f = 0; f < 1 + (c.fit.boostFlips ?? 0); f++) v += flip(r, c, rec);
+      t.speed += v;
+      rec.speed = t.speed;
+      go(r, c, v, 'boost');
+      break;
+    }
+    case 'catchup':
+      t.catchup = 'taken';
+      rec.catchup = true;
+      t.cool += 1 + (c.fit.catchCool ?? 0);
+      go(r, c, 1 + (c.fit.catchDist ?? 0), 'catchup');
+      break;
+    case 'go':
+      toDraft(r);
+      break;
+    case 'draft':
+      if (a.take && t.offer) {
+        const before = c.pos;
+        go(r, c, t.offer.len, 'draft');
+        rec.drafted = c.pos - before;
+        if (rec.drafted > 0) c.stats.drafts++;
+      }
+      toDiscard(r);
+      break;
+    case 'finish':
+      endTurn(r, a.discard);
+      break;
+  }
   advance(r);
 }
 
+/** Resolve everything that needs no decision, then stop for the next one (or the next round). */
 function advance(r: Race) {
   const res = r.res!;
-  while (res.idx < res.order.length) {
-    const c = r.cars[res.order[res.idx]];
-    const w = startCar(r, c, r.plans[c.id]!);
-    res.cur = w;
-    const offer = draftOffer(r, c, w);
-    if (offer) {
-      if (offer.hazard > 0) {
-        r.pending = { car: c.id, len: offer.len, hazard: offer.hazard };
-        r.phase = 'react';
-        r.step++;
-        return;
-      }
-      draft(r, c, w, offer.len);
+  for (;;) {
+    const t = r.turn;
+    if (!t) {
+      if (res.idx >= res.order.length) return endRound(r);
+      startTurn(r, r.cars[res.order[res.idx]]);
+      continue;
     }
-    finishCar(r, w);
-    res.idx++;
+    const c = r.cars[t.car];
+    if (t.stage === 'react') {
+      const o = turnOptions(r);
+      if (!o.cool && !o.boost && !o.catchup) {
+        toDraft(r);
+        continue;
+      }
+    }
+    // AX-TURN-7: a car past the line has nothing to throw away; nothing left that may go means no decision either.
+    if (t.stage === 'discard' && (c.pos >= lineOf(r) || !c.hand.some((x) => x !== HEAT || (c.fit.dumpStrain ?? 0) > 0))) {
+      endTurn(r, []);
+      continue;
+    }
+    r.step++;
+    return;
   }
-  endRound(r);
 }
 
-function startCar(r: Race, c: Car, p: Plan): Working {
+function startTurn(r: Race, c: Car) {
+  const p = r.plans[c.id]!;
   const limp = p.cards.length === 0;
-  const catchup = r.res!.catchup.includes(c.id);
   const cards = p.cards.map((i) => c.hand[i]);
   const rec: Resolved = {
     car: c.id, gear: limp ? 1 : p.gear, shift: 0, cards, flipped: [], boost: false, speed: 0, dist: 0, from: c.pos,
-    to: c.pos, corners: [], spun: false, drafted: 0, cooled: 0, catchup, finished: false, limp, hazard: 0,
+    to: c.pos, corners: [], spun: false, drafted: 0, cooled: 0, catchup: false, finished: false, limp, events: [],
   };
-  // Committed and thrown-away cards leave the hand now; they reach the discard at the end of the round.
-  const out = new Set([...p.cards, ...p.discard]);
-  c.play.push(...cards, ...p.discard.map((i) => c.hand[i]));
-  c.hand = c.hand.filter((_, i) => !out.has(i));
+  r.last.push(rec);
+  // Committed cards leave the hand now and reach the discard when the turn ends.
+  c.play.push(...cards);
+  c.hand = c.hand.filter((_, i) => !p.cards.includes(i));
   c.spun = false;
-  let speed = 0, value = 0, cool = 0, cardGrip = 0, cardDraft = 0;
+  let speed = 0, value = 0, cool = 0, grip = 0, draftBonus = 0;
   if (limp) {
     speed = value = 1;
   } else {
     const pay = (shiftCost(c, p.gear) ?? 0) + cards.reduce((s, x) => s + (cardFx(x)?.cost ?? 0), 0);
     rec.shift = pay;
-    payStrain(c, pay);
+    payHeat(c, pay);
+    if (pay) rec.events.push({ k: 'pay', n: pay });
     for (const x of cards) {
       const fx = cardFx(x);
       if (fx) {
         speed += fx.speed ?? fx.value;
         value += fx.value;
         cool += fx.cool ?? 0;
-        cardGrip += fx.grip ?? 0;
-        cardDraft += fx.draft ?? 0;
+        grip += fx.grip ?? 0;
+        draftBonus += fx.draft ?? 0;
       }
       const flips = x === STRESS ? 1 : fx?.flips ?? 0;
       for (let f = 0; f < flips; f++) {
@@ -489,175 +657,164 @@ function startCar(r: Race, c: Car, p: Plan): Working {
         value += v;
       }
     }
-    if (p.boost) {
-      const lap = Math.floor(Math.max(0, c.pos) / r.n);
-      const free = c.fit.freeBoostPerLap && c.freeBoostLap !== lap;
-      if (free || c.engine > 0) {
-        if (free) c.freeBoostLap = lap;
-        else payStrain(c, 1);
-        rec.boost = true;
-        c.stats.boosts++;
-        for (let f = 0; f < 1 + (c.fit.boostFlips ?? 0); f++) {
-          const v = flip(r, c, rec);
-          speed += v;
-          value += v;
-        }
-      }
-    }
   }
-  const dist = value + (catchup ? 1 + (c.fit.catchDist ?? 0) : 0) + (r.round === 1 ? c.fit.launch ?? 0 : 0);
-  rec.speed = speed;
-  rec.dist = dist;
   const g = rec.gear;
   cool +=
     GEAR_COOL[g - 1] + ((g === 1 ? c.fit.cool1 : g === 2 ? c.fit.cool2 : g === 3 ? c.fit.cool3 : 0) ?? 0) + (c.fit.coolAll ?? 0);
   if ((weatherOf(r).limit ?? 0) < 0) cool += c.fit.rainCool ?? 0;
-  const w: Working = { car: c.id, speed, cardGrip, cardDraft, cool, catchup, start: c.pos, rec };
-  move(r, c, w, dist);
-  return w;
+  rec.speed = speed;
+  r.turn = {
+    car: c.id, stage: 'react', start: c.pos, lane0: c.lane, speed, grip, draftBonus, cool, boosted: false,
+    catchup: r.res!.catchup.includes(c.id) ? 'open' : 'none', offer: null,
+  };
+  go(r, c, value + (r.round === 1 ? c.fit.launch ?? 0 : 0), 'move');
 }
 
-function payStrain(c: Car, n: number) {
-  const k = Math.min(n, c.engine);
-  c.engine -= k;
-  for (let i = 0; i < k; i++) c.discard.push(STRAIN);
-}
-
-/** Move `dist` spaces with blocking, corner checks and spins (AX-MOV, AX-CRN, AX-SPN, AX-FIN-1). */
-function move(r: Race, c: Car, w: Working, dist: number) {
+/** AX-MOV-1: move up to `dist` spaces, stopping short of full spaces. No corner is checked yet. */
+function go(r: Race, c: Car, dist: number, k: 'move' | 'boost' | 'catchup' | 'draft') {
   const from = c.pos;
-  const line = r.laps * r.n;
-  const target = from + dist;
-  let stop = from, lane = c.lane;
-  if (target >= line) stop = target;
-  else
-    for (let q = target; q > from; q--) {
-      const l = freeLane(r, q, c.id);
-      if (l >= 0) {
-        stop = q;
-        lane = l;
-        break;
-      }
-    }
-  for (const cp of checkpoints(r, c, from, stop, w.speed, w.cardGrip)) {
-    let cost = cp.cost;
-    const lap = Math.floor(cp.m / r.n);
-    if (cost > 0 && cp.corner >= 0 && c.fit.overspeedRelief && c.reliefLap !== lap) {
-      c.reliefLap = lap;
-      cost = Math.max(0, cost - c.fit.overspeedRelief);
-    }
-    if (cp.corner >= 0) {
-      if (w.speed === cp.limit) c.stats.atLimit++;
-      w.rec.corners.push({ at: spaceOf(r, cp.m), limit: cp.limit, paid: cost > c.engine ? 0 : cost });
-    }
-    if (cost > c.engine) return spin(r, c, w, cp.m, from);
-    payStrain(c, cost);
-    if (cp.corner >= 0) {
-      c.stats.cornerPaid += cost;
-      c.stats.maxCornerPay = Math.max(c.stats.maxCornerPay, cost);
-    }
-  }
-  if (stop >= line) {
-    c.pos = target;
-    c.done = { place: 0, round: r.round, over: target - line };
-    r.res!.finishers.push([c.id, target - line, r.res!.idx]);
-    w.rec.finished = true;
-  } else if (stop !== from) {
-    c.pos = stop;
-    c.lane = lane;
-    c.arrived = ++r.seq;
-  }
-  w.rec.to = c.pos;
-}
-
-function spin(r: Race, c: Car, w: Working, m: number, from: number) {
-  let stop = from, lane = c.lane;
-  for (let q = m - 1; q > from; q--) {
+  for (let q = from + dist; q > from; q--) {
     const l = freeLane(r, q, c.id);
     if (l >= 0) {
-      stop = q;
-      lane = l;
+      c.pos = q;
+      c.lane = l;
+      c.arrived = ++r.seq;
       break;
     }
   }
-  if (stop !== from) {
-    c.pos = stop;
-    c.lane = lane;
-    c.arrived = ++r.seq;
-  }
-  const n = Math.max(0, (w.rec.gear <= 2 ? 1 : 2) - (c.fit.spinRelief ?? 0));
-  for (let i = 0; i < n; i++) c.hand.push(STRAIN);
-  c.spun = true;
-  c.stats.spins++;
-  w.rec.spun = true;
-  w.rec.to = c.pos;
+  recOf(r).to = c.pos;
+  recOf(r).events.push({ k, to: c.pos, lane: c.lane });
 }
 
-/** AX-DRF-1: a draft on offer after the move, with the Strain it would cost (`hazard` > 0 means a real choice). */
-export function draftOffer(r: Race, c: Car, w: Working): { len: number; hazard: number } | null {
-  // Interpretation: only a car that moved this round can draft (AX-DRF-1 "after moving").
-  if (c.spun || c.done || c.pos <= w.start) return null;
+function toDraft(r: Race) {
+  const t = r.turn!;
+  t.stage = 'draft';
+  t.offer = draftOffer(r);
+  if (!t.offer) toDiscard(r);
+}
+
+/** AX-DRF-1: a slipstream on offer after the reactions, with the extra Heat it would cost at the corners. */
+export function draftOffer(r: Race): { len: number; hazard: number } | null {
+  const t = r.turn!;
+  const c = r.cars[t.car];
+  // Interpretation: only a car that moved this turn can draft (AX-DRF-1 "after moving").
+  if (c.pos <= t.start || c.pos >= lineOf(r)) return null;
   if (weatherOf(r).noDraft && !c.fit.rainDraft) return null;
   const sp = spaceOf(r, c.pos);
   const near = r.cars.some(
-    (o) => o.id !== c.id && !o.done && (spaceOf(r, o.pos) === sp || spaceOf(r, o.pos) === spaceOf(r, c.pos + 1)),
+    (o) => o.id !== c.id && occupies(r, o) && (spaceOf(r, o.pos) === sp || spaceOf(r, o.pos) === spaceOf(r, c.pos + 1)),
   );
   if (!near) return null;
   const circ = circuitOf(r);
   const tail = r.sectors[circ.sector[sp]] === 'tail' ? 1 : 0;
-  const len = 2 + (c.fit.draft ?? 0) + w.cardDraft + tail;
+  const len = 2 + (c.fit.draft ?? 0) + t.draftBonus + tail;
+  // AX-FIN-6: no slipstream across the finish line.
+  if (c.pos + len >= lineOf(r)) return null;
   if (r.modules.mountains && !c.fit.tunnelDraft)
     for (let m = c.pos; m <= c.pos + len; m++) if (circ.tunnel[spaceOf(r, m)]) return null;
-  const hazard = checkpoints(r, c, c.pos, c.pos + len, w.speed, w.cardGrip).reduce((s, x) => s + x.cost, 0);
-  return { len, hazard };
+  const sum = (to: number) => cornerBill(r, c, t.start, to, t.speed, t.grip).reduce((s, x) => s + x.cost, 0);
+  return { len, hazard: sum(c.pos + len) - sum(c.pos) };
 }
 
-function draft(r: Race, c: Car, w: Working, len: number) {
-  const before = c.pos;
-  move(r, c, w, len);
-  w.rec.drafted = c.done ? len : c.pos - before;
-  if (w.rec.drafted > 0) c.stats.drafts++;
-}
-
-function finishCar(r: Race, w: Working) {
-  const c = r.cars[w.car];
-  const rec = w.rec;
-  rec.dist = c.pos - w.start;
+/** AX-TURN-6: the corner check over the whole move at the final speed, then gravel and flooding. */
+function toDiscard(r: Race) {
+  const t = r.turn!;
+  const c = r.cars[t.car];
+  const rec = recOf(r);
+  t.stage = 'discard';
+  t.offer = null;
+  for (const cp of cornerBill(r, c, t.start, c.pos, t.speed, t.grip)) {
+    if (cp.relieved) c.reliefLap = cp.lap;
+    const spin = cp.cost > c.engine;
+    if (cp.corner >= 0) {
+      if (t.speed === cp.limit) c.stats.atLimit++;
+      const row = { at: spaceOf(r, cp.m), limit: cp.limit, paid: spin ? 0 : cp.cost };
+      rec.corners.push(row);
+      rec.events.push({ k: 'corner', ...row });
+    }
+    if (spin) return spinOut(r, c, cp.m);
+    payHeat(c, cp.cost);
+    if (cp.corner >= 0) {
+      c.stats.cornerPaid += cp.cost;
+      c.stats.maxCornerPay = Math.max(c.stats.maxCornerPay, cp.cost);
+    } else if (cp.cost) rec.events.push({ k: 'pay', n: cp.cost });
+  }
+  if (c.pos >= lineOf(r)) return;
+  // AX-MOD-3 gravel and AX-MOD-1 flooding put Heat from the pit stock in the discard.
   const end = spaceOf(r, c.pos);
   const circ = circuitOf(r);
-  if (!c.done) {
-    // AX-MOD-3 gravel and AX-MOD-1 flooding put Strain from the pit stock in the discard.
-    const gravelAt = r.event === 'duststorm' ? 5 : 7;
-    if (r.modules.dust && circ.gravel[end] && w.speed >= gravelAt && !c.fit.noGravel) c.discard.push(STRAIN);
-    if (r.sectors[circ.sector[end]] === 'flood' && w.speed >= 8 && !c.fit.noFlood) c.discard.push(STRAIN);
+  const gravelAt = r.event === 'duststorm' ? 5 : 7;
+  if (r.modules.dust && circ.gravel[end] && t.speed >= gravelAt && !c.fit.noGravel) {
+    c.discard.push(HEAT);
+    rec.events.push({ k: 'heat', n: 1, why: 'gravel' });
   }
-  const cool = w.cool + (w.catchup && !c.spun ? 1 + (c.fit.catchCool ?? 0) : 0);
-  let cooled = 0;
-  for (let i = c.hand.length - 1; i >= 0 && cooled < cool; i--)
-    if (c.hand[i] === STRAIN) {
-      c.hand.splice(i, 1);
-      c.engine++;
-      cooled++;
+  if (r.sectors[circ.sector[end]] === 'flood' && t.speed >= 8 && !c.fit.noFlood) {
+    c.discard.push(HEAT);
+    rec.events.push({ k: 'heat', n: 1, why: 'flood' });
+  }
+}
+
+/** AX-SPN-1: back to the last free space before the corner, gear 1, and Stress from the pit stock into the hand. */
+function spinOut(r: Race, c: Car, m: number) {
+  const t = r.turn!;
+  const rec = recOf(r);
+  c.pos = t.start;
+  c.lane = t.lane0;
+  for (let q = m - 1; q > t.start; q--) {
+    const l = freeLane(r, q, c.id);
+    if (l >= 0) {
+      c.pos = q;
+      c.lane = l;
+      break;
     }
-  rec.cooled = cooled;
-  c.stats.cooled += cooled;
-  c.stats.topSpeed = Math.max(c.stats.topSpeed, w.speed);
+  }
+  c.arrived = ++r.seq;
+  const n = Math.max(0, (rec.gear <= 2 ? 1 : 2) - (c.fit.spinRelief ?? 0));
+  for (let i = 0; i < n; i++) c.hand.push(STRESS);
+  c.spun = true;
+  c.stats.spins++;
+  rec.spun = true;
+  rec.to = c.pos;
+  rec.events.push({ k: 'spin', to: c.pos, lane: c.lane, stress: n });
+}
+
+/** AX-TURN-7 and AX-END-1: throw away, played cards to the discard, refill, and the next driver. */
+function endTurn(r: Race, discard: number[]) {
+  const t = r.turn!;
+  const c = r.cars[t.car];
+  const rec = recOf(r);
+  if (discard.length) {
+    c.play.push(...discard.map((i) => c.hand[i]));
+    c.hand = c.hand.filter((_, i) => !discard.includes(i));
+    rec.events.push({ k: 'discard', n: discard.length });
+  }
+  c.discard.push(...c.play);
+  c.play = [];
+  rec.dist = c.pos - t.start;
+  rec.to = c.pos;
+  const line = lineOf(r);
+  if (c.pos >= line) {
+    c.done = { place: 0, round: r.round, over: c.pos - line };
+    rec.finished = true;
+    rec.events.push({ k: 'finish', over: c.pos - line });
+  } else refill(r, c);
+  c.stats.topSpeed = Math.max(c.stats.topSpeed, t.speed);
   c.stats.bestDist = Math.max(c.stats.bestDist, rec.dist);
   if (rec.gear === 4) c.stats.gear4++;
   c.gear = c.spun ? 1 : rec.gear;
-  r.last.push(rec);
-  r.res!.cur = null;
+  r.turn = null;
+  r.res!.idx++;
 }
 
 function endRound(r: Race) {
   const res = r.res!;
-  // AX-FIN-2: same-round finishers by overshoot, then resolution order.
-  res.finishers.sort((a, b) => b[1] - a[1] || a[2] - b[2]);
-  for (const [id] of res.finishers) {
+  // AX-FIN-2: this round's finishers by distance past the line, then racing line (lane), then driving order.
+  const now = res.order.filter((id) => r.cars[id].done?.round === r.round);
+  now.sort((a, b) => r.cars[b].done!.over - r.cars[a].done!.over || r.cars[a].lane - r.cars[b].lane || res.order.indexOf(a) - res.order.indexOf(b));
+  for (const id of now) {
     r.finished.push(id);
     r.cars[id].done!.place = r.finished.length;
   }
-  if (res.finishers.length && r.endRound == null) r.endRound = r.round + r.finishRounds;
   // AX-OVT-1
   const after = raceOrder(r);
   const at = (list: number[], id: number) => list.indexOf(id);
@@ -670,16 +827,10 @@ function endRound(r: Race) {
   if (r.round === 1) leader.stats.ledR1 = true;
   const crossed = r.last.find((x) => x.car === leader.id);
   if (crossed && Math.floor(crossed.from / r.n) < Math.floor(leader.pos / r.n) && crossed.from >= 0) leader.stats.ledLap = true;
-  // AX-END-1
-  for (const c of r.cars) {
-    c.discard.push(...c.play);
-    c.play = [];
-    if (!c.done) refill(r, c);
-  }
   r.res = null;
   r.plans = r.cars.map(() => null);
-  const running = r.cars.filter((c) => !c.done);
-  if (!running.length || (r.endRound != null && r.round >= r.endRound)) {
+  // AX-END-2: the race runs until every car has finished.
+  if (!r.cars.some((c) => !c.done) || r.round >= MAX_ROUNDS) {
     for (const id of raceOrder(r)) {
       const c = r.cars[id];
       if (c.done) continue;
@@ -693,3 +844,5 @@ function endRound(r: Race) {
   }
   r.step++;
 }
+
+export type TurnOptions = ReturnType<typeof turnOptions>;

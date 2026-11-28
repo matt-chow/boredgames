@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { aiDraft, aiPlan, aiView } from '../../src/games/apex/rules/ai';
+import { finishTurns } from './drive';
+import { aiPlan, aiView } from '../../src/games/apex/rules/ai';
 import { CIRCUIT_IDS, resolveCircuit } from '../../src/games/apex/rules/content/circuits';
-import { newRace, planError, react, reveal, setPlan, type Modules, type Race, type Risk, type Level } from '../../src/games/apex/rules/race';
+import { newRace, planError, reveal, setPlan, type Modules, type Race, type Risk, type Level } from '../../src/games/apex/rules/race';
 
 const OFF: Modules = { storm: false, mountains: false, dust: false, rivals: false };
 const ON: Modules = { storm: true, mountains: true, dust: true, rivals: true };
@@ -25,7 +26,7 @@ export function aiRace(circuit: string, modules: Modules, cars: number, seed: st
       setPlan(r, c.id, p);
     }
     reveal(r);
-    while (r.phase === 'react') react(r, aiDraft(aiView(r, r.pending!.car), r.pending!.hazard));
+    finishTurns(r);
   }
   return r;
 }
@@ -58,7 +59,7 @@ describe('AX-AI computer drivers', () => {
       while (r.phase !== 'over') {
         for (const c of r.cars) if (!c.done) setPlan(r, c.id, aiPlan(aiView(r, c.id)));
         reveal(r);
-        while (r.phase === 'react') react(r, aiDraft(aiView(r, r.pending!.car), r.pending!.hazard));
+        finishTurns(r);
       }
       if (r.finished[0] === (s & 1)) works++;
     }

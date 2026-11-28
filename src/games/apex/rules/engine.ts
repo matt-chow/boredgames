@@ -4,19 +4,22 @@
  */
 import type { ApplyResult, PlayerResult } from '../../../engine/types';
 import { seedRng, shuffle } from '../../../engine/rng';
-import { aiDraft, aiPlan, aiView, type AiView } from './ai';
+import { aiPlan, aiTurn, aiView, type AiView } from './ai';
 import { CIRCUIT_IDS, resolveCircuit } from './content/circuits';
 import { RIVALS } from './content/paddock';
 import {
-  newRace, planError, react, reveal, setPlan,
-  type AiSpec, type Level, type Modules, type Plan, type Race, type RaceSetup, type Resolved, type Risk,
+  newRace, planError, reveal, setPlan, turnAct, turnError, turnOptions,
+  type AiSpec, type Level, type Modules, type Plan, type Race, type RaceSetup, type Resolved, type Risk, type Turn,
+  type TurnAct, type TurnOptions,
 } from './race';
+import * as v1 from './race-v1';
 import {
   aiPick, newSeason, pick, pickError, raceSetup, scoreRace, standings,
   type Draft, type Driver, type RaceResult, type Season,
 } from './season';
 
-export const STATE_VERSION = 1;
+/** 2: the v1.3 turn-by-turn rules (AX-TURN). */
+export const STATE_VERSION = 2;
 export const MAX_CARS = 8;
 export const TIMERS = [0, 30, 60, 90] as const;
 export const SEASON_LENGTHS = [3, 5, 8] as const;
@@ -51,12 +54,10 @@ export interface AConfig {
   events: boolean;
 }
 
-export interface Replay {
-  format: 'apex66-replay';
-  version: 1;
-  setup: RaceSetup;
-  rounds: Race['replay'];
-}
+/** Version 1 replays came from the v1.2 rules and replay through the frozen `race-v1` resolver. */
+export type Replay =
+  | { format: 'apex66-replay'; version: 2; setup: RaceSetup; rounds: Race['replay'] }
+  | { format: 'apex66-replay'; version: 1; setup: v1.RaceSetup; rounds: v1.Race['replay'] };
 
 export interface AState {
   config: AConfig;
@@ -75,12 +76,15 @@ export interface AState {
   /** Seats whose last plan the timer chose; cleared when someone plans again. */
   timedOut: number[];
   replays: Replay[];
+  /** Seats that cool by hand; everyone else cools the most they can, automatically (AX-COOL-2). */
+  manualCool: number[];
 }
 
 export type AAction =
-  | { type: 'plan'; step: number; gear: number; cards: number[]; discard: number[]; boost: boolean }
+  | { type: 'plan'; step: number; gear: number; cards: number[] }
   | { type: 'retract'; step: number }
-  | { type: 'react'; step: number; take: boolean }
+  | { type: 'turn'; step: number; act: TurnAct }
+  | { type: 'cooling'; step: number; manual: boolean }
   | { type: 'pick'; step: number; take: string | null; give: string | null }
   | { type: 'ready'; step: number }
   | { type: 'shelve'; step: number }
@@ -115,8 +119,10 @@ export interface AView {
   config: AConfig;
   race: {
     circuit: string; laps: number; n: number; round: number; phase: Race['phase']; weather: string; sectors: string[];
-    event: string | null; cornerDelta: number[]; modules: Modules; endRound: number | null; finished: number[];
-    cars: CarView[]; last: Resolved[]; pending: Race['pending'];
+    event: string | null; cornerDelta: number[]; modules: Modules; finished: number[];
+    cars: CarView[]; last: Resolved[];
+    /** The driver whose turn it is and what they may do; all of it public (AX-TURN-2). */
+    turn: (Turn & { options: TurnOptions }) | null;
   } | null;
   /** Your own car, if you drive one: hand in order, deck contents sorted, your locked plan. */
   me: { car: number; hand: string[]; discard: string[]; plan: Plan | null; ai: AiView } | null;
@@ -134,6 +140,7 @@ export interface AView {
   timedOut: number[];
   /** Finished races only (AX-REP-2). */
   replays: Replay[];
+  manualCool: boolean;
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -232,7 +239,7 @@ export function setup(seats: number, seed: string, cfg: AConfig): AState {
   const season = newSeason(school ? 'driving-school' : seed, races, paddock, drivers, champ);
   const s: AState = {
     config: c, seats, season, race: null, phase: 'race', step: 1, ready: [], online: Array(seats).fill(true),
-    autopilot: [], shelved: false, deadline: null, timedOut: [], replays: [],
+    autopilot: [], shelved: false, deadline: null, timedOut: [], replays: [], manualCool: [],
   };
   startRace(s);
   settle(s);
@@ -259,10 +266,15 @@ function settle(s: AState) {
   for (let guard = 0; guard < 10_000; guard++) {
     if (s.phase === 'race') {
       const r = s.race!;
-      if (r.phase === 'react') {
-        const c = r.cars[r.pending!.car];
-        if (!computerDriven(s, c.seat)) return;
-        react(r, aiDraft(aiView(r, c.id, specOf(s, c.seat, c.ai)), r.pending!.hazard));
+      if (r.phase === 'turn') {
+        const t = r.turn!;
+        const c = r.cars[t.car];
+        const o = turnOptions(r);
+        if (computerDriven(s, c.seat)) turnAct(r, aiTurn(aiView(r, c.id, specOf(s, c.seat, c.ai)), t, o));
+        // A person's car cools the most it can unless they cool by hand, and takes a catch-up that costs nothing.
+        else if (o.cool && !s.manualCool.includes(c.seat!)) turnAct(r, { do: 'cool', n: o.cool });
+        else if (o.catchup && o.catchupCost <= 0) turnAct(r, { do: 'catchup' });
+        else return;
         continue;
       }
       if (r.phase === 'plan') {
@@ -274,7 +286,7 @@ function settle(s: AState) {
         continue;
       }
       // The race is over.
-      s.replays.push({ format: 'apex66-replay', version: 1, setup: raceSetup(s.season), rounds: r.replay });
+      if (!r.noReplay) s.replays.push({ format: 'apex66-replay', version: 2, setup: raceSetup(s.season), rounds: r.replay });
       scoreRace(s.season, r);
       if (!s.season.champ) {
         s.phase = 'over';
@@ -331,19 +343,27 @@ export function apply(state: AState, seat: number, raw: AAction): ApplyResult<AS
         setPlan(r!, c.id, null);
         break;
       }
-      const plan: Plan = { gear: a.gear, cards: a.cards, discard: a.discard, boost: !!a.boost };
+      const plan: Plan = { gear: a.gear, cards: a.cards };
       const err = planError(r!, c.id, plan);
       if (err) return fail('illegal', err);
       setPlan(r!, c.id, plan);
       s.timedOut = [];
       break;
     }
-    case 'react': {
+    case 'turn': {
       const c = carOf(s, seat);
-      if (s.phase !== 'race' || r!.phase !== 'react' || !c || r!.pending!.car !== c.id) return fail('not-now', 'There is no draft for you to decide.');
-      react(r!, !!a.take);
+      if (s.phase !== 'race' || r!.phase !== 'turn' || !c || r!.turn!.car !== c.id) return fail('not-now', 'It is not your turn.');
+      if (s.autopilot.includes(seat)) return fail('autopilot', 'The computer is driving your car. Take it back first.');
+      const err = turnError(r!, a.act);
+      if (err) return fail('illegal', err);
+      turnAct(r!, a.act);
+      s.timedOut = [];
       break;
     }
+    case 'cooling':
+      s.manualCool = s.manualCool.filter((x) => x !== seat);
+      if (a.manual) s.manualCool.push(seat);
+      break;
     case 'pick': {
       if (s.phase !== 'draft') return fail('not-now', 'There is no draft now.');
       const d = driverOf(s, seat);
@@ -379,7 +399,11 @@ export function apply(state: AState, seat: number, raw: AAction): ApplyResult<AS
       return fail('bad-request', 'Unknown action.');
   }
   settle(s);
-  if (progressKey(s) !== before) s.step++;
+  if (progressKey(s) !== before) {
+    s.step++;
+    // A new decision gets the full timer; the next tick starts it.
+    s.deadline = null;
+  }
   return { ok: true, state: s, undoable: false };
 }
 
@@ -388,17 +412,27 @@ export function tick(state: AState, now: number, online: boolean[]): AState | nu
   const s: AState = structuredClone(state);
   s.online = online.slice(0, s.seats);
   const r = s.race;
-  const planning = s.phase === 'race' && r?.phase === 'plan' && s.config.timer > 0;
-  const missing = planning ? r!.cars.filter((c) => !c.done && !r!.plans[c.id] && !computerDriven(s, c.seat)) : [];
-  const paused = missing.some((c) => !s.online[c.seat!]);
-  if (!planning || paused || !missing.length) s.deadline = null;
-  else if (s.deadline == null) s.deadline = now + s.config.timer * 1000;
-  else if (now >= s.deadline) {
-    const before = progressKey(s);
-    s.timedOut = missing.map((c) => c.seat!);
-    for (const c of missing) setPlan(r!, c.id, aiPlan(aiView(r!, c.id, { risk: 'cautious', level: 'club' })));
-    settle(s);
-    if (progressKey(s) !== before) s.step++;
+  const late = { risk: 'cautious', level: 'club' } as const;
+  for (let guard = 0; guard < 2; guard++) {
+    const timed = s.phase === 'race' && (r?.phase === 'plan' || r?.phase === 'turn') && s.config.timer > 0;
+    const missing = !timed ? [] : r!.phase === 'plan'
+      ? r!.cars.filter((c) => !c.done && !r!.plans[c.id] && !computerDriven(s, c.seat))
+      : [r!.cars[r!.turn!.car]].filter((c) => !computerDriven(s, c.seat));
+    const paused = missing.some((c) => !s.online[c.seat!]);
+    if (!timed || paused || !missing.length) s.deadline = null;
+    else if (s.deadline == null) s.deadline = now + s.config.timer * 1000;
+    else if (now >= s.deadline) {
+      const before = progressKey(s);
+      s.timedOut = missing.map((c) => c.seat!);
+      if (r!.phase === 'plan') for (const c of missing) setPlan(r!, c.id, aiPlan(aiView(r!, c.id, late)));
+      // AX-PLAN-6: a late driver's whole turn is driven for them, cautiously.
+      else for (const id = missing[0].id; r!.phase === 'turn' && r!.turn!.car === id; ) turnAct(r!, aiTurn(aiView(r!, id, late), r!.turn!, turnOptions(r!)));
+      settle(s);
+      if (progressKey(s) !== before) s.step++;
+      s.deadline = null;
+      continue; // start the clock for whoever must act next
+    }
+    break;
   }
   return JSON.stringify(s) === JSON.stringify(state) ? null : s;
 }
@@ -408,8 +442,8 @@ export const wakeAt = (s: AState) => s.deadline;
 export function actors(s: AState): number[] {
   const r = s.race;
   if (s.phase === 'race' && r) {
-    if (r.phase === 'react') {
-      const seat = r.cars[r.pending!.car].seat;
+    if (r.phase === 'turn') {
+      const seat = r.cars[r.turn!.car].seat;
       return seat != null && !s.autopilot.includes(seat) ? [seat] : [];
     }
     return r.cars.filter((c) => c.seat != null && !c.done && !r.plans[c.id] && !s.autopilot.includes(c.seat)).map((c) => c.seat!);
@@ -440,14 +474,14 @@ export function project(s: AState, viewer: number | null): AView {
     config: s.config,
     race: r && {
       circuit: r.circuit, laps: r.laps, n: r.n, round: r.round, phase: r.phase, weather: r.weather, sectors: r.sectors,
-      event: r.event, cornerDelta: r.cornerDelta, modules: r.modules, endRound: r.endRound, finished: r.finished,
+      event: r.event, cornerDelta: r.cornerDelta, modules: r.modules, finished: r.finished,
       cars: r.cars.map((c) => ({
         id: c.id, seat: c.seat, name: c.name, number: c.number, livery: c.livery, ...(c.rival ? { rival: c.rival } : {}),
         upgrades: c.upgrades, pos: c.pos, lane: c.lane, gear: c.gear, engine: c.engine, hand: c.hand.length,
         deck: c.deck.length, discard: c.discard.length, planned: !!r.plans[c.id], spun: c.spun, done: c.done, stats: c.stats,
       })),
       last: r.last,
-      pending: r.pending,
+      turn: r.turn && { ...r.turn, options: turnOptions(r) },
     },
     me:
       mine && r && live
@@ -466,6 +500,7 @@ export function project(s: AState, viewer: number | null): AView {
     deadline: s.deadline,
     timedOut: s.timedOut,
     replays: s.replays,
+    manualCool: viewer != null && s.manualCool.includes(viewer),
   };
 }
 
@@ -495,7 +530,8 @@ export function retainMs(s: AState, status: 'playing' | 'over'): number {
 export function botActions(v: AView): AAction[] {
   const step = v.step;
   if (v.phase === 'race' && v.race && v.me) {
-    if (v.race.phase === 'react' && v.race.pending?.car === v.me.car) return [{ type: 'react', step, take: aiDraft(v.me.ai, v.race.pending.hazard) }];
+    const t = v.race.turn;
+    if (v.race.phase === 'turn' && t?.car === v.me.car) return [{ type: 'turn', step, act: aiTurn(v.me.ai, t, t.options) }];
     if (v.race.phase === 'plan' && !v.me.plan) return [{ type: 'plan', step, ...aiPlan(v.me.ai) }];
   }
   if (v.phase === 'podium' && v.seat != null && !v.ready.includes(v.seat)) return [{ type: 'ready', step }];
@@ -507,3 +543,24 @@ export function botActions(v: AView): AAction[] {
 }
 
 export { resolveCircuit };
+
+/**
+ * Upgrade a saved room. 1 → 2 is the v1.3 turn rules (AX-TURN): a race in progress carries on under them from the next
+ * plan. An open draft decision is declined, which finishes that round under the old rules; plans already locked are
+ * cleared and made again. Such a race keeps no replay, since it mixes two rule sets.
+ */
+export function migrate(raw: unknown, from: number): AState {
+  const s = raw as AState;
+  if (from < 2) {
+    s.manualCool ??= [];
+    const old = s.race as unknown as v1.Race | null;
+    if (old) {
+      while (old.phase === 'react') v1.react(old, false);
+      const { pending: _p, endRound: _e, finishRounds: _f, ...rest } = old;
+      s.race = { ...rest, plans: old.cars.map(() => null), res: null, turn: null, last: [], replay: [], noReplay: true } as unknown as Race;
+    }
+    s.deadline = null;
+    s.step++;
+  }
+  return s;
+}
