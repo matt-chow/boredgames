@@ -145,7 +145,7 @@ The registry in `cards.ts` is the single source for the rules, the encyclopedia,
 - **MS-D-SETUP1.** There are no roles. Each player gets 6 cards from the classic deck.
 - **MS-D-PAY1.** The finder gets 3 and the other player 1. A dry round pays nobody.
 
-## Game end and the room (MS-END\*, MS-ROOM\*, MS-AWAY1, MS-SEC\*, MS-CFG1)
+## Game end and the room (MS-END\*, MS-ROOM\*, MS-AWAY1, MS-SEC\*, MS-CFG1, MS-CFG2)
 
 **Game end**
 
@@ -156,6 +156,8 @@ The registry in `cards.ts` is the single source for the rules, the encyclopedia,
 
 - **MS-CFG1, MS-ROOM1.** Each mode has its own player range, and only the listed settings are accepted. Settings lock
   when the game starts.
+- **MS-CFG2.** A table created with two seats (Practise with bots seats one bot) starts on the Prospector Duel, so it
+  can start at once; any other table starts on Classic Mining. The host can still change the mode.
 
 **Connections and timing**
 
