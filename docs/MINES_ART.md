@@ -16,7 +16,7 @@ card's own bands and badges carry the information.
 |---|---|---|
 | Tunnels, entrance, destinations | 39 | Overhead tile: sandy floor, sleepers and rails through dark boulders. Dead ends are heaps of grey rubble. Ladders, gates and crystals are drawn where the card has them. |
 | Roles | 7 | One full-body character, hat to boots, with a coloured band along the bottom in the role's colour |
-| Actions | 18 | One small scene per action, with a dark band at the top and bottom. Tool cards show the tool badges top right. |
+| Actions | 18 | One small scene per action, with a dark band at the top and bottom. Every action carries a large badge top right that says what it does: the tool with a red cross (break) or teal tick (fix), or a glyph (eye, falling rock, coin taken, lock, swapped cards, magnifier, badge swap, bars, rope). |
 | Card backs, rewards | 5 | Deck and role backs, with an inner gold border; 1, 2 and 3 gold pips on the rewards. A face-down destination shows the deck back, so it gives nothing away. |
 
 The eight round badges (nugget, crystal, the three tools and their broken forms) stay crisp SVG icons. So do the deep

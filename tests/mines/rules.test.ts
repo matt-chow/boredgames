@@ -111,6 +111,12 @@ describe('MS-SETUP', () => {
     expect(mines.sanitizeConfig!({ mode: 'secret' })).toHaveProperty('error');
     expect(mines.sanitizeConfig!({ away: 'kick' })).toHaveProperty('error');
   });
+
+  it('MS-CFG2: a table seated for two at creation starts on a mode two can play', () => {
+    expect(mines.defaultConfig(1).mode).toBe('classic');
+    expect(mines.defaultConfig(2).mode).toBe('duel');
+    expect(mines.validateConfig(mines.defaultConfig(2), 2)).toBeNull();
+  });
 });
 
 describe('MS-GEO: tunnels', () => {
