@@ -1,14 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { aiDraft, aiPlan, aiView } from '../../src/games/apex/rules/ai';
-import { STRAIN, STRESS } from '../../src/games/apex/rules/cards';
+import { aiPlan, aiView } from '../../src/games/apex/rules/ai';
+import { finishTurns } from './drive';
+import { HEAT, STRESS } from '../../src/games/apex/rules/cards';
 import { CIRCUIT_IDS, resolveCircuit } from '../../src/games/apex/rules/content/circuits';
 import {
-  cornerLimit, newRace, planError, react, reveal, setPlan, type Car, type Modules, type Plan, type Race,
+  cornerLimit, newRace, planError, reveal, setPlan, turnOptions, type Car, type Modules, type Plan, type Race,
 } from '../../src/games/apex/rules/race';
 
 const OFF: Modules = { storm: false, mountains: false, dust: false, rivals: false };
 const STALL = { hand: ['S', 'X', 'X', 'X', 'X', 'X', 'X'], deck: ['X'], discard: [] };
-const P = (gear: number, cards: number[], x: Partial<Plan> = {}): Plan => ({ gear, cards, discard: [], boost: false, ...x });
+const P = (gear: number, cards: number[]): Plan => ({ gear, cards });
 
 function mk(circuit: string, modules: Partial<Modules>, cars = 1, seed = 'm', rival?: string): Race {
   return newRace({
@@ -25,6 +26,7 @@ function round(r: Race, plans: Record<number, Plan>) {
     setPlan(r, c.id, p);
   }
   reveal(r);
+  finishTurns(r);
 }
 const last = (r: Race, id: number) => r.last.find((x) => x.car === id)!;
 const firstOf = (flags: boolean[]) => flags.findIndex(Boolean);
@@ -56,7 +58,7 @@ describe('AX-MOD-1 Storm Front', () => {
     for (let k = 0; k < 10 && r.phase !== 'over'; k++) {
       for (const c of r.cars) if (!c.done) setPlan(r, c.id, aiPlan(aiView(r, c.id)));
       reveal(r);
-      while (r.phase === 'react') react(r, false);
+      finishTurns(r);
     }
     expect([r.weather, ...r.sectors].join()).toBe(w);
   });
@@ -80,18 +82,18 @@ describe('AX-MOD-1 Storm Front', () => {
     r.weather = 'drizzle';
     r.sectors = ['none', 'none', 'none'];
     rig(r, 1, { pos: 8, lane: 0, ...STALL });
-    rig(r, 0, { pos: 3, lane: 0, hand: ['P4', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'] });
+    rig(r, 0, { pos: 3, lane: 0, engine: 0, hand: ['P4', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'] }); // nothing to boost with
     round(r, {});
     expect([r.cars[0].pos, last(r, 0).drafted]).toEqual([8, 0]);
   });
 
-  it('a flooded sector puts 1 Strain in the discard when a move ends there at speed 8+', () => {
+  it('a flooded sector puts 1 Heat in the discard when a move ends there at speed 8+', () => {
     const r = mk('ashford', { storm: true });
     r.weather = 'storm';
     r.sectors = ['flood', 'flood', 'flood'];
-    rig(r, 0, { pos: 0, gear: 2, hand: ['P4', 'P4', 'P1', 'P1', 'P1', 'P1', 'P1'], discard: [], deck: ['P1', 'P1', 'P1', 'P1'] });
+    rig(r, 0, { pos: 0, gear: 2, engine: 0, hand: ['P4', 'P4', 'P1', 'P1', 'P1', 'P1', 'P1'], discard: [], deck: ['P1', 'P1', 'P1', 'P1'] });
     round(r, { 0: P(2, [0, 1]) });
-    expect(r.cars[0].discard.filter((x) => x === STRAIN)).toHaveLength(1);
+    expect(r.cars[0].discard.filter((x) => x === HEAT)).toHaveLength(1);
   });
 });
 
@@ -114,8 +116,12 @@ describe('AX-MOD-2 Through the Mountains', () => {
   it('no boost when the move starts in a tunnel', () => {
     const r = mk(id, { mountains: true });
     rig(r, 0, { pos: t, hand: ['P1', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'] });
-    expect(planError(r, 0, P(1, [0], { boost: true }))).toMatch(/tunnel/);
-    expect(planError(mk(id, {}), 0, P(1, [0], { boost: true }))).toBeNull();
+    for (const [race, want] of [[r, false], [mk(id, {}), true]] as const) {
+      rig(race, 0, { pos: t, hand: ['P1', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'] });
+      setPlan(race, 0, P(1, [0]));
+      reveal(race);
+      expect(race.phase === 'turn' && turnOptions(race).boost).toBe(want);
+    }
   });
 
   it('no drafting into a tunnel', () => {
@@ -147,7 +153,7 @@ describe('AX-MOD-3 Dust & Gravel', () => {
     expect([count(mk('ashford', {})), count(mk('ashford', { dust: true }))]).toEqual([2, 3]);
   });
 
-  it('ending on gravel at speed 7+ puts 1 Strain in the discard; at 6 it does not', () => {
+  it('ending on gravel at speed 7+ puts 1 Heat in the discard; at 6 it does not', () => {
     const id = withFlag('gravel');
     const g = firstOf(resolveCircuit(id).gravel);
     for (const [hand, want] of [[['P4', 'P3'], 1], [['P3', 'P3'], 0]] as const) {
@@ -156,7 +162,7 @@ describe('AX-MOD-3 Dust & Gravel', () => {
       rig(r, 0, { pos: g - Number(hand[0][1]) - Number(hand[1][1]), gear: 2, engine: 20, discard: [], hand: [...hand, 'P1', 'P1', 'P1', 'P1', 'P1'] });
       round(r, { 0: P(2, [0, 1]) });
       expect(r.cars[0].pos).toBe(g);
-      expect(r.cars[0].discard.filter((x) => x === STRAIN).length - last(r, 0).corners.reduce((s, x) => s + x.paid, 0)).toBe(want);
+      expect(r.cars[0].discard.filter((x) => x === HEAT).length - last(r, 0).corners.reduce((s, x) => s + x.paid, 0)).toBe(want);
     }
   });
 
@@ -205,11 +211,11 @@ describe('AX-MOD all 16 combinations', () => {
             setPlan(r, c.id, p);
           }
           reveal(r);
-          while (r.phase === 'react') react(r, aiDraft(aiView(r, r.pending!.car), r.pending!.hazard));
+          finishTurns(r);
         }
         expect(r.phase, id).toBe('over');
-        // Card conservation: every card a car owns is somewhere (Strain aside).
-        for (const c of r.cars) expect([...c.hand, ...c.deck, ...c.discard, ...c.play].filter((x) => x !== STRAIN).length).toBeGreaterThanOrEqual(15);
+        // Card conservation: every card a car owns is somewhere (Heat aside).
+        for (const c of r.cars) expect([...c.hand, ...c.deck, ...c.discard, ...c.play].filter((x) => x !== HEAT).length).toBeGreaterThanOrEqual(15);
       }
     });
   }

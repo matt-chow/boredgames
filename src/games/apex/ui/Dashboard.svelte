@@ -1,14 +1,17 @@
 <!--
-  The driver's dashboard: an engine gauge (Strain left), a gated gear lever and the hand fanned below. Choices stay on
-  this device until "Lock in" sends them; nothing moves on the board until the server reveals every plan.
+  The driver's dashboard: an engine gauge (Heat left), a gated gear lever and the hand fanned below. The plan (gear and
+  cards) stays on this device until "Lock in" sends it. In your turn the choices sit beside the hand (AX-TURN-4); the
+  server applies each one and the board follows the confirmed state.
 -->
 <script lang="ts">
   import { settings } from '../../../client/lib/settings.svelte';
-  import { committable, STRAIN } from '../rules/cards';
+  import { committable, HEAT } from '../rules/cards';
   import type { AAction, AView } from '../rules/engine';
+  import type { TurnAct } from '../rules/race';
   import { canDrive, ENGINE, shiftCost } from '../rules/race';
   import Card from './Card.svelte';
   import { estimate } from './plan';
+  import type { Preview } from './Board.svelte';
   import { cardName } from './text';
   import { sounds } from './audio.svelte';
 
@@ -17,37 +20,39 @@
     act,
     busy = false,
     onpreview,
-  }: { view: AView; act: (a: AAction) => Promise<unknown>; busy?: boolean; onpreview?: (p: { from: number; to: number; checks: { m: number; limit: number; cost: number }[] } | null) => void } = $props();
+  }: { view: AView; act: (a: AAction) => Promise<unknown>; busy?: boolean; onpreview?: (p: Preview | null) => void } = $props();
 
   const me = $derived(view.me!);
   const ai = $derived(me.ai);
   const car = $derived(view.race!.cars[me.car]);
   const locked = $derived(me.plan);
   const planning = $derived(view.race!.phase === 'plan' && !locked);
+  const turn = $derived(view.race!.turn);
+  const mine = $derived(!!turn && turn.car === me.car);
+  const o = $derived(turn?.options);
+  const discarding = $derived(mine && turn!.stage === 'discard');
   const maxEngine = $derived(Math.max(ENGINE + (ai.me.fit.engine ?? 0), car.engine, 1));
 
   let gear = $state(1);
   let cards = $state<number[]>([]);
   let discard = $state<number[]>([]);
-  let boost = $state(false);
-  let mode = $state<'commit' | 'discard'>('commit');
   let lastStep = -1;
   $effect(() => {
     if (view.step === lastStep) return;
     lastStep = view.step;
     gear = locked ? locked.gear : Math.min(4, Math.max(1, car.gear));
     cards = locked ? [...locked.cards] : [];
-    discard = locked ? [...locked.discard] : [];
-    boost = locked?.boost ?? false;
-    mode = 'commit';
+    discard = [];
   });
 
   const drive = $derived(canDrive(ai.me));
-  const plan = $derived({ gear, cards: drive ? cards : [], discard, boost: drive && boost });
+  const plan = $derived({ gear, cards: drive ? cards : [] });
   const est = $derived(estimate(ai, plan));
   const engineAfter = $derived(Math.max(0, car.engine - est.pay));
   const ready = $derived(!est.error && planning);
-  $effect(() => onpreview?.(planning || locked ? { from: car.pos, to: car.pos + est.dist, checks: est.checks } : null));
+  // No chosen cards, no ghost: only a clogged hand (which can only limp) or a locked plan has a known destination.
+  const shown = $derived(view.race!.phase === 'plan' && (!!locked || (planning && (cards.length > 0 || !drive))));
+  $effect(() => onpreview?.(shown ? { from: car.pos, to: est.to[0], max: est.to[1], checks: est.checks } : null));
 
   function setGear(g: number) {
     if (!planning) return;
@@ -56,20 +61,14 @@
     sounds.shift();
   }
   function toggle(i: number) {
-    if (!planning) return;
     const c = me.hand[i];
-    if (mode === 'discard') {
+    if (discarding) {
       if (discard.includes(i)) discard = discard.filter((x) => x !== i);
-      else if (c !== STRAIN || (ai.me.fit.dumpStrain ?? 0) > discard.filter((x) => me.hand[x] === STRAIN).length) {
-        discard = [...discard, i];
-        cards = cards.filter((x) => x !== i);
-      }
-    } else if (cards.includes(i)) cards = cards.filter((x) => x !== i);
-    else if (committable(c)) {
-      // A full gear swaps out the earliest card, so a driver can change their mind in one tap.
-      cards = [...(cards.length >= gear ? cards.slice(1) : cards), i];
-      discard = discard.filter((x) => x !== i);
-    }
+      else if (c !== HEAT || (ai.me.fit.dumpStrain ?? 0) > discard.filter((x) => me.hand[x] === HEAT).length) discard = [...discard, i];
+    } else if (!planning) return;
+    else if (cards.includes(i)) cards = cards.filter((x) => x !== i);
+    // A full gear swaps out the earliest card, so a driver can change their mind in one tap.
+    else if (committable(c)) cards = [...(cards.length >= gear ? cards.slice(1) : cards), i];
     sounds.card();
   }
   async function lock() {
@@ -78,6 +77,8 @@
     await act({ type: 'plan', step: view.step, ...plan });
   }
   const retract = () => act({ type: 'retract', step: view.step });
+  const decide = (a: TurnAct) => act({ type: 'turn', step: view.step, act: a });
+  const setManual = (manual: boolean) => act({ type: 'cooling', step: view.step, manual });
 
   // Fanned hand: a gentle arc, chosen cards lifted. Transform only.
   const fan = (i: number, n: number) => {
@@ -91,13 +92,14 @@
     return { x: 60 + Math.cos(a) * 44, y: 62 - Math.sin(a) * 44, deg: -90 + (180 * v) / maxEngine };
   };
   const knob = $derived([[22, 14], [22, 66], [78, 14], [78, 66]][(drive ? gear : 1) - 1]);
-  const strainInHand = $derived(me.hand.filter((c) => c === STRAIN).length);
+  const span = ([a, b]: [number, number]) => (a === b ? `${a}` : `${a}–${b}`);
+  const heatInHand = $derived(me.hand.filter((c) => c === HEAT).length);
 </script>
 
 <section class="dash" aria-label="Your dashboard" class:still={settings.instant}>
   <div class="lay">
   <div class="instruments">
-    <figure class="gauge" aria-label="Engine: {car.engine} of {maxEngine} Strain left">
+    <figure class="gauge" aria-label="Engine: {car.engine} of {maxEngine} Heat left" title="Heat left in the engine. Shifting two gears, boosting and overspeed pay from it; cooling refills it. Paying more than it holds spins you.">
       <svg viewBox="0 0 120 76" aria-hidden="true">
         <path d="M14 62 A46 46 0 0 1 106 62" fill="none" stroke="#1d1a14" stroke-width="12" />
         <path d="M16 62 A44 44 0 0 1 104 62" fill="none" stroke="var(--ax-dial)" stroke-width="8" />
@@ -113,7 +115,7 @@
         </g>
         <circle cx="60" cy="62" r="6" fill="#2a2a27" stroke="var(--ax-chrome)" stroke-width="1.5" />
       </svg>
-      <figcaption><b>Engine {car.engine}</b>{#if planning && est.pay}<span> → {engineAfter}</span>{/if}<span class="sub">Strain in hand {strainInHand} · deck {car.deck} · discard {car.discard}</span></figcaption>
+      <figcaption><b>Engine {car.engine}</b>{#if planning && est.pay}<span> → {engineAfter}</span>{/if}<span class="sub">Heat in hand {heatInHand} · deck {car.deck} · discard {car.discard}</span></figcaption>
     </figure>
 
     <fieldset class="gate" disabled={!planning || !drive}>
@@ -131,7 +133,7 @@
           {@const cost = shiftCost(ai.me, g)}
           <label class="g" class:on={gear === g} class:off={cost == null}>
             <input type="radio" name="ax-gear" value={g} checked={gear === g} disabled={cost == null} onchange={() => setGear(g)} />
-            <span class="gn">{g}</span><span class="gc">{cost == null ? 'out of reach' : cost ? `${cost} Strain` : g === car.gear ? 'now' : 'free'}</span>
+            <span class="gn">{g}</span><span class="gc">{cost == null ? 'out of reach' : cost ? `${cost} Heat` : g === car.gear ? 'now' : 'free'}</span>
           </label>
         {/each}
       </div>
@@ -143,30 +145,42 @@
         <p>No card you can commit: you limp 1 space at speed 1 in gear 1.</p>
       {:else}
         <div class="stats">
-          <p class="row"><span>Speed</span><b>{est.speed}{est.unknown ? ` + ${est.unknown}?` : ''}</b></p>
-          <p class="row"><span>Distance</span><b>{est.dist}{est.unknown ? ` + ${est.unknown}?` : ''}</b></p>
-          <p class="row"><span>Cools</span><b>{est.cool}</b></p>
+          <p class="row" title="Speed counts at corners. A range means Stress or a card turns cards from your deck."><span>Speed</span><b>{span(est.speed)}</b></p>
+          <p class="row" title="Spaces moved before boost, catch-up and slipstream."><span>Distance</span><b>{span(est.dist)}</b></p>
+          <p class="row" title="Heat you can move from hand back to the engine this turn (gear 1: 3, gear 2: 1, plus upgrades)."><span>Cools</span><b>{est.cool}</b></p>
         </div>
-        {#if est.catchup}<p class="note">Catch-up: +1 distance, +1 cooling.</p>{/if}
-        {#each est.checks.filter((c) => c.cost) as c (c.m)}
-          <p class="warn">{c.corner >= 0 ? 'Corner' : 'Pass'} limit {c.limit}: costs {c.cost} Strain{c.cost > engineAfter ? ', you would spin' : ''}</p>
-        {/each}
+        {#if est.risk === 'certain'}<p class="warn">Overspeed: {span(est.cost)} Heat at the corners{est.cost[0] > engineAfter ? ', you would spin' : ''}.</p>
+        {:else if est.risk === 'possible'}<p class="warn">Might overspeed: up to {est.cost[1]} Heat, depending on the cards turned.</p>
+        {:else if cards.length || locked}<p class="note">No overspeed.</p>{/if}
+        {#if est.catchup}<p class="note">Catch-up may be offered in your turn: +1 space, +1 cooling.</p>{/if}
       {/if}
-      <label class="boost" class:on={boost}>
-          <input type="checkbox" bind:checked={boost} disabled={!planning || !drive} />
-          <span>Boost: 1 Strain, turn a card for its value</span>
-        </label>
     </div>
   </div>
 
   <div class="handarea">
   <div class="handbar">
-    <div class="modes" role="group" aria-label="What a tap on a card does">
-      <button class="btn small" class:primary={mode === 'commit'} aria-pressed={mode === 'commit'} disabled={!planning} onclick={() => (mode = 'commit')}>Commit</button>
-      <button class="btn small" class:primary={mode === 'discard'} aria-pressed={mode === 'discard'} disabled={!planning} onclick={() => (mode = 'discard')}>Throw away</button>
-      <span class="count">{cards.length}/{drive ? gear : 0} committed{discard.length ? ` · ${discard.length} thrown away` : ''}</span>
+    <div class="modes">
+      {#if discarding}<span class="count">Tap cards to throw away{discard.length ? `: ${discard.length} chosen` : ''}. Heat stays.</span>
+      {:else if planning}<span class="count">{cards.length}/{drive ? gear : 0} committed</span>{/if}
+      <label class="manual" title="Off: your car cools the most it can by itself. On: you choose."><input type="checkbox" checked={view.manualCool} disabled={busy} onchange={(e) => setManual(e.currentTarget.checked)} /> Cool by hand</label>
     </div>
-    {#if locked}
+    {#if mine && o}
+      <div class="lock turnbar" role="group" aria-label="Your turn">
+        {#if turn!.stage === 'react'}
+          {#if o.cost}<span class:err={o.cost > car.engine}>Corners so far: {o.cost} Heat{o.cost > car.engine ? ', more than your engine holds: you will spin' : ''}.</span>{/if}
+          {#if o.cool}<button class="btn small" disabled={busy} onclick={() => decide({ do: 'cool', n: o.cool })} title="Move {o.cool} Heat from your hand to the engine">Cool {o.cool}</button>{/if}
+          {#if o.boost}<button class="btn small" disabled={busy} onclick={() => decide({ do: 'boost' })} title="Turn the top card of your deck and move its value; speed rises too">Boost{o.freeBoost ? ' (free)' : ' · 1 Heat'}</button>{/if}
+          {#if o.catchup}<button class="btn small" disabled={busy} onclick={() => decide({ do: 'catchup' })} title="+1 space and +1 cooling for the cars at the back">Catch-up{o.catchupCost ? ` · may cost ${o.catchupCost} Heat` : ''}</button>{/if}
+          <button class="btn primary" disabled={busy} onclick={() => decide({ do: 'go' })}>Continue</button>
+        {:else if turn!.stage === 'draft'}
+          <span><b>Slipstream:</b> {turn!.offer!.len} more {turn!.offer!.len === 1 ? 'space' : 'spaces'}{turn!.offer!.hazard ? `, crossing a corner for ${turn!.offer!.hazard} Heat` : ''}.</span>
+          <button class="btn primary" disabled={busy} onclick={() => decide({ do: 'draft', take: true })}>Take it</button>
+          <button class="btn" disabled={busy} onclick={() => decide({ do: 'draft', take: false })}>Decline</button>
+        {:else}
+          <button class="btn primary" disabled={busy} onclick={() => decide({ do: 'finish', discard })}>Finish turn{discard.length ? ` · throw ${discard.length}` : ''}</button>
+        {/if}
+      </div>
+    {:else if locked}
       <div class="lock">
         <span>Plan locked. Waiting for the reveal.</span>
         <button class="btn small" disabled={busy || view.race!.phase !== 'plan'} onclick={retract}>Take back</button>
@@ -188,7 +202,7 @@
           class:thrown={discard.includes(i)}
           aria-pressed={cards.includes(i) || discard.includes(i)}
           aria-label="{cardName(c)}{cards.includes(i) ? ', committed' : discard.includes(i) ? ', thrown away' : ''}"
-          disabled={!planning}
+          disabled={!planning && !discarding}
           onclick={() => toggle(i)}
         >
           <Card card={c} />
@@ -382,11 +396,17 @@
   .err {
     color: #f0a08f;
   }
-  .boost {
+  .manual {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
     min-height: 36px;
+    color: var(--ink-2);
+  }
+  .turnbar {
+    padding: 4px 8px;
+    border: 1px solid var(--sprout);
+    border-radius: 8px;
   }
   .handbar {
     display: flex;

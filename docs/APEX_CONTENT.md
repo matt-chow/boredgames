@@ -38,7 +38,7 @@ An upgrade is either a **card** shuffled into your race deck (it has a value and
 **fitting** that changes your car while you hold it. Three pools, each switchable in the lobby: 24 basic, 24 advanced,
 16 environmental (each tied to a module; filtered out when its module is off). A car holds at most 4 (AX-CH-4).
 
-Card fields: value; speed (when it differs from value); cool (when committed); cost (Strain paid when committed);
+Card fields: value; speed (when it differs from value); cool (when committed); cost (Heat paid when committed);
 grip (+limit at corners this move); draft (+draft distance); flips (turns over cards like Stress).
 
 ### Basic
@@ -67,7 +67,7 @@ grip (+limit at corners this move); draft (+draft distance); flips (turns over c
 | b21 | Tall Gearing | card | value 7, cost 2 |
 | b22 | Kickdown Switch | card | value 2, flips 1 |
 | b23 | Mechanic's Toolkit | fitting | remove one Stress from your deck |
-| b24 | Lucky Mascot | fitting | spins put 1 Strain fewer in hand |
+| b24 | Lucky Mascot | fitting | spins put 1 Heat fewer in hand |
 
 ### Advanced
 | Id | Name | Kind | Effect |
@@ -85,7 +85,7 @@ grip (+limit at corners this move); draft (+draft distance); flips (turns over c
 | a11 | Heat Exchanger | card | value 3, cool 2 |
 | a12 | Magnesium Wheels | card | value 5, cool 1 |
 | a13 | Telemetry Clipboard | fitting | hand size +1 |
-| a14 | Pit Board | fitting | throw away up to 1 Strain a round |
+| a14 | Pit Board | fitting | throw away up to 1 Heat a round |
 | a15 | Works Engine | card | value 7, cost 1 |
 | a16 | Endurance Pistons | fitting | engine +3, hand size −1 |
 | a17 | Spaceframe Chassis | card | value 6, speed 4 |
@@ -93,7 +93,7 @@ grip (+limit at corners this move); draft (+draft distance); flips (turns over c
 | a19 | Trailing Throttle | card | value 2, speed 0, cool 1 |
 | a20 | Cold-Air Box | fitting | gear 3 cools 1 |
 | a21 | Racing-Line Notes | card | value 3, grip 3 |
-| a22 | Factory Mechanic | fitting | spins put no Strain in hand |
+| a22 | Factory Mechanic | fitting | spins put no Heat in hand |
 | a23 | Second Wind | fitting | catch-up +1 distance and +1 cooling |
 | a24 | Rally Launch | fitting | +2 distance in the first round |
 
@@ -111,7 +111,7 @@ grip (+limit at corners this move); draft (+draft distance); flips (turns over c
 | e09 | Short-Stroke Engine | Mountains | fitting | may boost from a tunnel |
 | e10 | Hill-Climb Gearing | Mountains | card | value 5, speed 3 |
 | e11 | Engine Brake | Mountains | fitting | pass overspeed costs 1 less |
-| e12 | Skid Plate | Dust & Gravel | fitting | no gravel Strain |
+| e12 | Skid Plate | Dust & Gravel | fitting | no gravel Heat |
 | e13 | Rally Dampers | Dust & Gravel | fitting | gravel corners cost no extra |
 | e14 | Mud Flaps | Dust & Gravel | fitting | remove the extra Dust Stress |
 | e15 | Knobbly Tyres | Dust & Gravel | card | value 4, grip 1 |
@@ -125,23 +125,23 @@ grip (+limit at corners this move); draft (+draft distance); flips (turns over c
 | velox | Velox Motor Oil | finish without spinning |
 | marlowe | Marlowe Tyre Co. | make 5 overtakes in the race |
 | aurora | Aurora Chronometers | lead at the end of any lap |
-| castellan | Castellan Petroleum | finish with at least 4 Strain in the engine |
+| castellan | Castellan Petroleum | finish with at least 4 Heat in the engine |
 | kestrel | Kestrel Spark Plugs | spend 4 rounds in gear 4 |
-| halden | Halden Assurance | finish never having paid more than 1 Strain at one corner |
+| halden | Halden Assurance | finish never having paid more than 1 Heat at one corner |
 
 ### Press objectives (10, two drawn per race)
 | Id | Headline | Condition |
 |---|---|---|
 | holeshot | Hole Shot | lead after round 1 |
 | charge | Charge of the Day | overtake 3 cars in one round |
-| cool | Cool Customer | cool 6 Strain in the race |
+| cool | Cool Customer | cool 6 Heat in the race |
 | limit | On the Limit | cross 3 corners at exactly their limit |
 | slip | Slipstream Artist | draft 3 times |
 | flat | Flat Out | reach speed 14 in one move |
 | comeback | Comeback Drive | finish 3 or more places above your grid slot |
 | fastest | Fastest Round | the longest distance in one round (ties share) |
 | nerve | Nerves of Steel | boost 3 times |
-| clean | Gentleman Driver | finish without paying Strain at a corner |
+| clean | Gentleman Driver | finish without paying Heat at a corner |
 
 ### Pre-race events (16, one drawn per race when on)
 | Id | Event | Effect | Needs |
@@ -157,11 +157,11 @@ grip (+limit at corners this move); draft (+draft distance); flips (turns over c
 | gala | Sponsor Gala | sponsors pay 2 | sponsors on, Championship |
 | paddock | Tight Paddock | two-gear shifts cost 2 | — |
 | tailwind | Tailwind | draft +1 | — |
-| marshals | Alert Marshals | spins put 1 Strain fewer in hand | — |
+| marshals | Alert Marshals | spins put 1 Heat fewer in hand | — |
 | haze | Heat Haze | gear 1 cools 2 | — |
 | practice | Practice Laps | everyone starts in gear 2 | — |
 | parts | Parts Lorry | the next draft reveals 2 more | Championship, not the last race |
-| duststorm | Dust Storm | gravel Strain from speed 5 | Dust & Gravel |
+| duststorm | Dust Storm | gravel Heat from speed 5 | Dust & Gravel |
 
 Incompatible content is filtered before the draw: an event whose need is missing is never drawn, and an upgrade whose
 module is off is never revealed.
@@ -179,7 +179,7 @@ module is off is never revealed.
 
 Each of the three sectors also draws a modifier: none (weight 4), Wet Patch (limits in the sector −1, min 1; weight 1),
 Tailwind (draft +1 when the draft starts in the sector; weight 1). Under Storm every sector draws Flooded with weight 2
-as well: ending a move there at speed 8 or more puts 1 Strain from the pit stock in your discard.
+as well: ending a move there at speed 8 or more puts 1 Heat from the pit stock in your discard.
 
 ## 5. Racing Rivals (8)
 
@@ -192,6 +192,6 @@ as well: ending a move there at speed 8 or more puts 1 Strain from the pit stock
 | delacroix | Marguerite Delacroix | engine +2 |
 | bellini | Sandro Bellini | boost turns over two cards |
 | vanaalst | Pieter van Aalst | ignores the rain penalty |
-| mokoena | Thandiwe Mokoena | no gravel Strain |
+| mokoena | Thandiwe Mokoena | no gravel Heat |
 
 Without the module, computer cars are numbered works entries with no ability.

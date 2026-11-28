@@ -3,12 +3,13 @@
   import { artOf } from '../rules/cards';
   import './theme.css';
 
-  const items = ['cross', 'bendL', 'miner', 'survey', 'saboteur', 'reward3', 'deadCross'];
+  /** One tunnel, entrance to gold, laid card by card. */
+  const items = ['entrance', 'straightH', 'cross', 'straightH', 'gold'];
 </script>
 
 <!-- data-fan keeps the theme's tokens on these cards and off the page around them. -->
 <div data-game-theme="mines" data-fan>
-  <CardFan {items} cardWidth={112}>
+  <CardFan {items} cardWidth={112} motion="path">
     {#snippet card(k)}
       <img class="ms-fan" src={artOf(k)} alt="" width="112" height="168" loading="lazy" />
     {/snippet}

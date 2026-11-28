@@ -4,7 +4,7 @@
 -->
 <script lang="ts" module>
   import type { Fit } from '../rules/content/upgrades';
-  import type { Modules } from '../rules/race';
+  import type { Modules, TurnEvent } from '../rules/race';
 
   /** What the board needs to know about a race: the live view and a replay frame both fit. */
   export interface BoardRace {
@@ -17,11 +17,13 @@
     sectors: string[];
     cornerDelta: number[];
     cars: { id: number; name: string; number: number; livery: number; pos: number; lane: number; spun: boolean; done: unknown }[];
-    last: { car: number; from: number; to: number; spun: boolean; corners: { at: number; limit: number; paid: number }[] }[];
+    last: { car: number; from: number; to: number; spun: boolean; corners: { at: number; limit: number; paid: number }[]; events?: TurnEvent[] }[];
   }
+  /** The dashboard's plan: it lands between `to` and `max` (the same when no card is turned). */
   export interface Preview {
     from: number;
     to: number;
+    max: number;
     checks: { m: number; limit: number; cost: number }[];
   }
 </script>
@@ -32,6 +34,7 @@
   import { LANE_W, lanePos } from '../rules/geometry';
   import { cornerLimit, spaceOf } from '../rules/race';
   import { livery, paint, propAsset } from './assets';
+  import { prefs } from './audio.svelte';
   import { sectorInfo } from './text';
   import { boardTrack } from './track';
 
@@ -105,10 +108,25 @@
   );
   const start = $derived(T.at(0));
   const grid = $derived(race.cars.filter((c) => c.pos < 0).map((c) => ({ id: c.id, p: poseOf(c.pos, c.lane) })));
-  const cars = $derived(race.cars.filter((c) => !c.done).map((c) => ({ c, p: poseOf(c.pos, c.lane), l: livery(c.livery) })));
+  // Finished cars stay where they stopped past the line, faded; they no longer hold a space (AX-FIN-5).
+  const cars = $derived(race.cars.map((c) => ({ c, p: poseOf(c.pos, c.lane), l: livery(c.livery) })));
   const trails = $derived(race.last.filter((r) => r.to > r.from));
   const previewPath = $derived(preview && preview.to > preview.from ? T.path(preview.from, preview.to) : null);
+  const rangePath = $derived(preview && preview.max > preview.to ? T.path(preview.to, preview.max) : null);
   const ghost = $derived(preview && preview.to > preview.from ? poseOf(preview.to, 0) : null);
+  const ghostMax = $derived(preview && preview.max > preview.to ? poseOf(preview.max, 0) : null);
+
+  const SIGN: Record<string, [string, string]> = { wet: ['≈', 'limits −1'], tail: ['»', 'draft +1'], flood: ['≋', '8+: Heat'] };
+  // Roadside billboards: one per changed corner and per sector with a modifier, set back beyond the roundels.
+  const boards = $derived([
+    ...corners.filter((k) => k.limit !== k.base).map((k) => ({ key: `c${k.i}`, at: k.at, icon: k.limit > k.base ? '▲' : '▼', text: `${k.limit > k.base ? '+' : ''}${k.limit - k.base}`, title: `${k.name}: limit ${k.limit}, printed ${k.base}` })),
+    ...sectorRuns.filter((s) => s.mod !== 'none' && s.runs.length).map((s) => ({ key: `s${s.k}`, at: s.runs[0][0], icon: SIGN[s.mod]?.[0] ?? '!', text: SIGN[s.mod]?.[1] ?? '', title: `Sector ${s.k + 1}: ${sectorInfo(s.mod)?.name}, ${sectorInfo(s.mod)?.text}` })),
+  ].map((b) => {
+    const g = geo.spaces[((b.at % n) + n) % n];
+    const side = bends[b.at % n] > 0 ? -1 : 1;
+    const off = side * (ROAD / 2 + 62);
+    return { ...b, x: g.x - Math.sin(g.a) * off, y: g.y + Math.cos(g.a) * off };
+  }));
 
   // The view frames the circuit and its dressing, not the whole poster page, so the road fills the box.
   const vb = $derived.by(() => {
@@ -224,37 +242,47 @@
     els.set(id, node);
     return { destroy: () => els.delete(id) };
   }
-  let played = new Set<string>();
+  /** The stops of a car's turn: where it started, then every move, boost, catch-up, slipstream and spin. */
+  const stops = (r: BoardRace['last'][number]) =>
+    r.events
+      ? [{ to: r.from, spin: false }, ...r.events.flatMap((e) => ('to' in e ? [{ to: e.to, spin: e.k === 'spin' }] : []))]
+      : [{ to: r.from, spin: false }, { to: r.to, spin: r.spun }];
+  // Per car and round, how many stops the board has already shown; and when the queue of moves runs dry.
+  let shown = new Map<string, number>();
   let seenRace = '';
+  let queueEnd = 0;
   $effect(() => {
     const key = `${race.circuit}:${race.laps}:${race.cars.length}`;
-    const sigs = trails.map((r) => `${race.round}:${r.car}:${r.from}:${r.to}`);
-    if (key !== seenRace) {
-      // A new race or the first look: show where the cars are, don't replay how they got there.
-      seenRace = key;
-      played = new Set(sigs);
-      return;
-    }
-    if (settings.instant) {
-      played = new Set(sigs);
-      return;
-    }
-    let delay = 0;
-    trails.forEach((r, i) => {
-      if (played.has(sigs[i])) return;
-      played.add(sigs[i]);
+    const recs = race.last.map((r) => ({ r, k: `${race.round}:${r.car}`, s: stops(r) }));
+    const skip = key !== seenRace || settings.instant || prefs.skipAnim;
+    // A new race or the first look: show where the cars are, don't replay how they got there.
+    seenRace = key;
+    const now = performance.now();
+    for (const { r, k, s } of recs) {
+      const seen = shown.get(k) ?? (skip ? 0 : 1);
+      shown.set(k, s.length);
+      if (skip || seen >= s.length) continue;
       const el = els.get(r.car);
       const car = race.cars.find((c) => c.id === r.car);
-      if (!el || !car) return;
-      const steps = Math.max(2, Math.ceil((r.to - r.from) * 2));
-      const a0 = T.arc(r.from), a1 = T.arc(r.to);
+      if (!el || !car) continue;
+      // shortcut: a decision sent mid-animation snaps the earlier leg to its end; queuing legs per car would avoid it.
+      for (const a of el.getAnimations()) a.finish();
       const frames: Keyframe[] = [];
-      for (let k = 0; k < steps; k++) frames.push({ transform: tf(T.at(a0 + ((a1 - a0) * k) / steps)) });
-      frames.push({ transform: tf(poseOf(car.pos, car.lane), r.spun ? 35 : 0) });
-      const duration = Math.min(1100, 260 + (r.to - r.from) * 45);
+      let dist = 0;
+      for (let i = Math.max(1, seen); i < s.length; i++) {
+        const a0 = T.arc(s[i - 1].to), a1 = T.arc(s[i].to);
+        const steps = Math.max(2, Math.ceil(Math.abs(s[i].to - s[i - 1].to) * 2));
+        for (let q = 0; q < steps; q++) frames.push({ transform: tf(T.at(a0 + ((a1 - a0) * q) / steps), s[i].spin ? (35 * q) / steps : 0) });
+        dist += Math.abs(s[i].to - s[i - 1].to);
+      }
+      const paid = r.corners.some((c) => c.paid) && !r.spun;
+      frames.push({ transform: tf(poseOf(car.pos, car.lane), car.spun ? 35 : paid ? -6 : 0) });
+      if (paid) frames.push({ transform: tf(poseOf(car.pos, car.lane)) }); // overspeed paid: a small skid
+      const duration = Math.min(1600, 300 + dist * 50) / prefs.pace;
+      const delay = Math.max(0, queueEnd - now);
       el.animate(frames, { duration, delay, easing: 'cubic-bezier(.45,.05,.3,1)', fill: 'backwards' });
-      delay += Math.min(420, duration * 0.45);
-    });
+      queueEnd = now + delay + duration + 120 / prefs.pace;
+    }
   });
 </script>
 
@@ -271,6 +299,7 @@
     onpointermove={move}
     onpointerup={up}
     onpointercancel={up}
+    ondragstart={(e) => e.preventDefault()}
     onkeydown={key}
   >
     <g style="transform: translate({cam.x}px, {cam.y}px) scale({cam.k})" class="cam">
@@ -335,6 +364,8 @@
 
       {#if previewPath}
         <path d={previewPath} stroke="var(--sprout)" stroke-width="5" stroke-dasharray="10 7" fill="none" stroke-linecap="round" class="plan" />
+        {#if rangePath}<path d={rangePath} stroke="var(--sprout)" stroke-opacity="0.28" stroke-width={ROAD - 6} fill="none" class="range"><title>Where you could stop: it depends on the cards turned</title></path>{/if}
+        {#if ghostMax}<use href="#ax-car" x="-15" y="-7" width="30" height="14" style="transform: {tf(ghostMax)}; color: var(--sprout)" opacity="0.25" />{/if}
         {#if ghost}<use href="#ax-car" x="-15" y="-7" width="30" height="14" style="transform: {tf(ghost)}; color: var(--sprout)" opacity="0.45" />{/if}
         {#each preview!.checks as ck (ck.m)}
           {@const p = poseOf(ck.m, 0)}
@@ -344,6 +375,16 @@
           </g>
         {/each}
       {/if}
+
+      {#each boards as b (b.key)}
+        <g transform="translate({b.x.toFixed(1)} {b.y.toFixed(1)})" class="billboard">
+          <path d="M-1.5 4 V16 M1.5 4 V16" stroke="var(--ax-paper-ink)" stroke-width="1.6" />
+          <rect x="-30" y="-12" width="60" height="18" rx="2" fill="var(--ax-paper)" stroke="var(--ax-paper-ink)" stroke-width="1.5" />
+          <text x="-22" y="1.5" class="num small">{b.icon}</text>
+          <text x="6" y="1.5" class="num small">{b.text}</text>
+          <title>{b.title}</title>
+        </g>
+      {/each}
 
       {#each corners as k (k.i)}
         <g transform="translate({k.x.toFixed(1)} {k.y.toFixed(1)})" class="corner">
@@ -356,7 +397,7 @@
 
       {#each cars as { c, p, l } (c.id)}
         {@const art = paint(`car.${((c.livery % 8) + 8) % 8}`)}
-        <g class="car" class:mine={c.id === mine} style="transform: {tf(p, c.spun ? 35 : 0)}" use:carEl={c.id}>
+        <g class="car" class:mine={c.id === mine} opacity={c.done ? 0.6 : 1} style="transform: {tf(p, c.spun ? 35 : 0)}" use:carEl={c.id}>
           {#if c.id === mine}<ellipse rx="21" ry="13" fill="none" stroke="var(--sprout)" stroke-width="3" />{/if}
           <ellipse cx="3" cy="4" rx="15" ry="7" fill="#000" opacity="0.28" />
           {#if art}
@@ -367,7 +408,7 @@
           {:else}
             <use href="#ax-car" x="-15" y="-7" width="30" height="14" style="color: {l.body}; --stripe: {l.stripe}; --roundel: {l.roundel}" />
           {/if}
-          <title>No. {c.number}, {c.name}{c.spun ? ', spun' : ''}</title>
+          <title>No. {c.number}, {c.name}{c.spun ? ', spun' : ''}{c.done ? ', finished' : ''}</title>
         </g>
       {/each}
 
@@ -405,6 +446,10 @@
     width: 100%;
     height: 100%;
     touch-action: none;
+    /* Panning must not select labels or drag the painted images off the board. */
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
     cursor: grab;
     outline: none;
   }

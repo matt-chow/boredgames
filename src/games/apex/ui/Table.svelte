@@ -18,7 +18,7 @@
   import Dashboard from './Dashboard.svelte';
   import Replay from './Replay.svelte';
   import Spot from './Spot.svelte';
-  import { circuitName, eventInfo, fitText, MODE_NAMES, ordinal, pressInfo, rivalInfo, sectorInfo, sponsorInfo, upgradeName, weatherInfo, cardText, isPartCard } from './text';
+  import { circuitName, eventInfo, fitText, MODE_NAMES, ordinal, pressInfo, rivalInfo, sectorInfo, sponsorInfo, upgradeName, weatherInfo, cardText, isPartCard, turnText } from './text';
   import './theme.css';
 
   let { conn, room }: GameUiProps = $props();
@@ -31,7 +31,8 @@
 
   async function act(a: AAction) {
     const r = await conn.act(a);
-    if (!r.ok) toasts.push(r.error ?? 'Not allowed.', 'error');
+    // A stale action raced a table that already moved on; the fresh view is on its way, so there is nothing to report.
+    if (!r.ok && r.code !== 'stale') toasts.push(r.error ?? 'Not allowed.', 'error');
     return r;
   }
 
@@ -54,7 +55,7 @@
   const away = $derived(room.seats.filter((s) => !s.connected && !s.bot && !view.autopilot.includes(s.seat)));
   const mayHandOver = $derived(seat === 0 || (seat != null && !room.seats[0]?.connected));
   const onAutopilot = $derived(seat != null && view.autopilot.includes(seat));
-  const reacting = $derived(race?.phase === 'react' && me && race.pending?.car === me.car);
+  const myTurn = $derived(race?.phase === 'turn' && !!me && race.turn?.car === me.car);
 
   let now = $state(Date.now());
   const clock = setInterval(() => (now = Date.now()), 250);
@@ -70,12 +71,16 @@
       return d && d.order[0] === seat ? 'Your pick in the upgrade draft.' : `Upgrade draft: ${d ? driverName(d.order[0]) : ''} picks.`;
     }
     if (!race) return '';
-    if (race.phase === 'react') return reacting ? 'Your car can draft. Decide.' : `${nameOf(race.cars[race.pending!.car])} is deciding whether to draft.`;
+    if (race.phase === 'turn') {
+      const t = race.turn!;
+      if (!myTurn) return `${nameOf(race.cars[t.car])} is driving.`;
+      return t.stage === 'react' ? 'Your move: cool, boost or take catch-up, then Continue.' : t.stage === 'draft' ? 'Slipstream on offer: take it or decline.' : 'Throw away any cards you like, then Finish turn.';
+    }
     if (me && !me.plan) return onAutopilot ? 'The computer is driving your car.' : 'Your move: choose a gear and commit cards.';
     if (waiting.length) return `Waiting for ${waiting.map(nameOf).join(', ')}.`;
     return 'Revealing…';
   });
-  const myMove = $derived((me && !me.plan && race?.phase === 'plan') || reacting || (view.phase === 'draft' && view.season.draft?.order[0] === seat));
+  const myMove = $derived((me && !me.plan && race?.phase === 'plan') || myTurn || (view.phase === 'draft' && view.season.draft?.order[0] === seat));
 
   let preview = $state<Preview | null>(null);
 
@@ -144,6 +149,8 @@
         <label><input type="checkbox" bind:checked={prefs.sfx} /> Sound effects</label>
         <label class="range">Effects volume <input type="range" min="0" max="1" step="0.05" bind:value={prefs.sfxVol} disabled={!prefs.sfx} /></label>
         <label><input type="checkbox" bind:checked={prefs.skipIntro} /> Skip the grid introduction and podium</label>
+        <label><input type="checkbox" bind:checked={prefs.skipAnim} /> Skip car animations</label>
+        <label class="range">Animation speed <input type="range" min="0.5" max="2" step="0.25" bind:value={prefs.pace} disabled={prefs.skipAnim || settings.instant} /></label>
       </div>
     </SettingsMenu>
   </header>
@@ -174,7 +181,7 @@
   <div class="main">
     {#if race}
       <section class="boardwrap" aria-label="Circuit">
-        <Board {race} mine={me?.car ?? null} fit={me?.ai.me.fit ?? {}} preview={myMove || me?.plan ? preview : null} label="{circuitName(race.circuit)}, lap {leaderLap} of {race.laps}" />
+        <Board {race} mine={race.cars.find((c) => c.seat === seat && seat != null)?.id ?? null} fit={me?.ai.me.fit ?? {}} preview={myMove || me?.plan ? preview : null} label="{circuitName(race.circuit)}, lap {leaderLap} of {race.laps}" />
         {#if showIntro}
           <div class="sheet" role="dialog" aria-modal="true" aria-label="Grid introduction">
             <div class="poster">
@@ -192,16 +199,6 @@
 
     {#if me && race && view.phase === 'race'}
       <div class="dashwrap">
-        {#if reacting}
-          <div class="react" role="alertdialog" aria-label="Draft decision">
-            <p>
-              <b>Slipstream.</b> You can draft {race.pending!.len} more {race.pending!.len === 1 ? 'space' : 'spaces'}.
-              {race.pending!.hazard ? `It crosses a corner and costs ${race.pending!.hazard} Strain.` : ''}
-            </p>
-            <button class="btn primary" disabled={conn.busy} onclick={() => act({ type: 'react', step: view.step, take: true })}>Draft</button>
-            <button class="btn" disabled={conn.busy} onclick={() => act({ type: 'react', step: view.step, take: false })}>Stay put</button>
-          </div>
-        {/if}
         <Dashboard {view} {act} busy={conn.busy} onpreview={(p) => (preview = p)} />
       </div>
     {/if}
@@ -228,6 +225,14 @@
             {/each}
           </ol>
         </section>
+        {#if race.last.length}
+          <details class="panel history" open={wide.current}>
+            <summary><h3>Round {race.round}</h3></summary>
+            <ol class="plain">
+              {#each race.last as r (r.car)}<li><b>{nameOf(race.cars[r.car])}</b>: {turnText(r)}</li>{/each}
+            </ol>
+          </details>
+        {/if}
         <section class="panel">
           <h3>Conditions</h3>
           <p class="lined"><Spot id="weather.{race.weather}" /><span><b>{weather?.name}</b>: {weather?.text}</span></p>
@@ -540,20 +545,6 @@
   }
   .ok.on {
     color: var(--sprout);
-  }
-  .react {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 12px;
-    border-radius: var(--r-md, 8px);
-    border: 2px solid var(--sprout);
-    background: var(--ground-2);
-  }
-  .react p {
-    flex: 1;
-    margin: 0;
   }
   .sheet {
     display: grid;

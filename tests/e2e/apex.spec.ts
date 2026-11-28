@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { DESKTOP, newPlayer, PHONE, type Player } from './helpers';
+import { DESKTOP, newPlayer, PHONE, type Player, openGame } from './helpers';
 
 const shot = async (p: Player, name: string) => {
   if (process.env.AX_SHOTS) await p.page.screenshot({ path: `${process.env.AX_SHOTS}/${name}.png` });
@@ -8,7 +8,7 @@ const shot = async (p: Player, name: string) => {
 async function openTable(players: Player[], configure?: (page: Page) => Promise<void>) {
   const [a, ...rest] = players;
   await a.page.goto('/');
-  await a.page.getByRole('button', { name: /^Open Table: Apex/ }).click();
+  await openGame(a.page, 'Apex ’66');
   await a.page.fill('#name', a.name);
   await a.page.getByRole('button', { name: 'Create room' }).click();
   await a.page.waitForURL(/\/r\/[A-Z0-9]{6}$/);
@@ -32,14 +32,18 @@ const laps1 = async (page: Page) => {
   await expect(page.getByRole('combobox', { name: /^Laps/ })).toHaveValue('1');
 };
 
-/** Lock a plan through the dashboard: the highest gear that can be reached, then cards in hand order until legal. */
+/**
+ * Play your part of a round through the dashboard. In your turn: take a slipstream, else Continue, else Finish turn.
+ * Otherwise lock a plan: the highest gear that can be reached, then cards in hand order until legal.
+ */
 async function drive(page: Page): Promise<boolean> {
   const dash = page.getByRole('region', { name: 'Your dashboard' });
-  if (await page.getByRole('alertdialog', { name: 'Draft decision' }).isVisible()) {
-    const take = page.getByRole('button', { name: 'Draft', exact: true });
-    // The prompt may close or be busy between checks: never wait on it for long.
-    if (!(await take.isEnabled({ timeout: 1000 }).catch(() => false))) return false;
-    await take.click({ timeout: 2000 }).catch(() => {});
+  const turn = dash.getByRole('group', { name: 'Your turn' });
+  if (await turn.isVisible()) {
+    const next = turn.getByRole('button', { name: /^(Take it|Continue|Finish turn)/ }).first();
+    // The bar may change or be busy between checks: never wait on it for long.
+    if (!(await next.isEnabled({ timeout: 1000 }).catch(() => false))) return false;
+    await next.click({ timeout: 2000 }).catch(() => {});
     return true;
   }
   const lock = dash.getByRole('button', { name: /^Lock in/ });
@@ -63,9 +67,9 @@ async function drive(page: Page): Promise<boolean> {
   if (!ok) return false;
   const before = await page.locator('.title .sub').textContent();
   if (!(await lock.click({ timeout: 5000 }).then(() => true, () => false))) return false;
-  // Either the plan waits for the others, or (against computer cars only) the round is revealed at once.
+  // Either the plan waits for the others, or (against computer cars only) the turns begin at once.
   await expect
-    .poll(async () => (await dash.getByRole('button', { name: 'Take back' }).isVisible()) || (await page.locator('.title .sub').textContent()) !== before || (await page.getByRole('heading', { name: 'Results' }).isVisible()))
+    .poll(async () => (await dash.getByRole('button', { name: 'Take back' }).isVisible()) || (await turn.isVisible()) || /is driving/.test((await page.locator('.status').textContent()) ?? '') || (await page.locator('.title .sub').textContent()) !== before || (await page.getByRole('heading', { name: 'Results' }).isVisible()))
     .toBe(true);
   return true;
 }

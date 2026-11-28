@@ -3,7 +3,7 @@
   read only the driver's view, so the coach knows nothing the driver does not.
 -->
 <script lang="ts">
-  import { STRAIN, STRESS } from '../rules/cards';
+  import { HEAT, STRESS } from '../rules/cards';
   import type { AView } from '../rules/engine';
   import Spot from './Spot.svelte';
 
@@ -12,21 +12,21 @@
   interface Lesson { id: string; title: string; text: string; at: string; when: (v: AView) => boolean }
   const LESSONS: Lesson[] = [
     { id: 'gear', title: 'Gears', at: 'gears', when: (v) => v.race!.round === 1,
-      text: 'Your gear is how many cards you commit this round. Gear 1 commits one card, gear 4 commits four. Going up or down one gear is free; jumping two costs 1 Strain. Gear 1 cools 3 Strain and gear 2 cools 1, so slow rounds rest the engine.' },
+      text: 'Your gear is how many cards you commit this round. Gear 1 commits one card, gear 4 commits four. Going up or down one gear is free; jumping two costs 1 Heat. Gear 1 cools 3 Heat and gear 2 cools 1, so slow rounds rest the engine.' },
     { id: 'cards', title: 'Speed is the cards', at: 'gears', when: (v) => v.race!.round === 1,
       text: 'Add up the committed cards: that is your speed and how far you move. Tap cards to commit them, then press Lock in. The other drivers plan at the same time, and nobody sees anything until everyone has locked in.' },
     { id: 'corner', title: 'Corners', at: 'corners', when: (v) => !!v.me && v.race!.last.length > 0,
-      text: 'Only the round roundels are corners. Each shows a speed limit. Cross one faster than its limit and you pay the difference in Strain. Bends without a roundel are free, whatever they look like. The dashed line on the board shows your move and what each corner would cost.' },
-    { id: 'strain', title: 'Strain', at: 'strain', when: (v) => !!v.me?.hand.includes(STRAIN),
-      text: 'Paying Strain moves a card from your engine into your discard. It comes back into your hand later and clogs it, because Strain cannot be committed. Cooling (gear 1 cools 3, gear 2 cools 1, Coast adds 1) sends Strain from your hand back to the engine.' },
+      text: 'Only the round roundels are corners. Each shows a speed limit. Cross one faster than its limit and you pay the difference in Heat. Bends without a roundel are free, whatever they look like. The dashed line on the board shows your move and what each corner would cost.' },
+    { id: 'heat', title: 'Heat', at: 'heat', when: (v) => !!v.me?.hand.includes(HEAT),
+      text: 'Paying Heat moves a card from your engine into your discard. It comes back into your hand later and clogs it, because Heat cannot be committed. Cooling (gear 1 cools 3, gear 2 cools 1, Coast adds 1) sends Heat from your hand back to the engine.' },
     { id: 'spin', title: 'Spins', at: 'corners', when: (v) => v.race!.cars.some((c) => c.spun),
-      text: 'A car that owes more Strain than its engine holds spins. It stops before that corner, takes 1 or 2 extra Strain straight into its hand and starts again from gear 1. Keep some Strain in the engine before a fast corner.' },
+      text: 'A car that owes more Heat than its engine holds spins. It stops before that corner, takes 1 or 2 Stress straight into its hand and starts again from gear 1. Keep some Heat in the engine before a fast corner.' },
     { id: 'stress', title: 'Stress cards', at: 'cards', when: (v) => !!v.me?.hand.includes(STRESS),
-      text: 'A Stress card is a gamble: when it is revealed, cards are turned from the top of your deck until one with a pace value appears, and that value counts. Every turned card, Strain included, goes to your discard.' },
+      text: 'A Stress card is a gamble: when it is revealed, cards are turned from the top of your deck until one with a pace value appears, and that value counts. Every turned card, Heat included, goes to your discard.' },
     { id: 'draft', title: 'Slipstream', at: 'draft', when: (v) => v.race!.last.some((r) => r.drafted),
       text: 'Ending a move level with another car, or right behind it, lets you draft 2 more spaces. It is taken for you unless it would carry you too fast through a corner; then the game asks.' },
     { id: 'catch', title: 'Catch-up', at: 'catchup', when: (v) => v.race!.last.some((r) => r.catchup),
-      text: 'The last car each round (the last two with 5 or more cars) moves one extra space and cools one extra Strain, so nobody is left behind for long.' },
+      text: 'The last car each round (the last two with 5 or more cars) may take catch-up on its turn: one more space and one more cooling, so nobody is left behind for long.' },
   ];
 
   let seen = $state<string[]>([]);

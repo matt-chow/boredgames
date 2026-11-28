@@ -32,7 +32,7 @@ export async function newPlayer(browser: Browser, name: string, opts: BrowserCon
 
 export async function createRoom(p: Player): Promise<string> {
   await p.page.goto('/');
-  await p.page.getByRole('button', { name: /^Open Table: Bohnanza/ }).click();
+  await openGame(p.page, 'Bohnanza');
   await p.page.fill('#name', p.name);
   await p.page.getByRole('button', { name: 'Create room' }).click();
   await p.page.waitForURL(/\/r\/[A-Z0-9]{6}$/);
@@ -139,4 +139,15 @@ export async function rawSend(p: Player, code: string, msgs: Record<string, unkn
       }),
     { code, msgs },
   );
+}
+
+/** Turn the home wheel to a game and press its Open Table: rows only focus, so the game must be in the centre first. */
+export async function openGame(page: Page, game: string) {
+  // The rail's dots are visually hidden on narrow screens but stay in the accessibility tree.
+  await page.getByRole('button', { name: `Show ${game}`, exact: true }).dispatchEvent('click');
+  const button = page.getByRole('button', { name: `Open Table: ${game}`, exact: true });
+  await expect(async () => {
+    await button.click({ timeout: 2_000 });
+    await expect(page.getByRole('dialog', { name: game })).toBeVisible({ timeout: 1_000 });
+  }).toPass();
 }

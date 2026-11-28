@@ -18,7 +18,7 @@ export interface Fit {
   /** +limit at every corner; +limit at corners of limit 3 or less. */
   grip: number;
   gripTight: number;
-  /** Change to the Strain cost of a two-gear shift (base 1); `shift3` makes three-gear shifts legal at that cost. */
+  /** Change to the Heat cost of a two-gear shift (base 1); `shift3` makes three-gear shifts legal at that cost. */
   shift2: number;
   shift3: number;
   freeBoostPerLap: boolean;
@@ -27,9 +27,9 @@ export interface Fit {
   catchCool: number;
   /** Stress cards taken out of the starting deck. */
   removeStress: number;
-  /** Strain fewer put in hand by a spin. */
+  /** Stress fewer put in hand by a spin (AX-SPN-2). */
   spinRelief: number;
-  /** Strain cards that may be thrown away from hand each round. */
+  /** Heat cards that may be thrown away from hand each round. */
   dumpStrain: number;
   /** Extra distance in the first round. */
   launch: number;

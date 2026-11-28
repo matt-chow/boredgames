@@ -54,7 +54,7 @@ proportions, heavy grunge, clip art, neon colours.
 
 | Family | Count | Template (what stays fixed) | Shipped as |
 |---|---|---|---|
-| Driving cards | 8 | Edge-to-edge 4:3 scene, low horizon, one car small to medium. Pace 1→5 runs from a calm roll-out to flat out with speed bands; Coast is petrol-blue cooling air; Stress is a twitch at the limit; Strain is a hot engine in red. | 480×360 WebP in the card's art window |
+| Driving cards | 8 | Edge-to-edge 4:3 scene, low horizon, one car small to medium. Pace 1→5 runs from a calm roll-out to flat out with speed bands; Coast is petrol-blue cooling air; Stress is a twitch at the limit; Heat is a hot engine in red. | 480×360 WebP in the card's art window |
 | Upgrades | 63 | Parts-catalogue object, three-quarter view from slightly above, centred at two thirds of the frame, flat ivory ground with a small flat shadow. Related parts share motifs (tyres, radiators, brakes) but each is its own object. | 320×320 WebP |
 | Paddock | 46 | Square edge-to-edge spot scene: 6 sponsors (product vignettes, no lettering), 10 press objectives, 16 events, 6 weathers, 8 rival portraits sharing one head-and-shoulders framing. | 320×320 WebP |
 | Circuit posters | 8 | Portrait 2:3; top quarter empty sky for the title; landmark at the upper third; signature bend from lower left to centre right; one car in the lower third. | 600×900 WebP |

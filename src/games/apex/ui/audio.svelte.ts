@@ -8,10 +8,14 @@ export interface ApexPrefs {
   sfxVol: number;
   /** Skip the grid introduction and the podium flourish. */
   skipIntro: boolean;
+  /** Board motion: 0.5 is slow, 1 normal, 2 fast. */
+  pace: number;
+  /** Cars jump to where they stopped; the turn history still says what happened. */
+  skipAnim: boolean;
 }
 
 const KEY = 'apex.prefs';
-export const prefs = $state<ApexPrefs>({ sfx: false, sfxVol: 0.6, skipIntro: false, ...load<Partial<ApexPrefs>>(KEY, {}) });
+export const prefs = $state<ApexPrefs>({ sfx: false, sfxVol: 0.6, skipIntro: false, pace: 1, skipAnim: false, ...load<Partial<ApexPrefs>>(KEY, {}) });
 $effect.root(() => {
   $effect(() => save(KEY, $state.snapshot(prefs)));
 });

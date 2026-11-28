@@ -1,15 +1,15 @@
 <!-- One race card, printed like a 1960s programme insert: a big stencil numeral and a plain line of what it does. -->
 <script lang="ts">
-  import { cardFx, COAST, STRAIN, STRESS } from '../rules/cards';
+  import { cardFx, COAST, HEAT, STRESS } from '../rules/cards';
   import { paint } from './assets';
   import { cardName, cardText } from './text';
 
   let { card, size = 'md' }: { card: string; size?: 'sm' | 'md' } = $props();
   const fx = $derived(cardFx(card));
-  const kind = $derived(card === STRAIN ? 'strain' : card === STRESS ? 'stress' : card === COAST ? 'coast' : /^P\d$/.test(card) ? 'pace' : 'part');
+  const kind = $derived(card === HEAT ? 'heat' : card === STRESS ? 'stress' : card === COAST ? 'coast' : /^P\d$/.test(card) ? 'pace' : 'part');
   // The painting fills a window under the band; the numeral moves to a printed index tab over its corner.
   const art = $derived(paint(kind === 'part' ? `part.${card}` : `card.${card}`));
-  const big = $derived(card === STRAIN ? '!' : card === STRESS ? '?' : String(fx?.value ?? ''));
+  const big = $derived(card === HEAT ? '!' : card === STRESS ? '?' : String(fx?.value ?? ''));
 </script>
 
 <span class="card {kind} {size}" class:art title="{cardName(card)}: {cardText(card)}">
@@ -105,7 +105,7 @@
   .part .band {
     background: repeating-linear-gradient(90deg, var(--ax-blue) 0 8px, var(--ax-paper) 8px 12px);
   }
-  .strain {
+  .heat {
     background: repeating-linear-gradient(-45deg, #e8d5c4 0 6px, #efe2d2 6px 12px);
   }
   .pic {
@@ -131,10 +131,10 @@
   .art .nm {
     margin-top: calc(var(--w) * 0.5625 + 4px);
   }
-  .strain .band {
+  .heat .band {
     background: var(--ax-red);
   }
-  .strain .big {
+  .heat .big {
     color: var(--ax-red);
   }
 </style>

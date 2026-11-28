@@ -14,22 +14,22 @@ export const SPONSORS: Named[] = [
   { id: 'velox', name: 'Velox Motor Oil', text: 'Finish without spinning.' },
   { id: 'marlowe', name: 'Marlowe Tyre Co.', text: 'Make 5 overtakes in the race.' },
   { id: 'aurora', name: 'Aurora Chronometers', text: 'Lead at the end of any lap.' },
-  { id: 'castellan', name: 'Castellan Petroleum', text: 'Finish with at least 4 Strain in the engine.' },
+  { id: 'castellan', name: 'Castellan Petroleum', text: 'Finish with at least 4 Heat in the engine.' },
   { id: 'kestrel', name: 'Kestrel Spark Plugs', text: 'Spend 4 rounds in gear 4.' },
-  { id: 'halden', name: 'Halden Assurance', text: 'Never pay more than 1 Strain at one corner.' },
+  { id: 'halden', name: 'Halden Assurance', text: 'Never pay more than 1 Heat at one corner.' },
 ];
 
 export const PRESS: Named[] = [
   { id: 'holeshot', name: 'Hole Shot', text: 'Lead after round 1.' },
   { id: 'charge', name: 'Charge of the Day', text: 'Overtake 3 cars in one round.' },
-  { id: 'cool', name: 'Cool Customer', text: 'Cool 6 Strain in the race.' },
+  { id: 'cool', name: 'Cool Customer', text: 'Cool 6 Heat in the race.' },
   { id: 'limit', name: 'On the Limit', text: 'Cross 3 corners at exactly their limit.' },
   { id: 'slip', name: 'Slipstream Artist', text: 'Draft 3 times.' },
   { id: 'flat', name: 'Flat Out', text: 'Reach speed 14 in one move.' },
   { id: 'comeback', name: 'Comeback Drive', text: 'Finish 3 or more places above your grid slot.' },
   { id: 'fastest', name: 'Fastest Round', text: 'Cover the longest distance in one round (ties share).' },
   { id: 'nerve', name: 'Nerves of Steel', text: 'Boost 3 times.' },
-  { id: 'clean', name: 'Gentleman Driver', text: 'Finish without paying Strain at a corner.' },
+  { id: 'clean', name: 'Gentleman Driver', text: 'Finish without paying Heat at a corner.' },
 ];
 
 export type Need = 'championship' | 'press' | 'sponsors' | 'notLast' | ModuleId;
@@ -51,13 +51,13 @@ export const EVENTS: RaceEvent[] = [
   { id: 'shuffle', name: 'Shuffled Grid', text: 'The grid is drawn at random.', needs: ['championship'], special: 'shuffle' },
   { id: 'pressday', name: 'Press Day', text: 'Three press objectives this race.', needs: ['press'], special: 'press3' },
   { id: 'gala', name: 'Sponsor Gala', text: 'Sponsors pay 2 points.', needs: ['sponsors', 'championship'], special: 'gala' },
-  { id: 'paddock', name: 'Tight Paddock', text: 'Two-gear shifts cost 2 Strain.', needs: [], fit: { shift2: 1 } },
+  { id: 'paddock', name: 'Tight Paddock', text: 'Two-gear shifts cost 2 Heat.', needs: [], fit: { shift2: 1 } },
   { id: 'tailwind', name: 'Tailwind', text: 'Draft +1.', needs: [], fit: { draft: 1 } },
-  { id: 'marshals', name: 'Alert Marshals', text: 'Spins put 1 Strain fewer in hand.', needs: [], fit: { spinRelief: 1 } },
+  { id: 'marshals', name: 'Alert Marshals', text: 'Spins put 1 Stress fewer in hand.', needs: [], fit: { spinRelief: 1 } },
   { id: 'haze', name: 'Heat Haze', text: 'Gear 1 cools 2.', needs: [], fit: { cool1: -1 } },
   { id: 'practice', name: 'Practice Laps', text: 'Everyone starts in gear 2.', needs: [], special: 'practice' },
   { id: 'parts', name: 'Parts Lorry', text: 'The next draft reveals 2 more upgrades.', needs: ['championship', 'notLast'], special: 'parts' },
-  { id: 'duststorm', name: 'Dust Storm', text: 'Gravel costs Strain from speed 5.', needs: ['dust'], special: 'dust5' },
+  { id: 'duststorm', name: 'Dust Storm', text: 'Gravel costs Heat from speed 5.', needs: ['dust'], special: 'dust5' },
 ];
 
 /** Events whose needs are all met (AX-MOD filtering). */
@@ -93,7 +93,7 @@ export const SECTOR_MODS: SectorMod[] = [
   { id: 'none', name: 'Dry', text: 'No effect.', weight: 4 },
   { id: 'wet', name: 'Wet Patch', text: 'Limits in this sector −1 (min 1).', weight: 1 },
   { id: 'tail', name: 'Tailwind', text: 'Draft +1 when it starts in this sector.', weight: 1 },
-  { id: 'flood', name: 'Flooded', text: 'End a move here at speed 8+ and take 1 Strain.', weight: 2, storm: true },
+  { id: 'flood', name: 'Flooded', text: 'End a move here at speed 8+ and take 1 Heat.', weight: 2, storm: true },
 ];
 
 export interface Rival extends Named {
@@ -109,5 +109,5 @@ export const RIVALS: Rival[] = [
   { id: 'delacroix', name: 'Delacroix', driver: 'Marguerite Delacroix', text: 'Engine +2.', fit: { engine: 2 } },
   { id: 'bellini', name: 'Bellini', driver: 'Sandro Bellini', text: 'Boost turns over two cards.', fit: { boostFlips: 1 } },
   { id: 'vanaalst', name: 'van Aalst', driver: 'Pieter van Aalst', text: 'Ignores the rain penalty.', fit: { rainGrip: true } },
-  { id: 'mokoena', name: 'Mokoena', driver: 'Thandiwe Mokoena', text: 'No gravel Strain.', fit: { noGravel: true } },
+  { id: 'mokoena', name: 'Mokoena', driver: 'Thandiwe Mokoena', text: 'No gravel Heat.', fit: { noGravel: true } },
 ];

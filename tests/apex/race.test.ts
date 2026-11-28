@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { STRAIN } from '../../src/games/apex/rules/cards';
+import { HEAT } from '../../src/games/apex/rules/cards';
 import {
-  newRace, planError, raceOrder, react, reveal, setPlan, shiftCost, type Car, type Plan, type Race,
+  freeLane, newRace, planError, raceOrder, reveal, setPlan, shiftCost, turnAct, turnError, turnOptions,
+  type Car, type Plan, type Race, type TurnAct,
 } from '../../src/games/apex/rules/race';
 
 const OFF = { storm: false, mountains: false, dust: false, rivals: false };
@@ -23,10 +24,29 @@ function rig(r: Race, id: number, o: Partial<Car>) {
   Object.assign(r.cars[id], o);
 }
 
-const P = (gear: number, cards: number[], x: Partial<Plan> = {}): Plan => ({ gear, cards, discard: [], boost: false, ...x });
+const P = (gear: number, cards: number[]): Plan => ({ gear, cards });
 
-/** Plan every running car (others coast in gear 1 on their first card) and reveal. */
-function round(r: Race, plans: Record<number, Plan>) {
+/** The tests' default driver: cool all it can, take catch-up, take only a free slipstream, throw nothing away. */
+function auto(r: Race): TurnAct {
+  const t = r.turn!;
+  const o = turnOptions(r);
+  if (t.stage === 'react') return o.cool ? { do: 'cool', n: o.cool } : o.catchup ? { do: 'catchup' } : { do: 'go' };
+  if (t.stage === 'draft') return { do: 'draft', take: t.offer!.hazard === 0 };
+  return { do: 'finish', discard: [] };
+}
+
+/** Take turn decisions, a car's scripted ones first and then `auto`, until `stop` holds or the round ends. */
+function play(r: Race, scripts: Record<number, TurnAct[]> = {}, stop?: (r: Race) => boolean) {
+  while (r.phase === 'turn' && !stop?.(r)) {
+    const id = r.turn!.car;
+    const a = scripts[id]?.length ? scripts[id].shift()! : auto(r);
+    const err = turnError(r, a);
+    if (err) throw new Error(`car ${id} ${a.do}: ${err}`);
+    turnAct(r, a);
+  }
+}
+
+function plan(r: Race, plans: Record<number, Plan>) {
   for (const c of r.cars) {
     if (c.done) continue;
     const p = plans[c.id] ?? P(1, [0]);
@@ -35,6 +55,19 @@ function round(r: Race, plans: Record<number, Plan>) {
     setPlan(r, c.id, p);
   }
   reveal(r);
+}
+
+/** Plan every running car (others coast in gear 1 on their first card), reveal and play the round out. */
+function round(r: Race, plans: Record<number, Plan>, scripts: Record<number, TurnAct[]> = {}) {
+  plan(r, plans);
+  play(r, scripts);
+}
+
+/** Plan and reveal, then stop at this car's turn in this stage. */
+function upTo(r: Race, plans: Record<number, Plan>, car: number, stage: string) {
+  plan(r, plans);
+  play(r, {}, (x) => x.turn!.car === car && x.turn!.stage === stage);
+  expect([r.turn?.car, r.turn?.stage]).toEqual([car, stage]);
 }
 
 const HAND = ['P1', 'P2', 'P3', 'P4', 'P1', 'P2', 'P3'];
@@ -49,17 +82,17 @@ describe('AX-CAR cars and decks', () => {
     }
   });
 
-  it('AX-CAR-2 the engine holds 6 Strain; paying moves Strain engine → discard, cooling hand → engine', () => {
+  it('AX-CAR-2 the engine holds 6 Heat; paying moves Heat engine → discard, cooling hand → engine', () => {
     const r = mk(1);
     expect(r.cars[0].engine).toBe(6);
     rig(r, 0, { hand: [...HAND], deck: ['P1', 'P1', 'P1', 'P1'], gear: 1 });
-    round(r, { 0: P(3, [0, 1, 2]) }); // two-gear shift: 1 Strain
+    round(r, { 0: P(3, [0, 1, 2]) }); // two-gear shift: 1 Heat
     expect(r.cars[0].engine).toBe(5);
-    expect(r.cars[0].discard.filter((x) => x === STRAIN)).toHaveLength(1);
+    expect(r.cars[0].discard.filter((x) => x === HEAT)).toHaveLength(1);
     rig(r, 0, { hand: ['X', 'X', 'P1', 'P2', 'P3', 'P4', 'P1'], gear: 2 });
     round(r, { 0: P(1, [2]) }); // gear 1 cools 3, only 2 in hand
     expect(r.cars[0].engine).toBe(7);
-    expect(r.cars[0].hand).not.toContain(STRAIN);
+    expect(r.cars[0].hand).not.toContain(HEAT);
   });
 
   it('AX-CAR-3 hands of 7 dealt from the seed', () => {
@@ -83,7 +116,7 @@ describe('AX-GEAR and AX-PLAN', () => {
     expect(mk(3).cars.every((c) => c.gear === 1)).toBe(true);
   });
 
-  it('AX-GEAR-2 ±1 is free, ±2 costs 1 Strain, ±3 is refused, an empty engine allows only ±1', () => {
+  it('AX-GEAR-2 ±1 is free, ±2 costs 1 Heat, ±3 is refused, an empty engine allows only ±1', () => {
     const r = mk(1);
     const c = r.cars[0];
     rig(r, 0, { hand: [...HAND], gear: 1 });
@@ -102,20 +135,21 @@ describe('AX-GEAR and AX-PLAN', () => {
     expect(planError(r, 0, P(2, [0, 1]))).toBeNull();
   });
 
-  it('AX-PLAN-2 Strain cannot be committed', () => {
+  it('AX-PLAN-2 Heat cannot be committed', () => {
     const r = mk(1);
     rig(r, 0, { hand: ['X', 'P1', 'P2', 'X', 'X', 'X', 'X'], gear: 2 });
-    expect(planError(r, 0, P(2, [0, 1]))).toMatch(/Strain/);
+    expect(planError(r, 0, P(2, [0, 1]))).toMatch(/Heat/);
     expect(planError(r, 0, P(2, [1, 2]))).toBeNull();
-    expect(planError(r, 0, P(3, [1, 2, 3]))).toMatch(/Strain/);
+    expect(planError(r, 0, P(3, [1, 2, 3]))).toMatch(/Heat/);
   });
 
   it('AX-PLAN-3 a clogged hand limps: gear 1, distance 1, cools as gear 1', () => {
     const r = mk(1);
     rig(r, 0, { hand: ['X', 'X', 'X', 'X', 'X', 'X', 'X'], gear: 3, pos: 5, deck: ['P1', 'P1', 'P1', 'P1'] });
     expect(planError(r, 0, P(3, []))).toBeNull();
-    expect(planError(r, 0, P(1, [], { boost: true }))).toMatch(/limping/);
-    round(r, { 0: P(3, []) });
+    upTo(r, { 0: P(3, []) }, 0, 'react');
+    expect(turnOptions(r).boost).toBe(false); // a limping car cannot boost
+    play(r);
     const x = last(r, 0);
     expect([x.limp, x.speed, x.dist, x.cooled, r.cars[0].pos, r.cars[0].gear]).toEqual([true, 1, 1, 3, 6, 1]);
     // Limping is refused while any real plan exists.
@@ -123,13 +157,17 @@ describe('AX-GEAR and AX-PLAN', () => {
     expect(planError(r, 0, P(1, []))).toMatch(/cards to drive/);
   });
 
-  it('AX-PLAN-4 marked cards are thrown away at the end of the round; Strain cannot be', () => {
+  it('AX-TURN-7 cards are thrown away at Finish Turn, after the move; Heat cannot be', () => {
     const r = mk(1);
     rig(r, 0, { hand: ['P1', 'P4', 'P4', 'X', 'P2', 'P3', 'P1'], deck: ['P5', 'P5', 'P5', 'P5', 'P5'], discard: [] });
-    expect(planError(r, 0, P(1, [0], { discard: [3] }))).toMatch(/Strain/);
-    round(r, { 0: P(1, [0], { discard: [1, 2] }) });
-    expect(r.cars[0].discard.sort()).toEqual(['P1', 'P4', 'P4']);
-    expect(r.cars[0].hand).toEqual(['P2', 'P3', 'P1', 'P5', 'P5', 'P5', 'P5']); // the Strain was cooled
+    upTo(r, { 0: P(3, [0, 4, 5]) }, 0, 'discard'); // gear 3 cools nothing, so the Heat stays in hand
+    expect(turnError(r, { do: 'finish', discard: [2] })).toMatch(/Heat/);
+    expect(turnError(r, { do: 'finish', discard: [0, 0] })).not.toBeNull();
+    expect(turnError(r, { do: 'boost' })).not.toBeNull();
+    expect(r.cars[0].hand).toEqual(['P4', 'P4', 'X', 'P1']);
+    play(r, { 0: [{ do: 'finish', discard: [0, 1] }] });
+    expect([...r.cars[0].discard].sort()).toEqual(['P1', 'P2', 'P3', 'P4', 'P4', 'X']); // the X paid for the two-gear shift
+    expect(r.cars[0].hand).toEqual(['X', 'P1', 'P5', 'P5', 'P5', 'P5', 'P5']); // AX-END-1 the rest keep their order
   });
 
   it('AX-PLAN-5 a plan can be retracted before the reveal', () => {
@@ -167,13 +205,15 @@ describe('AX-RES resolution', () => {
     expect(last(r, 0).speed).toBe(0);
   });
 
-  it('AX-BST-1 a boost pays 1 Strain and turns a card; with an empty engine it is cancelled for free', () => {
+  it('AX-BST-1 a boost is a choice after the move: 1 Heat, turn a card, more speed and distance; none with an empty engine', () => {
     const r = mk(1);
     rig(r, 0, { hand: [...HAND], deck: ['P4', 'P1', 'P1', 'P1'], gear: 1 });
-    round(r, { 0: P(1, [0], { boost: true }) });
-    expect([last(r, 0).boost, last(r, 0).speed, r.cars[0].engine]).toEqual([true, 5, 5]);
+    round(r, { 0: P(1, [0]) }, { 0: [{ do: 'boost' }] });
+    expect([last(r, 0).boost, last(r, 0).speed, last(r, 0).dist, r.cars[0].engine]).toEqual([true, 5, 5, 5]);
+    expect(last(r, 0).events.map((e) => e.k)).toEqual(['move', 'pay', 'flip', 'boost']);
+    // With nothing to pay with, there is no boost to offer and the turn needs no decision.
     rig(r, 0, { hand: [...HAND], deck: ['P4', 'P1', 'P1', 'P1'], engine: 0, gear: 1 });
-    round(r, { 0: P(1, [0], { boost: true }) });
+    round(r, { 0: P(1, [0]) });
     expect([last(r, 0).boost, last(r, 0).speed]).toEqual([false, 1]);
   });
 
@@ -246,15 +286,15 @@ describe('AX-CRN and AX-SPN', () => {
     expect([r.cars[0].pos, r.cars[0].engine]).toEqual([36, 3]);
   });
 
-  it('AX-SPN-1/2 an engine that cannot pay spins: stop before the corner, Strain into hand, back to gear 1', () => {
+  it('AX-SPN-1/2 an engine that cannot pay spins: stop before the corner, Stress into hand, back to gear 1', () => {
     const r = mk(1);
     rig(r, 0, { pos: 30, hand: ['P4', 'P4', 'P4', 'P1', 'P1', 'P1', 'P1'], gear: 3, engine: 2 });
     round(r, { 0: P(3, [0, 1, 2]) }); // speed 12 at limit 3 costs 9
     const c = r.cars[0];
     expect([c.pos, c.gear, last(r, 0).spun, c.stats.spins]).toEqual([34, 1, true, 1]);
     expect(c.engine).toBe(2);
-    // 2 Strain in hand from gear 3; gear 3 cools 0.
-    expect(c.hand.filter((x) => x === STRAIN)).toHaveLength(2);
+    // AX-SPN-2: 2 Stress into the hand from gear 3; nothing was cooled, so no Heat came out of the hand.
+    expect([c.hand.filter((x) => x === 'S').length, c.hand.length]).toEqual([2, 7]);
   });
 
   it('AX-CRN-3 several corners in one move: pay one, spin at the next', () => {
@@ -272,7 +312,7 @@ describe('AX-CRN and AX-SPN', () => {
 });
 
 describe('AX-DRF and AX-OVT', () => {
-  it('AX-DRF-1 a car level or one space ahead gives 2 more spaces, taken automatically when safe', () => {
+  it('AX-DRF-1 a car level or one space ahead offers 2 more spaces', () => {
     const r = mk(2);
     rig(r, 1, { pos: 8, lane: 0, hand: ['S', 'X', 'X', 'X', 'X', 'X', 'X'], deck: ['X'], discard: [] });
     rig(r, 0, { pos: 3, lane: 0, hand: ['P4', ...HAND.slice(1)] });
@@ -280,25 +320,23 @@ describe('AX-DRF and AX-OVT', () => {
     expect([r.cars[0].pos, last(r, 0).drafted, r.cars[0].stats.drafts]).toEqual([10, 2, 1]); // 4 + catch-up, then 2
   });
 
-  it('AX-DRF-2 a draft that would overspeed a corner pauses for that driver', () => {
+  it('AX-DRF-2 the slipstream offer shows the extra corner Heat it would cost, and the choice is recorded', () => {
     const r = mk(2);
     rig(r, 1, { pos: 33, lane: 0, hand: ['S', 'X', 'X', 'X', 'X', 'X', 'X'], deck: ['X'], discard: [] });
     rig(r, 0, { pos: 28, lane: 0, hand: ['P4', ...HAND.slice(1)], engine: 6 });
-    round(r, { 0: P(1, [0]), 1: P(1, [0]) });
-    expect(r.phase).toBe('react');
-    expect(r.pending).toEqual({ car: 0, len: 2, hazard: 1 });
+    upTo(r, { 0: P(1, [0]), 1: P(1, [0]) }, 0, 'draft');
+    expect(r.turn!.offer).toEqual({ len: 2, hazard: 1 });
     const step = r.step;
-    react(r, true);
+    play(r, { 0: [{ do: 'draft', take: true }] });
     expect([r.cars[0].pos, r.cars[0].engine, r.phase, r.step > step]).toEqual([35, 5, 'plan', true]);
-    expect(r.replay[0].reacts).toEqual([[0, true]]);
+    expect(r.replay[0].acts).toContainEqual([0, { do: 'draft', take: true }]);
   });
 
   it('AX-DRF-2 declining the draft leaves the car where it moved', () => {
     const r = mk(2);
     rig(r, 1, { pos: 33, lane: 0, hand: ['S', 'X', 'X', 'X', 'X', 'X', 'X'], deck: ['X'], discard: [] });
     rig(r, 0, { pos: 28, lane: 0, hand: ['P4', ...HAND.slice(1)], engine: 6 });
-    round(r, { 0: P(1, [0]), 1: P(1, [0]) });
-    react(r, false);
+    round(r, { 0: P(1, [0]), 1: P(1, [0]) }, { 0: [{ do: 'catchup' }, { do: 'go' }, { do: 'draft', take: false }] });
     expect(r.cars[0].pos).toBe(33);
   });
 
@@ -353,7 +391,7 @@ describe('AX-COOL, AX-ADR, AX-END, AX-DECK', () => {
 });
 
 describe('AX-FIN', () => {
-  it('AX-FIN-1/2 finishers leave the track and rank by overshoot, then resolution order', () => {
+  it('AX-FIN-1/2 same-round finishers rank by distance past the line, then racing line, then resolution order', () => {
     const r = mk(3, 1);
     rig(r, 0, { pos: 58, lane: 0, hand: ['P3', ...HAND.slice(1)] }); // over 1
     rig(r, 1, { pos: 57, lane: 0, hand: ['P5', ...HAND.slice(1)] }); // over 2
@@ -363,21 +401,27 @@ describe('AX-FIN', () => {
     expect(r.phase).toBe('over');
   });
 
-  it('AX-FIN-3 after the first finisher the rest get 2 more rounds, then rank by race order', () => {
+  it('AX-END-2 the race runs until every car has finished; earlier rounds rank first', () => {
     const r = mk(3, 1);
     rig(r, 0, { pos: 58, hand: ['P3', ...HAND.slice(1)] });
-    rig(r, 1, { pos: 10, lane: 0 });
-    rig(r, 2, { pos: 5, lane: 0 });
+    rig(r, 1, { pos: 50, lane: 0 });
+    rig(r, 2, { pos: 45, lane: 0 });
     round(r, { 0: P(1, [0]) });
-    expect(r.finished).toEqual([0]);
-    expect(r.endRound).toBe(3);
-    round(r, {});
-    expect(r.phase).toBe('plan');
-    round(r, {});
+    expect([r.finished, r.cars[0].done]).toEqual([[0], { place: 1, round: 1, over: 1 }]);
+    for (let k = 0; k < 40 && r.phase === 'plan'; k++) round(r, Object.fromEntries(r.cars.filter((c) => !c.done).map((c) => [c.id, autoPlan(r, c.id)])));
     expect(r.phase).toBe('over');
     expect(r.finished[0]).toBe(0);
-    expect(r.finished).toHaveLength(3);
-    expect(r.cars[r.finished[1]].pos).toBeGreaterThanOrEqual(r.cars[r.finished[2]].pos);
+    expect(r.cars.every((c) => c.done && c.done.over >= 0)).toBe(true);
+    expect(r.cars[r.finished[1]].done!.round).toBeLessThanOrEqual(r.cars[r.finished[2]].done!.round);
+  });
+
+  it('AX-FIN-6 no slipstream across the finish line', () => {
+    const r = mk(2, 1);
+    rig(r, 1, { pos: 58, lane: 0, hand: ['S', 'X', 'X', 'X', 'X', 'X', 'X'], deck: ['X'], discard: [] });
+    rig(r, 0, { pos: 54, lane: 0, hand: ['P4', ...HAND.slice(1)] });
+    upTo(r, { 0: P(1, [0]), 1: P(1, [0]) }, 0, 'react');
+    play(r, { 0: [{ do: 'go' }] }, (x) => x.turn?.stage === 'discard');
+    expect([r.cars[0].pos, last(r, 0).drafted, r.turn?.stage]).toEqual([58, 0, 'discard']);
   });
 
   it('AX-FIN-1 a finished car never blocks', () => {
@@ -386,6 +430,8 @@ describe('AX-FIN', () => {
     round(r, { 0: P(1, [0]) });
     expect(r.cars[0].done).not.toBeNull();
     expect(raceOrder(r)[0]).toBe(0);
+    // AX-FIN-5: its space is free once its finishing round is over.
+    expect(freeLane(r, r.cars[0].pos, 1)).toBe(0);
   });
 });
 
@@ -400,34 +446,63 @@ describe('interpretations and determinism', () => {
     expect(r.last.every((x) => x.drafted === 0)).toBe(true);
   });
 
-  it('AX-SPN-2 a spun car still cools by its gear but gets no catch-up cooling', () => {
+  it('AX-TURN-5 cooling and catch-up come before the corner check, so a spun car keeps both', () => {
     const r = mk(2);
     rig(r, 1, { pos: 50 });
     rig(r, 0, { pos: 30, hand: ['P5', 'P4', 'X', 'X', 'X', 'X', 'P1'], gear: 2, engine: 0 });
     round(r, { 0: P(2, [0, 1]) }); // speed 9 at 35 (limit 3), empty engine → spin; gear 2 cools 1
-    expect([last(r, 0).spun, last(r, 0).catchup, last(r, 0).cooled]).toEqual([true, true, 1]);
+    expect([last(r, 0).spun, last(r, 0).catchup, last(r, 0).cooled]).toEqual([true, true, 2]);
+  });
+
+  it('AX-TURN-3 the move comes first, with no corner checked until the reactions are done', () => {
+    const r = mk(2);
+    rig(r, 1, { pos: 50 });
+    rig(r, 0, { pos: 30, hand: ['P4', 'P4', 'X', 'P1', 'P1', 'P1', 'P1'], gear: 1, engine: 6 });
+    upTo(r, { 0: P(2, [0, 1]) }, 0, 'react'); // speed 8 across Tower (35, limit 3)
+    expect([r.cars[0].pos, r.cars[0].engine, last(r, 0).corners]).toEqual([38, 6, []]);
+    expect(turnOptions(r).cost).toBe(5);
+  });
+
+  it('AX-TURN-4 a stage with nothing to decide is skipped', () => {
+    const r = mk(2);
+    // Gear 3 cools nothing, the engine is empty so no boost, and the leader gets no catch-up: straight to Finish turn.
+    rig(r, 1, { pos: 44, hand: ['P1', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'], gear: 2, engine: 0 });
+    rig(r, 0, { pos: 0 });
+    upTo(r, { 1: P(3, [0, 1, 2]) }, 1, 'discard');
+    expect(r.last.find((x) => x.car === 1)!.events.map((e) => e.k)).toEqual(['move']);
+  });
+
+  it('AX-TURN-6 the corner check covers boost and slipstream at the final speed', () => {
+    const r = mk(2);
+    rig(r, 1, { pos: 50 });
+    rig(r, 0, { pos: 30, hand: ['P2', 'P1', 'P1', 'P1', 'P1', 'P1', 'P1'], deck: ['P3'], gear: 1, engine: 6 });
+    upTo(r, { 0: P(1, [0]) }, 0, 'react'); // speed 2, at 32: short of Tower (35, limit 3)
+    turnAct(r, { do: 'boost' }); // +3: speed 5, now at 35
+    play(r, { 0: [{ do: 'go' }] }, (x) => x.turn?.stage === 'discard');
+    expect(last(r, 0).corners).toEqual([{ at: 35, limit: 3, paid: 2 }]);
+    expect(r.cars[0].engine).toBe(3); // 1 for the boost, 2 at the corner
   });
 
   it('the same seed and plans replay to the same race', () => {
-    const play = () => {
+    const run = () => {
       const r = mk(4, 1, 'replay');
       while (r.phase !== 'over' && r.round < 60) {
         for (const c of r.cars) if (!c.done) setPlan(r, c.id, autoPlan(r, c.id));
         reveal(r);
-        while (r.phase === 'react') react(r, true);
+        play(r);
       }
       return JSON.stringify(r);
     };
-    const a = play();
+    const a = run();
     expect(JSON.parse(a).phase).toBe('over');
-    expect(play()).toBe(a);
+    expect(run()).toBe(a);
   });
 });
 
 /** A simple legal plan: the highest gear reachable with the cards held. */
 function autoPlan(r: Race, id: number): Plan {
   const c = r.cars[id];
-  const ok = c.hand.map((x, i) => [x, i] as const).filter(([x]) => x !== STRAIN).map(([, i]) => i);
+  const ok = c.hand.map((x, i) => [x, i] as const).filter(([x]) => x !== HEAT).map(([, i]) => i);
   for (let g = Math.min(4, c.gear + 1); g >= 1; g--) {
     const p = P(g, ok.slice(0, g));
     if (ok.length >= g && !planError(r, id, p)) return p;

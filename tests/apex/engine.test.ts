@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { apex } from '../../src/games/apex';
 import { aiPlan } from '../../src/games/apex/rules/ai';
-import { defaultConfig, type AAction, type AConfig, type AState } from '../../src/games/apex/rules/engine';
-import { newRace } from '../../src/games/apex/rules/race';
+import { HEAT } from '../../src/games/apex/rules/cards';
+import { defaultConfig, migrate, STATE_VERSION, type AAction, type AConfig, type AState } from '../../src/games/apex/rules/engine';
+import { newRace, type Race } from '../../src/games/apex/rules/race';
+import * as v1 from '../../src/games/apex/rules/race-v1';
 
 const DAY = 24 * 3600_000;
 const cfg = (over: Partial<AConfig> = {}): AConfig => ({ ...defaultConfig(2), laps: 1, ...over });
@@ -54,7 +56,7 @@ describe('Apex room engine', () => {
     expect(apex.project(s, 1).race!.cars[mine.id].planned).toBe(true);
     expect(apex.project(s, 0).me!.plan).not.toBeNull();
     expect(apex.project(s, null).me).toBeNull();
-    expect(apex.historyAction!({ type: 'plan', step: 1, gear: 2, cards: [0, 1], discard: [], boost: false })).toEqual({ type: 'plan' });
+    expect(apex.historyAction!({ type: 'plan', step: 1, gear: 2, cards: [0, 1] })).toEqual({ type: 'plan' });
   });
 
   it('AX-PLAN-4 / AX-UNDO-1 a plan can be taken back until the reveal, and computer cars plan after the people', () => {
@@ -69,7 +71,7 @@ describe('Apex room engine', () => {
     const before = s;
     s = act(s, 1, planFor(s, 1));
     expect(s.step).toBeGreaterThan(step);
-    expect(s.race!.round > 1 || s.race!.phase === 'react').toBe(true);
+    expect(s.race!.round > 1 || s.race!.phase === 'turn').toBe(true);
     expect(apex.apply(s, 0, { type: 'retract', step })).toMatchObject({ ok: false });
     expect(before.race!.round).toBe(1); // apply never mutates
   });
@@ -77,8 +79,29 @@ describe('Apex room engine', () => {
   it('AX-NET-1 an action for another step or the wrong phase is refused', () => {
     const s = start(1, { mode: 'solo', cars: 3 });
     expect(apex.apply(s, 0, { type: 'retract', step: s.step + 1 })).toMatchObject({ ok: false, code: 'stale' });
-    expect(apex.apply(s, 0, { type: 'ready', step: s.step })).toMatchObject({ ok: false, code: 'not-now' });
-    expect(apex.apply(s, 0, { type: 'plan', step: s.step, gear: 4, cards: [0, 0, 0, 0], discard: [], boost: false })).toMatchObject({ ok: false, code: 'illegal' });
+    // A Continue that arrives after the podium has closed is stale, never "nothing to get ready for".
+    expect(apex.apply(s, 0, { type: 'ready', step: s.step })).toMatchObject({ ok: false, code: 'stale' });
+    expect(apex.apply(s, 0, { type: 'plan', step: s.step, gear: 4, cards: [0, 0, 0, 0] })).toMatchObject({ ok: false, code: 'illegal' });
+  });
+
+  it('AX-FIN-1 a driver whose car has finished gets no dashboard and no plan to make while the others race on', () => {
+    let seen = false;
+    for (let k = 0; k < 20 && !seen; k++) {
+      let s = start(2, { cars: 4 }, `fin${k}`);
+      for (let i = 0; i < 2000 && s.phase === 'race'; i++) {
+        for (const seat of [0, 1]) {
+          if (!s.race!.cars.find((c) => c.seat === seat)!.done || s.race!.phase !== 'plan') continue;
+          seen = true;
+          expect(apex.project(s, seat).me).toBeNull();
+          expect(apex.bot!(apex.project(s, seat))?.actions ?? []).toEqual([]);
+          expect(apex.actors(s)).not.toContain(seat);
+        }
+        const seat = apex.actors(s)[0];
+        if (seat == null) break;
+        s = act(s, seat, apex.bot!(apex.project(s, seat))!.actions[0]);
+      }
+    }
+    expect(seen).toBe(true);
   });
 
   it('AX-PLAN-6 the timer is off by default; when on, it pauses for an absent driver and then plans for the late', () => {
@@ -89,7 +112,7 @@ describe('Apex room engine', () => {
     expect(s.deadline).toBe(31_000);
     expect(apex.tick!(s, 2000, [true, false])!.deadline).toBeNull();
     s = apex.tick!(s, 31_000, [true, true])!;
-    expect(s.race!.round > 1 || s.race!.phase === 'react').toBe(true);
+    expect(s.race!.round > 1 || s.race!.phase === 'turn').toBe(true);
     expect([...s.timedOut].sort()).toEqual([0, 1]);
   });
 
@@ -100,10 +123,119 @@ describe('Apex room engine', () => {
     s = act(s, 0, { type: 'autopilot', step: s.step, seat: 1, on: true });
     expect(apex.actors(s)).toEqual([0]);
     s = act(s, 0, planFor(s, 0));
-    expect(s.race!.round > 1 || s.race!.phase === 'react').toBe(true);
+    expect(s.race!.round > 1 || s.race!.phase === 'turn').toBe(true);
     s = apex.tick!(s, 0, [true, true]) ?? s;
     s = act(s, 1, { type: 'autopilot', step: s.step, seat: 1, on: false });
     expect(s.autopilot).toEqual([]);
+  });
+
+  it('AX-TURN-1 a doubled Lock In or a decision from an old step is refused and changes nothing', () => {
+    let s = start(2, { cars: 3 });
+    const plan = planFor(s, 0);
+    s = act(s, 0, plan);
+    const again = apex.apply(s, 0, plan);
+    expect(again.ok && [again.state.race, again.state.step]).toEqual([s.race, s.step]); // the same plan again is a no-op
+    s = act(s, 1, planFor(s, 1));
+    // Every plan is in: drivers now take their turns one at a time, in race order.
+    for (let i = 0; i < 200 && s.race!.phase === 'turn'; i++) {
+      const seat = apex.actors(s)[0];
+      const v = apex.project(s, seat);
+      expect(v.race!.turn!.car).toBe(s.race!.turn!.car);
+      expect(apex.actors(s)).toEqual([s.race!.cars[s.race!.turn!.car].seat]);
+      const move = apex.bot!(v)!.actions[0];
+      const pos = s.race!.cars.map((c) => c.pos);
+      expect(apex.apply(s, seat, { ...move, step: s.step - 1 } as AAction)).toMatchObject({ ok: false, code: 'stale' });
+      expect(apex.apply(s, 1 - seat, move)).toMatchObject({ ok: false });
+      expect(s.race!.cars.map((c) => c.pos)).toEqual(pos);
+      s = act(s, seat, move);
+      expect(apex.apply(s, seat, move)).toMatchObject({ ok: false });
+    }
+    expect(s.race!.phase).toBe('plan');
+    expect(s.race!.round).toBe(2);
+  });
+
+  it('AX-TURN-2 every seat sees the same turn: whose it is, its stage and its options', () => {
+    let s = start(2, { cars: 3 });
+    s = act(s, 0, planFor(s, 0));
+    s = act(s, 1, planFor(s, 1));
+    const turns = [0, 1, null].map((seat) => apex.project(s, seat).race!.turn);
+    expect(turns[0]).not.toBeNull();
+    expect(turns[1]).toEqual(turns[0]);
+    expect(turns[2]).toEqual(turns[0]);
+  });
+
+  it('AX-COOL-2 cooling takes the most by itself unless the driver cools by hand', () => {
+    const rigged = (manual: boolean) => {
+      let s = start(1, { mode: 'solo', cars: 2 }, 'cool');
+      if (manual) s = act(s, 0, { type: 'cooling', step: s.step, manual: true });
+      const c = s.race!.cars.find((x) => x.seat === 0)!;
+      c.hand = ['P1', HEAT, HEAT, 'P1', 'P1', 'P1', 'P1'];
+      c.engine = 3;
+      c.gear = 1;
+      return act(s, 0, { type: 'plan', step: s.step, gear: 1, cards: [0] });
+    };
+    const auto = rigged(false);
+    const car = (s: AState) => s.race!.cars.find((x) => x.seat === 0)!;
+    expect(car(auto).hand).not.toContain(HEAT); // gear 1 cools up to 3: both went back to the engine
+    const hand = rigged(true);
+    // The table waits for this driver's choice, with both Heat on offer.
+    expect(hand.race!.turn).toMatchObject({ car: car(hand).id, stage: 'react' });
+    expect(apex.project(hand, 0).race!.turn!.options.cool).toBe(2);
+  });
+
+  it('AX-PRV-2 the turn and its events show no hand, deck or deck order but the driver’s own', () => {
+    let s = start(2, { cars: 4 }, 'turn-seed');
+    for (let i = 0; i < 400 && s.phase === 'race'; i++) {
+      for (const seat of [0, 1, null]) {
+        const v = apex.project(s, seat);
+        const json = JSON.stringify(v.race);
+        for (const c of s.race!.cars) {
+          if (c.deck.length > 3) expect(json).not.toContain(JSON.stringify(c.deck));
+          if (c.seat !== seat && c.hand.length > 3) expect(json).not.toContain(JSON.stringify(c.hand));
+        }
+        expect(json).not.toContain('"plans"');
+        expect(json).not.toContain('"replay"');
+      }
+      const seat = apex.actors(s)[0];
+      if (seat == null) break;
+      s = act(s, seat, apex.bot!(apex.project(s, seat))!.actions[0]);
+    }
+  });
+
+  it('AX-STATE-2 a saved v1.2 race, even mid-slipstream, loads into the turn engine and plays to the end', () => {
+    const s = start(2, { cars: 4 }, 'old-save');
+    const r = s.race!;
+    const old = v1.newRace({
+      circuit: r.circuit, laps: 1, seed: 'old', modules: r.modules, event: null,
+      cars: r.cars.map((c) => ({ seat: c.seat, name: c.name, number: c.number, livery: c.livery, upgrades: [], ai: c.ai })),
+    });
+    for (let k = 0; k < 40 && old.phase === 'plan'; k++) {
+      for (const c of old.cars) {
+        if (c.done) continue;
+        const ok = c.hand.map((x, i) => [x, i] as const).filter(([x]) => x !== HEAT).map(([, i]) => i);
+        const g = Math.min(ok.length, c.gear + 1, 4);
+        v1.setPlan(old, c.id, g ? { gear: g, cards: ok.slice(0, g), discard: [], boost: false } : { gear: 1, cards: [], discard: [], boost: false });
+        if (g && v1.planError(old, c.id, old.plans[c.id]!)) v1.setPlan(old, c.id, { gear: c.gear, cards: ok.slice(0, c.gear), discard: [], boost: false });
+      }
+      v1.reveal(old);
+    }
+    const saved = structuredClone({ ...s, race: old as unknown as Race, manualCool: undefined }) as unknown as AState;
+    expect(STATE_VERSION).toBe(2);
+    const m = migrate(saved, 1);
+    expect([m.race!.phase === 'plan' || m.race!.phase === 'over', m.race!.turn, m.manualCool, m.step]).toEqual([true, null, [], s.step + 1]);
+    expect(m.race!.plans.every((p) => p === null)).toBe(true);
+    const done = playOut(m);
+    expect(apex.results(done)).not.toBeNull();
+    expect(done.replays).toHaveLength(0); // a race begun under other rules has no faithful replay
+  });
+
+  it('AX-SIM-1 races with every module, 2–6 drivers and computer cars never stall', () => {
+    for (let k = 0; k < 8; k++) {
+      const n = 1 + (k % 4);
+      const s = playOut(start(n, { mode: n === 1 ? 'solo' : 'quick', cars: n + 2 + (k % 3), laps: 1 + (k % 2) }, `sim${k}`));
+      expect(apex.isOver(s)).toBe(true);
+      expect(s.race!.cars.every((c) => c.done)).toBe(true);
+    }
   });
 
   it('AX-MODE-1 Driving School is one fixed lap at Ashford with two gentle computer cars', () => {

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { DESKTOP, newPlayer, PHONE, type Player } from './helpers';
+import { DESKTOP, newPlayer, PHONE, type Player, openGame } from './helpers';
 
 /** Where the screenshots go. Set MS_SHOTS to keep them. */
 const shot = async (p: Player, name: string) => {
@@ -8,7 +8,7 @@ const shot = async (p: Player, name: string) => {
 
 async function openTable(host: Player) {
   await host.page.goto('/');
-  await host.page.getByRole('button', { name: /^Open Table: Miners & Saboteurs/ }).click();
+  await openGame(host.page, 'Miners & Saboteurs');
   await host.page.fill('#name', host.name);
   await host.page.getByRole('button', { name: 'Create room' }).click();
   await host.page.waitForURL(/\/r\/[A-Z0-9]{6}$/);

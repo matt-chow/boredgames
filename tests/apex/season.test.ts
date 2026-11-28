@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { finishTurns } from './drive';
 import { seedRng } from '../../src/engine/rng';
-import { aiDraft, aiPlan, aiView } from '../../src/games/apex/rules/ai';
+import { aiPlan, aiView } from '../../src/games/apex/rules/ai';
 import { CIRCUIT_IDS } from '../../src/games/apex/rules/content/circuits';
-import { newRace, react, reveal, setPlan, type Race } from '../../src/games/apex/rules/race';
+import { newRace, reveal, setPlan, type Race } from '../../src/games/apex/rules/race';
 import {
   aiPick, bonusFor, drawPaddock, MAX_UPGRADES, newSeason, pick, pickError, POINTS, raceSetup, scoreRace, standings,
   type Paddock, type Season,
@@ -24,7 +25,7 @@ function runRace(s: Season): Race {
   while (r.phase !== 'over') {
     for (const c of r.cars) if (!c.done) setPlan(r, c.id, aiPlan(aiView(r, c.id, { risk: 'balanced', level: 'club' })));
     reveal(r);
-    while (r.phase === 'react') react(r, aiDraft(aiView(r, r.pending!.car), r.pending!.hazard));
+    finishTurns(r);
   }
   return r;
 }

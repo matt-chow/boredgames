@@ -1,12 +1,18 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { flushSync, onMount } from 'svelte';
   import { api, ApiFailure } from '../client/lib/api';
   import { recentRooms } from '../client/lib/recent';
   import { router } from '../client/lib/router.svelte';
+  import { settings } from '../client/lib/settings.svelte';
+  import { audio, sfx } from '../client/lib/sound';
+  import { load, save } from '../client/lib/storage';
   import { CODE_LENGTH, normalizeCode, type RoomSummary } from '../shared/protocol';
   import { CATALOG, type CatalogEntry } from './catalog';
-  import GameFeature from './GameFeature.svelte';
+  import Dialog from './Dialog.svelte';
+  import GameGallery from './GameGallery.svelte';
   import GamePanel from './GamePanel.svelte';
+  import GameWheel from './GameWheel.svelte';
+  import Icon from './Icon.svelte';
   import RoomList from './RoomList.svelte';
 
   let code = $state('');
@@ -15,6 +21,7 @@
   let unreachable = $state(false);
   let chosen = $state<CatalogEntry | null>(null);
   let panelOpen = $state(false);
+  let roomsOpen = $state(false);
 
   /** Dev server only: the deck bench, and with ?games=24 a long list, to prove any number of games fits. */
   const benchGames: CatalogEntry[] = __DECK_BENCH__
@@ -35,6 +42,17 @@
       ]
     : [];
   const games = [...CATALOG, ...benchGames];
+
+  /** Which game was last in the centre, by id so a new game in the catalog doesn't shift it, and the view chosen. */
+  const KEY = 'bg.hub';
+  const saved = load(KEY, { focus: games[0].id, view: 'wheel' as 'wheel' | 'gallery' });
+  let focus = $state(games.some((g) => g.id === saved.focus) ? saved.focus : games[0].id);
+  let view = $state(saved.view === 'gallery' ? 'gallery' : 'wheel');
+  let preferred = saved.view === 'gallery' ? 'gallery' : 'wheel';
+  const remember = () => save(KEY, { focus, view: preferred });
+
+  /** Rooms still going come first; finished ones only behind "All rooms". */
+  const active = $derived(recent.filter((r) => r.status !== 'over'));
 
   onMount(() => {
     document.title = 'Boredgames';
@@ -63,9 +81,28 @@
     }
     router.go(`/r/${c}`);
   }
+
+  /** Swap views with the browser's shared-element transition where it has one: the game's title carries across. */
+  function swap(next: () => void) {
+    if (settings.instant || !document.startViewTransition) return next();
+    document.startViewTransition(() => flushSync(next));
+  }
+  function choose(v: 'wheel' | 'gallery') {
+    if (v === view) return;
+    preferred = v;
+    swap(() => (view = v));
+    remember();
+  }
+  /** A tile turns the wheel to its game; the person's chosen view stays as it was. */
+  function pick(id: string) {
+    focus = id;
+    remember();
+    swap(() => (view = 'wheel'));
+  }
 </script>
 
-<main class="hub">
+<!-- Starting audio takes a moment, so it happens on the first press, before the wheel moves, not on its first click. -->
+<main class="hub" class:wheeling={view === 'wheel'} onpointerdowncapture={() => audio()} onkeydowncapture={() => audio()}>
   <header class="top">
     <h1 class="wordmark">Boredgames</h1>
     <form class="joinrow" onsubmit={join}>
@@ -88,20 +125,58 @@
     </form>
   </header>
 
-  {#if recent.length}
-    <section class="resume" aria-labelledby="resume-title">
-      <h2 class="lab" id="resume-title">Your rooms on this device</h2>
-      <RoomList rooms={recent} />
-    </section>
-  {/if}
-  {#if unreachable}<p class="err" role="status">Can’t reach the server to check your rooms. Reload to try again.</p>{/if}
+  <div class="bar">
+    {#if recent.length}
+      <section class="resume" aria-labelledby="resume-title">
+        <h2 class="lab" id="resume-title">Your rooms</h2>
+        <ul class="chips">
+          {#each active.slice(0, 3) as r (r.code)}
+            <li>
+              <button class="chip" onclick={() => router.go(`/r/${r.code}`)} aria-label="Resume {r.gameName}, room {r.code}, {r.status === 'lobby' ? 'waiting' : 'in progress'}">
+                <span class="dot" class:live={r.status === 'playing'}></span>
+                <span class="rcode">{r.code}</span>
+                <span class="rgame">{r.gameName}</span>
+              </button>
+            </li>
+          {/each}
+        </ul>
+        <button class="btn ghost small all" class:alone={!active.length} aria-haspopup="dialog" onclick={() => (roomsOpen = true)}>
+          <span class="wide">All rooms</span><span class="narrow">Rooms</span>&nbsp;<span class="num">({recent.length})</span>
+        </button>
+      </section>
+    {/if}
+    {#if unreachable}<p class="err" role="status">Can’t reach the server to check your rooms. Reload to try again.</p>{/if}
+    <div class="tools">
+      <div class="seg" role="group" aria-label="View">
+        <button class="btn icon ghost" aria-label="Wheel" aria-pressed={view === 'wheel'} onclick={() => choose('wheel')}><Icon name="wheel" /></button>
+        <button class="btn icon ghost" aria-label="Gallery" aria-pressed={view === 'gallery'} onclick={() => choose('gallery')}><Icon name="grid" /></button>
+      </div>
+      <button class="btn icon ghost" aria-label="Sound {settings.muted ? 'off' : 'on'}" aria-pressed={!settings.muted} onclick={() => ((settings.muted = !settings.muted), sfx.card())}>
+        <Icon name={settings.muted ? 'mute' : 'sound'} />
+      </button>
+    </div>
+  </div>
 
-  <section class="games" aria-label="Games">
-    {#each games as g (g.id)}
-      <GameFeature game={g} onopen={() => show(g)} />
-    {/each}
-  </section>
+  {#if view === 'wheel'}
+    <GameWheel
+      {games}
+      {focus}
+      onopen={show}
+      onfocus={(id) => {
+        focus = id;
+        remember();
+      }}
+    />
+  {:else}
+    <GameGallery {games} {focus} onpick={pick} />
+  {/if}
 </main>
+
+{#if recent.length}
+  <Dialog bind:open={roomsOpen} title="Your rooms on this device" wide>
+    <RoomList rooms={[...active, ...recent.filter((r) => r.status === 'over')]} />
+  </Dialog>
+{/if}
 
 {#if chosen}
   {#key chosen.id}
@@ -111,16 +186,21 @@
 
 <style>
   .hub {
+    position: relative;
+    isolation: isolate;
     height: 100%;
     overflow-y: auto;
     overflow-x: clip;
     display: flex;
     flex-direction: column;
-    gap: clamp(24px, 4vw, 40px);
-    padding: max(28px, env(safe-area-inset-top)) clamp(16px, 5vw, 64px) 56px;
+    gap: clamp(14px, 2.2vh, 24px);
+    padding: max(20px, env(safe-area-inset-top)) clamp(16px, 5vw, 64px) 56px;
     background: #1b1816;
   }
-  .hub > * {
+  .hub.wheeling {
+    padding-bottom: 40px;
+  }
+  .hub > :global(*:not(.glows)) {
     width: 100%;
     max-width: 1040px;
     margin-inline: auto;
@@ -130,13 +210,13 @@
     align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 16px 40px;
+    gap: 12px 40px;
   }
   .wordmark {
     margin: 0;
     font-family: var(--font-label);
     font-weight: 800;
-    font-size: clamp(44px, 7vw, 76px);
+    font-size: clamp(36px, min(6vw, 7vh), 64px);
     line-height: 0.85;
     letter-spacing: 0.01em;
     text-transform: uppercase;
@@ -181,16 +261,143 @@
     letter-spacing: 0.2em;
     color: var(--rim-hi);
   }
-  .resume {
+
+  .bar {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    min-height: 44px;
+  }
+  .resume {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px 12px;
+  }
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 8px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  .chips li {
+    min-width: 0;
+  }
+  .chip {
+    max-width: 100%;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 14px;
+    border: 1px solid var(--rim);
+    border-radius: 99px;
+    background: var(--ground-1);
+    color: var(--ink);
+    font-size: 14px;
+    white-space: nowrap;
+    transition: transform var(--dur-1) var(--ease-out);
+  }
+  .chip:active {
+    transform: scale(0.97);
+  }
+  .rcode {
+    font-family: var(--font-label);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+  }
+  .rgame {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--ink-2);
+  }
+  .dot {
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--rim-hi);
+  }
+  /* A game in progress is waiting on you: the one signal colour. */
+  .dot.live {
+    background: var(--sprout);
+  }
+  .all {
+    flex: none;
+    min-height: 44px;
+  }
+  .narrow {
+    display: none;
+  }
+  .tools {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
     gap: 8px;
   }
-
-  /* One column: no game has a position of its own, so none can end up out of reach. */
-  .games {
+  .seg {
     display: flex;
-    flex-direction: column;
-    gap: clamp(16px, 2.5vw, 24px);
+    padding: 2px;
+    border: 1px solid var(--rim);
+    border-radius: var(--r-md, 10px);
+  }
+  .seg .btn[aria-pressed='true'] {
+    background: var(--ground-2);
+    color: var(--ink);
+  }
+  .seg .btn[aria-pressed='false'] {
+    color: var(--ink-3);
+  }
+  /* Phones: the rooms fold behind one button, so the wheel keeps the screen. */
+  @media (max-width: 639px) {
+    .top {
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+    .wordmark {
+      font-size: 30px;
+    }
+    .lab[for='code'] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    #resume-title,
+    .chips {
+      display: none;
+    }
+    .joinrow {
+      flex: 0 1 200px;
+    }
+    .joinbox .btn {
+      padding: 0 12px;
+    }
+    .code {
+      font-size: 16px;
+      letter-spacing: 0.12em;
+    }
+    .wide {
+      display: none;
+    }
+    .narrow {
+      display: inline;
+    }
+  }
+  /* The smallest phones have no room for the code beside the wordmark. */
+  @media (max-width: 359px) {
+    .top {
+      flex-wrap: wrap;
+    }
+    .joinrow {
+      flex: 1 1 100%;
+    }
   }
 </style>

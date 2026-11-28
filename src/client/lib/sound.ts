@@ -86,4 +86,15 @@ export const sfx = {
   },
   error: () => tone(180, 0.18, { type: 'square', gain: 0.06, slide: 0.85 }),
   end: () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 0.5, { type: 'triangle', gain: 0.14, delay: i * 0.11 })),
+  /** The home wheel passing a game: a dry ratchet tick. */
+  detent: () => {
+    noise(0.018, { gain: 0.1, freq: 2600 });
+    tone(1900, 0.025, { type: 'triangle', gain: 0.025 });
+  },
+  /** The wheel coming to rest on a game: a weighted click, then the cards sliding out. */
+  select: () => {
+    tone(140, 0.09, { type: 'triangle', gain: 0.16, slide: 0.7 });
+    noise(0.03, { gain: 0.08, freq: 1200 });
+    noise(0.16, { gain: 0.05, freq: 3400, delay: 0.06 });
+  },
 };
