@@ -379,6 +379,14 @@ refused. Staging, the dev server and the tests still have it (D53). Checked on a
   - Production `0c44c073-41a6-46e6-83ac-24fb49cf796e`: all three `mines.spec.ts` tests pass; Dead Drop is still absent.
   - To roll back, return to `0564a063-b84d-4bd1-916a-281f3be87179`.
 
+### Miners & Saboteurs v1.4: one card back, Codex card faces (2026-11-28)
+
+- **One back.** Face-down gold and coal destinations now show the deck's card back, in both the tabletop and the deep
+  mine view. The separate destination back (`goalBack`) and its deep SVG are gone.
+- **Repainted faces.** The 7 roles, 18 actions, deck and role backs and 3 rewards were repainted with Codex's image
+  tool from one shared ligne claire prompt, with the Miner as the style reference (`scripts/art/codex.mjs`,
+  `mines-paint.mjs paint`). The tunnels and destinations are unchanged. No rule, card or state changed.
+
 ### Miners & Saboteurs v1.3: painted card faces (2026-11-13)
 
 - **Art only.** No card, count, link, rule, score or state shape changed. The 70 tabletop faces are now painted WebP

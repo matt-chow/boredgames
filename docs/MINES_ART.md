@@ -17,7 +17,7 @@ card's own bands and badges carry the information.
 | Tunnels, entrance, destinations | 39 | Overhead tile: sandy floor, sleepers and rails through dark boulders. Dead ends are heaps of grey rubble. Ladders, gates and crystals are drawn where the card has them. |
 | Roles | 7 | One full-body character, hat to boots, with a coloured band along the bottom in the role's colour |
 | Actions | 18 | One small scene per action, with a dark band at the top and bottom. Tool cards show the tool badges top right. |
-| Card backs, rewards | 6 | Deck, role and destination backs (the backs have an inner gold border); 1, 2 and 3 gold pips on the rewards |
+| Card backs, rewards | 5 | Deck and role backs, with an inner gold border; 1, 2 and 3 gold pips on the rewards. A face-down destination shows the deck back, so it gives nothing away. |
 
 The eight round badges (nugget, crystal, the three tools and their broken forms) stay crisp SVG icons. So do the deep
 mine tiles in `public/art/mines/deep/` and the cover.
@@ -40,6 +40,14 @@ A tunnel's picture has to match its connectivity metadata exactly. The model nev
 Rotation stays a CSS half turn, so a turned tile is the same picture upside down.
 
 ## Making more
+
+Roles, actions, backs and rewards are painted with Codex: `node scripts/art/mines-paint.mjs paint <kind|group,...> --ref miner`.
+Each run saves `.art/mines/raw/<kind>.vN.png`, and the newest one is the pick. Delete a file to reject it. Every
+prompt is the shared `LOOK` line, the group's `FRAME` and the card's subject from `FACES`, with the Miner attached as
+the style reference. `node scripts/art/mines-paint.mjs build` then frames and encodes them. A face with no source
+here, such as a tunnel whose Horde workdir is gone, keeps the file that ships.
+
+Tunnels:
 
 Run `node scripts/art/mines-paint.mjs generate <dir> [kind…]` to render every face for its seeds (`SEEDS` for
 tunnels; three second-pass seeds for the rest, or the single seed of a first-pass picture kept in `V1`). Record

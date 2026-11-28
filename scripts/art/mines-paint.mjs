@@ -1,19 +1,26 @@
 // Miners & Saboteurs painted card faces: tunnels, destinations, actions, roles, rewards and card backs.
 //
-//   node scripts/art/mines-paint.mjs generate <workdir> [kind,...]  queue prompts on AI Horde one at a time, skipping
-//                                                                   files already in <workdir>
-//   node scripts/art/mines-paint.mjs build <workdir>                frame, resize and encode the picks into public/art/mines
-//                                                                   and write the manifest; fails if a tunnel's painted
+//   node scripts/art/mines-paint.mjs generate <workdir> [kind,...]  tunnels: queue prompts on AI Horde one at a time,
+//                                                                   skipping files already in <workdir>
+//   node scripts/art/mines-paint.mjs paint [kind|group,...] [--ref kind,...] [--n 4]
+//                                                                   roles, actions, backs, rewards: paint with Codex into
+//                                                                   .art/mines/raw/<kind>.vN.png; --ref attaches the newest
+//                                                                   painting of each kind as a style reference
+//   node scripts/art/mines-paint.mjs build [workdir]                frame, resize and encode the picks into public/art/mines
+//                                                                   and write the manifest; a face with no source keeps
+//                                                                   the shipped file; fails if a tunnel's painted
 //                                                                   openings disagree with its links (MS-ART2)
 //
 // Tunnels are not left to the model: each one starts from a layout drawn here from the card's own links (the same
 // data the rules use), which the model repaints at moderate strength. The build then measures every edge of the
 // finished picture. Images come from the Deliberate checkpoint (CreativeML OpenRAIL-M) on AI Horde's free anonymous
-// tier, from text prompts and these layouts only: no reference images, artist names or third-party pictures. See
+// tier, from text prompts and these layouts only: no reference images, artist names or third-party pictures. The other
+// faces come from Codex's image tool on the owner's ChatGPT plan, with only this set's own faces as references. See
 // docs/ASSETS.md and docs/MINES_ART.md.
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
+import { paint } from './codex.mjs';
 import { ACTION, CLASSIC_DECK, ENTRANCE, GOALS, ROLE, TUNNEL } from '../../src/games/mines/rules/cards.ts';
 
 const STYLE = 'european ligne claire comic book illustration, clean even black ink outlines, flat colours with soft cel shading, warm earthy palette of sandstone, ochre, moss green and slate blue, warm lantern light, whimsical fantasy adventure, crisp detailed linework';
@@ -148,57 +155,61 @@ const tunnelPrompt = (def) => {
   return `${MINE}${extra ? `, ${extra}` : ''}, ${STYLE} ### ${AVOID}, people, person, perspective, horizon, sky`;
 };
 
-// Second pass (seeds 41, 59, 83): the first prompts drifted to sunny landscapes, character sheets and captions, so these
-// pin the scene underground and push those away. The few first-pass pictures that were kept are in V1.
-const V2 = [41, 59, 83];
-// Third pass (seeds 101, 131, 167): "lantern light" in the shared scene turned every action into a lantern, so actions
-// get a plain rock scene, the subject is weighted, and lamps are refused unless the card is about one.
-const V3 = [101, 131, 167];
-const ACT_SCENE = 'dark mine background with rough rock walls and timber beams';
-const UNDERGROUND = 'inside a dark underground mine, rough rock walls and wooden support beams, warm lantern light';
-const OUTDOORS = 'sky, clouds, mountains, trees, forest, grass, house, window, landscape, outdoors, poster, title, caption, character sheet, model sheet, multiple views, turnaround, colour swatches, border, white background';
-const FIG = 'single full body figure, whole body visible from hat to boots, standing in a mine tunnel, slightly exaggerated comic proportions, expressive pose';
-const ROLE_PROMPT = {
-  miner: 'a cheerful stout dwarvish miner with a bushy moustache, brass helmet with a little lamp, leather apron and rolled sleeves, pickaxe over his shoulder, sturdy boots',
-  saboteur: 'a sly lanky miner with a crooked grin, black scarf over his chin and a black flat cap, sneaking on tiptoe with a small powder keg with a lit fuse under one arm',
-  green: 'a determined young miner in a moss green jacket, green cap and green neckerchief, gripping a pickaxe with both hands, sturdy boots',
-  blue: 'a confident young woman miner in a slate blue jacket and blue cap, long braid, shovel over her shoulder, sturdy boots',
-  foreman: '(a big burly stern old man:1.3) mine foreman with grey mutton chop whiskers, brown waistcoat and bowler hat, rolled plans under one arm, pointing ahead',
-  opportunist: 'a shifty grinning prospector in a patched maroon coat, many pouches and trinkets hanging from his belt, holding up a gold nugget',
-  seeker: 'an eager woman geologist in a wide-brimmed hat and round spectacles, holding up a glowing teal crystal, rock hammer at her belt, satchel',
+// ---- Card faces --------------------------------------------------------------------------------------------------
+//
+// Roles, actions, backs and rewards are painted with Codex (scripts/art/codex.mjs) from one shared look, with accepted
+// faces from this set attached as style references, so the whole set reads as one family. Tunnels stay on the layout-
+// guided pipeline above, because their openings must follow the card's links.
+
+const LOOK = 'European ligne claire comic illustration for a whimsical fantasy mining card game. Clean, even-weight black ink outlines around every shape, flat colour fills with one soft cel-shading step, no airbrushed gradients and no painterly texture. Warm earthy palette: sandstone #D9B98A, ochre gold #E0AC3C, moss green #4C8A3E, slate blue #3C679C, rust red #A8432C, teal #3F7A74, deep brown #2E2219. Warm light from the upper left. Light, slightly comic tone, with simple bold shapes that still read when the card is only 56 pixels wide.';
+const NOPE = 'Avoid: any text, letters, numbers, logos, signatures, watermarks, panel borders, frames or speech bubbles; photorealism, 3D render, neon colours, extra fingers or limbs, cropped figures, sky or outdoor landscape.';
+const FRAME = {
+  role: (s) => `Portrait 2:3 card illustration of one full-body character, the whole figure visible from hat to boots with a little floor below the boots, centred, standing in a mine tunnel. The rough rock walls and timber supports behind are simple and a little darker than the figure. The bottom twelfth stays plain floor. Character: ${s}.`,
+  action: (s) => `Portrait 2:3 card illustration of one small centred scene in a dark mine with rough rock walls and timber beams. The top tenth, the top-right corner and the bottom twelfth stay plain background, because the card's bands and badges cover them. No lantern or lamp unless the scene names one. Scene: ${s}.`,
+  back: (s) => `Portrait 2:3 card back: ${s}. Symmetrical left to right and top to bottom, filling the picture edge to edge, with a plain deep brown margin around the edge for a thin gold border. No figures.`,
+  reward: (s) => `Portrait 2:3 card illustration of a centred still life on a dark rock ledge in a mine. The bottom eighth stays plain dark rock, because a band covers it. Subject: ${s}.`,
 };
-const SCENE = 'a small storybook vignette inside a mine, centred composition, rocky cave background with timber supports';
-const V1 = {
-  fixPick: { seed: 7, prompt: 'a cheerful miner fitting a new wooden handle onto a pickaxe head at a workbench' },
-  fixCart: { seed: 7, prompt: 'a miner hammering a new wheel onto a wooden mine cart' },
-  survey: { seed: 7, prompt: 'a miner studying a hand drawn map of tunnels unrolled on a crate by lantern light' },
-  guard: { seed: 23, prompt: 'an iron-bound wooden strongbox with a heavy padlock, gold nuggets glinting, on a rocky ledge' },
-  swapHands: { seed: 23, prompt: 'two miners trading leather satchels with each other, wary smiles' },
-  free: { seed: 23, prompt: 'a miner hauling a rope to pull a trapped friend up out of a pit' },
+const FACES = {
+  role: {
+    miner: 'a cheerful stout dwarvish miner with a bushy moustache, brass helmet with a little lamp, leather apron and rolled sleeves, pickaxe over one shoulder, sturdy boots',
+    saboteur: 'a sly lanky miner with a crooked grin, black scarf over the chin and a black flat cap, sneaking on tiptoe with a small powder keg with a lit fuse under one arm',
+    green: 'a determined young miner in a moss green jacket, green cap and green neckerchief, gripping a pickaxe with both hands, sturdy boots',
+    blue: 'a confident young woman miner in a slate blue jacket and blue cap, long braid, shovel over her shoulder, sturdy boots',
+    foreman: 'a big burly stern old mine foreman with grey mutton chop whiskers, brown waistcoat and bowler hat, rolled plans under one arm, pointing ahead',
+    opportunist: 'a shifty grinning prospector in a patched maroon coat, many pouches and trinkets hanging from the belt, holding up a gold nugget',
+    seeker: 'an eager woman geologist in a wide-brimmed hat and round spectacles, holding up a glowing teal crystal, rock hammer at her belt, satchel',
+  },
+  action: {
+    breakPick: 'a pickaxe snapped in two, the splintered wooden handle and the iron head lying apart on the rocky floor',
+    breakLamp: 'a dented brass lantern lying on its side on the rocky floor, its glass cracked and its flame out, a thin curl of smoke',
+    breakCart: 'an overturned wooden mine cart lying on its side beside iron rails, one wheel broken off, spilled rocks',
+    fixPick: 'a cheerful miner fitting a new wooden handle onto a pickaxe head at a workbench',
+    fixLamp: 'a smiling miner striking a match to light a brass lantern held in the other hand',
+    fixCart: 'a miner hammering a new wheel onto a wooden mine cart',
+    fixPickLamp: 'a pickaxe and a brass lantern lying side by side on a wooden workbench with a hammer and pliers',
+    fixPickCart: 'a pickaxe and a wooden cart wheel lying side by side on a wooden workbench with a hammer and pliers',
+    fixLampCart: 'a brass lantern and a wooden cart wheel lying side by side on a wooden workbench with a hammer and pliers',
+    survey: 'a miner studying a hand-drawn map of tunnels unrolled on a crate',
+    caveIn: 'a cave-in: big boulders crashing down from the tunnel roof, broken timber beams, a dust cloud and a rubble pile',
+    theft: 'a sneaky thief in a black mask and scarf running away on tiptoe with a sack of gold, nuggets dropping behind',
+    guard: 'an iron-bound wooden strongbox with a heavy padlock on a rocky ledge, gold nuggets glinting through the gap of the lid',
+    swapHands: 'two miners trading leather satchels with each other, wary smiles',
+    inspect: 'two miners face to face, one peering through a magnifying glass at the other, who sweats nervously',
+    swapRole: 'a miner holding up two different brass badges, one in each hand, with a sly wink',
+    trap: 'a worried miner locked behind iron bars set across a mine tunnel, gripping the bars',
+    free: 'a miner hauling on a rope to pull a trapped friend up out of a pit',
+  },
+  // One back for every mine card, the destinations included, so a face-down destination gives nothing away.
+  back: {
+    cardBack: 'the back of every mine card: two crossed pickaxes over a brass mining lantern in a round medallion at the centre, interlaced copper and sandstone ornament on deep brown',
+    roleBack: 'the back of every role card: a brass miner helmet with a small star in a round medallion at the centre, interlaced copper and slate blue ornament on deep brown',
+  },
+  reward: {
+    reward1: 'a single gold nugget, sparkling',
+    reward2: 'a small open leather pouch spilling a few shiny gold nuggets',
+    reward3: 'a wooden mine cart heaped high with gold nuggets on a short length of iron rail, sparkling',
+  },
 };
-const ACTION_PROMPT = {
-  breakPick: '(a broken pickaxe snapped in two:1.4), splintered wooden handle and iron head lying apart on the rocky floor',
-  breakLamp: '(a smashed brass lantern lying on its side:1.3), (broken glass shards:1.3) scattered on the rocky floor, smoke',
-  breakCart: '(an overturned wooden mine cart:1.4) lying on its side next to iron rails, (a broken wheel:1.3), spilled rocks',
-  fixLamp: 'a smiling miner (striking a match:1.3) to light a brass lantern held in his other hand',
-  fixPickLamp: '(a pickaxe:1.3) and (a brass lantern:1.3) lying on a wooden workbench with a hammer and pliers',
-  fixPickCart: '(a pickaxe:1.3) and (a wooden cart wheel:1.3) lying on a wooden workbench with a hammer and pliers',
-  fixLampCart: '(a brass lantern:1.3) and (a wooden cart wheel:1.3) lying on a wooden workbench with a hammer and pliers',
-  caveIn: '(a cave-in:1.4), (big boulders falling from the tunnel roof:1.3), broken timber beams, dust cloud, rubble pile',
-  theft: 'a sneaky thief in a black mask and scarf (running away on tiptoe holding a sack of gold:1.3), gold coins dropping',
-  inspect: 'two miners face to face, one (peering through a magnifying glass:1.3) into the face of the other, the other sweating nervously',
-  swapRole: 'a miner (holding two different brass badges, one in each hand:1.3), sly wink, swapping them',
-  trap: 'a miner (trapped behind iron prison bars:1.4) across a mine tunnel, gripping the bars, worried face',
-};
-const OTHER_PROMPT = {
-  cardBack: 'ornate symmetrical card back pattern filling the whole picture, two crossed pickaxes over a brass mining lantern in a round medallion, interlaced copper and sandstone ornament on deep brown',
-  roleBack: 'ornate symmetrical card back pattern filling the whole picture, a brass miner helmet with a star in a round medallion, interlaced copper and slate blue ornament on deep brown',
-  goalBack: 'a heavy round wooden mine door set into a rock wall, iron bands and studs, mysterious, symmetrical, seen straight on',
-  reward1: 'a single gold nugget resting on a rock, sparkling, simple centred still life',
-  reward2: 'a small open leather pouch spilling a few shiny gold nuggets onto a dark rock, sparkling, centred still life',
-  reward3: '(a wooden mine cart heaped high with gold nuggets:1.4) on iron rails, sparkling, centred',
-};
-const OTHER_V1 = { goalBack: 23, reward1: 23 };
 
 // crystalN's short stub washed out at 0.5 (seeds 7 and 23), so it keeps more of its layout.
 const STRENGTH = { crystalN: 0.4 };
@@ -208,20 +219,36 @@ const defOf = (k) => TUNNEL[k] ?? GOALS[k] ?? (k === 'entrance' ? ENTRANCE : nul
 /** Every painted face: its job and how the build frames it. */
 export const PAINTED = [
   ...PAINTED_TUNNELS.map((k) => ({ kind: k, group: 'tunnel', prompt: tunnelPrompt(defOf(k)), strength: STRENGTH[k] ?? 0.5 })),
-  ...Object.keys(ROLE).map((k) => ({ kind: k, group: 'role', seeds: k === 'foreman' ? V3 : V2, prompt: `${ROLE_PROMPT[k]}, ${FIG}, ${UNDERGROUND}, ${STYLE} ### ${AVOID}, ${OUTDOORS}, cropped, close-up, portrait, headshot, cut off feet` })),
-  ...Object.keys(ACTION).map((k) => V1[k]
-    ? { kind: k, group: 'action', seeds: [V1[k].seed], prompt: `${V1[k].prompt}, ${SCENE}, ${STYLE} ### ${AVOID}` }
-    : { kind: k, group: 'action', seeds: V3, prompt: `${ACTION_PROMPT[k]}, ${ACT_SCENE}, ${STYLE.replace(", warm lantern light", "")} ### ${AVOID}, ${OUTDOORS}${/Lamp/.test(k) ? '' : ', lantern, lamp, candle'}` }),
-  ...Object.keys(OTHER_PROMPT).map((k) => ({ kind: k, group: k.startsWith('reward') ? 'reward' : 'back', seeds: OTHER_V1[k] ? [OTHER_V1[k]] : k === 'reward3' ? V3 : V2, prompt: OTHER_V1[k] ? `${OTHER_PROMPT[k]}, ${STYLE} ### ${AVOID}, people` : `${OTHER_PROMPT[k]}, ${STYLE} ### ${AVOID}, ${OUTDOORS}, people${k === 'reward3' ? ', lantern, lamp, umbrella, parasol' : ''}` })),
+  ...Object.entries(FACES).flatMap(([group, faces]) => Object.entries(faces).map(([kind, s]) => ({ kind, group, prompt: `${LOOK}\n\n${FRAME[group](s)}\n\n${NOPE}` }))),
 ];
 
-/** Seeds tried per group, and the seed picked for each kind after looking at them. */
+/** Tunnel seeds tried, and the seed picked for a tunnel after looking at them. */
 const SEEDS = { tunnel: [7] };
-const PICKS = {
-  crystalN: 41, deadCross: 59, deadL: 23, ladderV: 23, deadV: 23, foreman: 131, breakLamp: 101, breakCart: 101, fixLamp: 101, fixPickLamp: 167, fixPickCart: 131, fixLampCart: 101,
-  caveIn: 101, theft: 101, inspect: 167, swapRole: 101, trap: 131, reward3: 101, miner: 59, saboteur: 83, green: 41, blue: 41, opportunist: 59, seeker: 83, cardBack: 83, roleBack: 59, reward2: 41 };
+const PICKS = { crystalN: 41, deadCross: 59, deadL: 23, ladderV: 23, deadV: 23 };
 
 // ---- Generation --------------------------------------------------------------------------------------------------
+
+const RAW = '.art/mines/raw';
+/** The newest Codex attempt at a face (<kind>.vN.png); delete a file to reject it. */
+const latest = (kind) => {
+  const n = existsSync(RAW) ? Math.max(0, ...readdirSync(RAW).map((f) => Number(f.match(new RegExp(`^${kind}\\.v(\\d+)\\.png$`))?.[1] ?? 0))) : 0;
+  return n ? join(RAW, `${kind}.v${n}.png`) : null;
+};
+
+function codex(list, refKinds, n) {
+  mkdirSync(RAW, { recursive: true });
+  const refs = refKinds.map((k) => latest(k) ?? (() => { throw new Error(`Reference ${k} has no painting`); })());
+  const faces = PAINTED.filter((p) => p.group !== 'tunnel' && (!list || list.includes(p.kind) || list.includes(p.group)));
+  for (let i = 0; i < faces.length; i += n) {
+    const batch = faces.slice(i, i + n);
+    console.log(`Painting ${batch.map((p) => p.kind).join(', ')}…`);
+    for (const [kind, src] of paint(batch.map((p) => [p.kind, p.prompt]), refs)) {
+      const v = Number(latest(kind)?.match(/\.v(\d+)\.png$/)[1] ?? 0) + 1;
+      copyFileSync(src, join(RAW, `${kind}.v${v}.png`));
+      console.log(`  ${kind} → ${RAW}/${kind}.v${v}.png`);
+    }
+  }
+}
 
 const HEAD = { apikey: '0000000000', 'Client-Agent': 'boredgames-art:1.0:anon', 'Content-Type': 'application/json' };
 const wait = (ms) => new Promise((f) => setTimeout(f, ms));
@@ -245,9 +272,9 @@ async function horde({ prompt, seed, source, strength }) {
 
 async function generate(dir, only) {
   mkdirSync(dir, { recursive: true });
-  for (const p of PAINTED.filter((p) => !only || only.includes(p.kind))) {
-    const source = p.group === 'tunnel' ? (await sharp(Buffer.from(layout(defOf(p.kind)))).webp({ quality: 95 }).toBuffer()).toString('base64') : undefined;
-    for (const seed of PICKS[p.kind] ? [PICKS[p.kind]] : p.seeds ?? SEEDS[p.group]) {
+  for (const p of PAINTED.filter((p) => p.group === 'tunnel' && (!only || only.includes(p.kind)))) {
+    const source = (await sharp(Buffer.from(layout(defOf(p.kind)))).webp({ quality: 95 }).toBuffer()).toString('base64');
+    for (const seed of PICKS[p.kind] ? [PICKS[p.kind]] : SEEDS.tunnel) {
       const out = join(dir, `${p.kind}-${seed}.webp`);
       if (existsSync(out)) continue;
       for (let attempt = 0; attempt < 3; attempt++) {
@@ -318,7 +345,7 @@ function overlay(p) {
 
 const rulesetsOf = (k) => {
   if (ROLE[k]) return ROLE[k].rulesets;
-  if (['entrance', 'gold', 'coalL', 'coalR', 'goalBack', 'cardBack'].includes(k)) return ['classic', 'expanded', 'duel'];
+  if (['entrance', 'gold', 'coalL', 'coalR', 'cardBack'].includes(k)) return ['classic', 'expanded', 'duel'];
   if (k === 'roleBack' || k.startsWith('reward')) return k === 'roleBack' ? ['classic', 'expanded'] : ['classic'];
   const inClassic = CLASSIC_DECK.some(([c]) => c === k);
   return inClassic ? ['classic', 'expanded', 'duel'] : ['expanded'];
@@ -326,11 +353,19 @@ const rulesetsOf = (k) => {
 
 async function build(dir) {
   const out = 'public/art/mines';
+  const MANIFEST = 'data/mines-art-manifest.json';
+  const shipped = new Map(JSON.parse(readFileSync(MANIFEST, 'utf8')).map((m) => [m.card, m]));
   const manifest = [];
   const wrong = [];
   for (const p of PAINTED) {
-    const seed = PICKS[p.kind] ?? (p.seeds ?? SEEDS[p.group])[0];
-    const src = join(dir, `${p.kind}-${seed}.webp`);
+    const seed = PICKS[p.kind] ?? SEEDS.tunnel[0];
+    const src = p.group === 'tunnel' ? dir && join(dir, `${p.kind}-${seed}.webp`) : latest(p.kind);
+    // A face with no source here keeps the file that ships, so tunnels survive a faces-only rebuild.
+    if (!src || !existsSync(src)) {
+      if (!shipped.has(p.kind)) throw new Error(`${p.kind}: no source and nothing shipped`);
+      manifest.push(shipped.get(p.kind));
+      continue;
+    }
     const art = await sharp(src).resize(W, H, { fit: 'cover' }).toBuffer();
     const file = join(out, `${p.kind}.webp`);
     await sharp(art)
@@ -345,11 +380,11 @@ async function build(dir) {
     }
     manifest.push({
       asset: `mines/${p.kind}`, card: p.kind, category: p.group, rulesets: rulesetsOf(p.kind), file: `/art/mines/${p.kind}.webp`, width: W, height: H,
-      variant: `seed ${seed}`, source: p.group === 'tunnel' ? `AI Horde, Deliberate, img2img from the card's link layout at strength ${p.strength}` : 'AI Horde, Deliberate, text prompt only',
+      variant: p.group === 'tunnel' ? `seed ${seed}` : src.replace(/.*[\\/]/, ''), source: p.group === 'tunnel' ? `AI Horde, Deliberate, img2img from the card's link layout at strength ${p.strength}` : 'Codex CLI built-in image tool, text prompt with accepted faces from this set as style references',
       fallback: 'none: MS-ART1 fails the build if the file is missing',
     });
   }
-  writeFileSync('data/mines-art-manifest.json', `${JSON.stringify(manifest, null, 1)}\n`);
+  writeFileSync(MANIFEST, `${JSON.stringify(manifest, null, 1)}\n`);
   console.log(`Wrote ${manifest.length} painted faces.`);
   if (wrong.length) {
     console.error(`MS-ART2: openings disagree with the links:\n${wrong.join('\n')}`);
@@ -360,13 +395,17 @@ async function build(dir) {
 const [cmd, dir, only] = process.argv.slice(2);
 if (!import.meta.main) {
   // Imported for openings(); no command to run.
-} else if (cmd === 'build' && dir) await build(dir);
+} else if (cmd === 'build') await build(dir);
+else if (cmd === 'paint') {
+  const flag = (k, d) => (process.argv.includes(k) ? process.argv[process.argv.indexOf(k) + 1] : d);
+  codex(dir?.startsWith('--') ? null : dir?.split(','), flag('--ref', '').split(',').filter(Boolean), Number(flag('--n', 4)));
+}
 else if (cmd === 'layout') {
   // Writes every layout as PNG, for checking them by eye.
   mkdirSync(dir, { recursive: true });
   for (const k of PAINTED_TUNNELS) await sharp(Buffer.from(layout(defOf(k)))).png().toFile(join(dir, `${k}.png`));
 } else if (cmd === 'generate' && dir) await generate(dir, only?.split(','));
 else {
-  console.error('usage: node scripts/art/mines-paint.mjs generate|build|layout <workdir> [kinds]');
+  console.error('usage: node scripts/art/mines-paint.mjs generate|build|layout <workdir> [kinds] | paint [kinds|groups] [--ref kinds] [--n 4]');
   process.exit(1);
 }

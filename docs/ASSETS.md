@@ -48,15 +48,20 @@ also checks each tunnel's painted openings against its links (MS-ART2). The look
 [MINES_ART.md](MINES_ART.md). The model, host, licence and caveat are the same as for Sealed Correspondence (below):
 Deliberate on AI Horde's free anonymous tier.
 
+Since v1.4 the roles, actions, backs and rewards are repainted with the image tool built into the Codex CLI
+(`codex exec`), on the owner's ChatGPT plan, with no API key, per-image billing or paid asset. They share one style
+prompt, and the only reference image is the Miner face from this same set. The raw PNGs stay outside the repo in
+`.art/mines/raw`. The tunnels and destinations are still the AI Horde paintings.
+
 The small badges, the deep mine view and the cover are original SVG, drawn by `scripts/art/mines.mjs` from the same
 card registry with no third-party material. MS-ART1 checks that every registered kind has its file.
 
 | Files | What |
 |---|---|
-| `public/art/mines/*.webp` (70) | Tabletop faces, 240×360: 35 tunnels, entrance, gold and two coal destinations; 7 roles; 18 actions; deck, role and destination backs; 3 rewards |
+| `public/art/mines/*.webp` (69) | Tabletop faces, 240×360: 35 tunnels, entrance, gold and two coal destinations; 7 roles; 18 actions; deck and role backs (a face-down destination shows the deck back); 3 rewards |
 | `data/mines-art-manifest.json` | One row per painted face: asset, card, category, rulesets, file, size, variant, source, fallback |
 | `public/art/mines/{nugget,crystal,tool*}.svg` (8) | Round badges for gold, crystals and tools, intact and broken |
-| `public/art/mines/deep/*.svg` (40) | Deep mine view: tunnels, entrance and destinations by lamplight |
+| `public/art/mines/deep/*.svg` (39) | Deep mine view: tunnels, entrance and destinations by lamplight |
 | `public/art/covers/mines.svg` | Game cover: a lantern-lit timbered shaft and a cart of gold |
 
 ## Using licensed artwork

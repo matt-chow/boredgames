@@ -2,7 +2,7 @@
   import { settings } from '../../../client/lib/settings.svelte';
   import Icon from '../../../hub/Icon.svelte';
   import { AREA } from '../rules/board';
-  import { TUNNEL } from '../rules/cards';
+  import { TUNNEL, artOf } from '../rules/cards';
   import type { MView, Rot, Spot } from '../rules/types';
   import { GOAL_NAMES, goalWord, nameOf, textOf, tileArt } from './text';
 
@@ -180,7 +180,7 @@
       {#each view.goals as g, i (i)}
         {#if !g.revealed}
           <div class="tile goal" data-anchor="goal-{i}" style:left="{left(g.x)}px" style:top="{top(g.y)}px">
-            <img src={tileArt('goalBack', deep)} alt="Face-down destination ({GOAL_NAMES[i]})" draggable="false" />
+            <img src={artOf('cardBack')} alt="Face-down destination ({GOAL_NAMES[i]})" draggable="false" />
             {#if peeked.has(i)}<span class="peek" class:gold={peeked.get(i) === 'gold'}>You saw: {goalWord(peeked.get(i))}</span>{/if}
             {#if target === 'goal'}
               <button class="pick" data-drop="goal:{i}" aria-label="Survey the {GOAL_NAMES[i]} destination" onclick={tap(() => ongoal?.(i))}></button>
